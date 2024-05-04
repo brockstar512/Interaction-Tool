@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Throwable : InteractableBase
@@ -9,7 +10,6 @@ public class Throwable : InteractableBase
     float DISTANCE_LIMIT = 7.5f;
     bool isThrown = false;
     Vector2 throwDirection;
-    Rigidbody2D rb;
     const float SPEED = 10f;
     [SerializeField] Transform throwable;
     [SerializeField] Transform shadow;
@@ -19,8 +19,6 @@ public class Throwable : InteractableBase
     {
         rb = GetComponent<Rigidbody2D>();
     }
-
-   
 
     public override void Interact(PlayerStateMachineManager player)
     {
@@ -53,7 +51,8 @@ public class Throwable : InteractableBase
 
     private void Toss(Vector3 direction)
     {
-        //shadow.position = new Vector3(shadow.position.x, shadow.position.y - .25f, shadow.position.z);
+        shadow.gameObject.SetActive(true);
+        shadow.position = new Vector3(shadow.position.x, shadow.position.y - .25f, shadow.position.z);
         this.transform.SetParent(null);
         startingPoint = transform.position;
         throwDirection = direction;

@@ -7,9 +7,12 @@ public class UseItemState : PlayerBaseState
     //have a list of items
     //have index of current item
     //
+    //this has the item...
+    //this handles the animation
+    //this does not handle any damage or weapon logic
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-
+        Action(stateManager);
     }
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
@@ -34,6 +37,8 @@ public class UseItemState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
+        Debug.Log("Using item");
 
+        stateManager.SwitchState(stateManager.defaultState);
     }
 }

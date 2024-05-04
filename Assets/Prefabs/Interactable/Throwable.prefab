@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3802924452717067769}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3802924452560269886
 SpriteRenderer:
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.8812107, g: 0.9622642, b: 0.5582948, a: 1}
+  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  m_Color: {r: 0.79968476, g: 0.9622642, b: 0.503827, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -112,11 +112,11 @@ Transform:
   m_GameObject: {fileID: 3802924452717067771}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.32, y: -2.01, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3802924453372314613}
   - {fileID: 3802924452560269887}
+  - {fileID: 3802924453372314613}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -187,20 +187,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1.7465458
-      outSlope: 1.7465458
+      inSlope: 1.6132922
+      outSlope: 1.6132922
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.06719177
+      outWeight: 0.016666668
     - serializedVersion: 3
       time: 7.5
       value: 0
-      inSlope: -1.2998942
-      outSlope: -1.2998942
+      inSlope: -0.9927043
+      outSlope: -0.9927043
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.09617475
+      inWeight: 0.042896908
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -221,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3802924453372314613
 Transform:
   m_ObjectHideFlags: 0
@@ -235,7 +235,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3802924452717067769}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3802924453372314612
 SpriteRenderer:

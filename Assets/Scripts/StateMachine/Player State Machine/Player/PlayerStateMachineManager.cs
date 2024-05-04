@@ -22,6 +22,13 @@ public class PlayerStateMachineManager : MonoBehaviour
 
     public PlayerBaseState GetState { get { return currentState; } }
     public InteractableBase item { get; private set; }
+    public RaycastHit2D GetRaycast {
+        get {
+            Physics2D.queriesStartInColliders = false;
+            RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, LookDirection, .75f);
+            return hit;
+        }
+    }
 
     void Awake()
     {
@@ -50,13 +57,6 @@ public class PlayerStateMachineManager : MonoBehaviour
         currentState.OnCollisionEnter(this, collision);
     }
 
-    RaycastHit2D GetRaycast()
-    {
-        Physics2D.queriesStartInColliders = false;
-        RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, LookDirection, .75f);
-        return hit;
-    }
-
     public void SwitchState(PlayerBaseState NewState)
     {
         currentState.ExitState(this);
@@ -68,11 +68,16 @@ public class PlayerStateMachineManager : MonoBehaviour
         }
     }
 
+    public void UseItem()
+    {
+        SwitchState(useItemState);
+    }
+
     public void Interact()
     {
         if (currentState is DefaultState)
         {
-            RaycastHit2D hit = GetRaycast();
+            RaycastHit2D hit = GetRaycast;
             if (hit.collider == null) return;
             item = hit.collider.transform.GetComponent<InteractableBase>();
             if (item == null) return;

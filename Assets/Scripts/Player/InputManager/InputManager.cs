@@ -44,7 +44,6 @@ public class InputManager : MonoBehaviour
         {
             return;
         }
-        Debug.Log("release");
         stateManager.Release();
     }
 
@@ -56,8 +55,9 @@ public class InputManager : MonoBehaviour
     public void UseItem(InputAction.CallbackContext context)
     {
         ///switch state and maybe pass in fuction that enters state so it is not null
+        stateManager.UseItem();
+
     }
-    //this should handle what the state should do baed off inputs
 
     private void OnDestroy()
     {
