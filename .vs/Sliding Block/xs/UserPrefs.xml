@@ -1,0 +1,44 @@
+﻿<Properties StartupConfiguration="{326A22CC-6D11-DFDD-09BF-89C4A2609523}|">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="621ee348-cd92-4648-875d-b1c8a029bd75" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Interactable/Moveable.cs">
+    <Files>
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="112" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" Line="50" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" Line="9" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerBaseState.cs" Line="8" Column="31" />
+      <File FileName="Assets/Scripts/Interactable/Moveable.cs" Line="25" Column="36" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Sliding Block" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="Interactable" expanded="True" />
+                <Node name="Player" expanded="True">
+                  <Node name="InputManager" expanded="True" />
+                  <Node name="PlayerMovementManager" expanded="True">
+                    <Node name="Old" expanded="True" />
+                  </Node>
+                </Node>
+                <Node name="StateMachine" expanded="True">
+                  <Node name="Player State Machine" expanded="True">
+                    <Node name="Player" expanded="True" />
+                    <Node name="States" expanded="True" />
+                  </Node>
+                  <Node name="State Machine" expanded="True" />
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>
