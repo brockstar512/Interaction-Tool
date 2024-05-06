@@ -38,6 +38,8 @@ public class UseItemState : PlayerBaseState
     public override void Action(PlayerStateMachineManager stateManager)
     {
         Debug.Log("Using item");
+        //current item = stateManager.itemManager.GetItem();
+        //item.Use();
 
         stateManager.SwitchState(stateManager.defaultState);
     }

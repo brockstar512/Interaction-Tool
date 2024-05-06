@@ -43,6 +43,9 @@ public class DefaultState : PlayerBaseState
             case Slidable moveable:
                 stateManager.SwitchState(stateManager.slideItemState);
                 break;
+            case Pickupable pickupable:
+                stateManager.SwitchState(stateManager.equipItemState);
+                break;
             default:
                 Debug.Log("is defualt");
                 break;

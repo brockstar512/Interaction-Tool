@@ -72,15 +72,17 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Throwable.cs" />
-    <Compile Include="Assets/Scripts/Delete - Slide Item/Slide.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerBaseState.cs" />
-    <Compile Include="Assets/Scripts/Delete - Throw/Throw.cs" />
     <Compile Include="Assets/Scripts/ItemManager/ItemManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
+    <Compile Include="Assets/Scripts/ItemManager/Items/IItem.cs" />
+    <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
+    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

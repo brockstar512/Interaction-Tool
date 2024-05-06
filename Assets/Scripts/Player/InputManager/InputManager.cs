@@ -50,6 +50,7 @@ public class InputManager : MonoBehaviour
     public void SwitchItem(InputAction.CallbackContext context)
     {
         Debug.Log("Switch items");
+        stateManager.itemManager.SwitchItem();
     }
 
     public void UseItem(InputAction.CallbackContext context)

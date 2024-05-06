@@ -10,8 +10,6 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     Vector2 lookDirection;
 
-    Throw obj;
-    bool HasItem { get { return obj != null; } }
 
 
     void Start()
@@ -55,14 +53,14 @@ public class PlayerMovement : MonoBehaviour
         {
             
             //Slide();
-            if(HasItem)
-            {
-                Toss();
-            }
-            else
-            {
-                PickUp();
-            }
+            //if(HasItem)
+            //{
+            //    Toss();
+            //}
+            //else
+            //{
+            //    PickUp();
+            //}
         }
     }
 
@@ -81,8 +79,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (hit.collider != null)
         {
-            Slide obj = hit.collider.transform.GetComponent<Slide>();
-            obj.Move(lookDirection);
+            //obj.Move(lookDirection);
         }
     }
 
@@ -93,14 +90,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (hit.collider != null)
         {
-            obj = hit.collider.transform.GetComponent<Throw>().PickUp(this.transform);
+            //obj = hit.collider.transform.GetComponent<Throw>().PickUp(this.transform);
         }
     }
 
     void Toss()
     {
-        obj.Toss(lookDirection);
-        obj = null;
+        //obj.Toss(lookDirection);
+        //obj = null;
     }
 
     void Push()

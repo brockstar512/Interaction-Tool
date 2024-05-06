@@ -14,6 +14,8 @@ public class PlayerStateMachineManager : MonoBehaviour
     public SlideItemState slideItemState = new SlideItemState();
     public ThrowItemState throwItemState = new ThrowItemState();
     public UseItemState useItemState = new UseItemState();
+    public EquipItemState equipItemState = new EquipItemState();
+
     //Dependencies
     public Vector2 Movement { get; private set; }
     public Vector2 LookDirection { get; private set; }
@@ -30,10 +32,13 @@ public class PlayerStateMachineManager : MonoBehaviour
         }
     }
 
+    public ItemManager itemManager { get; private set; }
+    //get item
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
+        itemManager = new ItemManager();
     }
 
     void Start()
