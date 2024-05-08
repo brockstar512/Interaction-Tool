@@ -83,8 +83,10 @@
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
-    <Compile Include="Assets/Scripts/Player/HUD/PlayerStatus.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
+    <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusPlacement.cs" />
+    <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
