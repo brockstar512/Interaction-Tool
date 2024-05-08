@@ -13,6 +13,8 @@ public class EquipItemState : PlayerBaseState
     {
         //this interactable item is suppose to determine the players inventory situation
         stateManager.item.Interact(stateManager);
+        stateManager.SwitchState(stateManager.defaultState);
+
     }
 
     public override void ExitState(PlayerStateMachineManager stateManager)

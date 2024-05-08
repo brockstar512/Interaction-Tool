@@ -18,6 +18,8 @@ public class Item : ScriptableObject, IItem
     public void Use()
     {
         Debug.Log("Attack:" + Damage);
+       
     }
+
 }
 

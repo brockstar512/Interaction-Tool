@@ -1,17 +1,17 @@
 ﻿<Properties StartupConfiguration="{A705336A-784B-D5BA-60FA-4646A96816A2}|">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="284150c9-69bd-48b8-926c-27453df86448" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="621ee348-cd92-4648-875d-b1c8a029bd75" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ItemManager/ItemManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Player/InputManager/InputManager.cs" Line="34" Column="1" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="32" Column="1" />
-      <File FileName="Assets/Scripts/Interactable/Throwable.cs" Line="22" Column="1" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" Line="12" Column="54" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="52" Column="18" />
+      <File FileName="Assets/Scripts/ItemManager/ItemManager.cs" Line="33" Column="86" />
+      <File FileName="Assets/Scripts/ItemManager/Items/Item.cs" Line="15" Column="1" />
+      <File FileName="Assets/Scripts/Interactable/Pickupable.cs" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -20,8 +20,15 @@
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
                 <Node name="Interactable" expanded="True" />
+                <Node name="ItemManager" expanded="True">
+                  <Node name="Items" expanded="True" />
+                </Node>
                 <Node name="Player" expanded="True">
+                  <Node name="HUD" expanded="True" />
                   <Node name="InputManager" expanded="True" />
+                  <Node name="PlayerMovementManager" expanded="True">
+                    <Node name="Old" expanded="True" />
+                  </Node>
                 </Node>
                 <Node name="StateMachine" expanded="True">
                   <Node name="Player State Machine" expanded="True">
