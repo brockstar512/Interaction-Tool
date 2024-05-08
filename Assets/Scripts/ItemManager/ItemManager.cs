@@ -32,45 +32,35 @@ public class ItemManager
     {
         //todo look at message next to logs and dentermin if the varibales are coorct
         currentItem = holder.Item;
-        var pick = holder.Item as Item;
-        Debug.Log("picking up its: " + pick.name);//this was item_1
-        //var namer = holder.Item as Item;
-        //Debug.Log($"looking at {namer}");
+        var pickup = holder.Item as Item;
+        Debug.Log("picking up: " + pickup);//this was item_1
+       //p
         if (inventory.Count >= inventoryLimit)
         {
-            //inventory.Clear();
-            //var namer = inventory[0] as Item;
-            //am i just keep moving item to the first index
-            //Debug.Log($"Picking item {holder.Item.name} I am holding {namer.name}");
-
-
-            var leavingItem = inventory[0] as Item;
-
-
-            holder.Swap(leavingItem);
-            //inventory.Insert(0, holder.Item);
-
-            //inventory.Clear();
-            inventory.Add(holder.Item);
+            //var putdown = inventory.RemoveAt(0);
+            var putdown = inventory[0] as Item;
+            inventory.RemoveAt(0);
+            Debug.Log("i am removing: " + putdown + " and the count is now "+ inventory.Count);
+            holder.Swap(putdown);
+            inventory.Add(pickup);
 
             var newitem = inventory[0] as Item;
 
-            Debug.Log("I just put in " + newitem.name);//item 2
+            Debug.Log("I just put in " + newitem);//item 2
 
             var namer = inventory[0] as Item;
-            Debug.Log("now its: "+namer.name);//item 2
+            Debug.Log("now its: "+namer);//item 2
 
-            Debug.Log("my current item is: " + currentItem.name);
+            //Debug.Log("my current item is: " + currentItem.name);
 
             return;
         }
-        //Debug.Log("PICKUP");
-        //inventory.Insert(0, holder.Item);
-        inventory.Add(holder.Item);
+
+        inventory.Add(pickup);
         holder.PickedUp();
 
-        var name = inventory[0] as Item;
-        Debug.Log("now its: " + name.name);
+        //var name = inventory[0] as Item;
+        //Debug.Log("now its: " + name.name);
 
     }
 
