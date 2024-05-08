@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HUDReader : MonoBehaviour
 {
+    //singleton?
     public PlayerStatus player;
     private List<PlayerStatus> currentPlayers;
     //this will subscribe to all events

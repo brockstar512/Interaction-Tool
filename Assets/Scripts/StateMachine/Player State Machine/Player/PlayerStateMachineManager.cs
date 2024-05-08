@@ -51,20 +51,7 @@ public class PlayerStateMachineManager : MonoBehaviour
 
     void Update()
     {
-        if(itemManager.inventory.Count >0)
-        {
-            //var namer = itemManager.inventory[0] as Item;
-            foreach(IItem thing in itemManager.inventory)
-            {
-                
-                //todo this is not changing ones swapped
-                var namer = thing as Item;
 
-                //Debug.Log(namer.name);
-            }
-
-            //Debug.Log(namer.GetInstanceID());
-        }
         currentState.UpdateState(this);
     }
 
