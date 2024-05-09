@@ -1,18 +1,12 @@
 ﻿<Properties StartupConfiguration="{A705336A-784B-D5BA-60FA-4646A96816A2}|">
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="284150c9-69bd-48b8-926c-27453df86448" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/HUD/HUDReader.cs">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f4da2a67-97b7-4030-bd09-4a926a70ef5d" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="38" Column="15" />
-      <File FileName="Assets/Scripts/ItemManager/ItemManager.cs" Line="52" Column="1" />
-      <File FileName="Assets/Scripts/ItemManager/Items/Item.cs" Line="15" Column="1" />
-      <File FileName="Assets/Scripts/Interactable/Pickupable.cs" Line="42" Column="1" />
-      <File FileName="Assets/Scripts/Player/HUD/HUDReader.cs" Line="7" Column="17" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
+      <File FileName="Assets/Scripts/Player/HUD/HUDReader.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Player/HUD/PlayerStatusPlacement.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -30,6 +24,7 @@
                   <Node name="PlayerMovementManager" expanded="True">
                     <Node name="Old" expanded="True" />
                   </Node>
+                  <Node name="PlayerStatus" expanded="True" />
                 </Node>
                 <Node name="StateMachine" expanded="True">
                   <Node name="Player State Machine" expanded="True">
@@ -44,4 +39,10 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
 </Properties>

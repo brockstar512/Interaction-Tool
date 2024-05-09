@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.TestRunner", "UnityEngine.TestRunner.csproj", "{F47C2C3F-B575-04E6-F528-9F9006B38A87}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.UI", "UnityEngine.UI.csproj", "{505959D0-3AA4-7252-9D64-0B231D6C5BBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityEngine.TestRunner", "UnityEngine.TestRunner.csproj", "{F47C2C3F-B575-04E6-F528-9F9006B38A87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.Flow", "Unity.VisualScripting.Flow.csproj", "{DA7FD243-6A68-3E3E-7C34-97E0237D4F08}"
 EndProject
@@ -111,14 +111,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{505959D0-3AA4-7252-9D64-0B231D6C5BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{505959D0-3AA4-7252-9D64-0B231D6C5BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{505959D0-3AA4-7252-9D64-0B231D6C5BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{505959D0-3AA4-7252-9D64-0B231D6C5BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F47C2C3F-B575-04E6-F528-9F9006B38A87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA7FD243-6A68-3E3E-7C34-97E0237D4F08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA7FD243-6A68-3E3E-7C34-97E0237D4F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA7FD243-6A68-3E3E-7C34-97E0237D4F08}.Release|Any CPU.ActiveCfg = Release|Any CPU

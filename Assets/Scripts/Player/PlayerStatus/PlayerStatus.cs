@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,12 @@ using UnityEngine;
 public class PlayerStatus
 {
     //health
-    //items
     //lives
     //image
 
+    //this needs the event
+    //the others need to pass in the functions they want to subscribe
+    Action<int> messageTarget;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,4 +23,24 @@ public class PlayerStatus
     {
         
     }
+    public void AssignHealthHUD()
+    {
+
+    }
+
+    public void UpdateHealth()
+    {
+
+    }
+
+    public void UpdateLives()
+    {
+
+    }
+    public void UpdateWeapon()
+    {
+
+    }
+
+
 }

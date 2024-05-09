@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,8 +35,11 @@ public class PlayerStateMachineManager : MonoBehaviour
 
     public ItemManager itemManager { get; private set; }
     public PlayerStatus playerStatus { get; private set; }
-    public HUDReader hud;
-    //get item
+
+    Action<int> UpdateHealth;
+    Action<int> SwitchWeaponHealth;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,6 +49,7 @@ public class PlayerStateMachineManager : MonoBehaviour
 
     void Start()
     {
+        HUDReader.Instance.InitializePlayerHUD(this.playerStatus);
         currentState = defaultState;
         currentState.EnterState(this);
     }
