@@ -2,22 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Linq;
 
 public class HUDReader : MonoBehaviour
 {
     
     public static HUDReader Instance { get; private set; }
+    private List<PlayerStatusHUD> currentPlayers;
+    [SerializeField] PlayerStatusHUD PlayerHUDPrefab;
+    const int MAX_PLAYERS = 2;
 
-    //public PlayerStatus player;
-    private List<PlayerStatus> currentPlayers;
     //this will subscribe to all events
     //damage/ health
-    [SerializeField] Transform PlayerHolder;
-    [SerializeField] Transform PlayerUIPrefab;
 
     //[SerializeField] Timer timer;
 
-    //seperate player UI logic for mulitple players?-> player status
 
     private void Awake()
     {
@@ -31,7 +30,7 @@ public class HUDReader : MonoBehaviour
         {
             Instance = this;
         }
-        
+        currentPlayers = new List<PlayerStatusHUD>();
     }
 
     void Start()
@@ -51,30 +50,24 @@ public class HUDReader : MonoBehaviour
     }
 
 
-    public PlayerStatusHUD InitializePlayerHUD(PlayerStatus player)
+    public PlayerStatusHUD InitializePlayerHUD(PlayerStateMachineManager player)
     {
-        //return the player
-        PlayerStatusHUD result = null;
-        for (int i = 0; i < this.transform.childCount; i ++)
-        {
-            if(!this.transform.GetChild(i).GetComponent<PlayerStatusHUD>().HasPlayer())
-            {
-                result = this.transform.GetChild(i).GetComponent<PlayerStatusHUD>();
-                //player.AssignHealthHUD(result);
-            }
+        if (currentPlayers.Count > MAX_PLAYERS)
+            return null;
 
-        }
-
+        PlayerStatusHUD result = Instantiate(PlayerHUDPrefab, this.transform);
+        result.BuildHUD(player);
+        currentPlayers.Add(result);
         return result;
     }
-    public PlayerStatusHUD DeitializePlayerHUD(PlayerStatus player)
-    {
-        //return the player
-        PlayerStatusHUD result = null;
-        
 
-        return result;
+    public void DestoryPlayerHUD(PlayerStatusHUD playersHUD)
+    {
+        PlayerStatusHUD leaving = playersHUD;
+        currentPlayers.Remove(leaving);
+        Destroy(leaving.gameObject);
     }
+
 
     void HealthUI(int HealthPoints)
     {

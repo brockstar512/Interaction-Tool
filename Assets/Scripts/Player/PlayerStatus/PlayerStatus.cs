@@ -5,30 +5,19 @@ using UnityEngine;
 
 public class PlayerStatus
 {
-    //health
-    //lives
-    //image
 
-    //this needs the event
-    //the others need to pass in the functions they want to subscribe
-    Action<int> messageTarget;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    int _health;
+    int Lives;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void AssignHealthHUD()
-    {
+    public event Action<int> HealthChange;
+    public event Action<int> LivesChange;
 
-    }
 
-    public void UpdateHealth()
+
+
+
+
+    public void UpdateHealth(int HP)
     {
 
     }
@@ -37,10 +26,5 @@ public class PlayerStatus
     {
 
     }
-    public void UpdateWeapon()
-    {
-
-    }
-
 
 }

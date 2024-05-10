@@ -36,22 +36,32 @@ public class PlayerStateMachineManager : MonoBehaviour
     public ItemManager itemManager { get; private set; }
     public PlayerStatus playerStatus { get; private set; }
 
-    Action<int> UpdateHealth;
-    Action<int> SwitchWeaponHealth;
+    public PlayerStatusHUD playerHUD { get; private set; }
 
+
+    //the item switch and getting hurt the ui should be controlled by the status scripts
+    //this script shoudl just pass on the HUD functions it needs to subscribe to
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         itemManager = new ItemManager();
+        playerStatus = new PlayerStatus();
     }
 
     void Start()
     {
-        HUDReader.Instance.InitializePlayerHUD(this.playerStatus);
+        playerHUD = HUDReader.Instance.InitializePlayerHUD(this);
         currentState = defaultState;
         currentState.EnterState(this);
+    }
+
+    void Subscribe()
+    {
+        //playerHUD = HUDReader.Instance.InitializePlayerHUD();
+        //SwitchWeaponHealth += playerHUD.UpdateWeapon;
+
     }
 
     void Update()

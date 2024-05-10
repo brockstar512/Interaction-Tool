@@ -1,13 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 
+//this should be in charge of invoking the item change event
 public class ItemManager 
 {
     private int _currentIndex = 0;
     private List<IItem> inventory;
     private int inventoryLimit;
+    public event Action<Sprite> ItemSwitch;
+
 
     //pass in hud and get the functions that update hud
     public ItemManager()
@@ -29,6 +33,7 @@ public class ItemManager
 
     public void PickUpItem(Pickupable holder)
     {
+        ItemSwitch?.Invoke(holder.Item.Sprite);
         var pickup = holder.Item;
 
         if (inventory.Count >= inventoryLimit)
