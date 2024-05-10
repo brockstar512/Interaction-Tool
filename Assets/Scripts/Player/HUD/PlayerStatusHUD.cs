@@ -24,7 +24,7 @@ public class PlayerStatusHUD : MonoBehaviour
     }
     private void UpdateHealth(int health)
     {
-        Lives.text = $"X{health}";
+        Health.fillAmount = health;
     }
 
     public void BuildHUD(PlayerStateMachineManager player)

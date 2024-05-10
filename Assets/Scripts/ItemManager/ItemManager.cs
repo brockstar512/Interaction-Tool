@@ -42,7 +42,9 @@ public class ItemManager
             var putdown = inventory[_currentIndex] as Item;
             inventory.RemoveAt(_currentIndex);
             holder.Swap(putdown);
-            inventory.Add(pickup);
+            inventory.Insert(_currentIndex, pickup);
+
+            //inventory.Add(pickup);
             return;
         }
 
