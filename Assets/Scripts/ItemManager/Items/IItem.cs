@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IItem
 {
+    public Sprite Sprite { get; }
     public void Use();
 }

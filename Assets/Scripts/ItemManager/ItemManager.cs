@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
+using UnityEngine.WSA;
 
 //this should be in charge of invoking the item change event
 public class ItemManager 
@@ -18,7 +19,7 @@ public class ItemManager
     {
        _currentIndex = 0;
        inventory = new List<IItem>();
-       inventoryLimit = 1;
+       inventoryLimit = 2;
     }
 
 
@@ -38,8 +39,8 @@ public class ItemManager
 
         if (inventory.Count >= inventoryLimit)
         {
-            var putdown = inventory[0] as Item;
-            inventory.RemoveAt(0);
+            var putdown = inventory[_currentIndex] as Item;
+            inventory.RemoveAt(_currentIndex);
             holder.Swap(putdown);
             inventory.Add(pickup);
             return;
@@ -51,8 +52,17 @@ public class ItemManager
 
     public void SwitchItem()
     {
-        Debug.Log("Switch Item");
-        _currentIndex++;
+        if(_currentIndex + 1 >= inventory.Count)
+        {
+            _currentIndex = 0;
+        }
+        else
+        {
+            _currentIndex++;
+        }
+
+        ItemSwitch?.Invoke(inventory[_currentIndex].Sprite);
+
     }
 
 }

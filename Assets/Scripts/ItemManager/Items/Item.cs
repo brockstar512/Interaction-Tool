@@ -1,18 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
 public class Item : ScriptableObject, IItem
 {
-    //icon
-    public Sprite Sprite;
-    //animation controller
-    //[SerializeField] Animation Animation;
-    //[SerializeField] Animator Animation;
+    [SerializeField] Sprite sprite;
+    public Sprite Sprite
+    {
+         get { return sprite; }
+       
+    }
+
 
     //attack points
-    float Damage = 10;
+    public float Damage = 10;
     
     //the pickabable holds this
     public void Use()
