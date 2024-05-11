@@ -87,7 +87,7 @@
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerHealthManager.cs" />
-    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationController.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/PlayerAnimationController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />

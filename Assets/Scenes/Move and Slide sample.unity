@@ -466,9 +466,11 @@ GameObject:
   - component: {fileID: 1062459475}
   - component: {fileID: 1062459473}
   - component: {fileID: 1062459476}
+  - component: {fileID: 1062459477}
   - component: {fileID: 1062459471}
   - component: {fileID: 1062459469}
   - component: {fileID: 1062459468}
+  - component: {fileID: 1062459478}
   m_Layer: 0
   m_Name: 'Adapting Player '
   m_TagString: Untagged
@@ -514,7 +516,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 4.125}
+    oldSize: {x: 1.5, y: 4.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -626,6 +628,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 294dd73d6fea14b088f2887114b859cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1062459477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062459467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64e2e3e50424d43179f02c22aeef445f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &1062459478
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062459467}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 386e4e32c5a8841ae8f1cd6ac2a15145, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &1341526456
 GameObject:
   m_ObjectHideFlags: 0

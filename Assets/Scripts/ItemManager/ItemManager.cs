@@ -29,7 +29,7 @@ public class ItemManager
         {
             return null;
         }
-        return inventory[0];
+        return inventory[_currentIndex];
     }
 
     public void PickUpItem(Pickupable holder)
