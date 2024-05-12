@@ -56,13 +56,6 @@ public class PlayerStateMachineManager : MonoBehaviour
         currentState.EnterState(this);
     }
 
-    void Subscribe()
-    {
-        //playerHUD = HUDReader.Instance.InitializePlayerHUD();
-        //SwitchWeaponHealth += playerHUD.UpdateWeapon;
-
-    }
-
     void Update()
     {
 

@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class Pickupable : InteractableBase
 {
-    //if the inventory is full, either don't pick it up... 
-    //otherwise move your current item down the list and add the new one to the front
-    //this handles inventenory logic
-    //
+
     [SerializeField] private Item item;
     public Item Item
     {

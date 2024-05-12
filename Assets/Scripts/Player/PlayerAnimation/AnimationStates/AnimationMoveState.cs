@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour
+public class AnimationMoveState : MonoBehaviour
 {
-    Animator anim;
-    const string WalkRight= "WalkRight";
+    const string WalkRight = "WalkRight";
     const string WalkUp = "WalkUp";
     const string WalkDown = "WalkDown";
     const string WalkLeft = "WalkLeft";
@@ -14,21 +13,14 @@ public class PlayerAnimationController : MonoBehaviour
     const string StandLeft = "StandLeft";
     const string StandUp = "StandUp";
     const string StandDown = "StandDown";
-    AnimationMoveState animationMoveState;
 
-
-    void Awake()
+    public void Play(PlayerStateMachineManager playerstate)
     {
-        anim = GetComponent<Animator>();
-    }
-/*
-    public void Walk(Vector2 movement, Vector2 lookDirection)
-    {
-        if(movement.x != 0 || movement.y != 0)
+        if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
             if (lookDirection == Vector2.down)
             {
-                anim.Play(WalkDown);
+                / anim.Play(WalkDown);
             }
             if (lookDirection == Vector2.up)
             {
@@ -65,13 +57,7 @@ public class PlayerAnimationController : MonoBehaviour
                 anim.Play(StandLeft);
             }
         }
-        
-    }
-*/
 
-    public void Hurt()
-    {
-        //anim.Play();
     }
 
 }
