@@ -1,15 +1,12 @@
 ﻿<Properties StartupConfiguration="{A705336A-784B-D5BA-60FA-4646A96816A2}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f4da2a67-97b7-4030-bd09-4a926a70ef5d" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/PlayerStatus/PlayerHealthManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="21" Column="29" />
-      <File FileName="Assets/Scripts/Player/HUD/HUDReader.cs" Line="57" Column="1" />
-      <File FileName="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" Line="12" Column="37" />
-      <File FileName="Assets/Scripts/ItemManager/ItemManager.cs" Line="46" Column="1" />
-      <File FileName="Assets/Scripts/ItemManager/Items/IItem.cs" Line="7" Column="33" />
-      <File FileName="Assets/Scripts/ItemManager/Items/Item.cs" Line="20" Column="30" />
-      <File FileName="Assets/Scripts/Player/InputManager/InputManager.cs" Line="51" Column="6" />
-      <File FileName="Assets/Scripts/Player/PlayerStatus/PlayerHealthManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="43" Column="17" />
+      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationMoveState.cs" Line="17" Column="60" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" Line="9" Column="53" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerBaseState.cs" Line="18" Column="7" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" Line="33" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -24,6 +21,9 @@
                 <Node name="Player" expanded="True">
                   <Node name="HUD" expanded="True" />
                   <Node name="InputManager" expanded="True" />
+                  <Node name="PlayerAnimation" expanded="True">
+                    <Node name="AnimationStates" expanded="True" />
+                  </Node>
                   <Node name="PlayerMovementManager" expanded="True">
                     <Node name="Old" expanded="True" />
                   </Node>
