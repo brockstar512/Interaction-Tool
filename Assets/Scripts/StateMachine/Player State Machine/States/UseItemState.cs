@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class UseItemState : PlayerBaseState
 {
-    //have a list of items
-    //have index of current item
-    //
-    //this has the item...
-    //this handles the animation
-    //this does not handle any damage or weapon logic
+
+
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Action(stateManager);
@@ -39,8 +35,11 @@ public class UseItemState : PlayerBaseState
     {
         Debug.Log("Using item");
         IItem item = stateManager.itemManager.GetItem();
-        item.Use();
-
+        if(item != null)
+        {
+            item.Use();
+        }
+        
         stateManager.SwitchState(stateManager.defaultState);
     }
 }

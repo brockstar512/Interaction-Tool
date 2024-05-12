@@ -5,26 +5,29 @@ using UnityEngine;
 
 public class PlayerStatus
 {
+    public PlayerStatus()
+    {
+        Health = 10;
+        Lives = 3;
+    }
 
-    int _health;
+    int Health;
     int Lives;
 
     public event Action<int> HealthChange;
     public event Action<int> LivesChange;
 
 
-
-
-
-
     public void UpdateHealth(int HP)
     {
-
+        Health += HP;
+        HealthChange.Invoke(HP);
     }
 
-    public void UpdateLives()
+    public void UpdateLives(int Life)
     {
-
+        Lives += Life;
+        LivesChange.Invoke(Life);
     }
 
 }

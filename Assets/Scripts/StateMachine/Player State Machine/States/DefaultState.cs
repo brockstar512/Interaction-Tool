@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class DefaultState : PlayerBaseState
 {
+    AnimationMoveState MoveAnimation;
+    //states hold the animation classes
+    //animation classes hold what animations they do
+
+    public DefaultState()
+    {
+        MoveAnimation = new AnimationMoveState();
+    }
+
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
@@ -23,6 +32,7 @@ public class DefaultState : PlayerBaseState
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
         base.Move(stateManager);
+        MoveAnimation.Play(stateManager);
     }
 
     public override void ExitState(PlayerStateMachineManager stateManager)

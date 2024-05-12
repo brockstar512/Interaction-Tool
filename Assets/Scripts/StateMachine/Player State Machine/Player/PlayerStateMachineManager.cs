@@ -37,7 +37,7 @@ public class PlayerStateMachineManager : MonoBehaviour
     public PlayerStatus playerStatus { get; private set; }
 
     public PlayerStatusHUD playerHUD { get; private set; }
-    public PlayerAnimationController animator { get; private set; }
+    public Animator animator { get; private set; }
 
 
     void Awake()
@@ -46,7 +46,7 @@ public class PlayerStateMachineManager : MonoBehaviour
         col = GetComponent<BoxCollider2D>();
         itemManager = new ItemManager();
         playerStatus = new PlayerStatus();
-        animator = GetComponent<PlayerAnimationController>();
+        animator = GetComponent<Animator>();
     }
 
     void Start()

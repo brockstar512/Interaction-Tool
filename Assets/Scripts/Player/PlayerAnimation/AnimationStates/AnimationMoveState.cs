@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationMoveState : MonoBehaviour
+public class AnimationMoveState 
 {
     const string WalkRight = "WalkRight";
     const string WalkUp = "WalkUp";
@@ -18,43 +18,43 @@ public class AnimationMoveState : MonoBehaviour
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
-            if (lookDirection == Vector2.down)
+            if (playerstate.LookDirection == Vector2.down)
             {
-                / anim.Play(WalkDown);
+                playerstate.animator.Play(WalkDown);
             }
-            if (lookDirection == Vector2.up)
+            if (playerstate.LookDirection == Vector2.up)
             {
-                anim.Play(WalkUp);
+                playerstate.animator.Play(WalkUp);
             }
-            if (lookDirection == Vector2.right)
+            if (playerstate.LookDirection == Vector2.right)
             {
-                anim.Play(WalkRight);
+                playerstate.animator.Play(WalkRight);
 
             }
-            if (lookDirection == Vector2.left)
+            if (playerstate.LookDirection == Vector2.left)
             {
-                anim.Play(WalkLeft);
+                playerstate.animator.Play(WalkLeft);
             }
 
         }
         else
         {
-            if (lookDirection == Vector2.down)
+            if (playerstate.LookDirection == Vector2.down)
             {
-                anim.Play(StandDown);
+                playerstate.animator.Play(StandDown);
             }
-            if (lookDirection == Vector2.up)
+            if (playerstate.LookDirection == Vector2.up)
             {
-                anim.Play(StandUp);
+                playerstate.animator.Play(StandUp);
             }
-            if (lookDirection == Vector2.right)
+            if (playerstate.LookDirection == Vector2.right)
             {
-                anim.Play(StandRight);
+                playerstate.animator.Play(StandRight);
 
             }
-            if (lookDirection == Vector2.left)
+            if (playerstate.LookDirection == Vector2.left)
             {
-                anim.Play(StandLeft);
+                playerstate.animator.Play(StandLeft);
             }
         }
 
