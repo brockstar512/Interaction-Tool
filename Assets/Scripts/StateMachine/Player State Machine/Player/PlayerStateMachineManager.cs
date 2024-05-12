@@ -37,10 +37,8 @@ public class PlayerStateMachineManager : MonoBehaviour
     public PlayerStatus playerStatus { get; private set; }
 
     public PlayerStatusHUD playerHUD { get; private set; }
+    public PlayerAnimationController animator { get; private set; }
 
-
-    //the item switch and getting hurt the ui should be controlled by the status scripts
-    //this script shoudl just pass on the HUD functions it needs to subscribe to
 
     void Awake()
     {
@@ -48,6 +46,7 @@ public class PlayerStateMachineManager : MonoBehaviour
         col = GetComponent<BoxCollider2D>();
         itemManager = new ItemManager();
         playerStatus = new PlayerStatus();
+        animator = GetComponent<PlayerAnimationController>();
     }
 
     void Start()

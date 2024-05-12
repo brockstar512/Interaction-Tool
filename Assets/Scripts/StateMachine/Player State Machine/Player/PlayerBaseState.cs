@@ -15,5 +15,6 @@ public abstract class PlayerBaseState
     public virtual void Move(PlayerStateMachineManager stateManager)
     {
         stateManager.rb.MovePosition(stateManager.rb.position + stateManager.Movement * Speed * Time.deltaTime);
+        stateManager.animator.Walk(stateManager.Movement, stateManager.LookDirection);
     } 
 }

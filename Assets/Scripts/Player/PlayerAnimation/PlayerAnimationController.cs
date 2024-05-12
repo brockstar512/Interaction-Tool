@@ -4,15 +4,76 @@ using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    Animator anim;
+    const string WalkRight= "WalkRight";
+    const string WalkUp = "WalkUp";
+    const string WalkDown = "WalkDown";
+    const string WalkLeft = "WalkLeft";
+
+    const string StandRight = "StandRight";
+    const string StandLeft = "StandLeft";
+    const string StandUp = "StandUp";
+    const string StandDown = "StandDown";
+
+
+
+
+
+
+    void Awake()
     {
+        anim = GetComponent<Animator>();
+    }
+
+    public void Walk(Vector2 movement, Vector2 lookDirection)
+    {
+        if(movement.x != 0 || movement.y != 0)
+        {
+            if (lookDirection == Vector2.down)
+            {
+                anim.Play(WalkDown);
+            }
+            if (lookDirection == Vector2.up)
+            {
+                anim.Play(WalkUp);
+            }
+            if (lookDirection == Vector2.right)
+            {
+                anim.Play(WalkRight);
+
+            }
+            if (lookDirection == Vector2.left)
+            {
+                anim.Play(WalkLeft);
+            }
+
+        }
+        else
+        {
+            if (lookDirection == Vector2.down)
+            {
+                anim.Play(StandDown);
+            }
+            if (lookDirection == Vector2.up)
+            {
+                anim.Play(StandUp);
+            }
+            if (lookDirection == Vector2.right)
+            {
+                anim.Play(StandRight);
+
+            }
+            if (lookDirection == Vector2.left)
+            {
+                anim.Play(StandLeft);
+            }
+        }
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Hurt()
     {
-        
+        //anim.Play();
     }
+
 }

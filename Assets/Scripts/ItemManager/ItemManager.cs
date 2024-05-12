@@ -29,6 +29,7 @@ public class ItemManager
         {
             return null;
         }
+        Debug.Log($"Item number: {_currentIndex}");
         return inventory[_currentIndex];
     }
 
@@ -44,11 +45,12 @@ public class ItemManager
             holder.Swap(putdown);
             inventory.Insert(_currentIndex, pickup);
 
-            //inventory.Add(pickup);
+           
             return;
         }
 
         inventory.Add(pickup);
+        _currentIndex = inventory.IndexOf(pickup);
         holder.PickedUp();
     }
 
