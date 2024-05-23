@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationPickUp : MonoBehaviour
+//AnimationPickUpAndThrow
+public class AnimationPickUp 
 {
-    // Start is called before the first frame update
-    void Start()
+    const string PickUpRight = "PickUpRight";
+    const string PickUpUp = "PickUpUp";
+    const string PickUpDown = "PickUpDown";
+    const string WalkLeft = "WalkLeft";
+
+    const string StandRight = "StandRight";
+    const string StandLeft = "StandLeft";
+    const string StandUp = "StandUp";
+    const string StandDown = "StandDown";
+
+    public void Play(PlayerStateMachineManager playerstate)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

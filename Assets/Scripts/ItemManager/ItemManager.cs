@@ -56,6 +56,8 @@ public class ItemManager
 
     public void SwitchItem()
     {
+        if (inventory.Count <= 0)
+            return;
         if(_currentIndex + 1 >= inventory.Count)
         {
             _currentIndex = 0;

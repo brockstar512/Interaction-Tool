@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 6e63ec744adb34213a18403a7d5223a3
+guid: bb16435cf04324bbe889e4d9f6e5fde1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3326971659086699885
-    second: 4 1_0
+      213: -2054492141720928228
+    second: kick 3_0
   - first:
-      213: -2653751099161169466
-    second: 4 1_1
+      213: -7636459951223047367
+    second: kick 3_1
   - first:
-      213: 2329872182419607211
-    second: 4 1_2
+      213: 3949357926198489328
+    second: kick 3_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -43,7 +43,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -106,64 +106,64 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 4 1_0
+      name: kick 3_0
       rect:
         serializedVersion: 2
-        x: 63
-        y: 51
-        width: 66
-        height: 142
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d6d97adc817cb2e20800000000000000
-      internalID: 3326971659086699885
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 4 1_1
-      rect:
-        serializedVersion: 2
-        x: 191
-        y: 59
-        width: 66
-        height: 134
-      alignment: 9
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6c1323c7f6bfb2bd0800000000000000
-      internalID: -2653751099161169466
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 4 1_2
-      rect:
-        serializedVersion: 2
-        x: 323
+        x: 55
         y: 63
-        width: 54
-        height: 130
-      alignment: 9
+        width: 82
+        height: 138
+      alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bae4f2dd76e555020800000000000000
-      internalID: 2329872182419607211
+      spriteID: c1084e2484afc73e0800000000000000
+      internalID: -2054492141720928228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kick 3_1
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 67
+        width: 82
+        height: 134
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93b7ad15228d50690800000000000000
+      internalID: -7636459951223047367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kick 3_2
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 63
+        width: 70
+        height: 138
+      alignment: 9
+      pivot: {x: 0.35, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f03fe9fb10fec630800000000000000
+      internalID: 3949357926198489328
       vertices: []
       indices: 
       edges: []
@@ -171,7 +171,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 897100b1bf52642cbb523947726085fd
+    spriteID: 0cfb5ed6ed72148528289a149d4e79f0
     internalID: 0
     vertices: []
     indices: 
@@ -179,9 +179,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      4 1_0: 3326971659086699885
-      4 1_1: -2653751099161169466
-      4 1_2: 2329872182419607211
+      kick 3_0: -2054492141720928228
+      kick 3_1: -7636459951223047367
+      kick 3_2: 3949357926198489328
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
