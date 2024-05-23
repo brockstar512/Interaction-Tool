@@ -1198,10 +1198,6 @@
       <Project>{AA7E7F20-2545-AEDD-F02A-D88BF222018D}</Project>
       <Name>Unity.Mathematics</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.VSCode.Editor.csproj">
-      <Project>{F5E661C1-7B27-4909-440A-0B3B381F4C9B}</Project>
-      <Name>Unity.VSCode.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.State.csproj">
       <Project>{15FF4046-8885-7786-94D1-DC238DB33F01}</Project>
       <Name>Unity.VisualScripting.State</Name>

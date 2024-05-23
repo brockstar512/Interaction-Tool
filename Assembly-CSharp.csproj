@@ -78,6 +78,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPlayerBaseState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationMoveState.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
