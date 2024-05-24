@@ -27,6 +27,7 @@ public class PlayerStateMachineManager : MonoBehaviour
     public InteractableBase item { get; private set; }
     public RaycastHit2D GetRaycast {
         get {
+            //draw this for debuging
             Physics2D.queriesStartInColliders = false;
             RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, LookDirection, .75f);
             return hit;
