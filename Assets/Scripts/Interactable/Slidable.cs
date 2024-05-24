@@ -8,8 +8,6 @@ public class Slidable : InteractableBase
 {
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
 
-
-
     public override void Interact(PlayerStateMachineManager player)
     {
         Move(player.LookDirection);

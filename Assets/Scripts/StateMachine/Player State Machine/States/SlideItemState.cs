@@ -14,7 +14,9 @@ public class SlideItemState : PlayerBaseState
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Debug.Log("Sliding item");
+        //animate
         stateManager.item.Interact(stateManager);
+        //if item is slidable and cannot move stub toe?
         stateManager.SwitchState(stateManager.defaultState);
     }
     
