@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pick Up Down
+  m_Name: PickUpUp
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,9 +21,9 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 3967286335939963911, guid: c5bce394fb469426cac9b9e9e9bf4048, type: 3}
+      value: {fileID: 6198124822088708714, guid: c5bce394fb469426cac9b9e9e9bf4048, type: 3}
     - time: 0.25
-      value: {fileID: -849305723694474526, guid: b5feec751471c46869c375f686b53bf3, type: 3}
+      value: {fileID: -5480142583080810996, guid: b5feec751471c46869c375f686b53bf3, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,8 +46,8 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 3967286335939963911, guid: c5bce394fb469426cac9b9e9e9bf4048, type: 3}
-    - {fileID: -849305723694474526, guid: b5feec751471c46869c375f686b53bf3, type: 3}
+    - {fileID: 6198124822088708714, guid: c5bce394fb469426cac9b9e9e9bf4048, type: 3}
+    - {fileID: -5480142583080810996, guid: b5feec751471c46869c375f686b53bf3, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
