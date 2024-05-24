@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class EquipItemState : PlayerBaseState
 {
+    AnimationEquipItem EquipItemAnimation;
+
+    public EquipItemState()
+    {
+        EquipItemAnimation = new AnimationEquipItem();
+    }
+
+
     public override void Action(PlayerStateMachineManager stateManager)
     {
         throw new System.NotImplementedException();

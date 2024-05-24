@@ -78,7 +78,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPlayerBaseState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationMoveState.cs" />
-    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPickUpAndThrow.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
@@ -89,10 +89,13 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Interactable/Throwable.cs" />
   </ItemGroup>

@@ -5,7 +5,12 @@ using UnityEngine;
 public class ThrowItemState : PlayerBaseState
 {
     public override float Speed { get { return 4; } }
+    AnimationPickUpAndThrow PickUpAndThrowAnimation;
 
+    public ThrowItemState()
+    {
+        PickUpAndThrowAnimation = new AnimationPickUpAndThrow();
+    }
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {

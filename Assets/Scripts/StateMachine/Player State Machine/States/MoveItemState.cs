@@ -6,6 +6,12 @@ public class MoveItemState : PlayerBaseState
 {
     public override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
+    AnimationPushAndPull animationPushAndPull;
+
+    public MoveItemState()
+    {
+        animationPushAndPull = new AnimationPushAndPull();
+    }
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class SlideItemState : PlayerBaseState
 {
+    AnimationKick KickAnimation;
+
+    public SlideItemState()
+    {
+        KickAnimation = new AnimationKick();
+    }
+
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Debug.Log("Sliding item");
