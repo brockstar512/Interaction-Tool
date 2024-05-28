@@ -17,6 +17,7 @@ public class SlideItemState : PlayerBaseState
         //animate
         stateManager.item.Interact(stateManager);
         //if item is slidable and cannot move stub toe?
+        //stateManager.SwitchState(stateManager.defaultState);
         Action(stateManager);
     }
     

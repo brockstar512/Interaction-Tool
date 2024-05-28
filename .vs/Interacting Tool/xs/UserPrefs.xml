@@ -5,12 +5,13 @@
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationKick.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="30" Column="37" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" Line="19" Column="56" />
-      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationKick.cs" Line="5" Column="14" />
-      <File FileName="Assets/Scripts/Interactable/Slidable.cs" Line="10" Column="1" />
+      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationKick.cs" Line="28" Column="38" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" Line="21" Column="30" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" Line="35" Column="27" />
+      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationMoveState.cs" Line="36" Column="50" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" Line="38" Column="32" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -19,6 +20,7 @@
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
                 <Node name="Interactable" expanded="True" />
+                <Node name="Interface" expanded="True" />
                 <Node name="ItemManager" expanded="True">
                   <Node name="Items" expanded="True" />
                 </Node>

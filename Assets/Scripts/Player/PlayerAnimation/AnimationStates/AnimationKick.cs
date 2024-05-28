@@ -22,10 +22,10 @@ public class AnimationKick
     {
         TimeSheet = new()
         {
-            { KickRightHash, 0.667f },
-            { KickUpHash,0.667f  },
-            { KickDownHash, 0.667f },
-            { KickLeftHash, 0.667f },
+            { KickRightHash, 0.333f },
+            { KickUpHash,0.333f  },
+            { KickDownHash, 0.333f },
+            { KickLeftHash, 0.333f },
             { HurtToeRightHash, 0.750f },
             { HurtToeLeftHash,0.750f},
             { HurtToeUpHash, 0.750f},
