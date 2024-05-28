@@ -17,7 +17,7 @@ public class SlideItemState : PlayerBaseState
         //animate
         stateManager.item.Interact(stateManager);
         //if item is slidable and cannot move stub toe?
-        stateManager.SwitchState(stateManager.defaultState);
+        Action(stateManager);
     }
     
     public override void UpdateState(PlayerStateMachineManager stateManager)
@@ -40,9 +40,9 @@ public class SlideItemState : PlayerBaseState
 
     }
 
-    public override void Action(PlayerStateMachineManager stateManager)
+    public override async void Action(PlayerStateMachineManager stateManager)
     {
-
-
+        await KickAnimation.Play(stateManager);
+        stateManager.SwitchState(stateManager.defaultState);
     }
 }
