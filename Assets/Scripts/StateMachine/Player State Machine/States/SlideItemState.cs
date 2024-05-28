@@ -6,7 +6,7 @@ public class SlideItemState : PlayerBaseState
 {
     AnimationKick KickAnimation;
     AnimationHurtToe HurtToeAnimation;
-
+    
 
     public SlideItemState()
     {

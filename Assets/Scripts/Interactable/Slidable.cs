@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Threading.Tasks;
+
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
+    const int animationDelay = 250;
 
     //true or false if you are able to interact
     public override bool Interact(PlayerStateMachineManager player)
     {
-       return Move(player.LookDirection);
+       return CanMove(player.LookDirection);
     }
 
-    bool Move(Vector2 direction)
+    bool CanMove(Vector2 direction)
     {
         //Vector2 direction = actor
         Physics2D.queriesStartInColliders = false;
@@ -30,34 +34,41 @@ public class Slidable : InteractableBase
             {
                 return false;
             }
-            Vector2 width = new Vector2(hit.collider.GetComponent<SpriteRenderer>().bounds.size.x / 2, hit.collider.GetComponent<SpriteRenderer>().bounds.size.y / 2);
-            Vector2 sideOfDestination = direction * -1;
-            width *= sideOfDestination;
-            Vector3 currentLocation = this.transform.position;
-            Vector2 destination = Vector2.zero;
-            float distance = 0;
 
-            if (direction == Vector2.down || direction == Vector2.up)
-            {
-                float distanceMargin = hit.collider.transform.position.y;
-                float MyWidthWithSidePos = (GetWidth.y / 2) * (direction.y * -1);
-                destination = new Vector2(currentLocation.x, distanceMargin + width.y + MyWidthWithSidePos);
-                distance = Mathf.Abs(transform.position.y - hit.collider.transform.position.y);
-            }
-            if (direction == Vector2.right || direction == Vector2.left)
-            {
-                float distanceMargin = hit.collider.transform.position.x;
-                float MyWidthWithSidePos = (GetWidth.x / 2) * (direction.x * -1);
-                destination = new Vector2(distanceMargin + width.x + MyWidthWithSidePos, currentLocation.y);
-                distance = Mathf.Abs(transform.position.x - hit.collider.transform.position.x);
+            SlideItem(direction, hit);
 
-            }
-
-            float time = MeasureTime(distance);
-            transform.DOMove(destination, time);
             return true;
         }
         return false;
+    }
+
+    async void SlideItem(Vector2 direction, RaycastHit2D hit)
+    {
+        Vector2 width = new Vector2(hit.collider.GetComponent<SpriteRenderer>().bounds.size.x / 2, hit.collider.GetComponent<SpriteRenderer>().bounds.size.y / 2);
+        Vector2 sideOfDestination = direction * -1;
+        width *= sideOfDestination;
+        Vector3 currentLocation = this.transform.position;
+        Vector2 destination = Vector2.zero;
+        float distance = 0;
+
+        if (direction == Vector2.down || direction == Vector2.up)
+        {
+            float distanceMargin = hit.collider.transform.position.y;
+            float MyWidthWithSidePos = (GetWidth.y / 2) * (direction.y * -1);
+            destination = new Vector2(currentLocation.x, distanceMargin + width.y + MyWidthWithSidePos);
+            distance = Mathf.Abs(transform.position.y - hit.collider.transform.position.y);
+        }
+        if (direction == Vector2.right || direction == Vector2.left)
+        {
+            float distanceMargin = hit.collider.transform.position.x;
+            float MyWidthWithSidePos = (GetWidth.x / 2) * (direction.x * -1);
+            destination = new Vector2(distanceMargin + width.x + MyWidthWithSidePos, currentLocation.y);
+            distance = Mathf.Abs(transform.position.x - hit.collider.transform.position.x);
+
+        }
+        float time = MeasureTime(distance);
+        await Task.Delay(animationDelay);
+        transform.DOMove(destination, time);
     }
 
     float MeasureTime(float distance)
