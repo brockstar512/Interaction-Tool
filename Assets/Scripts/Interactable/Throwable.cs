@@ -20,9 +20,11 @@ public class Throwable : InteractableBase
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public override void Interact(PlayerStateMachineManager player)
+    public override bool Interact(PlayerStateMachineManager player)
     {
         PickUp(player.transform);
+        //if it's too heavy or there is a status on it I can add more complex logic of it I can or can't pick it up
+        return true;
     }
 
     private void FixedUpdate()

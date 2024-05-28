@@ -9,12 +9,12 @@ public class Slidable : InteractableBase
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
 
     //true or false if you are able to interact
-    public override void Interact(PlayerStateMachineManager player)
+    public override bool Interact(PlayerStateMachineManager player)
     {
-        Move(player.LookDirection);
+       return Move(player.LookDirection);
     }
 
-    void Move(Vector2 direction)
+    bool Move(Vector2 direction)
     {
         //Vector2 direction = actor
         Physics2D.queriesStartInColliders = false;
@@ -24,11 +24,11 @@ public class Slidable : InteractableBase
             Debug.Log(Mathf.Abs(transform.position.x - hit.collider.transform.position.x));
             if (Mathf.Abs(transform.position.x - hit.collider.transform.position.x) <= GetWidth.x && Mathf.Abs(direction.x) == 1)
             {
-                return;
+                return false;
             }
             if (Mathf.Abs(transform.position.y - hit.collider.transform.position.y) <= GetWidth.y && Mathf.Abs(direction.y) == 1)
             {
-                return;
+                return false;
             }
             Vector2 width = new Vector2(hit.collider.GetComponent<SpriteRenderer>().bounds.size.x / 2, hit.collider.GetComponent<SpriteRenderer>().bounds.size.y / 2);
             Vector2 sideOfDestination = direction * -1;
@@ -55,8 +55,9 @@ public class Slidable : InteractableBase
 
             float time = MeasureTime(distance);
             transform.DOMove(destination, time);
+            return true;
         }
-
+        return false;
     }
 
     float MeasureTime(float distance)

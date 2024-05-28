@@ -19,9 +19,11 @@ public class Pickupable : InteractableBase
         sr.sprite = Item.Sprite;
     }
 
-    public override void Interact(PlayerStateMachineManager player)
+    public override bool Interact(PlayerStateMachineManager player)
     {
         player.itemManager.PickUpItem(this);
+        //if I need to query something in the inventory I can or a needed item in order to add
+        return true;
     }
 
     public override void Release(PlayerStateMachineManager player)

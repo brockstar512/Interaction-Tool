@@ -12,10 +12,11 @@ public class Moveable : InteractableBase
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public override void Interact(PlayerStateMachineManager player)
+    public override bool Interact(PlayerStateMachineManager player)
     {
         this.transform.SetParent(player.transform);
         rb.isKinematic = false;
+        return true;
     }
 
 

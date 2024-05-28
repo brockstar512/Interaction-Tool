@@ -5,19 +5,18 @@ using UnityEngine;
 public class SlideItemState : PlayerBaseState
 {
     AnimationKick KickAnimation;
+    AnimationHurtToe HurtToeAnimation;
+
 
     public SlideItemState()
     {
         KickAnimation = new AnimationKick();
+        HurtToeAnimation = new AnimationHurtToe();
     }
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Debug.Log("Sliding item");
-        //animate
-        stateManager.item.Interact(stateManager);
-        //if item is slidable and cannot move stub toe?
-        //stateManager.SwitchState(stateManager.defaultState);
         Action(stateManager);
     }
     
@@ -43,7 +42,16 @@ public class SlideItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        await KickAnimation.Play(stateManager);
+        if (stateManager.item.Interact(stateManager))
+        {
+            await KickAnimation.Play(stateManager);
+        }
+        else
+        {
+            await KickAnimation.Play(stateManager);
+            await HurtToeAnimation.Play(stateManager);
+        }
+        //await KickAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
     }
 }

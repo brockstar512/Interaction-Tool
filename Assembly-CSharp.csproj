@@ -71,6 +71,7 @@
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/ItemManager/ItemManager.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
