@@ -61,8 +61,8 @@ public class PlayerStateMachineManager : MonoBehaviour
     {
 
         currentState.UpdateState(this);
-        Debug.DrawRay(transform.position, LookDirection, Color.green);
-
+        //Debug.DrawRay(transform.position+  Vector3.up, LookDirection, Color.green);
+        //Debug.DrawRay(transform.position, LookDirection, Color.green);
     }
 
     void FixedUpdate()
