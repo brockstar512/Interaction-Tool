@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: 63d3a4fc20bb24c66b2b3ca9a587c475
+guid: 40fb36e0bb06843d3bc006acc1f0407e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1687375030953064279
-    second: 2 throw_0
-  - first:
-      213: 5986096775486805596
-    second: 2 throw_1
-  - first:
-      213: 1780752942104828181
-    second: 2 throw_2
+      213: 5254051799904843581
+    second: Plant Pot1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -43,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -57,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -106,64 +100,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 2 throw_0
+      name: Plant Pot1_0
       rect:
         serializedVersion: 2
-        x: 51
-        y: 67
-        width: 90
-        height: 122
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 75732da86a2ca6710800000000000000
-      internalID: 1687375030953064279
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 2 throw_1
-      rect:
-        serializedVersion: 2
-        x: 187
-        y: 71
-        width: 74
-        height: 118
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c5690063d43e21350800000000000000
-      internalID: 5986096775486805596
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 2 throw_2
-      rect:
-        serializedVersion: 2
-        x: 331
-        y: 71
-        width: 66
-        height: 118
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 519d3e2bd5186b810800000000000000
-      internalID: 1780752942104828181
+      spriteID: d3774dc56442ae840800000000000000
+      internalID: 5254051799904843581
       vertices: []
       indices: 
       edges: []
@@ -171,7 +123,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 6d7830320403f4dd5a7f34b0c81877ee
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -179,9 +131,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      2 throw_0: 1687375030953064279
-      2 throw_1: 5986096775486805596
-      2 throw_2: 1780752942104828181
+      Plant Pot1_0: 5254051799904843581
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
