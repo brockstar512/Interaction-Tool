@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationMoveState 
+public class AnimationMove : AnimationState
 {
     const string WalkRight = "WalkRight";
     const string WalkUp = "WalkUp";
@@ -14,10 +14,11 @@ public class AnimationMoveState
     const string StandUp = "StandUp";
     const string StandDown = "StandDown";
 
-    public void Play(PlayerStateMachineManager playerstate)
+    public override void Play(PlayerStateMachineManager playerstate)
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
+            Debug.Log("walking");
             if (playerstate.LookDirection == Vector2.down)
             {
                 playerstate.animator.Play(WalkDown);

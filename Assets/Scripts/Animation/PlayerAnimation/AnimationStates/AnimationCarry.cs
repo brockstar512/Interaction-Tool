@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class AnimationCarry
+public class AnimationCarry : AnimationStateAsync
 {
     readonly int HoldStillRight = Animator.StringToHash("HoldStillRight");
     readonly int HoldStillLeft = Animator.StringToHash("HoldStillLeft");
     readonly int HoldStillUp = Animator.StringToHash("HoldStillUp");
     readonly int HoldStillDown = Animator.StringToHash("HoldStillDown");
-
-
     readonly int HoldWalkRight = Animator.StringToHash("HoldWalkRight");
     readonly int HoldWalkLeft = Animator.StringToHash("HoldWalkLeft");
     readonly int HoldWalkUp = Animator.StringToHash("HoldWalkUp");
@@ -24,7 +23,6 @@ public class AnimationCarry
             { HoldStillLeft,1f},
             { HoldStillUp, 1f},
             { HoldStillDown,1f },
-            //walking
             { HoldWalkRight,.333f},
             { HoldWalkLeft,.333f},
             { HoldWalkUp, .333f},
@@ -32,7 +30,7 @@ public class AnimationCarry
         };
     }
 
-    public void Play(PlayerStateMachineManager playerstate)
+    public override async Task Play(PlayerStateMachineManager playerstate)
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
@@ -75,7 +73,8 @@ public class AnimationCarry
                 playerstate.animator.Play(HoldStillLeft);
             }
         }
-
+         await Task.CompletedTask;
     }
 
+    
 }

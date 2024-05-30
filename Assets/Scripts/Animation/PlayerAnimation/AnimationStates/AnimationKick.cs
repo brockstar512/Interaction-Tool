@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AnimationKick 
+public class AnimationKick : AnimationStateAsync
 {
 
     readonly int KickRightHash = Animator.StringToHash("KickRight");
@@ -35,7 +35,7 @@ public class AnimationKick
     }
 
 
-    public async Task Play(PlayerStateMachineManager playerstate)
+    public override async Task Play(PlayerStateMachineManager playerstate)
     {
         
         if (playerstate.LookDirection == Vector2.down)

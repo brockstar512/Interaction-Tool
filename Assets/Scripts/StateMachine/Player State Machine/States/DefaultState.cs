@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class DefaultState : PlayerBaseState
 {
-    AnimationMoveState MoveAnimation;
+    AnimationMove MoveAnimation;
     //states hold the animation classes
     //animation classes hold what animations they do
 
     public DefaultState()
     {
-        MoveAnimation = new AnimationMoveState();
+        MoveAnimation = new AnimationMove();
     }
 
 

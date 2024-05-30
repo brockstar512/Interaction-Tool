@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationPushAndPull 
+public class AnimationPushAndPull : AnimationState
 {
     const string PushDown = "PushDown";
     const string PushUp = "PushUp";
@@ -14,11 +14,8 @@ public class AnimationPushAndPull
     const string PushHoldUp = "PushHoldUp";
     const string PushHoldDown = "PushHoldDown";
 
-
-
-
-
-
-
-
+    public override void Play(PlayerStateMachineManager playerstate)
+    {
+        throw new System.NotImplementedException();
+    }
 }
