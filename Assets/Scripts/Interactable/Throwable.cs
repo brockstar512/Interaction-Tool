@@ -46,7 +46,7 @@ public class Throwable : InteractableBase
     {
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         this.transform.SetParent(parent);
-        this.transform.localPosition = new Vector3(0, 0 + 1.2f, 0);
+        this.transform.localPosition = new Vector3(0, 0 + 2.2f, 0);
 
         return this;
     }
@@ -64,7 +64,9 @@ public class Throwable : InteractableBase
 
     private void InAir()
     {
-        float yPos = curve.Evaluate(Vector2.Distance(startingPoint, transform.position));
+        Vector3 finishPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        //x is height
+        float yPos = curve.Evaluate(Vector2.Distance(startingPoint, finishPos));
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + throwDirection * SPEED * Time.deltaTime);
     }
