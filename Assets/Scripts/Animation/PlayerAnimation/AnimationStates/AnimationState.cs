@@ -5,5 +5,5 @@ using System.Threading.Tasks;
 
 public abstract class AnimationState
 {
-    public abstract void Play(PlayerStateMachineManager playerstate);
+    //public abstract void Play(PlayerStateMachineManager playerstate);
 }

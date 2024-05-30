@@ -9,7 +9,7 @@ public class ThrowItemState : PlayerBaseState
     AnimationPickUp PickUpAnimation;
     AnimationThrow ThrowAnimation;
     AnimationCarry CarryAnimation;
-    AnimationStateAsync CurrentAnimation;
+    AnimationState CurrentAnimation;
 
     public ThrowItemState()
     {

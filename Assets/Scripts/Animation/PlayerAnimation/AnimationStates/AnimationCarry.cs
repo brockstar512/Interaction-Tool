@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AnimationCarry : AnimationStateAsync
+public class AnimationCarry : AnimationState
 {
     readonly int HoldStillRight = Animator.StringToHash("HoldStillRight");
     readonly int HoldStillLeft = Animator.StringToHash("HoldStillLeft");
@@ -30,7 +30,7 @@ public class AnimationCarry : AnimationStateAsync
         };
     }
 
-    public override async Task Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager playerstate)
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
@@ -73,7 +73,7 @@ public class AnimationCarry : AnimationStateAsync
                 playerstate.animator.Play(HoldStillLeft);
             }
         }
-         await Task.CompletedTask;
+         //await Task.CompletedTask;
     }
 
     

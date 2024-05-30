@@ -14,7 +14,7 @@ public class AnimationMove : AnimationState
     const string StandUp = "StandUp";
     const string StandDown = "StandDown";
 
-    public override void Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager playerstate)
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {

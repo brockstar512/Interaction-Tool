@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class AnimationPickUp : AnimationStateAsync
+public class AnimationPickUp : AnimationState
 {
     readonly int PickUpRight = Animator.StringToHash("PickUpRight");
     readonly int PickUpUp = Animator.StringToHash("PickUpUp");
@@ -26,7 +26,7 @@ public class AnimationPickUp : AnimationStateAsync
     }
 
 
-    public override async Task Play(PlayerStateMachineManager playerstate)
+    public async Task Play(PlayerStateMachineManager playerstate)
     {
         if (playerstate.LookDirection == Vector2.down)
         {

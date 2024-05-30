@@ -14,7 +14,7 @@ public class AnimationPushAndPull : AnimationState
     const string PushHoldUp = "PushHoldUp";
     const string PushHoldDown = "PushHoldDown";
 
-    public override void Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager playerstate)
     {
         throw new System.NotImplementedException();
     }
