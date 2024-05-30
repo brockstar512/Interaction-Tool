@@ -23,7 +23,7 @@ public class ThrowItemState : PlayerBaseState
     {
         CurrentAnimation = PickUpAnimation;
         await PickUpAnimation.Play(stateManager);
-        stateManager.item.Interact(stateManager);
+        //stateManager.item.Interact(stateManager);
         CurrentAnimation = CarryAnimation;
         Debug.Log("enter finished");
 

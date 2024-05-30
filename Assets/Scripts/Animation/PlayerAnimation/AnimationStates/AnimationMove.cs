@@ -18,7 +18,7 @@ public class AnimationMove : AnimationState
     {
         if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
         {
-            Debug.Log("walking");
+            //Debug.Log("walking");
             if (playerstate.LookDirection == Vector2.down)
             {
                 playerstate.animator.Play(WalkDown);

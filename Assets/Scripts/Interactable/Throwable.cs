@@ -46,7 +46,7 @@ public class Throwable : InteractableBase
     {
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         this.transform.SetParent(parent);
-        this.transform.localPosition = new Vector3(0, 0, 0);
+        this.transform.localPosition = new Vector3(0, 0 + 1.2f, 0);
 
         return this;
     }
