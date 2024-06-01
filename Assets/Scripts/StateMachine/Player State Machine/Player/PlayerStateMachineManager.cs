@@ -29,7 +29,7 @@ public class PlayerStateMachineManager : MonoBehaviour
         get {
             //draw this for debuging
             Physics2D.queriesStartInColliders = false;
-            RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, LookDirection, .75f);
+            RaycastHit2D hit = Physics2D.Raycast(col.bounds.center, LookDirection, .75f);
             return hit;
         }
     }
@@ -62,7 +62,8 @@ public class PlayerStateMachineManager : MonoBehaviour
 
         currentState.UpdateState(this);
         //Debug.DrawRay(transform.position+  Vector3.up, LookDirection, Color.green);
-        //Debug.DrawRay(transform.position, LookDirection, Color.green);
+        
+        Debug.DrawRay(col.bounds.center, LookDirection, Color.green);
     }
 
     void FixedUpdate()
