@@ -78,6 +78,7 @@
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
+    <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />

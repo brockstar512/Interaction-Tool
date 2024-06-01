@@ -15,6 +15,7 @@ public class MoveItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
+        animationPushAndPull.EnterPushAnimation(stateManager);
         LimitedMovementBounds = stateManager.LookDirection;
         stateManager.item.Interact(stateManager);
 
@@ -38,6 +39,7 @@ public class MoveItemState : PlayerBaseState
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
         Move(stateManager);
+        
     }
 
     public override void Move(PlayerStateMachineManager stateManager)
@@ -55,11 +57,12 @@ public class MoveItemState : PlayerBaseState
 
         stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
         stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
-
+        animationPushAndPull.Play(stateManager);
     }
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
+        animationPushAndPull.LeavePushAnimation();
         stateManager.item.Release(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
     }

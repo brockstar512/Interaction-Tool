@@ -5,10 +5,12 @@ using UnityEngine;
 public class EquipItemState : PlayerBaseState
 {
     AnimationEquipItem EquipItemAnimation;
+    AnimationPickUp PickUpAnimation;
 
     public EquipItemState()
     {
         EquipItemAnimation = new AnimationEquipItem();
+        PickUpAnimation = new AnimationPickUp();
     }
 
 
@@ -17,10 +19,11 @@ public class EquipItemState : PlayerBaseState
         throw new System.NotImplementedException();
     }
 
-    public override void EnterState(PlayerStateMachineManager stateManager)
+    public async override void EnterState(PlayerStateMachineManager stateManager)
     {
         //this interactable item is suppose to determine the players inventory situation
         stateManager.item.Interact(stateManager);
+        await EquipItemAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
 
     }
