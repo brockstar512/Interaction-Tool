@@ -298,8 +298,8 @@
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/UI/EditorDispatcher.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/IncomingChanges/Gluon/ChangeTreeViewItem.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/PendingChanges/PendingChangesSelection.cs" />
-    <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/WebApi/CredentialsResponse.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/History/HistoryListView.cs" />
+    <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/WebApi/CredentialsResponse.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Tool/LaunchInstaller.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/Locks/DrawLocksListViewItem.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/IncomingChanges/Developer/DirectoryConflicts/ConflictResolutionState.cs" />
@@ -344,8 +344,8 @@
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/UI/ShowWindow.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/Views/Welcome/DownloadAndInstallOperation.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/WebApi/TokenExchangeResponse.cs" />
-    <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/WebApi/CurrentUserAdminCheckResponse.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/UI/Tree/TreeHeaderSettings.cs" />
+    <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/WebApi/CurrentUserAdminCheckResponse.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/UI/EditorWindowFocus.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/AssetsUtils/Processor/WorkspaceOperationsMonitor.cs" />
     <Compile Include="Library/PackageCache/com.unity.collab-proxy@2.3.1/Editor/PlasticSCM/UI/MeasureMaxWidth.cs" />

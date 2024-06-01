@@ -1873,6 +1873,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slidable
       objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.x
+      value: 0.97474766
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.y
+      value: 1.0605006
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.012626186
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.006050229
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.05
+      objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932471, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.5
