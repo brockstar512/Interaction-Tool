@@ -40,6 +40,9 @@ public class PlayerStateMachineManager : MonoBehaviour
     public PlayerStatusHUD playerHUD { get; private set; }
     public Animator animator { get; private set; }
 
+    //child objects
+    public SpriteRenderer aboveHeadSpriteHolder;
+
 
     void Awake()
     {

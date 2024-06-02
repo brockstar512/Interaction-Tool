@@ -10,6 +10,7 @@ public class ThrowItemState : PlayerBaseState
     AnimationThrow ThrowAnimation;
     AnimationCarry CarryAnimation;
     AnimationState CurrentAnimation;
+    Transform holderPlacement;
 
     public ThrowItemState()
     {

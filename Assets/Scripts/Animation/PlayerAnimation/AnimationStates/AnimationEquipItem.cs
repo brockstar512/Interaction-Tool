@@ -28,11 +28,12 @@ public class AnimationEquipItem : AnimationState
 
     public async Task Play(PlayerStateMachineManager playerstate)
     {
-            await PickUpAnimation.Play(playerstate);
-
-            playerstate.animator.Play(HoldStillDown);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[HoldStillDown]);
-            await Task.Delay(250);
+        await PickUpAnimation.Play(playerstate);
+        playerstate.aboveHeadSpriteHolder.sprite = playerstate.item.GetSprite;
+        playerstate.aboveHeadSpriteHolder.gameObject.SetActive(true);
+        playerstate.animator.Play(HoldStillDown);
+        await Awaitable.WaitForSecondsAsync(TimeSheet[HoldStillDown]);
+        await Task.Delay(250);
 
     }
 }

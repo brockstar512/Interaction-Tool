@@ -12,6 +12,7 @@ public class Pickupable : InteractableBase
         set { item = value; }
     }
     SpriteRenderer sr;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();

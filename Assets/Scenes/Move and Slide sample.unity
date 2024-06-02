@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 363933267}
   - component: {fileID: 363933268}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Above Head Item Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -290,7 +290,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 5254051799904843581, guid: 40fb36e0bb06843d3bc006acc1f0407e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1060,6 +1060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcd8f5acc9aa42be988f77d2641e4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aboveHeadItemHolder: {fileID: 0}
 --- !u!114 &1062459475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,7 +1107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b61bc876865f44e79a9ecfc3144572a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBoxCollider: {fileID: 1062459469}
 --- !u!1 &1341526456
 GameObject:
   m_ObjectHideFlags: 0

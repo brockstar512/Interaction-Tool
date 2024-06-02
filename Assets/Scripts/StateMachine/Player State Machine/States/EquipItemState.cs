@@ -16,7 +16,7 @@ public class EquipItemState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public async override void EnterState(PlayerStateMachineManager stateManager)
