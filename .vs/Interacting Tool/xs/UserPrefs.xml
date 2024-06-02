@@ -7,16 +7,10 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" Line="9" Column="5" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" Line="35" Column="27" />
-      <File FileName="Assets/Scripts/Interactable/InteractableBase.cs" Line="10" Column="34" />
-      <File FileName="Assets/Scripts/Interactable/Moveable.cs" Line="19" Column="21" />
-      <File FileName="Assets/Scripts/Interactable/Pickupable.cs" Line="25" Column="95" />
-      <File FileName="Assets/Scripts/Interactable/Throwable.cs" Line="26" Column="116" />
-      <File FileName="Assets/Scripts/Interactable/Slidable.cs" Line="13" Column="36" />
-      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" Line="11" Column="58" />
-      <File FileName="Assets/Scripts/Player/PlayerAnimation/AnimationStates/AnimationKick.cs" Line="4" Column="1" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="65" Column="73" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="62" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" Line="5" Column="45" />
+      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" Line="202" Column="14" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" Line="7" Column="18" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -24,6 +18,11 @@
           <Node name="Interacting Tool" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
+                <Node name="Animation" expanded="True">
+                  <Node name="PlayerAnimation" expanded="True">
+                    <Node name="AnimationStates" expanded="True" />
+                  </Node>
+                </Node>
                 <Node name="Interactable" expanded="True" />
                 <Node name="Interface" expanded="True" />
                 <Node name="ItemManager" expanded="True">
@@ -32,9 +31,6 @@
                 <Node name="Player" expanded="True">
                   <Node name="HUD" expanded="True" />
                   <Node name="InputManager" expanded="True" />
-                  <Node name="PlayerAnimation" expanded="True">
-                    <Node name="AnimationStates" expanded="True" />
-                  </Node>
                   <Node name="PlayerMovementManager" expanded="True">
                     <Node name="Old" expanded="True" />
                   </Node>
