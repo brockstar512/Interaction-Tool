@@ -8,11 +8,11 @@ public class Throwable : InteractableBase
 {
     Vector3 startingPoint;
     Vector3 playersFeet;
-    float distanceFromGround = 2.32f + .25f;
+    float distanceFromGround;
     float DISTANCE_LIMIT = 7.5f;//anymore will go in a straight line when it reaches point
     bool isThrown = false;
     Vector2 throwDirection;
-    const float SPEED = 10f;
+    const float SPEED = 12f;
     [SerializeField] Transform throwable;
     [SerializeField] Transform shadow;
     [SerializeField] AnimationCurve curve;
@@ -48,7 +48,7 @@ public class Throwable : InteractableBase
     {
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         this.transform.SetParent(parent);
-        this.transform.localPosition = new Vector3(0, 0 , 0);//+ 2.32f
+        this.transform.localPosition = new Vector3(0, 0, 0);//+ 2.32f
         throwable.localPosition = new Vector3(0, 2.32f, 0); 
 
         return this;
@@ -77,14 +77,12 @@ public class Throwable : InteractableBase
 
     public override void Release(PlayerStateMachineManager player)
     {
-        //playersFeet = player.transform.position;
-        //Debug.Log($"Here is the bounts {player.col.bounds.size.y}");
-        // Debug.Log($"Here is the bounts {player.spr}");
-        //keyframes[0].value = 0;
-        //keyframes[1].value = 1;
-        //curve.keys[curve.keys.Length - 1].value = curve[curve.keys.Length - 1].value - 2.32f;
-        //Debug.Log($"Here is the bounts {curve.keys[curve.keys.Length - 1].value}");
-        Debug.Log($"Here is the bounts {player.transform.GetComponent<SpriteRenderer>().bounds.size.y}");//this - is what I need to follow
+        distanceFromGround = player.transform.GetComponent<SpriteRenderer>().bounds.size.y;
+        Keyframe[] keyframes = curve.keys;
+        keyframes[0].value = distanceFromGround;
+        keyframes[1].value = 0;
+
+        curve.keys = keyframes;
 
         Toss(player.LookDirection);
     }

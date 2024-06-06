@@ -5,11 +5,12 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="0bbf2e60-2958-4a14-b3ce-075dbb767aa0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Interactable/Throwable.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="43" Column="1" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" Line="13" Column="1" />
-      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" Line="35" Column="35" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="24" Column="29" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
+      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
+      <File FileName="Assets/Scripts/Interactable/Throwable.cs" Line="89" Column="40" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
