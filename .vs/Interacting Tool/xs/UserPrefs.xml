@@ -1,16 +1,15 @@
 ﻿<Properties StartupConfiguration="{A705336A-784B-D5BA-60FA-4646A96816A2}|">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="0bbf2e60-2958-4a14-b3ce-075dbb767aa0" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="62" Column="1" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" Line="5" Column="45" />
-      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" Line="202" Column="14" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" Line="7" Column="18" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="43" Column="1" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" Line="13" Column="1" />
+      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" Line="35" Column="35" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -49,5 +48,5 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f500012e-e3b9-4422-8452-28da0db9f43e" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>
