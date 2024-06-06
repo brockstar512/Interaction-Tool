@@ -64,7 +64,7 @@ public class Throwable : InteractableBase
         isThrown = true;
 
     }
-
+    //the tranform of the parent is straight. the throwable follows a curve
     private void InAir()
     {
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -84,6 +84,7 @@ public class Throwable : InteractableBase
         //keyframes[1].value = 1;
         //curve.keys[curve.keys.Length - 1].value = curve[curve.keys.Length - 1].value - 2.32f;
         //Debug.Log($"Here is the bounts {curve.keys[curve.keys.Length - 1].value}");
+        Debug.Log($"Here is the bounts {player.transform.GetComponent<SpriteRenderer>().bounds.size.y}");//this - is what I need to follow
 
         Toss(player.LookDirection);
     }
