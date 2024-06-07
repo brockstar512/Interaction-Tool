@@ -50,7 +50,7 @@ public class AnimationPushAndPull : AnimationState
     public void Play(PlayerStateMachineManager playerstate)
     {
 
-        Debug.Log($"dir {playerstate.LookDirection}");
+        //Debug.Log($"dir {playerstate.LookDirection}");
 
         if (PushDirection == null || !PushDirection.IsInputInDirection(playerstate.LookDirection))
         {

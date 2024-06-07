@@ -70,6 +70,16 @@ public class Throwable : InteractableBase
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         //x is height
         float yPos = curve.Evaluate(Vector2.Distance(startingPoint, travelPos));
+        //change the size of the shadow based on height
+        //scaledValue = (rawValue - min) / (max - min);
+        //float scale = Mathf.Clamp(yPos,.1f,1f);
+        //float scale = yPos / 3.5f;
+        //float scale = Mathf.Clamp(yPos,.25f,.75f);
+
+        //shadow.transform.localScale = new Vector3(1-scale, 1-scale, 1);
+            //(yPos - .2f) / (1 - .2f);
+        //Debug.Log(scale);
+
         //Debug.Log(yPos);
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + throwDirection * SPEED * Time.deltaTime);
