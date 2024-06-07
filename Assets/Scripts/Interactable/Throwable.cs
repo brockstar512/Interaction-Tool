@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class Throwable : InteractableBase
 {
     Vector3 startingPoint;
-    Vector3 playersFeet;
     float distanceFromGround;
     float DISTANCE_LIMIT = 7.5f;//anymore will go in a straight line when it reaches point
     bool isThrown = false;
@@ -36,7 +35,7 @@ public class Throwable : InteractableBase
             InAir();
         }
 
-        if (Vector2.Distance(startingPoint, transform.position) >= DISTANCE_LIMIT)
+        if (isThrown && Vector2.Distance(startingPoint, transform.position) >= DISTANCE_LIMIT)
         {
             isThrown = false;
             Destroy(this.gameObject);
