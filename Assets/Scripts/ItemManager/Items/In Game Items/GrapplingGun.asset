@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29821f24d2f4442082771f40397f1cc, type: 3}
   m_Name: GrapplingGun
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -1407014589730669687, guid: 9ba1a277daf6d43ebb60cbb4693388ab, type: 3}
   Damage: 10

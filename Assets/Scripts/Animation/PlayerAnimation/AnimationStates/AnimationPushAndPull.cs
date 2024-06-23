@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//change animation state to interface
 public class AnimationPushAndPull : AnimationState
 {
     //whichside are you on... smaller classes
@@ -10,12 +10,18 @@ public class AnimationPushAndPull : AnimationState
     readonly int PushRight = Animator.StringToHash("PushRight");
     readonly int PushLeft = Animator.StringToHash("PushLeft");
 
+    readonly int PullDown = Animator.StringToHash("PullDown");
+    readonly int PullUp = Animator.StringToHash("PullUp");
+    readonly int PullRight = Animator.StringToHash("PullRight");
+    readonly int PullLeft = Animator.StringToHash("PullLeft");
+
     readonly int PushHoldLeft = Animator.StringToHash("PushHoldLeft");
     readonly int PushHoldRight = Animator.StringToHash("PushHoldRight");
     readonly int PushHoldUp = Animator.StringToHash("PushHoldUp");
     readonly int PushHoldDown = Animator.StringToHash("PushHoldDown");
 
     IPushDirection PushDirection;
+
     public void EnterPushAnimation(PlayerStateMachineManager playerstate)
     {
         if (playerstate.LookDirection == Vector2.down)
@@ -56,17 +62,17 @@ public class AnimationPushAndPull : AnimationState
         {
             return;
         }
+        //playerstate.animator.Play(PushDirection.Push);
+        //if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
+        //{
+        //    //if you are moving and the look direction
+        //    playerstate.animator.Play(PushDirection.Push);
 
-        if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
-        {
-            //if you are moving and the look direction
-            playerstate.animator.Play(PushDirection.Push);
-
-        }
-        else
-        {
-            playerstate.animator.Play(PushDirection.Hold);
-        }
+        //}
+        //else
+        //{
+        //    playerstate.animator.Play(PushDirection.Hold);
+        //}
 
     }
 
@@ -80,8 +86,18 @@ public class AnimationPushAndPull : AnimationState
         private Vector2 LimitedMovementBounds = Vector2.zero;
         readonly int push = Animator.StringToHash("PushRight");
         readonly int hold = Animator.StringToHash("PushHoldRight");
+        readonly int pull = Animator.StringToHash("PullLeft");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
+
+        public void Play(Vector2 input)
+        {
+            if (IsInputInDirection(input))
+                return;
+
+
+
+        }
 
         public bool IsInputInDirection(Vector2 input)
         {
@@ -118,6 +134,7 @@ public class AnimationPushAndPull : AnimationState
         private Vector2 LimitedMovementBounds = Vector2.zero;
         readonly int push = Animator.StringToHash("PushLeft");
         readonly int hold = Animator.StringToHash("PushHoldLeft");
+        readonly int pull = Animator.StringToHash("PullRight");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
 
@@ -154,6 +171,7 @@ public class AnimationPushAndPull : AnimationState
     {
         private Vector2 LimitedMovementBounds = Vector2.zero;
         readonly int push = Animator.StringToHash("PushUp");
+        readonly int pull = Animator.StringToHash("PullDown");
         readonly int hold = Animator.StringToHash("PushHoldUp");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
@@ -190,6 +208,7 @@ public class AnimationPushAndPull : AnimationState
     {
         private Vector2 LimitedMovementBounds = Vector2.zero;
         readonly int push = Animator.StringToHash("PushDown");
+        readonly int pull = Animator.StringToHash("PullUp");
         readonly int hold = Animator.StringToHash("PushHoldDown");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }

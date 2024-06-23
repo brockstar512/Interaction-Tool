@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29821f24d2f4442082771f40397f1cc, type: 3}
   m_Name: Key
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -2144329234367100646, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
   Damage: 10
