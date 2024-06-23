@@ -1,24 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 //change animation state to interface
 public class AnimationPushAndPull : AnimationState
 {
-    //whichside are you on... smaller classes
-    readonly int PushDown = Animator.StringToHash("PushDown");
-    readonly int PushUp = Animator.StringToHash("PushUp");
-    readonly int PushRight = Animator.StringToHash("PushRight");
-    readonly int PushLeft = Animator.StringToHash("PushLeft");
-
-    readonly int PullDown = Animator.StringToHash("PullDown");
-    readonly int PullUp = Animator.StringToHash("PullUp");
-    readonly int PullRight = Animator.StringToHash("PullRight");
-    readonly int PullLeft = Animator.StringToHash("PullLeft");
-
-    readonly int PushHoldLeft = Animator.StringToHash("PushHoldLeft");
-    readonly int PushHoldRight = Animator.StringToHash("PushHoldRight");
-    readonly int PushHoldUp = Animator.StringToHash("PushHoldUp");
-    readonly int PushHoldDown = Animator.StringToHash("PushHoldDown");
 
     IPushDirection PushDirection;
 
@@ -52,7 +38,6 @@ public class AnimationPushAndPull : AnimationState
         
     }
 
-    //enter create class
     public void Play(PlayerStateMachineManager playerstate)
     {
 
@@ -62,18 +47,8 @@ public class AnimationPushAndPull : AnimationState
         {
             return;
         }
-        //playerstate.animator.Play(PushDirection.Push);
-        //if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
-        //{
-        //    //if you are moving and the look direction
-        //    playerstate.animator.Play(PushDirection.Push);
 
-        //}
-        //else
-        //{
-        //    playerstate.animator.Play(PushDirection.Hold);
-        //}
-
+         PushDirection.Play(playerstate);
     }
 
     public void LeavePushAnimation()
@@ -89,46 +64,40 @@ public class AnimationPushAndPull : AnimationState
         readonly int pull = Animator.StringToHash("PullLeft");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
+        public int Pull { get { return hold; } }
 
-        public void Play(Vector2 input)
+        public void Play(PlayerStateMachineManager playerstate)
         {
-            if (IsInputInDirection(input))
-                return;
+              
+            if(playerstate.Movement.x > 0)
+            {
+                playerstate.animator.Play(push);
 
+            }
+            else if(playerstate.Movement.x < 0)
+            {
+                playerstate.animator.Play(pull);
 
+            }
+            else
+            {
+                playerstate.animator.Play(hold);
+            }
 
         }
 
         public bool IsInputInDirection(Vector2 input)
         {
-
+            //if you are moving in the x direction
             if (input.x!= 0)
             {
                 return true;
             }
-                //if (input == Vector2.down || input == Vector2.up)
-                //{
-                //    return false;
-                //}
-                //if (input == Vector2.left)
-                //{
-                //    //pull... could be a out variable or tuple
-                //    return true;
-                //}
-                //if (input == Vector2.right)
-                //{
-                //    //push
-                //    return true;
-                //}
 
-                //limit weird number direction
-                return false;
+            //limit weird number direction?
+            return false;
         }
     }
-
-
-    
-
     class AnimationLeftDirectionPush : IPushDirection
     {
         private Vector2 LimitedMovementBounds = Vector2.zero;
@@ -137,6 +106,7 @@ public class AnimationPushAndPull : AnimationState
         readonly int pull = Animator.StringToHash("PullRight");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
+        public int Pull { get { return hold; } }
 
         public bool IsInputInDirection(Vector2 input)
         {
@@ -145,27 +115,29 @@ public class AnimationPushAndPull : AnimationState
             {
                 return true;
             }
-            //if(input == Vector2.down || input == Vector2.up)
-            //{
-            //    return false;
-            //}
-            //if (input == Vector2.right)
-            //{
-            //    //pull... could be a out variable or tuple
-            //    return true;
-            //}
-            //if (input == Vector2.left)
-            //{
-            //    //push
-            //    return true;
-            //}
 
             //limit weird number direction
             return false;   
         }
 
+        public void Play(PlayerStateMachineManager playerstate)
+        {
 
+            if (playerstate.Movement.x < 0)
+            {
+                playerstate.animator.Play(push);
 
+            }
+            else if (playerstate.Movement.x > 0)
+            {
+                playerstate.animator.Play(pull);
+
+            }
+            else
+            {
+                playerstate.animator.Play(hold);
+            }
+        }
     }
     class AnimationUpDirectionPush : IPushDirection
     {
@@ -175,6 +147,7 @@ public class AnimationPushAndPull : AnimationState
         readonly int hold = Animator.StringToHash("PushHoldUp");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
+        public int Pull { get { return hold; } }
 
         public bool IsInputInDirection(Vector2 input)
         {
@@ -183,26 +156,28 @@ public class AnimationPushAndPull : AnimationState
                 return true;
             }
 
-            //if (input == Vector2.right || input == Vector2.left)
-            //{
-            //    return false;
-            //}
-            //if (input == Vector2.down)
-            //{
-            //    //pull... could be a out variable or tuple
-            //    return true;
-            //}
-            //if (input == Vector2.up)
-            //{
-            //    //push
-            //    return true;
-            //}
-
             //limit weird number direction
             return false;
         }
 
+        public void Play(PlayerStateMachineManager playerstate)
+        {
 
+            if (playerstate.Movement.y > 0)
+            {
+                playerstate.animator.Play(push);
+
+            }
+            else if (playerstate.Movement.y < 0)
+            {
+                playerstate.animator.Play(pull);
+
+            }
+            else
+            {
+                playerstate.animator.Play(hold);
+            }
+        }
     }
     class AnimationDownDirectionPush : IPushDirection
     {
@@ -212,6 +187,8 @@ public class AnimationPushAndPull : AnimationState
         readonly int hold = Animator.StringToHash("PushHoldDown");
         public int Push { get { return push; } }
         public int Hold { get { return hold; } }
+        public int Pull { get { return hold; } }
+
 
         public bool IsInputInDirection(Vector2 input)
         {
@@ -219,23 +196,28 @@ public class AnimationPushAndPull : AnimationState
             {
                 return true;
             }
-            //if (input == Vector2.right || input == Vector2.left)
-            //{
-            //    return false;
-            //}
-            //if (input == Vector2.up)
-            //{
-            //    //pull... could be a out variable or tuple
-            //    return true;
-            //}
-            //if (input == Vector2.down)
-            //{
-            //    //push
-            //    return true;
-            //}
-
+            
             //limit weird number direction
             return false;
         }
+
+        public void Play(PlayerStateMachineManager playerstate)
+        {
+            if (playerstate.Movement.y < 0)
+            {
+                playerstate.animator.Play(push);
+
+            }
+            else if (playerstate.Movement.y > 0)
+            {
+                playerstate.animator.Play(pull);
+
+            }
+            else
+            {
+                playerstate.animator.Play(hold);
+            }
+        }
     }
+
 }
