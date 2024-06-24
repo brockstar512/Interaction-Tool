@@ -30,6 +30,8 @@ public class PlayerStateMachineManager : MonoBehaviour
             //draw this for debuging
             Physics2D.queriesStartInColliders = false;
             RaycastHit2D hit = Physics2D.Raycast(col.bounds.center, LookDirection, .75f);
+
+
             return hit;
         }
     }

@@ -65,6 +65,7 @@
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleChewedState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/Old/PlayerMovement.cs" />
+    <Compile Include="Assets/Scripts/Player/ItemDetection/ItemDetection.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerBaseState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
