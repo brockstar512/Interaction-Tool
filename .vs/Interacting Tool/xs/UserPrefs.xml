@@ -2,16 +2,17 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="ea334232-404a-474c-864f-4a8ec2076b37" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f7f68f8f-d3dd-4a80-a89f-036f5ef85561" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs">
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/ItemDetection/ItemDetection.cs">
     <Files>
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
-      <File FileName="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
-      <File FileName="Assets/Scripts/Interactable/Throwable.cs" />
-      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" Line="98" Column="1" />
-      <File FileName="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
+      <File FileName="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" Line="33" Column="1" />
+      <File FileName="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" Line="41" Column="1" />
+      <File FileName="Assets/Scripts/Interface/IPushDirection.cs" Line="10" Column="5" />
+      <File FileName="Assets/Scripts/Player/ItemDetection/ItemDetection.cs" Line="24" Column="1" />
+      <File FileName="Assets/Scripts/Player/PlayerStatus/HealthBox.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -32,6 +33,7 @@
                 <Node name="Player" expanded="True">
                   <Node name="HUD" expanded="True" />
                   <Node name="InputManager" expanded="True" />
+                  <Node name="ItemDetection" expanded="True" />
                   <Node name="PlayerMovementManager" expanded="True">
                     <Node name="Old" expanded="True" />
                   </Node>
@@ -51,5 +53,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MultiItemStartupConfigurations />
 </Properties>
