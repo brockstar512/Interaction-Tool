@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerStateMachineManager : MonoBehaviour
+public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {
-    PlayerBaseState currentState;
+    public PlayerBaseState currentState{ get; private set; }
     //switching items does not matter on the state
 
     //States
@@ -19,23 +20,13 @@ public class PlayerStateMachineManager : MonoBehaviour
 
     //Dependencies
     public Vector2 Movement { get; private set; }
-    public Vector2 LookDirection { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public BoxCollider2D col { get; private set; }
 
     public PlayerBaseState GetState { get { return currentState; } }
     public InteractableBase item { get; private set; }
-    public RaycastHit2D GetRaycast {
-        get {
-            //draw this for debuging
-            Physics2D.queriesStartInColliders = false;
-            RaycastHit2D hit = Physics2D.Raycast(col.bounds.center, LookDirection, .75f);
 
-
-            return hit;
-        }
-    }
-
+    public IOverlapCheck OverlapObjectCheck;
     public ItemManager itemManager { get; private set; }
     public PlayerStatus playerStatus { get; private set; }
 
@@ -63,9 +54,6 @@ public class PlayerStateMachineManager : MonoBehaviour
     {
 
         currentState.UpdateState(this);
-        //Debug.DrawRay(transform.position+  Vector3.up, LookDirection, Color.green);
-        
-        //Debug.DrawRay(col.bounds.center, LookDirection, Color.green);
     }
 
     void FixedUpdate()
@@ -98,10 +86,9 @@ public class PlayerStateMachineManager : MonoBehaviour
     {
         if (currentState is DefaultState)
         {
-            RaycastHit2D hit = GetRaycast;
-            if (hit.collider == null) return;
-            item = hit.collider.transform.GetComponent<InteractableBase>();
-            if (item == null) return;
+            InteractableBase item = OverlapObjectCheck.GetOverlapObject();
+            if (item == null)
+                return;
         }
         currentState.Action(this);
     }
@@ -114,23 +101,6 @@ public class PlayerStateMachineManager : MonoBehaviour
     public void UpdateMove(Vector2 movement)
     {
         Movement = movement;
-
-        if (Movement == Vector2.up)
-        {
-            LookDirection = Movement;
-        }
-        if (Movement == Vector2.down)
-        {
-            LookDirection = Movement;
-        }
-        if (Movement == Vector2.right)
-        {
-            LookDirection = Movement;
-        }
-        if (Movement == Vector2.left)
-        {
-            LookDirection = Movement;
-        }
     }
 
 }

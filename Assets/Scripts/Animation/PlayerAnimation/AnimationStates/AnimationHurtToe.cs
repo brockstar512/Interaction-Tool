@@ -24,29 +24,29 @@ public class AnimationHurtToe : AnimationStateAsync
         };
 
     }
-    public override async Task Play(PlayerStateMachineManager playerstate)
+    public override async Task Play(SlideItemState slideItemState)
     {
 
-        if (playerstate.LookDirection == Vector2.down)
+        if (slideItemState.LookDirection == Vector2.down)
         {
             playerstate.animator.Play(HurtToeDownHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeDownHash]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.up)
+        if (slideItemState.LookDirection == Vector2.up)
         {
             playerstate.animator.Play(HurtToeUpHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeUpHash]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.right)
+        if (slideItemState.LookDirection == Vector2.right)
         {
             playerstate.animator.Play(HurtToeRightHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeRightHash]);
             return;
 
         }
-        if (playerstate.LookDirection == Vector2.left)
+        if (slideItemState.LookDirection == Vector2.left)
         {
             playerstate.animator.Play(HurtToeLeftHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeLeftHash]);

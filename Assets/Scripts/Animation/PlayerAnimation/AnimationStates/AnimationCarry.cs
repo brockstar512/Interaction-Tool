@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Interface;
 using UnityEngine;
 
 public class AnimationCarry : AnimationState
@@ -30,24 +31,24 @@ public class AnimationCarry : AnimationState
         };
     }
 
-    public void Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager state)
     {
-        if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
+        if (state.Movement.x != 0 || state.Movement.y != 0)
         {
-            if (playerstate.LookDirection == Vector2.down)
+            if (state.currentState.LookDirection == Vector2.down)
             {
                 playerstate.animator.Play(HoldWalkDown);
             }
-            if (playerstate.LookDirection == Vector2.up)
+            if (state.currentState.LookDirection == Vector2.up)
             {
                 playerstate.animator.Play(HoldWalkUp);
             }
-            if (playerstate.LookDirection == Vector2.right)
+            if (state.currentState.LookDirection == Vector2.right)
             {
                 playerstate.animator.Play(HoldWalkRight);
 
             }
-            if (playerstate.LookDirection == Vector2.left)
+            if (state.currentState.LookDirection == Vector2.left)
             {
                 playerstate.animator.Play(HoldWalkLeft);
             }

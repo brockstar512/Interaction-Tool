@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ThrowItemState : PlayerBaseState
 {
-    public override float Speed { get { return 4; } }
+    protected override float Speed { get { return 4; } }
 
     AnimationPickUp PickUpAnimation;
     AnimationThrow ThrowAnimation;

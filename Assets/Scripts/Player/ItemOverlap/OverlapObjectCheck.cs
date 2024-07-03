@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class OverlapObjectCheck : MonoBehaviour
+public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 { 
     Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
     public LayerMask detectionLayer;
@@ -22,11 +22,6 @@ public class OverlapObjectCheck : MonoBehaviour
         _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
     }
     
-    private void FixedUpdate()
-    {
-        GetMostOverlappedCol();
-    }
-
     Collider2D GetMostOverlappedCol()
     {
         Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
@@ -82,12 +77,16 @@ public class OverlapObjectCheck : MonoBehaviour
         return (topRightCorner, bottomLeftCorner);
     }
     
-    private void OnDrawGizmos()
+    void OnDrawGizmos()
     {
 
         CustomDebug.DrawRectange(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB); 
 
     }
-    
-    
+
+    public InteractableBase GetOverlapObject()
+    {
+        Collider2D overlappingObject = GetMostOverlappedCol();
+        return overlappingObject?.GetComponent<InteractableBase>();
+    }
 }

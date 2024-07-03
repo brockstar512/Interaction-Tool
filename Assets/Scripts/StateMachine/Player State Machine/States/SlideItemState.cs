@@ -44,12 +44,12 @@ public class SlideItemState : PlayerBaseState
     {
         if (stateManager.item.Interact(stateManager))
         {
-            await KickAnimation.Play(stateManager);
+            await KickAnimation.Play(this);
         }
         else
         {
-            await KickAnimation.Play(stateManager);
-            await HurtToeAnimation.Play(stateManager);
+            await KickAnimation.Play(this);
+            await HurtToeAnimation.Play(this);
         }
         //await KickAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);

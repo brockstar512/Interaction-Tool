@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveItemState : PlayerBaseState
 {
-    public override float Speed { get { return 2; } }
+    protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
     AnimationPushAndPull animationPushAndPull;
 
@@ -16,7 +16,7 @@ public class MoveItemState : PlayerBaseState
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         animationPushAndPull.EnterPushAnimation(stateManager);
-        LimitedMovementBounds = stateManager.LookDirection;
+        base.UpdateLookDirection(stateManager.Movement);
         stateManager.item.Interact(stateManager);
 
     }
@@ -42,10 +42,11 @@ public class MoveItemState : PlayerBaseState
         
     }
 
-    public override void Move(PlayerStateMachineManager stateManager)
+    protected override void Move(PlayerStateMachineManager stateManager)
     {
         Vector2 _movement = stateManager.Movement;
-
+        base.UpdateLookDirection(stateManager.Movement);
+        
         if (LimitedMovementBounds == Vector2.down || LimitedMovementBounds == Vector2.up)
         {
             _movement.x *= 0;
