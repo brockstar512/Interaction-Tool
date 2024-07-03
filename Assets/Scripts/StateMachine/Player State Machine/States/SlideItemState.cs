@@ -22,7 +22,7 @@ public class SlideItemState : PlayerBaseState
     
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-
+        base.UpdateLookDirection(stateManager.Movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)

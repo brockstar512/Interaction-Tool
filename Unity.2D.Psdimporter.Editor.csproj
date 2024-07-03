@@ -47,36 +47,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDLayer.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDLayerMappingStrategy.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterAssetPostProcessor.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterEditor.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/ImportColumnHeaderToggle.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/PSDImporterMultiColumnTreeViewUI.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImportData.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDGameObjectPreviewData.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterAPI.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImportPostProcessor.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporter.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TexturePlatformSettingsController.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/UIColumn.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/AssemblyInfo.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TexturePlatformSettingsView.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Tasks/FlattenImageTask.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/ImportUtilites.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Analytics.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/ImportColumn.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/SpriteData.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Pipeline.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/LayerNameColumn.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TexturePlatformSettingsModal.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterDataProvider.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TextureSettingsGUI.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Tasks/ExtractLayerTask.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TextureImporterUtilities.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterEditorExternalData.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TextContent.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDSpriteEditorDataProvider.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/Tooltips.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDLayerMappingStrategy.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterAssetPostProcessor.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/PSDImporterMultiColumnTreeViewUI.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImportData.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterAPI.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImportPostProcessor.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TexturePlatformSettingsController.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporter.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/UIColumn.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/AssemblyInfo.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/ImportUtilites.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Analytics.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/UTK/ImportColumn.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Pipeline.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TexturePlatformSettingsModal.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/TextureSettingsGUI.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDSpriteEditorDataProvider.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/PSDImporterEditorLayerTreeView.cs" />
     <None Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Assets/UI/PSDImporterStyleSheet.uss" />
     <None Include="Library/PackageCache/com.unity.2d.psdimporter@9.0.3/Editor/Unity.2D.Psdimporter.Editor.asmdef" />
@@ -426,7 +426,7 @@
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.visualscripting@1.9.4/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.collections@1.2.4/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.collections@1.4.0/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.ext.nunit@2.0.5/net40/unity-custom/nunit.framework.dll</HintPath>
@@ -466,6 +466,9 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.visualscripting@1.9.4/Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.nuget.mono-cecil@1.11.4/Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

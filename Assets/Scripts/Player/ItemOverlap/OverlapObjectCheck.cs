@@ -1,16 +1,29 @@
+using System;
 using UnityEngine;
+
+namespace Player.ItemOverlap
+{
+    
 
 public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 { 
     Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
+    OverlapCheckHelper _helper;
     public LayerMask detectionLayer;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        _helper = new OverlapCheckHelper();
         SetOverlappingArea();
     }
+
+    private void FixedUpdate()
+    {
+        GetMostOverlappedCol();
+    }
+
     void SetOverlappingArea()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -89,4 +102,55 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         Collider2D overlappingObject = GetMostOverlappedCol();
         return overlappingObject?.GetComponent<InteractableBase>();
     }
+
+    public void UpdateCheckPosition(Vector2 lookDirection)
+    {
+        this.transform.localScale = _helper.UpdateScale(lookDirection);
+
+        this.transform.localPosition = _helper.UpdatePosition(lookDirection);
+    }
+
+    private class OverlapCheckHelper
+    {
+        public Vector2 UpdateScale(Vector2 lookDirection)
+        {
+            Vector2 updateScale = Vector2.zero;
+            
+            if (lookDirection == Vector2.down || lookDirection == Vector2.up)
+            {
+                updateScale = new Vector2(.5f,.25f);
+            }
+            if (lookDirection == Vector2.right ||lookDirection == Vector2.left)
+            {
+                updateScale = new Vector2(0.25f,0.5f);
+            }
+            
+            return updateScale;
+        }
+        public Vector2 UpdatePosition(Vector2 lookDirection)
+        {
+            //Debug.Log(lookDirection);
+            Vector2 updatePosition = Vector2.zero;
+            
+            if (lookDirection == Vector2.down)
+            {
+                updatePosition = new Vector2(0,0);
+            }
+            if (lookDirection == Vector2.right || lookDirection == Vector2.left)
+            {
+                updatePosition = new Vector2(.2f,.2f);
+            }
+            if (lookDirection == Vector2.up)
+            {
+                updatePosition = new Vector2(0,0.5f);
+            }
+
+    
+            return updatePosition;
+        }
+    }
+        
 }
+
+}
+

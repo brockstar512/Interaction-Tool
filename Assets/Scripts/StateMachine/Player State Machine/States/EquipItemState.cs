@@ -45,7 +45,7 @@ public class EquipItemState : PlayerBaseState
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-
+        UpdateLookDirection(stateManager.Movement);
     }
 
     

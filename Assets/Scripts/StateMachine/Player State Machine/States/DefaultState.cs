@@ -5,9 +5,7 @@ using UnityEngine;
 public class DefaultState : PlayerBaseState
 {
     AnimationMove MoveAnimation;
-    //states hold the animation classes
-    //animation classes hold what animations they do
-
+    
     public DefaultState()
     {
         MoveAnimation = new AnimationMove();
@@ -21,7 +19,7 @@ public class DefaultState : PlayerBaseState
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-
+        base.UpdateLookDirection(stateManager.Movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)

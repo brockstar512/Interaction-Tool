@@ -8,12 +8,13 @@ public class UseItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
+        //shouldn't this own the inventory?
         Action(stateManager);
     }
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-
+        base.UpdateLookDirection(stateManager.Movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)

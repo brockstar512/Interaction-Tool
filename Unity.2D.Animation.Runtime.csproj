@@ -26,7 +26,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\Bin\Debug\Unity.2D.Animation.Runtime\</OutputPath>
-    <DefineConstants>UNITY_2023_2_20;UNITY_2023_2;UNITY_2023;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_2023_2_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_MARSHALLING_TESTS;ENABLE_VIDEO;ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;TEXTCORE_1_0_OR_NEWER;PLATFORM_STANDALONE_OSX;PLATFORM_STANDALONE;UNITY_STANDALONE_OSX;UNITY_STANDALONE;ENABLE_GAMECENTER;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_SPATIALTRACKING;PLATFORM_HAS_CUSTOM_MUTEX;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_OSX;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER;DOTWEEN;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>UNITY_2023_2_20;UNITY_2023_2;UNITY_2023;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_2023_2_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_MARSHALLING_TESTS;ENABLE_VIDEO;ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;TEXTCORE_1_0_OR_NEWER;PLATFORM_STANDALONE_OSX;PLATFORM_STANDALONE;UNITY_STANDALONE_OSX;UNITY_STANDALONE;ENABLE_GAMECENTER;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_SPATIALTRACKING;PLATFORM_HAS_CUSTOM_MUTEX;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_OSX;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER;DOTWEEN;ENABLE_URP;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169,0649</NoWarn>
@@ -46,6 +46,19 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibraryAsset.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/BaseDeformationSystem.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibrarySourceAsset.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SkeletonAsset.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/NativeCustomSlice.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/CpuDeformationSystem.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/UpdateOrder.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/GpuDeformationSystem.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibrary.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/Bone.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/DeformationManagerUpdater.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/UpdateBoundsJob.cs" />
+    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/TransformAccessJob.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/DeformationJobs.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibraryData.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteResolverEditor.cs" />
@@ -54,27 +67,14 @@
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BufferManager.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/ISpriteLibraryLabel.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/AssemblyInfo.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibraryAsset.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/BaseDeformationSystem.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/IconUtility.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibrarySourceAsset.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteResolver.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SkeletonAsset.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/NativeCustomSlice.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/CpuDeformationSystem.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/NativeArrayHelper.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteSkinUtility.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/ISpriteLibraryCategory.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/UpdateOrder.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/GpuDeformationSystem.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteSkin.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteLib/SpriteLibrary.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/Bone.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/DeformationManagerUpdater.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/UpdateBoundsJob.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/SpriteSkinContainer.cs" />
     <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/MeshUtilities.cs" />
-    <Compile Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/BatchedDeformation/TransformAccessJob.cs" />
     <None Include="Library/PackageCache/com.unity.2d.animation@10.1.1/Runtime/Unity.2D.Animation.Runtime.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -419,7 +419,7 @@
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.visualscripting@1.9.4/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.collections@1.2.4/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.collections@1.4.0/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.ext.nunit@2.0.5/net40/unity-custom/nunit.framework.dll</HintPath>
@@ -459,6 +459,9 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
       <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.visualscripting@1.9.4/Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>/Users/marshallbrock/Documents/unity projects/2d/Interacting Tool/Library/PackageCache/com.unity.nuget.mono-cecil@1.11.4/Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -850,6 +853,10 @@
     <ProjectReference Include="Unity.Collections.csproj">
       <Project>{4316432d-7b3c-ffc3-12e9-1835656d2aa8}</Project>
       <Name>Unity.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.RenderPipelines.Universal.Runtime.csproj">
+      <Project>{bc4c9d29-d365-62da-c32c-5702791b32c8}</Project>
+      <Name>Unity.RenderPipelines.Universal.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{20992cb0-2478-f8a3-61c2-d24797be54a3}</Project>

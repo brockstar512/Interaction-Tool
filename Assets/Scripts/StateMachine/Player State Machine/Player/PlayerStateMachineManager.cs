@@ -1,12 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Interface;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Player.ItemOverlap;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
-{
+{       
+    //[SerializeField] OverlapObjectCheck overlapObjectCheck;
+
+    //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
     //switching items does not matter on the state
 
@@ -17,8 +17,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public ThrowItemState throwItemState = new ThrowItemState();
     public UseItemState useItemState = new UseItemState();
     public EquipItemState equipItemState = new EquipItemState();
-
-   
+    
     public Vector2 Movement { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public BoxCollider2D col { get; private set; }
@@ -26,8 +25,10 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public PlayerBaseState GetState { get { return currentState; } }
     public InteractableBase item { get; private set; }
 
-    public IOverlapCheck OverlapObjectCheck;
     public ItemManager itemManager { get; private set; }
+    //playerstatus
+    //playerstatus hud
+    //those should all be in a HealthManager script
     public PlayerStatus playerStatus { get; private set; }
 
     public PlayerStatusHUD playerHUD { get; private set; }
@@ -52,8 +53,9 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     void Update()
     {
-
         currentState.UpdateState(this);
+        //overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection);//put this in state
+
     }
 
     void FixedUpdate()
@@ -84,11 +86,18 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void Interact()
     {
+        Debug.Log($"I am looking at item 1");
+
         if (currentState is DefaultState)
         {
-            InteractableBase item = OverlapObjectCheck.GetOverlapObject();
-            if (item == null)
-                return;
+            Debug.Log($"I am looking at item 2");
+
+            // InteractableBase i = overlapObjectCheck.GetOverlapObject();
+            // if (i == null)
+            //     return;
+            //
+            // Debug.Log($"I am looking at item {i}");
+            return;
         }
         currentState.Action(this);
     }
