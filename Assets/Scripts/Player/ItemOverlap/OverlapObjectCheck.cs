@@ -7,7 +7,7 @@ namespace Player.ItemOverlap
 
 public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 { 
-    Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
+    public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
     OverlapCheckHelper _helper;
     public LayerMask detectionLayer;
 
@@ -32,6 +32,17 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         float extendsX = sr.bounds.extents.x; 
         float extendsY = sr.bounds.extents.y;
         _areaTopRightCornerAABB = new Vector2(centerX+extendsX,centerY+extendsY);
+        _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
+    }
+    void SetMovingOverlappingArea(Vector2 characterPos)
+    {
+        Debug.Log(characterPos);
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        float centerX = sr.bounds.center.x; 
+        float centerY = sr.bounds.center.y;
+        float extendsX = sr.bounds.extents.x; 
+        float extendsY = sr.bounds.extents.y;
+        _areaTopRightCornerAABB = new Vector2(+centerX+extendsX,centerY+extendsY);
         _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
     }
     
@@ -67,6 +78,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
     
     float GetOverlappingArea(Collider2D overlappingObject)
     { 
+        
         (Vector2 overlappingTopRightCornerAABB,Vector2 overlappingBottomLeftCornerAABB) = GetAABBCorners(overlappingObject);
 
         float xLength = Mathf.Min(_areaTopRightCornerAABB.x,overlappingTopRightCornerAABB.x)-Mathf.Max(_areaBottomLeftCornerAABB.x,overlappingTopRightCornerAABB.x);
@@ -97,8 +109,9 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 
     }
 
-    public InteractableBase GetOverlapObject()
+    public InteractableBase GetOverlapObject(Vector3 characterPos)
     {
+        SetMovingOverlappingArea(characterPos);
         Collider2D overlappingObject = GetMostOverlappedCol();
         return overlappingObject?.GetComponent<InteractableBase>();
     }
@@ -106,7 +119,6 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
     public void UpdateCheckPosition(Vector2 lookDirection)
     {
         this.transform.localScale = _helper.UpdateScale(lookDirection);
-
         this.transform.localPosition = _helper.UpdatePosition(lookDirection);
     }
 

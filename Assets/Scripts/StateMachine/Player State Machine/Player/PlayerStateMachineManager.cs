@@ -4,7 +4,7 @@ using Player.ItemOverlap;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {       
-    //[SerializeField] OverlapObjectCheck overlapObjectCheck;
+    [SerializeField] OverlapObjectCheck overlapObjectCheck;
 
     //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
@@ -54,7 +54,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     void Update()
     {
         currentState.UpdateState(this);
-        //overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection);//put this in state
+        overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection);//put this in state
 
     }
 
@@ -92,11 +92,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         {
             Debug.Log($"I am looking at item 2");
 
-            // InteractableBase i = overlapObjectCheck.GetOverlapObject();
-            // if (i == null)
-            //     return;
-            //
-            // Debug.Log($"I am looking at item {i}");
+            InteractableBase i = overlapObjectCheck.GetOverlapObject(this.transform.position);
+            if (i == null)
+                return;
+            
+            Debug.Log($"I am looking at item {i}");
             return;
         }
         currentState.Action(this);
