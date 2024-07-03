@@ -36,14 +36,16 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
     }
     void SetMovingOverlappingArea(Vector2 characterPos)
     {
-        Debug.Log(characterPos);
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
         float centerY = sr.bounds.center.y;
         float extendsX = sr.bounds.extents.x; 
         float extendsY = sr.bounds.extents.y;
-        _areaTopRightCornerAABB = new Vector2(+centerX+extendsX,centerY+extendsY);
-        _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
+        //Debug.Log( sr.bounds);
+        //worldspace to local space... or local space to world space
+
+        _areaTopRightCornerAABB = new Vector2(centerX +extendsX ,centerY +extendsY);
+        _areaBottomLeftCornerAABB = new Vector2(centerX -extendsX,centerY -extendsY);
     }
     
     Collider2D GetMostOverlappedCol()
@@ -111,13 +113,15 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 
     public InteractableBase GetOverlapObject(Vector3 characterPos)
     {
-        SetMovingOverlappingArea(characterPos);
+        // SetMovingOverlappingArea(characterPos);
         Collider2D overlappingObject = GetMostOverlappedCol();
         return overlappingObject?.GetComponent<InteractableBase>();
     }
 
-    public void UpdateCheckPosition(Vector2 lookDirection)
+    public void UpdateCheckPosition(Vector2 lookDirection, Vector3 characterPos)
     {
+        SetMovingOverlappingArea(characterPos);
+
         this.transform.localScale = _helper.UpdateScale(lookDirection);
         this.transform.localPosition = _helper.UpdatePosition(lookDirection);
     }

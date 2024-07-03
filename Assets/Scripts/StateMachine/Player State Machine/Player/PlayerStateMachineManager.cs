@@ -54,7 +54,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     void Update()
     {
         currentState.UpdateState(this);
-        overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection);//put this in state
+        overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection, transform.position);//put this in state
 
     }
 
