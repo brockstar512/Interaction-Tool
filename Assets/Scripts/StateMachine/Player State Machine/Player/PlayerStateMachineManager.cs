@@ -18,7 +18,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public UseItemState useItemState = new UseItemState();
     public EquipItemState equipItemState = new EquipItemState();
 
-    //Dependencies
+   
     public Vector2 Movement { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public BoxCollider2D col { get; private set; }

@@ -8,25 +8,25 @@ public class AnimationPushAndPull : AnimationState
 
     IPushDirection PushDirection;
 
-    public void EnterPushAnimation(PlayerStateMachineManager playerstate)
+    public void EnterPushAnimation(PlayerStateMachineManager state)
     {
-        if (playerstate.LookDirection == Vector2.down)
+        if (state.currentState.LookDirection == Vector2.down)
         {
             PushDirection = new AnimationDownDirectionPush();
             return;
         }
-        if (playerstate.LookDirection == Vector2.up)
+        if (state.currentState.LookDirection == Vector2.up)
         {
             PushDirection = new AnimationUpDirectionPush();
             return;
         }
-        if (playerstate.LookDirection == Vector2.right)
+        if (state.currentState.LookDirection == Vector2.right)
         {
             PushDirection = new AnimationRightDirectionPush();
 
             return;
         }
-        if (playerstate.LookDirection == Vector2.left)
+        if (state.currentState.LookDirection == Vector2.left)
         {
             PushDirection = new AnimationLeftDirectionPush();
 
@@ -38,17 +38,17 @@ public class AnimationPushAndPull : AnimationState
         
     }
 
-    public void Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager state)
     {
 
         //Debug.Log($"dir {playerstate.LookDirection}");
 
-        if (PushDirection == null || !PushDirection.IsInputInDirection(playerstate.LookDirection))
+        if (PushDirection == null || !PushDirection.IsInputInDirection(state.currentState.LookDirection))
         {
             return;
         }
 
-         PushDirection.Play(playerstate);
+         PushDirection.Play(state);
     }
 
     public void LeavePushAnimation()

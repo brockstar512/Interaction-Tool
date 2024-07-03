@@ -84,15 +84,15 @@ public class Throwable : InteractableBase
         rb.MovePosition(rb.position + throwDirection * SPEED * Time.deltaTime);
     }
 
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(PlayerStateMachineManager state)
     {
-        distanceFromGround = player.transform.GetComponent<SpriteRenderer>().bounds.size.y;
+        distanceFromGround = state.transform.GetComponent<SpriteRenderer>().bounds.size.y;
         Keyframe[] keyframes = curve.keys;
         keyframes[0].value = distanceFromGround;
         keyframes[1].value = 0;
 
         curve.keys = keyframes;
 
-        Toss(player.LookDirection);
+        Toss(state.currentState.LookDirection);
     }
 }

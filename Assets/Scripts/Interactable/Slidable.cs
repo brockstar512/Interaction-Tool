@@ -13,9 +13,9 @@ public class Slidable : InteractableBase
     const int animationDelay = 250;
 
     //true or false if you are able to interact
-    public override bool Interact(PlayerStateMachineManager player)
+    public override bool Interact(PlayerStateMachineManager state)
     {
-       return CanMove(player.LookDirection);
+       return CanMove(state.currentState.LookDirection);
     }
 
     bool CanMove(Vector2 direction)

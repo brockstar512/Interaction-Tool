@@ -14,48 +14,48 @@ public class AnimationMove : AnimationState
     const string StandUp = "StandUp";
     const string StandDown = "StandDown";
 
-    public void Play(PlayerStateMachineManager playerstate)
+    public void Play(PlayerStateMachineManager state)
     {
-        if (playerstate.Movement.x != 0 || playerstate.Movement.y != 0)
+        if (state.Movement.x != 0 || state.Movement.y != 0)
         {
             //Debug.Log("walking");
-            if (playerstate.LookDirection == Vector2.down)
+            if (state.currentState.LookDirection == Vector2.down)
             {
-                playerstate.animator.Play(WalkDown);
+                state.animator.Play(WalkDown);
             }
-            if (playerstate.LookDirection == Vector2.up)
+            if (state.currentState.LookDirection == Vector2.up)
             {
-                playerstate.animator.Play(WalkUp);
+                state.animator.Play(WalkUp);
             }
-            if (playerstate.LookDirection == Vector2.right)
+            if (state.currentState.LookDirection == Vector2.right)
             {
-                playerstate.animator.Play(WalkRight);
+                state.animator.Play(WalkRight);
 
             }
-            if (playerstate.LookDirection == Vector2.left)
+            if (state.currentState.LookDirection == Vector2.left)
             {
-                playerstate.animator.Play(WalkLeft);
+                state.animator.Play(WalkLeft);
             }
 
         }
         else
         {
-            if (playerstate.LookDirection == Vector2.down)
+            if (state.currentState.LookDirection == Vector2.down)
             {
-                playerstate.animator.Play(StandDown);
+                state.animator.Play(StandDown);
             }
-            if (playerstate.LookDirection == Vector2.up)
+            if (state.currentState.LookDirection == Vector2.up)
             {
-                playerstate.animator.Play(StandUp);
+                state.animator.Play(StandUp);
             }
-            if (playerstate.LookDirection == Vector2.right)
+            if (state.currentState.LookDirection == Vector2.right)
             {
-                playerstate.animator.Play(StandRight);
+                state.animator.Play(StandRight);
 
             }
-            if (playerstate.LookDirection == Vector2.left)
+            if (state.currentState.LookDirection == Vector2.left)
             {
-                playerstate.animator.Play(StandLeft);
+                state.animator.Play(StandLeft);
             }
         }
 

@@ -26,29 +26,29 @@ public class AnimationPickUp : AnimationState
     }
 
 
-    public async Task Play(PlayerStateMachineManager playerstate)
+    public async Task Play(PlayerStateMachineManager state)
     {
-        if (playerstate.LookDirection == Vector2.down)
+        if (state.currentState.LookDirection == Vector2.down)
         {
-            playerstate.animator.Play(PickUpDown);
+            state.animator.Play(PickUpDown);
             await Awaitable.WaitForSecondsAsync(TimeSheet[PickUpDown]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.right)
+        if (state.currentState.LookDirection == Vector2.right)
         {
-            playerstate.animator.Play(PickUpRight);
+            state.animator.Play(PickUpRight);
             await Awaitable.WaitForSecondsAsync(TimeSheet[PickUpRight]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.left)
+        if (state.currentState.LookDirection == Vector2.left)
         {
-            playerstate.animator.Play(PickUpLeft);
+            state.animator.Play(PickUpLeft);
             await Awaitable.WaitForSecondsAsync(TimeSheet[PickUpLeft]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.up)
+        if (state.currentState.LookDirection == Vector2.up)
         {
-            playerstate.animator.Play(PickUpUp);
+            state.animator.Play(PickUpUp);
             await Awaitable.WaitForSecondsAsync(TimeSheet[PickUpUp]);
             return;
         }

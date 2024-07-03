@@ -26,29 +26,29 @@ public class AnimationThrow : AnimationState
 
     }
 
-    public async Task Play(PlayerStateMachineManager playerstate)
+    public async Task Play(PlayerStateMachineManager state)
     {
-        if (playerstate.LookDirection == Vector2.down)
+        if (state.currentState.LookDirection == Vector2.down)
         {
-            playerstate.animator.Play(ThrowDown);
+            state.animator.Play(ThrowDown);
             await Awaitable.WaitForSecondsAsync(TimeSheet[ThrowDown]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.right)
+        if (state.currentState.LookDirection == Vector2.right)
         {
-            playerstate.animator.Play(ThrowRight);
+            state.animator.Play(ThrowRight);
             await Awaitable.WaitForSecondsAsync(TimeSheet[ThrowRight]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.left)
+        if (state.currentState.LookDirection == Vector2.left)
         {
-            playerstate.animator.Play(ThrowLeft);
+            state.animator.Play(ThrowLeft);
             await Awaitable.WaitForSecondsAsync(TimeSheet[ThrowLeft]);
             return;
         }
-        if (playerstate.LookDirection == Vector2.up)
+        if (state.currentState.LookDirection == Vector2.up)
         {
-            playerstate.animator.Play(ThrowUp);
+            state.animator.Play(ThrowUp);
             await Awaitable.WaitForSecondsAsync(TimeSheet[ThrowUp]);
             return;
         }

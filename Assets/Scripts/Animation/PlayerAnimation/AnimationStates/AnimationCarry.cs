@@ -37,41 +37,41 @@ public class AnimationCarry : AnimationState
         {
             if (state.currentState.LookDirection == Vector2.down)
             {
-                playerstate.animator.Play(HoldWalkDown);
+                state.animator.Play(HoldWalkDown);
             }
             if (state.currentState.LookDirection == Vector2.up)
             {
-                playerstate.animator.Play(HoldWalkUp);
+                state.animator.Play(HoldWalkUp);
             }
             if (state.currentState.LookDirection == Vector2.right)
             {
-                playerstate.animator.Play(HoldWalkRight);
+                state.animator.Play(HoldWalkRight);
 
             }
             if (state.currentState.LookDirection == Vector2.left)
             {
-                playerstate.animator.Play(HoldWalkLeft);
+                state.animator.Play(HoldWalkLeft);
             }
 
         }
         else
         {
-            if (playerstate.LookDirection == Vector2.down)
+            if (state.currentState.LookDirection == Vector2.down)
             {
-                playerstate.animator.Play(HoldStillDown);
+                state.animator.Play(HoldStillDown);
             }
-            if (playerstate.LookDirection == Vector2.up)
+            if (state.currentState.LookDirection == Vector2.up)
             {
-                playerstate.animator.Play(HoldStillUp);
+                state.animator.Play(HoldStillUp);
             }
-            if (playerstate.LookDirection == Vector2.right)
+            if (state.currentState.LookDirection == Vector2.right)
             {
-                playerstate.animator.Play(HoldStillRight);
+                state.animator.Play(HoldStillRight);
 
             }
-            if (playerstate.LookDirection == Vector2.left)
+            if (state.currentState.LookDirection == Vector2.left)
             {
-                playerstate.animator.Play(HoldStillLeft);
+                state.animator.Play(HoldStillLeft);
             }
         }
          //await Task.CompletedTask;

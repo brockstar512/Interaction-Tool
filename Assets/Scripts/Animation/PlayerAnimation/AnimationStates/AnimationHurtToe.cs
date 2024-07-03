@@ -24,31 +24,31 @@ public class AnimationHurtToe : AnimationStateAsync
         };
 
     }
-    public override async Task Play(SlideItemState slideItemState)
+    public override async Task Play(PlayerStateMachineManager state)
     {
 
-        if (slideItemState.LookDirection == Vector2.down)
+        if (state.currentState.LookDirection == Vector2.down)
         {
-            playerstate.animator.Play(HurtToeDownHash);
+            state.animator.Play(HurtToeDownHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeDownHash]);
             return;
         }
-        if (slideItemState.LookDirection == Vector2.up)
+        if (state.currentState.LookDirection == Vector2.up)
         {
-            playerstate.animator.Play(HurtToeUpHash);
+            state.animator.Play(HurtToeUpHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeUpHash]);
             return;
         }
-        if (slideItemState.LookDirection == Vector2.right)
+        if (state.currentState.LookDirection == Vector2.right)
         {
-            playerstate.animator.Play(HurtToeRightHash);
+            state.animator.Play(HurtToeRightHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeRightHash]);
             return;
 
         }
-        if (slideItemState.LookDirection == Vector2.left)
+        if (state.currentState.LookDirection == Vector2.left)
         {
-            playerstate.animator.Play(HurtToeLeftHash);
+            state.animator.Play(HurtToeLeftHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HurtToeLeftHash]);
             return;
         }

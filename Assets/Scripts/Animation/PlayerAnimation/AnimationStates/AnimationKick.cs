@@ -35,31 +35,31 @@ public class AnimationKick : AnimationStateAsync
     }
 
 
-    public override async Task Play(SlideItemState slideItemState)
+    public override async Task Play(PlayerStateMachineManager state)
     {
         
-        if (slideItemState.LookDirection == Vector2.down)
+        if (state.currentState.LookDirection == Vector2.down)
         {
-            playerstate.animator.Play(KickDownHash);
+            state.animator.Play(KickDownHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[KickDownHash]);
             return;
         }
-        if (slideItemState.LookDirection == Vector2.up)
+        if (state.currentState.LookDirection == Vector2.up)
         {
-            playerstate.animator.Play(KickUpHash);
+            state.animator.Play(KickUpHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[KickUpHash]);
             return;
         }
-        if (slideItemState.LookDirection == Vector2.right)
+        if (state.currentState.LookDirection == Vector2.right)
         {
-            playerstate.animator.Play(KickRightHash);
+            state.animator.Play(KickRightHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[KickRightHash]);
             return;
 
         }
-        if (slideItemState.LookDirection == Vector2.left)
+        if (state.currentState.LookDirection == Vector2.left)
         {
-            playerstate.animator.Play(KickLeftHash);
+            state.animator.Play(KickLeftHash);
             await Awaitable.WaitForSecondsAsync(TimeSheet[KickLeftHash]);
             return;
         }
