@@ -15,13 +15,16 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
     // Start is called before the first frame update
     void Start()
     {
+        //this.gameObject.layer = LayerMask.NameToLayer(Utilities.InteractableLayer);
+        //detectionLayer = LayerMask.NameToLayer(Utilities.InteractableLayer);
+        detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
         _helper = new OverlapCheckHelper();
         SetOverlappingArea();
     }
 
     private void FixedUpdate()
     {
-        GetMostOverlappedCol();
+        // GetMostOverlappedCol();
     }
 
     void SetOverlappingArea()
@@ -50,12 +53,13 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
     
     Collider2D GetMostOverlappedCol()
     {
+        // Physics2D.queriesStartInColliders = false;
         Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
         if (overlappingCols.Length == 0)
             return null;
 
         Collider2D col = DetermineMostOverlap(overlappingCols);
-        Debug.Log(col.gameObject.name);
+        //Debug.Log(col.gameObject.name);
         return col;
     }
     
@@ -111,20 +115,16 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 
     }
 
-    public InteractableBase GetOverlapObject(Vector3 characterPos)
+    public InteractableBase GetOverlapObject(Vector2 characterPos, Vector2 lookDirection)
     {
-        // SetMovingOverlappingArea(characterPos);
+        this.transform.localScale = _helper.UpdateScale(lookDirection);
+        this.transform.localPosition = _helper.UpdatePosition(lookDirection);
+        SetMovingOverlappingArea(characterPos);
         Collider2D overlappingObject = GetMostOverlappedCol();
         return overlappingObject?.GetComponent<InteractableBase>();
     }
 
-    public void UpdateCheckPosition(Vector2 lookDirection, Vector3 characterPos)
-    {
-        SetMovingOverlappingArea(characterPos);
 
-        this.transform.localScale = _helper.UpdateScale(lookDirection);
-        this.transform.localPosition = _helper.UpdatePosition(lookDirection);
-    }
 
     private class OverlapCheckHelper
     {

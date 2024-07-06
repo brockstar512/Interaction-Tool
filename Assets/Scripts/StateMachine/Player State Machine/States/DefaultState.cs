@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player.ItemOverlap;
 
 public class DefaultState : PlayerBaseState
 {
     AnimationMove MoveAnimation;
+    
+    // private OverlapObjectCheck overlapObjectCheck;
     
     public DefaultState()
     {
@@ -40,6 +43,8 @@ public class DefaultState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
+        Debug.Log($"is {stateManager.item}");
+
         switch (stateManager.item)
         {
             case Throwable throwable:

@@ -10,6 +10,8 @@ public class Moveable : InteractableBase
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        UpdateLayerName();
+
     }
 
     public override bool Interact(PlayerStateMachineManager player)

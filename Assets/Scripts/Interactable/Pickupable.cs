@@ -17,6 +17,7 @@ public class Pickupable : InteractableBase
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         sr.sprite = Item.Sprite;
+        UpdateLayerName();
     }
 
     public override bool Interact(PlayerStateMachineManager player)

@@ -4,6 +4,5 @@ using UnityEngine;
 
 public interface IOverlapCheck
 {
-   //public InteractableBase GetOverlapObject(Vector2 lookDirection);
-   public void UpdateCheckPosition(Vector2 lookDirection,Vector3 characterPos);
+   public InteractableBase GetOverlapObject(Vector2 characterPos, Vector2 lookDirection);
 }

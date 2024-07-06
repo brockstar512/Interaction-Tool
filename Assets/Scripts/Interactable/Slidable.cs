@@ -12,6 +12,11 @@ public class Slidable : InteractableBase
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     const int animationDelay = 250;
 
+    void Awake()
+    {
+        UpdateLayerName();
+    }
+
     //true or false if you are able to interact
     public override bool Interact(PlayerStateMachineManager state)
     {

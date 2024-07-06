@@ -3,9 +3,7 @@ using UnityEngine;
 using Player.ItemOverlap;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
-{       
-    [SerializeField] OverlapObjectCheck overlapObjectCheck;
-
+{
     //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
     //switching items does not matter on the state
@@ -18,6 +16,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public UseItemState useItemState = new UseItemState();
     public EquipItemState equipItemState = new EquipItemState();
     
+    //should this be interface variables
     public Vector2 Movement { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public BoxCollider2D col { get; private set; }
@@ -33,6 +32,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public PlayerStatusHUD playerHUD { get; private set; }
     public Animator animator { get; private set; }
+    
+    public OverlapObjectCheck overlapObjectCheck { get; private set; }
 
 
     void Awake()
@@ -42,6 +43,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         itemManager = new ItemManager();
         playerStatus = new PlayerStatus();
         animator = GetComponent<Animator>();
+
+        overlapObjectCheck = GetComponentInChildren<OverlapObjectCheck>();
     }
 
     void Start()
@@ -54,8 +57,6 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     void Update()
     {
         currentState.UpdateState(this);
-        overlapObjectCheck.UpdateCheckPosition(currentState.LookDirection, transform.position);//put this in state
-
     }
 
     void FixedUpdate()
@@ -70,6 +71,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void SwitchState(PlayerBaseState NewState)
     {
+        Debug.Log($"SWITCHING TO  {NewState}");
+
         currentState.ExitState(this);
         currentState = NewState;
         currentState.EnterState(this);
@@ -86,18 +89,15 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void Interact()
     {
-        Debug.Log($"I am looking at item 1");
-
         if (currentState is DefaultState)
         {
-            Debug.Log($"I am looking at item 2");
-
-            InteractableBase i = overlapObjectCheck.GetOverlapObject(this.transform.position);
-            if (i == null)
+            //Debug.Log($"I am looking at item 2");
+                item = overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection);
+            if (item == null)
                 return;
             
-            Debug.Log($"I am looking at item {i}");
-            return;
+            //Debug.Log($"I am looking at item {item}");
+            //return;
         }
         currentState.Action(this);
     }
