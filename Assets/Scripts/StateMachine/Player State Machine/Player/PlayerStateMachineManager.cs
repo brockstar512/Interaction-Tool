@@ -16,13 +16,15 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public readonly ThrowItemState throwItemState = new ThrowItemState();
     public readonly UseItemState useItemState = new UseItemState();
     public readonly EquipItemState equipItemState = new EquipItemState();
+    public readonly DeathState deathState = new DeathState();
+
+    public PlayerBaseState getState => currentState; 
 
     
-    //should this be interface variables
+    //should this be interface variables... should I put them in a payer controller? or state machine components
     public Vector2 movement { get; private set; }
     public Rigidbody2D rb { get; private set; }
 
-    public PlayerBaseState getState => currentState; 
     public InteractableBase item { get; private set; }
 
     public ItemManager itemManager { get; private set; }
@@ -103,6 +105,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public void UpdateMove(Vector2 inputMovement)
     {
         movement = inputMovement;
+    }
+    
+    public void PlayerDeath()
+    {
+        //
     }
 
 }

@@ -21,11 +21,9 @@ public class EquipItemState : PlayerBaseState
 
     public async override void EnterState(PlayerStateMachineManager stateManager)
     {
-        //this interactable item is suppose to determine the players inventory situation
         stateManager.item.Interact(stateManager);
         await EquipItemAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
-
     }
 
     public override void ExitState(PlayerStateMachineManager stateManager)

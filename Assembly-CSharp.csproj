@@ -52,12 +52,14 @@
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
+    <Compile Include="Assets/Scripts/SlideableObjstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/Player/ItemOverlap/CustomDebug.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Interface/IOverlapCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
+    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />

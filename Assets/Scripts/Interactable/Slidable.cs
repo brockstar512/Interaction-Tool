@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
+    LayerMask obstructionLayer;
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     const int animationDelay = 250;
 
     void Awake()
     {
+        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
         UpdateLayerName();
     }
 
@@ -27,10 +29,14 @@ public class Slidable : InteractableBase
     {
         //Vector2 direction = actor
         Physics2D.queriesStartInColliders = false;
+            //obstructionLayer
+            
         RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, direction * 100);
         if (hit.collider != null)
         {
-            Debug.Log(Mathf.Abs(transform.position.x - hit.collider.transform.position.x));
+            //Debug.Log(hit.collider.gameObject.name);
+
+            //Debug.Log(Mathf.Abs(transform.position.x - hit.collider.transform.position.x));
             if (Mathf.Abs(transform.position.x - hit.collider.transform.position.x) <= GetWidth.x && Mathf.Abs(direction.x) == 1)
             {
                 return false;
