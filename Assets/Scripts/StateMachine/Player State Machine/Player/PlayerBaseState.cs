@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class PlayerBaseState
 {
-    public Vector2 LookDirection { get; private set; }
+    public Vector2 LookDirection { get; set; }
     protected virtual float Speed { get { return 5; } }
     public abstract void EnterState(PlayerStateMachineManager stateManager);
     public abstract void UpdateState(PlayerStateMachineManager stateManager);
@@ -35,5 +35,7 @@ public abstract class PlayerBaseState
         {
             LookDirection = movement;
         }
+       //Debug.Log(LookDirection);
+
     }
 }

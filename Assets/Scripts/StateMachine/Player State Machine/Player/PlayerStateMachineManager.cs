@@ -4,6 +4,8 @@ using Player.ItemOverlap;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {
+    
+    
     //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
     //switching items does not matter on the state
@@ -71,8 +73,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void SwitchState(PlayerBaseState NewState)
     {
-        Debug.Log($"SWITCHING TO  {NewState}");
-
+        NewState.LookDirection= currentState.LookDirection;
         currentState.ExitState(this);
         currentState = NewState;
         currentState.EnterState(this);

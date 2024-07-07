@@ -21,6 +21,9 @@ public class ThrowItemState : PlayerBaseState
 
     public override async void EnterState(PlayerStateMachineManager stateManager)
     {
+        //update look direction
+        Debug.Log($"look direction  {LookDirection}");
+
         CurrentAnimation = PickUpAnimation;
         await PickUpAnimation.Play(stateManager);
         stateManager.item.Interact(stateManager);
@@ -52,6 +55,8 @@ public class ThrowItemState : PlayerBaseState
         //Debug.Log("Fixed Update carry");
         base.Move(stateManager);
         CarryAnimation.Play(stateManager);
+        Debug.Log("play carry");
+
     }
 
     public override async void Action(PlayerStateMachineManager stateManager)
