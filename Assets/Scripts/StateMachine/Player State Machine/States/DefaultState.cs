@@ -11,7 +11,6 @@ public class DefaultState : PlayerBaseState
     
     public DefaultState()
     {
-        MoveAnimation = new AnimationMove();
     }
 
 
@@ -22,7 +21,7 @@ public class DefaultState : PlayerBaseState
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-        base.UpdateLookDirection(stateManager.Movement);
+        base.UpdateLookDirection(stateManager.movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
@@ -48,16 +47,16 @@ public class DefaultState : PlayerBaseState
         switch (stateManager.item)
         {
             case Throwable throwable:
-                stateManager.SwitchState(stateManager.throwItemState);
+                stateManager.SwitchState(stateManager.ThrowItemState);
                 break;
             case Moveable moveable:
-                stateManager.SwitchState(stateManager.moveItemState);
+                stateManager.SwitchState(stateManager.MoveItemState);
                 break;
             case Slidable moveable:
-                stateManager.SwitchState(stateManager.slideItemState);
+                stateManager.SwitchState(stateManager.SlideItemState);
                 break;
             case Pickupable pickupable:
-                stateManager.SwitchState(stateManager.equipItemState);
+                stateManager.SwitchState(stateManager.EquipItemState);
                 break;
             default:
                 Debug.Log("is defualt");

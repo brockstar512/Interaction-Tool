@@ -22,7 +22,7 @@ public class SlideItemState : PlayerBaseState
     
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-        base.UpdateLookDirection(stateManager.Movement);
+        base.UpdateLookDirection(stateManager.movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
@@ -52,6 +52,6 @@ public class SlideItemState : PlayerBaseState
             await HurtToeAnimation.Play(stateManager);
         }
         //await KickAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        stateManager.SwitchState(stateManager.DefaultState);
     }
 }

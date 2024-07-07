@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
 
     public void Release(InputAction.CallbackContext context)
     {
-        PlayerBaseState current = stateManager.GetState;
+        PlayerBaseState current = stateManager.getState;
         if (current is not MoveItemState)
         {
             return;
@@ -49,15 +49,12 @@ public class InputManager : MonoBehaviour
 
     public void SwitchItem(InputAction.CallbackContext context)
     {
-        //Debug.Log("Switch items");
         stateManager.itemManager.SwitchItem();
     }
 
     public void UseItem(InputAction.CallbackContext context)
     {
-        ///switch state and maybe pass in fuction that enters state so it is not null
         stateManager.UseItem();
-
     }
 
     private void OnDestroy()

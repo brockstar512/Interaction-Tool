@@ -4,55 +4,51 @@ using Player.ItemOverlap;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {
-    
+    //have a hurt state... tht determines if you die
     
     //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
-    //switching items does not matter on the state
 
     //States
-    public DefaultState defaultState = new DefaultState();
-    public MoveItemState moveItemState = new MoveItemState();
-    public SlideItemState slideItemState = new SlideItemState();
-    public ThrowItemState throwItemState = new ThrowItemState();
-    public UseItemState useItemState = new UseItemState();
-    public EquipItemState equipItemState = new EquipItemState();
+    public readonly DefaultState DefaultState = new DefaultState();
+    public readonly MoveItemState MoveItemState = new MoveItemState();
+    public readonly SlideItemState SlideItemState = new SlideItemState();
+    public readonly ThrowItemState ThrowItemState = new ThrowItemState();
+    public readonly UseItemState UseItemState = new UseItemState();
+    public readonly EquipItemState EquipItemState = new EquipItemState();
+    //public readonly HurtState HurtState = new EquipItemState();
+
     
     //should this be interface variables
-    public Vector2 Movement { get; private set; }
+    public Vector2 movement { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    public BoxCollider2D col { get; private set; }
 
-    public PlayerBaseState GetState { get { return currentState; } }
+    public PlayerBaseState getState => currentState; 
     public InteractableBase item { get; private set; }
 
     public ItemManager itemManager { get; private set; }
-    //playerstatus
-    //playerstatus hud
-    //those should all be in a HealthManager script
-    public PlayerStatus playerStatus { get; private set; }
 
-    public PlayerStatusHUD playerHUD { get; private set; }
+    
     public Animator animator { get; private set; }
     
-    public OverlapObjectCheck overlapObjectCheck { get; private set; }
+    private OverlapObjectCheck overlapObjectCheck {  get;  set; }
+    
+    public PlayerStatusManager playerStatusManager { get; private set; }
 
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<BoxCollider2D>();
         itemManager = new ItemManager();
-        playerStatus = new PlayerStatus();
         animator = GetComponent<Animator>();
-
         overlapObjectCheck = GetComponentInChildren<OverlapObjectCheck>();
+        playerStatusManager = GetComponent<PlayerStatusManager>();
     }
 
     void Start()
     {
-        playerHUD = HUDReader.Instance.InitializePlayerHUD(this);
-        currentState = defaultState;
+        playerStatusManager.Init(this);
+        currentState = DefaultState;
         currentState.EnterState(this);
     }
 
@@ -71,11 +67,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         currentState.OnCollisionEnter(this, collision);
     }
 
-    public void SwitchState(PlayerBaseState NewState)
+    public void SwitchState(PlayerBaseState newState)
     {
-        NewState.LookDirection= currentState.LookDirection;
+        newState.LookDirection= currentState.LookDirection;
         currentState.ExitState(this);
-        currentState = NewState;
+        currentState = newState;
         currentState.EnterState(this);
         if(currentState is DefaultState)
         {
@@ -85,20 +81,16 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void UseItem()
     {
-        SwitchState(useItemState);
+        SwitchState(UseItemState);
     }
 
     public void Interact()
     {
         if (currentState is DefaultState)
         {
-            //Debug.Log($"I am looking at item 2");
                 item = overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection);
             if (item == null)
                 return;
-            
-            //Debug.Log($"I am looking at item {item}");
-            //return;
         }
         currentState.Action(this);
     }
@@ -108,9 +100,9 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         currentState.Action(this);
     }
 
-    public void UpdateMove(Vector2 movement)
+    public void UpdateMove(Vector2 inputMovement)
     {
-        Movement = movement;
+        movement = inputMovement;
     }
 
 }

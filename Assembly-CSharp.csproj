@@ -80,7 +80,6 @@
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
-    <Compile Include="Assets/Scripts/Player/PlayerStatus/HealthBox.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
@@ -89,6 +88,7 @@
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />
+    <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />

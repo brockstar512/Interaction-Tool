@@ -15,7 +15,7 @@ public abstract class PlayerBaseState
     
     protected virtual void Move(PlayerStateMachineManager stateManager)
     {
-        stateManager.rb.MovePosition(stateManager.rb.position + stateManager.Movement * Speed * Time.deltaTime);
+        stateManager.rb.MovePosition(stateManager.rb.position + stateManager.movement * Speed * Time.deltaTime);
     }
     protected void UpdateLookDirection(Vector2 movement)
     {

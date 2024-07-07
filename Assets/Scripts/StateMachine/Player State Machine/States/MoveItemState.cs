@@ -44,7 +44,7 @@ public class MoveItemState : PlayerBaseState
 
     protected override void Move(PlayerStateMachineManager stateManager)
     {
-        Vector2 _movement = stateManager.Movement;
+        Vector2 _movement = stateManager.movement;
         
         if (LimitedMovementBounds == Vector2.down || LimitedMovementBounds == Vector2.up)
         {
@@ -64,6 +64,6 @@ public class MoveItemState : PlayerBaseState
     {
         animationPushAndPull.LeavePushAnimation();
         stateManager.item.Release(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        stateManager.SwitchState(stateManager.DefaultState);
     }
 }

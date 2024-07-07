@@ -16,7 +16,7 @@ public class AnimationMove : AnimationState
 
     public void Play(PlayerStateMachineManager state)
     {
-        if (state.Movement.x != 0 || state.Movement.y != 0)
+        if (state.movement.x != 0 || state.movement.y != 0)
         {
             //Debug.Log("walking");
             if (state.currentState.LookDirection == Vector2.down)

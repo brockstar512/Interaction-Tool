@@ -1,81 +1,89 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Interface;
 using UnityEngine;
 
-public class AnimationCarry : AnimationState
+namespace AnimationStates
 {
-    readonly int HoldStillRight = Animator.StringToHash("HoldStillRight");
-    readonly int HoldStillLeft = Animator.StringToHash("HoldStillLeft");
-    readonly int HoldStillUp = Animator.StringToHash("HoldStillUp");
-    readonly int HoldStillDown = Animator.StringToHash("HoldStillDown");
-    readonly int HoldWalkRight = Animator.StringToHash("HoldWalkRight");
-    readonly int HoldWalkLeft = Animator.StringToHash("HoldWalkLeft");
-    readonly int HoldWalkUp = Animator.StringToHash("HoldWalkUp");
-    readonly int HoldWalkDown = Animator.StringToHash("HoldWalkDown");
-    readonly Dictionary<int, float> TimeSheet;
 
-    public AnimationCarry()
+
+    public class AnimationCarry : AnimationState
     {
-        TimeSheet = new()
+        readonly int _holdStillRight = Animator.StringToHash("HoldStillRight");
+        readonly int _holdStillLeft = Animator.StringToHash("HoldStillLeft");
+        readonly int _holdStillUp = Animator.StringToHash("HoldStillUp");
+        readonly int _holdStillDown = Animator.StringToHash("HoldStillDown");
+        readonly int _holdWalkRight = Animator.StringToHash("HoldWalkRight");
+        readonly int _holdWalkLeft = Animator.StringToHash("HoldWalkLeft");
+        readonly int _holdWalkUp = Animator.StringToHash("HoldWalkUp");
+        readonly int _holdWalkDown = Animator.StringToHash("HoldWalkDown");
+        readonly Dictionary<int, float> _timeSheet;
+
+        public AnimationCarry()
         {
-            { HoldStillRight,1f},
-            { HoldStillLeft,1f},
-            { HoldStillUp, 1f},
-            { HoldStillDown,1f },
-            { HoldWalkRight,.333f},
-            { HoldWalkLeft,.333f},
-            { HoldWalkUp, .333f},
-            { HoldWalkDown,.333f }
-        };
-    }
-
-    public void Play(PlayerStateMachineManager state)
-    {
-        if (state.Movement.x != 0 || state.Movement.y != 0)
-        {
-            if (state.currentState.LookDirection == Vector2.down)
+            _timeSheet = new()
             {
-                state.animator.Play(HoldWalkDown);
-            }
-            if (state.currentState.LookDirection == Vector2.up)
-            {
-                state.animator.Play(HoldWalkUp);
-            }
-            if (state.currentState.LookDirection == Vector2.right)
-            {
-                state.animator.Play(HoldWalkRight);
-
-            }
-            if (state.currentState.LookDirection == Vector2.left)
-            {
-                state.animator.Play(HoldWalkLeft);
-            }
-
+                { _holdStillRight, 1f },
+                { _holdStillLeft, 1f },
+                { _holdStillUp, 1f },
+                { _holdStillDown, 1f },
+                { _holdWalkRight, .333f },
+                { _holdWalkLeft, .333f },
+                { _holdWalkUp, .333f },
+                { _holdWalkDown, .333f }
+            };
         }
-        else
+
+        public void Play(PlayerStateMachineManager state)
         {
-            if (state.currentState.LookDirection == Vector2.down)
+            if (state.movement.x != 0 || state.movement.y != 0)
             {
-                state.animator.Play(HoldStillDown);
-            }
-            if (state.currentState.LookDirection == Vector2.up)
-            {
-                state.animator.Play(HoldStillUp);
-            }
-            if (state.currentState.LookDirection == Vector2.right)
-            {
-                state.animator.Play(HoldStillRight);
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(_holdWalkDown);
+                }
+
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(_holdWalkUp);
+                }
+
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(_holdWalkRight);
+
+                }
+
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(_holdWalkLeft);
+                }
 
             }
-            if (state.currentState.LookDirection == Vector2.left)
+            else
             {
-                state.animator.Play(HoldStillLeft);
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(_holdStillDown);
+                }
+
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(_holdStillUp);
+                }
+
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(_holdStillRight);
+
+                }
+
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(_holdStillLeft);
+                }
             }
+            //await Task.CompletedTask;
         }
-         //await Task.CompletedTask;
-    }
 
-    
+
+    }
 }

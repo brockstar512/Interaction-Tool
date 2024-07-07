@@ -14,7 +14,7 @@ public class UseItemState : PlayerBaseState
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-        base.UpdateLookDirection(stateManager.Movement);
+        base.UpdateLookDirection(stateManager.movement);
     }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
@@ -41,6 +41,6 @@ public class UseItemState : PlayerBaseState
             item.Use();
         }
         
-        stateManager.SwitchState(stateManager.defaultState);
+        stateManager.SwitchState(stateManager.DefaultState);
     }
 }

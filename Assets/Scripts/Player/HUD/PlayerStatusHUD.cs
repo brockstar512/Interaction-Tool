@@ -30,7 +30,7 @@ public class PlayerStatusHUD : MonoBehaviour
     public void BuildHUD(PlayerStateMachineManager player)
     {
         player.itemManager.ItemSwitch += UpdateItemUI;
-        player.playerStatus.HealthChange += UpdateHealth;
-        player.playerStatus.LivesChange += UpdateLives;
+        player.playerStatusManager.playerStatus.HealthChange += UpdateHealth;
+        player.playerStatusManager.playerStatus.LivesChange += UpdateLives;
     }
 }

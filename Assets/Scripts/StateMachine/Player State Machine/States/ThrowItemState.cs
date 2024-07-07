@@ -1,39 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+using AnimationStates;
 using UnityEngine;
 
 public class ThrowItemState : PlayerBaseState
 {
-    protected override float Speed { get { return 4; } }
+    protected override float Speed => 4;
 
-    AnimationPickUp PickUpAnimation;
-    AnimationThrow ThrowAnimation;
-    AnimationCarry CarryAnimation;
-    AnimationState CurrentAnimation;
-
-    public ThrowItemState()
-    {
-        PickUpAnimation = new AnimationPickUp();
-        ThrowAnimation = new AnimationThrow();
-        CarryAnimation = new AnimationCarry();
-        CurrentAnimation = null;
-    }
+    readonly AnimationPickUp _pickUpAnimation;
+    readonly AnimationThrow _throwAnimation;
+    readonly AnimationCarry _carryAnimation;
+    AnimationState _currentAnimation = null;
+    
 
     public override async void EnterState(PlayerStateMachineManager stateManager)
     {
-        //update look direction
-        Debug.Log($"look direction  {LookDirection}");
-
-        CurrentAnimation = PickUpAnimation;
-        await PickUpAnimation.Play(stateManager);
+        _currentAnimation = _pickUpAnimation;
+        await _pickUpAnimation.Play(stateManager);
         stateManager.item.Interact(stateManager);
-        CurrentAnimation = CarryAnimation;
-        Debug.Log("enter finished");
-
+        _currentAnimation = _carryAnimation;
     }
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-        base.UpdateLookDirection(stateManager.Movement);
+        UpdateLookDirection(stateManager.movement);
     }
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
     {
@@ -47,25 +34,20 @@ public class ThrowItemState : PlayerBaseState
 
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
-        //Debug.Log("Fixed Update carry");
-
-        //if animation is x return... or is not carry
-        if (CurrentAnimation is not AnimationCarry)
+        if (_currentAnimation is not AnimationCarry)
             return;
-        //Debug.Log("Fixed Update carry");
+        
         base.Move(stateManager);
-        CarryAnimation.Play(stateManager);
-        Debug.Log("play carry");
-
+        _carryAnimation.Play(stateManager);
     }
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        CurrentAnimation = ThrowAnimation;
+        _currentAnimation = _throwAnimation;
         stateManager.item.Release(stateManager);
-        await ThrowAnimation.Play(stateManager);
-        CurrentAnimation = null;
-        stateManager.SwitchState(stateManager.defaultState);
+        await _throwAnimation.Play(stateManager);
+        _currentAnimation = null;
+        stateManager.SwitchState(stateManager.DefaultState);
         
     }
 }
