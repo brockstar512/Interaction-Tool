@@ -10,13 +10,12 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public PlayerBaseState currentState{ get; private set; }
 
     //States
-    public readonly DefaultState DefaultState = new DefaultState();
-    public readonly MoveItemState MoveItemState = new MoveItemState();
-    public readonly SlideItemState SlideItemState = new SlideItemState();
-    public readonly ThrowItemState ThrowItemState = new ThrowItemState();
-    public readonly UseItemState UseItemState = new UseItemState();
-    public readonly EquipItemState EquipItemState = new EquipItemState();
-    //public readonly HurtState HurtState = new EquipItemState();
+    public readonly DefaultState defaultState = new DefaultState();
+    public readonly MoveItemState moveItemState = new MoveItemState();
+    public readonly SlideItemState slideItemState = new SlideItemState();
+    public readonly ThrowItemState throwItemState = new ThrowItemState();
+    public readonly UseItemState useItemState = new UseItemState();
+    public readonly EquipItemState equipItemState = new EquipItemState();
 
     
     //should this be interface variables
@@ -43,12 +42,13 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         animator = GetComponent<Animator>();
         overlapObjectCheck = GetComponentInChildren<OverlapObjectCheck>();
         playerStatusManager = GetComponent<PlayerStatusManager>();
+        currentState = defaultState;
+
     }
 
     void Start()
     {
         playerStatusManager.Init(this);
-        currentState = DefaultState;
         currentState.EnterState(this);
     }
 
@@ -81,7 +81,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void UseItem()
     {
-        SwitchState(UseItemState);
+        SwitchState(useItemState);
     }
 
     public void Interact()

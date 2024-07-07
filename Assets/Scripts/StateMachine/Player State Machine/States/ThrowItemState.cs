@@ -9,6 +9,13 @@ public class ThrowItemState : PlayerBaseState
     readonly AnimationThrow _throwAnimation;
     readonly AnimationCarry _carryAnimation;
     AnimationState _currentAnimation = null;
+
+    public ThrowItemState()
+    {
+        _pickUpAnimation = new AnimationPickUp();
+        _throwAnimation = new AnimationThrow(); 
+        _carryAnimation = new AnimationCarry();
+    }
     
 
     public override async void EnterState(PlayerStateMachineManager stateManager)
@@ -47,7 +54,7 @@ public class ThrowItemState : PlayerBaseState
         stateManager.item.Release(stateManager);
         await _throwAnimation.Play(stateManager);
         _currentAnimation = null;
-        stateManager.SwitchState(stateManager.DefaultState);
+        stateManager.SwitchState(stateManager.defaultState);
         
     }
 }

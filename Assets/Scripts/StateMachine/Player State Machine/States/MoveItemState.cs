@@ -64,6 +64,6 @@ public class MoveItemState : PlayerBaseState
     {
         animationPushAndPull.LeavePushAnimation();
         stateManager.item.Release(stateManager);
-        stateManager.SwitchState(stateManager.DefaultState);
+        stateManager.SwitchState(stateManager.defaultState);
     }
 }

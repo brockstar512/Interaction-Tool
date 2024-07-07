@@ -41,6 +41,6 @@ public class UseItemState : PlayerBaseState
             item.Use();
         }
         
-        stateManager.SwitchState(stateManager.DefaultState);
+        stateManager.SwitchState(stateManager.defaultState);
     }
 }

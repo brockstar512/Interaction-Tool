@@ -52,6 +52,6 @@ public class SlideItemState : PlayerBaseState
             await HurtToeAnimation.Play(stateManager);
         }
         //await KickAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.DefaultState);
+        stateManager.SwitchState(stateManager.defaultState);
     }
 }

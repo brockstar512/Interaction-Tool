@@ -9,6 +9,7 @@ public class PlayerStatusManager : MonoBehaviour
     private void Awake()
     {
         playerStatus = new PlayerStatus();
+        healthBox = GetComponentInChildren<Collider2D>();
     }
 
     public void Init(PlayerStateMachineManager playerStateMachineManager)

@@ -1,16 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
+using Interface;
 using UnityEngine;
-using Player.ItemOverlap;
 
 public class DefaultState : PlayerBaseState
 {
     AnimationMove MoveAnimation;
     
-    // private OverlapObjectCheck overlapObjectCheck;
-    
+    //hurt
+    //slideing key
     public DefaultState()
     {
+        MoveAnimation = new AnimationMove();
     }
 
 
@@ -23,7 +22,7 @@ public class DefaultState : PlayerBaseState
     {
         base.UpdateLookDirection(stateManager.movement);
     }
-
+    
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
     {
 
@@ -47,16 +46,16 @@ public class DefaultState : PlayerBaseState
         switch (stateManager.item)
         {
             case Throwable throwable:
-                stateManager.SwitchState(stateManager.ThrowItemState);
+                stateManager.SwitchState(stateManager.throwItemState);
                 break;
             case Moveable moveable:
-                stateManager.SwitchState(stateManager.MoveItemState);
+                stateManager.SwitchState(stateManager.moveItemState);
                 break;
             case Slidable moveable:
-                stateManager.SwitchState(stateManager.SlideItemState);
+                stateManager.SwitchState(stateManager.slideItemState);
                 break;
             case Pickupable pickupable:
-                stateManager.SwitchState(stateManager.EquipItemState);
+                stateManager.SwitchState(stateManager.equipItemState);
                 break;
             default:
                 Debug.Log("is defualt");

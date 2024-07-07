@@ -24,7 +24,7 @@ public class EquipItemState : PlayerBaseState
         //this interactable item is suppose to determine the players inventory situation
         stateManager.item.Interact(stateManager);
         await EquipItemAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.DefaultState);
+        stateManager.SwitchState(stateManager.defaultState);
 
     }
 
