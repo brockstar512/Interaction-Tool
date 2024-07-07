@@ -15,8 +15,8 @@ public class MoveItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
+        LimitedMovementBounds = LookDirection;
         animationPushAndPull.EnterPushAnimation(stateManager);
-        base.UpdateLookDirection(stateManager.Movement);
         stateManager.item.Interact(stateManager);
 
     }
@@ -45,7 +45,6 @@ public class MoveItemState : PlayerBaseState
     protected override void Move(PlayerStateMachineManager stateManager)
     {
         Vector2 _movement = stateManager.Movement;
-        base.UpdateLookDirection(stateManager.Movement);
         
         if (LimitedMovementBounds == Vector2.down || LimitedMovementBounds == Vector2.up)
         {

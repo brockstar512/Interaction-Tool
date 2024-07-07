@@ -43,7 +43,7 @@ public class DefaultState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        Debug.Log($"is {stateManager.item}");
+        //Debug.Log($"is {stateManager.item}");
 
         switch (stateManager.item)
         {
