@@ -158,8 +158,8 @@
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Controls/InputControlLayout.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/Steam/SteamSupport.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Controls/InputControlList.cs" />
-    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/HID/HIDDescriptorWindow.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/JsonParser.cs" />
+    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/HID/HIDDescriptorWindow.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Controls/Processors/AxisDeadzoneProcessor.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/Steam/SteamControllerType.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/Users/InputUserSettings.cs" />
@@ -289,8 +289,8 @@
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Editor/Debugger/InputDebuggerWindow.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/PlayerInput/PlayerInputManager.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Editor/Internal/AdvancedDropdown/AdvancedDropdownItem.cs" />
-    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/SpriteUtilities.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/NativeInputRuntime.cs" />
+    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/SpriteUtilities.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Editor/UITKAssetEditor/SerializedInputBinding.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Editor/AssetImporter/InputActionCodeGenerator.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/iOS/iOSPostProcessBuild.cs" />
@@ -389,8 +389,8 @@
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/Observables/SelectObservable.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Devices/InputDevice.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/WebGL/WebGLGamepad.cs" />
-    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Actions/InputActionTrace.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Events/IInputEventTypeInfo.cs" />
+    <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Actions/InputActionTrace.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Controls/TouchPhaseControl.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Actions/Composites/ButtonWithTwoModifiers.cs" />
     <Compile Include="Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Plugins/EnhancedTouch/Finger.cs" />

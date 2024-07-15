@@ -6,7 +6,7 @@ public class Moveable : InteractableBase
 {
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
 
-
+   //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();

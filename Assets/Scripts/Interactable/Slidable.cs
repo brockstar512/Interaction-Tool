@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
-    LayerMask obstructionLayer;
+    public LayerMask obstructionLayer;
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     const int animationDelay = 250;
 
