@@ -8,13 +8,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Interactable
+  - 
   - Water
   - UI
   - Obstruction
-  - 
-  - 
-  - 
+  - Player
+  - Interacting
+  - Interactable
   - 
   - 
   - 

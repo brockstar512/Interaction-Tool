@@ -5,11 +5,11 @@ namespace Player.ItemOverlap
 {
     
 
-public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
+public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
 { 
     public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
     OverlapCheckHelper _helper;
-    public LayerMask detectionLayer;
+    [SerializeField] protected LayerMask detectionLayer;
 
 
     // Start is called before the first frame update
@@ -27,7 +27,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         // GetMostOverlappedCol();
     }
 
-    void SetOverlappingArea()
+    protected void SetOverlappingArea()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
@@ -37,7 +37,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         _areaTopRightCornerAABB = new Vector2(centerX+extendsX,centerY+extendsY);
         _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
     }
-    void SetMovingOverlappingArea(Vector2 characterPos)
+    protected void SetMovingOverlappingArea(Vector2 characterPos)
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
@@ -51,7 +51,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         _areaBottomLeftCornerAABB = new Vector2(centerX -extendsX,centerY -extendsY);
     }
     
-    Collider2D GetMostOverlappedCol()
+    protected Collider2D GetMostOverlappedCol()
     {
         // Physics2D.queriesStartInColliders = false;
         Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
@@ -63,7 +63,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         return col;
     }
     
-    Collider2D DetermineMostOverlap(Collider2D[] lib)
+    protected Collider2D DetermineMostOverlap(Collider2D[] lib)
     {
         Collider2D result = lib[0];
         float currentResult = 0;
@@ -82,7 +82,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         return result;
     }
     
-    float GetOverlappingArea(Collider2D overlappingObject)
+    protected float GetOverlappingArea(Collider2D overlappingObject)
     { 
         
         (Vector2 overlappingTopRightCornerAABB,Vector2 overlappingBottomLeftCornerAABB) = GetAABBCorners(overlappingObject);
@@ -108,7 +108,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
         return (topRightCorner, bottomLeftCorner);
     }
     
-    void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
 
         CustomDebug.DrawRectange(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB); 
@@ -126,7 +126,7 @@ public class OverlapObjectCheck : MonoBehaviour, IOverlapCheck
 
 
 
-    private class OverlapCheckHelper
+    protected class OverlapCheckHelper
     {
         public Vector2 UpdateScale(Vector2 lookDirection)
         {

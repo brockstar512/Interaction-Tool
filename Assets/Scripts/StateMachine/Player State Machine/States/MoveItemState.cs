@@ -7,6 +7,7 @@ public class MoveItemState : PlayerBaseState
     protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
     AnimationPushAndPull animationPushAndPull;
+    private IDoesOverlapLayer DoesOverlapItemLayer;
 
     public MoveItemState()
     {
@@ -18,6 +19,8 @@ public class MoveItemState : PlayerBaseState
         LimitedMovementBounds = LookDirection;
         animationPushAndPull.EnterPushAnimation(stateManager);
         stateManager.item.Interact(stateManager);
+        //Debug.Log(DoesOverlapItemLayer == null);
+       
 
     }
 
@@ -38,6 +41,11 @@ public class MoveItemState : PlayerBaseState
 
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
+        if (stateManager.item is Moveable moveable && moveable.CannotMove)
+        {
+            return;
+        }
+
         Move(stateManager);
         
     }
