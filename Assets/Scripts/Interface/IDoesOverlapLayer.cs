@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IDoesOverlapLayer
 {
-    public bool DoesOverlap();
+    public bool DoesOverlap(Vector3 movement);
 }

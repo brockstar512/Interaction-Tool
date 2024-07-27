@@ -19,15 +19,19 @@ namespace Player.ItemOverlap
         }
         
 
-        public bool DoesOverlap()
+        public bool DoesOverlap(Vector3 movementDirection)
         {
-            SetOverlappingArea();
+            this.transform.localScale = _helper.UpdateScale(movementDirection);
+            this.transform.localPosition = _helper.UpdatePosition(movementDirection);
+            SetMovingOverlappingArea(movementDirection);
+            
             
             Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
             Debug.Log(overlappingCols.Length);
             
             if (overlappingCols.Length > 0)
             {
+                Debug.Log(overlappingCols[0].gameObject.name);
                 return true;
             }
 

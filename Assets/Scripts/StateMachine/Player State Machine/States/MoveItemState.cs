@@ -41,13 +41,7 @@ public class MoveItemState : PlayerBaseState
 
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
-        if (stateManager.item is Moveable moveable && moveable.CannotMove)
-        {
-            return;
-        }
-
         Move(stateManager);
-        
     }
 
     protected override void Move(PlayerStateMachineManager stateManager)
@@ -62,7 +56,10 @@ public class MoveItemState : PlayerBaseState
         {
             _movement.y *= 0;
         }
-
+        if (stateManager.item is Moveable moveable && moveable.CannotMove(_movement))
+        {
+            return;
+        }
         stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
         stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
         animationPushAndPull.Play(stateManager);

@@ -7,7 +7,7 @@ public class Moveable : InteractableBase
 {
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     private OverlapMoveCheck moverCheck;
-    public bool CannotMove => moverCheck.DoesOverlap();
+    public bool CannotMove(Vector3 PullDirection)=> moverCheck.DoesOverlap(PullDirection);
 
    //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()

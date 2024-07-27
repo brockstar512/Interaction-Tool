@@ -56,6 +56,7 @@ namespace OverlapHelpers
         }
     }
     //could probably redo this. only need to move things when i am pulling because that's when the clipping will happen
+    //can be handled similarly to slidable except the actual slideable or moveable object determines which direction to place the field on
     public class OverlapMoveCheckHelper 
     {
         readonly Vector2 verticalScale = new Vector2(1.0f, .1f);
