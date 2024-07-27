@@ -97,6 +97,7 @@
     <Compile Include="Assets/Scripts/ItemOverlap/CustomDebug.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />
+    <Compile Include="Assets/Scripts/ItemOverlap/OverlapHelpers.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />

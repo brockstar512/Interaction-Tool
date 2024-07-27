@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using OverlapHelpers;
 namespace Player.ItemOverlap
 {
     
@@ -126,45 +126,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
 
 
 
-    protected class OverlapCheckHelper
-    {
-        public Vector2 UpdateScale(Vector2 lookDirection)
-        {
-            Vector2 updateScale = Vector2.zero;
-            
-            if (lookDirection == Vector2.down || lookDirection == Vector2.up)
-            {
-                updateScale = new Vector2(.5f,.25f);
-            }
-            if (lookDirection == Vector2.right ||lookDirection == Vector2.left)
-            {
-                updateScale = new Vector2(0.25f,0.5f);
-            }
-            
-            return updateScale;
-        }
-        public Vector2 UpdatePosition(Vector2 lookDirection)
-        {
-            //Debug.Log(lookDirection);
-            Vector2 updatePosition = Vector2.zero;
-            
-            if (lookDirection == Vector2.down)
-            {
-                updatePosition = new Vector2(0,0);
-            }
-            if (lookDirection == Vector2.right || lookDirection == Vector2.left)
-            {
-                updatePosition = new Vector2(.2f,.2f);
-            }
-            if (lookDirection == Vector2.up)
-            {
-                updatePosition = new Vector2(0,0.5f);
-            }
 
-    
-            return updatePosition;
-        }
-    }
         
 }
 
