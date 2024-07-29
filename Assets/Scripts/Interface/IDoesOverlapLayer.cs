@@ -5,4 +5,5 @@ using UnityEngine;
 public interface IDoesOverlapLayer
 {
     public bool DoesOverlap(Vector3 movement);
+    public float GetPercentOfOverlap(Bounds a, Bounds b);
 }
