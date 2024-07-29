@@ -7,7 +7,7 @@ public class MoveItemState : PlayerBaseState
     protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
     AnimationPushAndPull animationPushAndPull;
-    private IDoesOverlapLayer DoesOverlapItemLayer;
+    private Moveable _moveableItem;
 
     public MoveItemState()
     {
@@ -18,10 +18,11 @@ public class MoveItemState : PlayerBaseState
     {
         LimitedMovementBounds = LookDirection;
         animationPushAndPull.EnterPushAnimation(stateManager);
+        if (stateManager.item is Moveable moveable)
+        {
+            _moveableItem = moveable;
+        }
         stateManager.item.Interact(stateManager);
-        //Debug.Log(DoesOverlapItemLayer == null);
-       
-
     }
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
@@ -56,10 +57,11 @@ public class MoveItemState : PlayerBaseState
         {
             _movement.y *= 0;
         }
-        if (stateManager.item is Moveable moveable && moveable.CannotMove(_movement))
+        if (_moveableItem.CannotMove())
         {
             return;
         }
+        
         stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
         stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
         animationPushAndPull.Play(stateManager);
@@ -67,8 +69,10 @@ public class MoveItemState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
+        _moveableItem = null;
         animationPushAndPull.LeavePushAnimation();
         stateManager.item.Release(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
+        
     }
 }

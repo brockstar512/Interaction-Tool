@@ -15,23 +15,28 @@ namespace Player.ItemOverlap
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
             _helper = new OverlapMoveCheckHelper();
+        }
 
+        public void SetDirectionOfOverlap(Vector3 playerLookDirection)
+        {
+            this.transform.localScale = _helper.UpdateScale(playerLookDirection);
+            this.transform.localPosition = _helper.UpdatePosition(playerLookDirection);
+            //SetMovingOverlappingArea(playerLookDirection);//this does not update
+            /*this.transform.localScale = _helper.UpdateScale(movementDirection);
+            this.transform.localPosition = _helper.UpdatePosition(movementDirection);
+            SetMovingOverlappingArea(movementDirection);//this could just be the worl space or local space if not updating it causes issues
+            */
         }
         
-
-        public bool DoesOverlap(Vector3 movementDirection)
+        public bool DoesOverlap()
         {
-            this.transform.localScale = _helper.UpdateScale(movementDirection);
-            this.transform.localPosition = _helper.UpdatePosition(movementDirection);
-            SetMovingOverlappingArea(movementDirection);
-            
             
             Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
-            Debug.Log(overlappingCols.Length);
+            //Debug.Log(overlappingCols.Length);
             
             if (overlappingCols.Length > 0)
             {
-                Debug.Log(overlappingCols[0].gameObject.name);
+                //Debug.Log(overlappingCols[0].gameObject.name);
                 return true;
             }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IDoesOverlapLayer
 {
-    public bool DoesOverlap(Vector3 movement);
+    public bool DoesOverlap();
     public float GetPercentOfOverlap(Bounds a, Bounds b);
+    public void SetDirectionOfOverlap(Vector3 playerLookDirection);
 }

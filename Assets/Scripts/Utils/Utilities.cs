@@ -6,7 +6,6 @@ public static class Utilities
     public const string InteractableLayer = "Interactable";
     public const string InteractingLayer = "Interacting";
     public const string SlidableObstructionLayer = "Obstruction";
-    public const string DraggingItemLayer = "DraggingItem";
     public const string PlayerLayer = "Player";
     public const string EverythingLayer = "Everything";
 

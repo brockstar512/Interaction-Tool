@@ -7,7 +7,7 @@ public class Moveable : InteractableBase
 {
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     private OverlapMoveCheck moverCheck;
-    public bool CannotMove(Vector3 PullDirection)=> moverCheck.DoesOverlap(PullDirection);
+    public bool CannotMove()=> moverCheck.DoesOverlap();
 
    //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()
@@ -20,14 +20,17 @@ public class Moveable : InteractableBase
 
     public override bool Interact(PlayerStateMachineManager player)
     {
-        // moverCheck.gameObject.SetActive(true);
-        Debug.Log(Utilities.InteractingLayer);
+        Debug.Log(player.currentState.LookDirection);
+
+        moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
         Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
         this.transform.SetParent(player.transform);
         rb.isKinematic = false;
         
         return true;
     }
+    
+    
 
 
     public override void Release(PlayerStateMachineManager player)
@@ -35,10 +38,7 @@ public class Moveable : InteractableBase
         rb.isKinematic = true;
         rb.velocity = Vector2.zero;
         this.transform.SetParent(null);
-        Utilities.PutObjectOnLayer(Utilities.InteractableLayer,this.gameObject);
-
-        // moverCheck.gameObject.SetActive(false);
-
+        Utilities.PutObjectOnLayer(Utilities.InteractableLayer, this.gameObject);
     }
 
 
