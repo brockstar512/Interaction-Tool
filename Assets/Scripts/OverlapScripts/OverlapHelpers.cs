@@ -63,8 +63,8 @@ namespace OverlapHelpers
         readonly Vector2 horizontalScale = new Vector2(0.1f,0.75f);
         readonly Vector2 upPos = new Vector2(0,-0.7f);
         readonly Vector2 downPos= new Vector2(0,0);
-        readonly Vector2 rightPos = new Vector2(.5f,-.34f);
-        readonly Vector2 leftPos = new Vector2(-.5f,-.34f);
+        readonly Vector2  leftPos = new Vector2(.5f,-.34f);
+        readonly Vector2 rightPos = new Vector2(-.5f,-.34f);
         
         public Vector2 UpdateScale(Vector2 lookDirection)
         {

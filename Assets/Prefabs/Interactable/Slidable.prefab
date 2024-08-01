@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -62,6 +62,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51d4c9907edf4aa09f257eb8e13e3a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstructionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  moverCheckPrefab: {fileID: 1146870953546055049, guid: 2ae3d4ae6fc8b4e2dab55ee62b4746a9, type: 3}
+  targetCheckPrefab: {fileID: 5317643693889752134, guid: f6e3a55ab81cd47f08e9b21e4f70d1d4, type: 3}
 --- !u!50 &7317155042657932457
 Rigidbody2D:
   serializedVersion: 4
@@ -123,17 +128,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.002097249, y: -0.24175988}
+  m_Offset: {x: -0.0066211224, y: -0.36888492}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.7083333, y: 1}
+    oldSize: {x: 1.0625, y: 1.5}
     newSize: {x: 4, y: 4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.69582164, y: 0.493511}
+  m_Size: {x: 1.0438693, y: 0.747761}
   m_EdgeRadius: 0
 --- !u!212 &7317155042657932468
 SpriteRenderer:

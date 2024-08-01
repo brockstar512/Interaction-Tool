@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
+using Player.ItemOverlap;
 
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -12,16 +10,25 @@ public class Slidable : InteractableBase
     public LayerMask obstructionLayer;
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     const int animationDelay = 250;
+    [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
+    [SerializeField]  OverlapTargetCheck targetCheckPrefab;
+    OverlapTargetCheck _targetCheck;
+    OverlapMoveDamageCheck _moverCheck;
 
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
+        //obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
         UpdateLayerName();
+        // moverCheck = GetComponentInChildren<OverlapMoveCheck>();
+        // targetCheck = GetComponentInChildren<OverlapTargetCheck>();
+
     }
 
     //true or false if you are able to interact
     public override bool Interact(PlayerStateMachineManager state)
     {
+        
        return CanMove(state.currentState.LookDirection);
     }
 
@@ -31,7 +38,7 @@ public class Slidable : InteractableBase
         Physics2D.queriesStartInColliders = false;
             //obstructionLayer
             
-        RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, direction * 100);
+        RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, direction * 100,int.MaxValue,obstructionLayer);
         if (hit.collider != null)
         {
             //Debug.Log(hit.collider.gameObject.name);
@@ -79,7 +86,11 @@ public class Slidable : InteractableBase
         }
         float time = MeasureTime(distance);
         await Task.Delay(animationDelay);
-        transform.DOMove(destination, time);
+        _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
+        _moverCheck.SetDirectionOfOverlap(direction*-1);
+        _targetCheck =Instantiate( targetCheckPrefab, targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
+
+        transform.DOMove(destination, time).onComplete = CleanUp;
     }
 
     float MeasureTime(float distance)
@@ -91,5 +102,12 @@ public class Slidable : InteractableBase
     public override void Release(PlayerStateMachineManager player)
     {
         
+    }
+
+    void CleanUp()
+    {
+        //move to the internal script
+        _moverCheck.CleanUp();
+        _targetCheck.CleanUp();
     }
 }

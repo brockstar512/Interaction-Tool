@@ -57,8 +57,9 @@ public class MoveItemState : PlayerBaseState
         {
             _movement.y *= 0;
         }
-        if (_moveableItem.CannotMove())
+        if ( (_movement *-1) == LookDirection && _moveableItem.CannotMove())
         {
+            animationPushAndPull.Play(stateManager);
             return;
         }
         
