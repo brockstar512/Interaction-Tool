@@ -16,7 +16,7 @@ public class SlideItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        Debug.Log("Sliding item");
+        //Debug.Log("Sliding item");
         Action(stateManager);
     }
     

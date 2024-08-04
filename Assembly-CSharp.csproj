@@ -66,6 +66,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
+    <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/ItemManager/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleChewedState.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/ItemManager/ItemManager.cs" />
     <Compile Include="Assets/Scripts/Interface/IDoesOverlapLayer.cs" />
+    <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
+    <Compile Include="Assets/Scripts/Interface/IHurt.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHelpers.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />

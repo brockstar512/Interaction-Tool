@@ -18,6 +18,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         //this.gameObject.layer = LayerMask.NameToLayer(Utilities.InteractableLayer);
         //detectionLayer = LayerMask.NameToLayer(Utilities.InteractableLayer);
         detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+        
         _helper = new OverlapCheckHelper();
         SetOverlappingArea();
     }
@@ -61,6 +62,12 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         Collider2D col = DetermineMostOverlap(overlappingCols);
         //Debug.Log(col.gameObject.name);
         return col;
+    }
+    protected Collider2D[] GetAllOverlappedCol()
+    {
+        // Physics2D.queriesStartInColliders = false;
+        Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
+        return overlappingCols;
     }
     
     protected Collider2D DetermineMostOverlap(Collider2D[] lib)
