@@ -108,4 +108,60 @@ namespace OverlapHelpers
             return updatePosition;
         }
     }
+    
+    public class OverlapMoveDamageCheckHelper 
+    {
+        readonly Vector2 verticalScale = new Vector2(1.0f, .1f);
+        readonly Vector2 horizontalScale = new Vector2(0.1f,0.75f);
+        readonly Vector2 upPos = new Vector2(0,0.07f);
+        readonly Vector2 downPos= new Vector2(0,-0.77f);
+        readonly Vector2  leftPos = new Vector2(.55f,-.37f);
+        readonly Vector2 rightPos = new Vector2(-.55f,-.37f);
+        // readonly Vector2 upPos = new Vector2(0,1);
+        // readonly Vector2 downPos= new Vector2(0,-1);
+        // readonly Vector2  leftPos = new Vector2(1,-1);
+        // readonly Vector2 rightPos = new Vector2(-1,-1);
+        
+        public Vector2 UpdateScale(Vector2 lookDirection)
+        {
+            Vector2 updateScale = Vector2.zero;
+            
+            if (lookDirection == Vector2.down || lookDirection == Vector2.up)
+            {
+                updateScale = verticalScale;
+            }
+            if (lookDirection == Vector2.right ||lookDirection == Vector2.left)
+            {
+                updateScale = horizontalScale;
+            }
+            
+            return updateScale;
+        }
+        public Vector2 UpdatePosition(Vector2 lookDirection)
+        {
+            //Debug.Log(lookDirection);
+            Vector2 updatePosition = Vector2.zero;
+            
+            if (lookDirection == Vector2.down)
+            {
+                updatePosition = downPos;
+            }
+            if (lookDirection == Vector2.right)
+            {
+                updatePosition = rightPos;
+            }
+
+            if (lookDirection == Vector2.left)
+            {
+                updatePosition = leftPos;
+            }
+            if (lookDirection == Vector2.up)
+            {
+                updatePosition = upPos;
+            }
+
+    
+            return updatePosition;
+        }
+    }
 }
