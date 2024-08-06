@@ -8,11 +8,7 @@ namespace Player.ItemOverlap
     public class OverlapMoveDamageCheck : OverlapMoveCheck, IDamage
     {
 
-        // void Awake()
-        // {
-        //     //remove
-        //     detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractableLayer));
-        // }
+
         // Update is called once per frame
         private void Update()
         {
@@ -38,7 +34,7 @@ namespace Player.ItemOverlap
 
         void SlideCollision(Collider2D collision)
         {
-            Debug.Log($"Collided with {collision.gameObject.name}");
+            //Debug.Log($"Collided with {collision.gameObject.name}");
             IHurt collidedSubject = collision.GetComponent<IHurt>();
             if (collidedSubject is not null)
             {

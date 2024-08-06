@@ -23,10 +23,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         SetOverlappingArea();
     }
 
-    private void FixedUpdate()
-    {
-        // GetMostOverlappedCol();
-    }
+
 
     protected void SetOverlappingArea()
     {

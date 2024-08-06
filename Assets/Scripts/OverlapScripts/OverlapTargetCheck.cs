@@ -1,11 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Player.ItemOverlap
 {
     public class OverlapTargetCheck : OverlapObjectCheck, IOverlapTarget
     {
+
+ 
+       
+
+        private Bounds bounds;
+        void Awake()
+        {
+            bounds = GetComponent<SpriteRenderer>().bounds;
+            
+        }
+
+        void Start()
+        {
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidePadLayer);
+        }
+        
+
+        void FixedUpdate()
+        {
+            
+        }
+
+        public void CleanUp()
+        {
+            SetMovingOverlappingArea(this.transform.position);
+            //Collider2D col = GetMostOverlappedCol();
+            Collider2D[] col = GetAllOverlappedCol();
+            Debug.Log($"Clean up on slideable {col.Length}");//is 0
+            Debug.Log($"Clean up on slideable {col[0].gameObject.name}");//is 0
+
+
+            foreach (var item in col)
+            {
+                SlideKey key = item.GetComponent<SlideKey>();
+                if (key != null)
+                {
+                    Debug.Log(GetPercentOfOverlap(bounds, key.GetBounds));
+
+                }
+            }
+            // if (key != null && key is SlideKey)
+            // {
+            //     Debug.Log("over 95%");
+            //     Debug.Log(GetPercentOfOverlap(bounds, key.GetBounds));
+            // }
+  
+            //Destroy(this.gameObject);
+        }
         //get percentage that item overlaps
         public float GetPercentOfOverlap(Bounds a, Bounds b)
         {
@@ -29,12 +78,6 @@ namespace Player.ItemOverlap
             float overlappingArea = overlappingSqaure.x * overlappingSqaure.y;
 
             return overlappingArea / (a.extents.x * 2 * a.extents.y * 2) * 100.0f;
-        }
-        //if overlap target
-
-        public void CleanUp()
-        {
-            Destroy(this.gameObject);
         }
     }
 }
