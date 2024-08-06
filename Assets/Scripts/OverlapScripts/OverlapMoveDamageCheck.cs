@@ -2,19 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using OverlapHelpers;
+
 namespace Player.ItemOverlap
 {
-    public class OverlapMoveDamageCheck : OverlapObjectCheck, IDamage
+    public class OverlapMoveDamageCheck : OverlapMoveCheck, IDamage
     {
 
-        OverlapMoveDamageCheckHelper _helper;
-        void Awake()
-        {
-            //remove
-            //detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractableLayer));
-            _helper = new OverlapMoveDamageCheckHelper();
-        }
+        // void Awake()
+        // {
+        //     //remove
+        //     detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractableLayer));
+        // }
+        // Update is called once per frame
         private void Update()
         {
             SetMovingOverlappingArea(this.transform.position);
@@ -36,12 +35,6 @@ namespace Player.ItemOverlap
             }
             
         }
-        
-        public void SetDirectionOfOverlap(Vector3 playerLookDirection)
-        {
-            this.transform.localScale = _helper.UpdateScale(playerLookDirection);
-            this.transform.localPosition = _helper.UpdatePosition(playerLookDirection);
-        }
 
         void SlideCollision(Collider2D collision)
         {
@@ -51,7 +44,7 @@ namespace Player.ItemOverlap
             {
                 
                 //
-                Debug.Log("hur item");
+               // Debug.Log("hur item");
                 //IDamage dagamer = this;
                 collidedSubject.ApplyDamage(this);
                 
