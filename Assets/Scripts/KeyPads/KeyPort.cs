@@ -23,16 +23,3 @@ namespace KeySystem
         
     }
 }
-/*
- * private void OnTriggerEnter2D(Collider2D other)
-   {
-       Debug.Log("Trigger" + other.gameObject.name);
-       var key = other.GetComponent<OverlapTargetCheck>();
-       if (key != null)
-       {
-           Debug.Log($"Slidable is here {key.gameObject.name}");
-           Debug.Log($"Slidable is here {GetBounds}");
-       
-       }
-   }
- */

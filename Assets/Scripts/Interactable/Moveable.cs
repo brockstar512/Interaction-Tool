@@ -5,9 +5,13 @@ using Player.ItemOverlap;
 
 public class Moveable : InteractableBase
 {
+    //todo need to update location of the targetcheck... does not seem like it actually is moving correctly
+    [SerializeField] private Utilities.KeyTypes key;
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     private OverlapMoveCheck moverCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
+    [SerializeField]  OverlapTargetCheck targetCheckPrefab;
+    OverlapTargetCheck _targetCheck;
 
    //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()
@@ -15,13 +19,15 @@ public class Moveable : InteractableBase
         rb = GetComponent<Rigidbody2D>();
         UpdateLayerName();
         moverCheck = GetComponentInChildren<OverlapMoveCheck>();
+        moverCheck = GetComponentInChildren<OverlapMoveCheck>();
+
 
     }
 
     public override bool Interact(PlayerStateMachineManager player)
     {
         Debug.Log(player.currentState.LookDirection);
-
+        _targetCheck =Instantiate( targetCheckPrefab, targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
         moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
         Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
         this.transform.SetParent(player.transform);
@@ -39,6 +45,20 @@ public class Moveable : InteractableBase
         rb.velocity = Vector2.zero;
         this.transform.SetParent(null);
         Utilities.PutObjectOnLayer(Utilities.InteractableLayer, this.gameObject);
+        CleanUp();
+    }
+    
+    async void CleanUp()
+    {
+        //move to the internal script
+        bool isPlaced = await _targetCheck.IsOnKeyPort(key);
+        _targetCheck.CleanUp();
+        if (isPlaced)
+        {
+            // Debug.Log("Destorying sliding");
+            Destroy(this);
+        }
+
     }
 
 

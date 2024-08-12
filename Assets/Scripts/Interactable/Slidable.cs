@@ -105,13 +105,17 @@ public class Slidable : InteractableBase
         
     }
 
-    void CleanUp()
+    async void CleanUp()
     {
         //move to the internal script
+        bool isPlaced = await _targetCheck.IsOnKeyPort(key);
         _moverCheck.CleanUp();
-        if (_targetCheck.CleanUp(key))
+        _targetCheck.CleanUp();
+        if (isPlaced)
         {
-            
+            // Debug.Log("Destorying sliding");
+            Destroy(this);
         }
+
     }
 }

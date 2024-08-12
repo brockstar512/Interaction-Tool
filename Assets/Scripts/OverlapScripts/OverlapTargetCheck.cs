@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using KeySystem;
+using System.Threading.Tasks;
+
 namespace Player.ItemOverlap
 {
     [RequireComponent(typeof(SpriteRenderer))]
@@ -22,14 +21,18 @@ namespace Player.ItemOverlap
         {
             detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidePadLayer);
         }
-        
-        
-        public bool CleanUp(Utilities.KeyTypes key)
+
+        public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
         {
             SetMovingOverlappingArea(this.transform.position);
             Collider2D col = GetMostOverlappedCol();
+            
+            if (col == null)
+                return false;
+            
             //Collider2D[] col = GetAllOverlappedCol();
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
+            
             KeyPort port = col.GetComponent<KeyPort>();
             if (port != null && 
                 GetPercentOfOverlap(col.bounds, overlapField.bounds) > 95.0f &&
@@ -39,18 +42,14 @@ namespace Player.ItemOverlap
                 return true;
 
             }
-            // foreach (var item in col) 
-            // {
-            //     if (item.GetComponent<KeyPort>() != null)
-            //     {
-            //         float percent = GetPercentOfOverlap(item.bounds, overlapField.bounds);
-            //         result = percent > 95.0f;
-            //     }
-            // }
-
-            
             
             return false;
+            
+        }
+        public void CleanUp()
+        {
+
+            Destroy(this.gameObject);
         }
         
         //get percentage that item overlaps

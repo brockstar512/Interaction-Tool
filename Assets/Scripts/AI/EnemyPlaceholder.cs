@@ -19,7 +19,7 @@ public class EnemyPlaceholder : MonoBehaviour, IHurt
 
     public void ApplyDamage(IDamage damagingThing)
     {
-        Debug.Log("Reached apply damage");
+        Debug.Log("apply damage");
         Destroy(this.gameObject);
     }
     

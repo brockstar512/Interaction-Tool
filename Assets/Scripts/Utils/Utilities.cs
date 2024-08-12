@@ -18,20 +18,7 @@ public static class Utilities
         SlidingBlock,
         MovingBlock,
     }
-
-
-
-//        this.gameObject.layer = LayerMask.NameToLayer(Utilities.InteractableLayer);
-
-//add layer. remove layer
-    // public static void AddFocusLayer(string layerToAdd, LayerMask layer)
-    // {
-    //     layer |= 0x1 << LayerMask.NameToLayer(layerToAdd);
-    // }
-    public static void RemoveFocusLayer(string layerToRemove)
-    {
-        
-    }
+    
     public static void PutObjectOnLayer(string objectsNewLayer,GameObject gameObject)
     {
         gameObject.layer = LayerMask.NameToLayer(objectsNewLayer);
