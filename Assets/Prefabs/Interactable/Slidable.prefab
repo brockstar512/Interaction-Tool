@@ -62,6 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51d4c9907edf4aa09f257eb8e13e3a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  key: 2
   obstructionLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -184,7 +185,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 4334242479205817162, guid: f277e13d1158943af8e1e13c9a9272ec, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.3137255}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

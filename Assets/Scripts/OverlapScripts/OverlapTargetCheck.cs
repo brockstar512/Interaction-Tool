@@ -26,25 +26,31 @@ namespace Player.ItemOverlap
         
         public bool CleanUp(Utilities.KeyTypes key)
         {
-            bool result = false;
             SetMovingOverlappingArea(this.transform.position);
-            //Collider2D col = GetMostOverlappedCol();
-            Collider2D[] col = GetAllOverlappedCol();
-//           
+            Collider2D col = GetMostOverlappedCol();
+            //Collider2D[] col = GetAllOverlappedCol();
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
-            
-            foreach (var item in col) 
+            KeyPort port = col.GetComponent<KeyPort>();
+            if (port != null && 
+                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 95.0f &&
+                port.Lock(key))
             {
-                if (item.GetComponent<KeyPort>() != null)
-                {
-                    float percent = GetPercentOfOverlap(item.bounds, overlapField.bounds);
-                    result = percent > 95.0f;
-                }
+                Debug.Log("Lock it");
+                return true;
+
             }
+            // foreach (var item in col) 
+            // {
+            //     if (item.GetComponent<KeyPort>() != null)
+            //     {
+            //         float percent = GetPercentOfOverlap(item.bounds, overlapField.bounds);
+            //         result = percent > 95.0f;
+            //     }
+            // }
 
             
             
-            return result;
+            return false;
         }
         
         //get percentage that item overlaps
