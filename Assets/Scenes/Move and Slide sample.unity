@@ -2847,10 +2847,10 @@ GameObject:
   - component: {fileID: 2143309937}
   - component: {fileID: 2143309936}
   - component: {fileID: 2143309938}
-  - component: {fileID: 2143309939}
+  - component: {fileID: 2143309941}
   - component: {fileID: 2143309940}
   m_Layer: 10
-  m_Name: Hole
+  m_Name: SlideKeyPort
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2939,18 +2939,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   tileOffset: {x: 0, y: 0, z: 0}
---- !u!114 &2143309939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2143309934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa2ce7990f1664f64816d8e93297ec6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &2143309940
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2981,7 +2969,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -2997,6 +2985,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2143309941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143309934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d05da65af5878464cbbb2f6ef22924ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyPort: 2
 --- !u!1001 &2145370542
 PrefabInstance:
   m_ObjectHideFlags: 0

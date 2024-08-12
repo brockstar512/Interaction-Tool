@@ -7,6 +7,7 @@ using Player.ItemOverlap;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
+    [SerializeField] private Utilities.KeyTypes key;
     public LayerMask obstructionLayer;
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     const int animationDelay = 250;
@@ -108,6 +109,9 @@ public class Slidable : InteractableBase
     {
         //move to the internal script
         _moverCheck.CleanUp();
-        _targetCheck.CleanUp();
+        if (_targetCheck.CleanUp(key))
+        {
+            
+        }
     }
 }

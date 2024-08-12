@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using KeySystem;
 namespace Player.ItemOverlap
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class OverlapTargetCheck : OverlapObjectCheck, IOverlapTarget
     {
 
- 
-       
+        
 
         private Bounds bounds;
         void Awake()
@@ -23,44 +23,36 @@ namespace Player.ItemOverlap
             detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidePadLayer);
         }
         
-
-        void FixedUpdate()
+        
+        public bool CleanUp(Utilities.KeyTypes key)
         {
-            
-        }
-
-        public void CleanUp()
-        {
+            bool result = false;
             SetMovingOverlappingArea(this.transform.position);
             //Collider2D col = GetMostOverlappedCol();
             Collider2D[] col = GetAllOverlappedCol();
-            Debug.Log($"Clean up on slideable {col.Length}");//is 0
-            Debug.Log($"Clean up on slideable {col[0].gameObject.name}");//is 0
-
-
-            foreach (var item in col)
+//           
+            SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
+            
+            foreach (var item in col) 
             {
-                SlideKey key = item.GetComponent<SlideKey>();
-                if (key != null)
+                if (item.GetComponent<KeyPort>() != null)
                 {
-                    Debug.Log(GetPercentOfOverlap(bounds, key.GetBounds));
-
+                    float percent = GetPercentOfOverlap(item.bounds, overlapField.bounds);
+                    result = percent > 95.0f;
                 }
             }
-            // if (key != null && key is SlideKey)
-            // {
-            //     Debug.Log("over 95%");
-            //     Debug.Log(GetPercentOfOverlap(bounds, key.GetBounds));
-            // }
-  
-            //Destroy(this.gameObject);
+
+            
+            
+            return result;
         }
+        
         //get percentage that item overlaps
-        public float GetPercentOfOverlap(Bounds a, Bounds b)
+        public float GetPercentOfOverlap(Bounds overlapping, Bounds targetSpriteRenderer)
         {
             // get the bounds of both colliders
-            var boundsA = a;
-            var boundsB = b;
+            var boundsA = overlapping;
+            var boundsB = targetSpriteRenderer;
 
             // get min and max point of both
             var minA = boundsA.min; //(basically the bottom-left-back corner point)
@@ -77,7 +69,7 @@ namespace Player.ItemOverlap
             Vector2 overlappingSqaure = lowerMax - higherMin;
             float overlappingArea = overlappingSqaure.x * overlappingSqaure.y;
 
-            return overlappingArea / (a.extents.x * 2 * a.extents.y * 2) * 100.0f;
+            return overlappingArea / (overlapping.extents.x * 2 * targetSpriteRenderer.extents.y * 2) * 100.0f;
         }
     }
 }
