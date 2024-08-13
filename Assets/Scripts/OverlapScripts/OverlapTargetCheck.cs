@@ -19,17 +19,20 @@ namespace Player.ItemOverlap
 
         void Start()
         {
-            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidePadLayer);
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.KeyPortLayer);
+
         }
 
         public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
         {
+            Debug.Log($"Checking lock {key}");
             SetMovingOverlappingArea(this.transform.position);
             Collider2D col = GetMostOverlappedCol();
-            
+
             if (col == null)
                 return false;
-            
+            Debug.Log($"Checking col {col.gameObject.name}");
+
             //Collider2D[] col = GetAllOverlappedCol();
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
             

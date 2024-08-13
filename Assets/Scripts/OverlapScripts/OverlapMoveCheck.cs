@@ -16,8 +16,13 @@ namespace Player.ItemOverlap
         protected void Start()
         {
            //if you are the player and you are interacting with a moving object. ignore the item you are interacting with and the player
+           //removes these layers from detection
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
+            detectionLayer &= 0x1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer);
+
+
         }
         public void SetDirectionOfOverlap(Vector3 playerLookDirection)
         {
@@ -29,7 +34,7 @@ namespace Player.ItemOverlap
         {
             SetMovingOverlappingArea(itemLocation);
             Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
-            Debug.Log(overlappingCols.Length);
+            //Debug.Log(overlappingCols.Length);
             
             if (overlappingCols.Length > 0)
             {

@@ -15,8 +15,8 @@ TagManager:
   - Player
   - Interacting
   - Interactable
-  - SlidePad
-  - 
+  - KeyPort
+  - TargetOverlapLayer
   - 
   - 
   - 

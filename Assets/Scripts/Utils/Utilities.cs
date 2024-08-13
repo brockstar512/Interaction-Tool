@@ -9,8 +9,10 @@ public static class Utilities
     public const string InteractingLayer = "Interacting";
     public const string SlidableObstructionLayer = "Obstruction";
     public const string PlayerLayer = "Player";
-    public const string SlidePadLayer = "SlidePad";
+    public const string KeyPortLayer = "KeyPort";
+    public const string TargetOverlapLayer = "TargetOverlapLayer";
 
+    
     public enum KeyTypes
     {
         Door,

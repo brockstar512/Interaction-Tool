@@ -10,8 +10,7 @@ public class Moveable : InteractableBase
     Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     private OverlapMoveCheck moverCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
-    [SerializeField]  OverlapTargetCheck targetCheckPrefab;
-    OverlapTargetCheck _targetCheck;
+    private OverlapTargetCheck _targetCheck;
 
    //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()
@@ -19,7 +18,7 @@ public class Moveable : InteractableBase
         rb = GetComponent<Rigidbody2D>();
         UpdateLayerName();
         moverCheck = GetComponentInChildren<OverlapMoveCheck>();
-        moverCheck = GetComponentInChildren<OverlapMoveCheck>();
+        _targetCheck = GetComponentInChildren<OverlapTargetCheck>();
 
 
     }
@@ -27,7 +26,6 @@ public class Moveable : InteractableBase
     public override bool Interact(PlayerStateMachineManager player)
     {
         Debug.Log(player.currentState.LookDirection);
-        _targetCheck =Instantiate( targetCheckPrefab, targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
         moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
         Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
         this.transform.SetParent(player.transform);
@@ -52,7 +50,7 @@ public class Moveable : InteractableBase
     {
         //move to the internal script
         bool isPlaced = await _targetCheck.IsOnKeyPort(key);
-        _targetCheck.CleanUp();
+        
         if (isPlaced)
         {
             // Debug.Log("Destorying sliding");
