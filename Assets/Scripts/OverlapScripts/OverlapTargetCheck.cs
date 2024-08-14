@@ -30,7 +30,7 @@ namespace Player.ItemOverlap
             Collider2D col = GetMostOverlappedCol();
 
             if (col == null)
-                return false;
+                return await Task.FromResult(false);
             Debug.Log($"Checking col {col.gameObject.name}");
 
             //Collider2D[] col = GetAllOverlappedCol();
@@ -42,11 +42,11 @@ namespace Player.ItemOverlap
                 port.Lock(key))
             {
                 Debug.Log("Lock it");
-                return true;
+                return await Task.FromResult(true);
 
             }
             
-            return false;
+            return await Task.FromResult(false);;
             
         }
         public void CleanUp()
