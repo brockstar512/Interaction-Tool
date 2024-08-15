@@ -6,11 +6,17 @@ namespace Player.ItemOverlap
 {
     public class OverlapMoveCheck : OverlapObjectCheck,IDoesOverlapLayer
     {
-        OverlapMoveCheckHelper _helper;
+        OverlapMovePullCheckHelper _helperPull;
+
+        [SerializeField] private SpriteRenderer pullSpriteField;
+        [SerializeField] private SpriteRenderer pushSpriteField;
+
+        //OverlapMoveCheckHelper _helper;
+
 
         protected void Awake()
         {
-            _helper = new OverlapMoveCheckHelper();
+            _helperPull = new OverlapMovePullCheckHelper();
         }
 
         protected void Start()
@@ -26,8 +32,11 @@ namespace Player.ItemOverlap
         }
         public void SetDirectionOfOverlap(Vector3 playerLookDirection)
         {
-            this.transform.localScale = _helper.UpdateScale(playerLookDirection);
-            this.transform.localPosition = _helper.UpdatePosition(playerLookDirection);
+            //this is for pull
+            this.transform.localScale = _helperPull.UpdateScale(playerLookDirection);
+            this.transform.localPosition = _helperPull.UpdatePosition(playerLookDirection);
+            //this is for push
+            //scale stays the same. whatever the look direction is add .1 to that in the y or x
         }
         
         public bool DoesOverlap(Vector2 itemLocation)

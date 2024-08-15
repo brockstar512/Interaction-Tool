@@ -5,9 +5,7 @@ using Player.ItemOverlap;
 
 public class Moveable : InteractableBase
 {
-    //todo need to update location of the targetcheck... does not seem like it actually is moving correctly
     [SerializeField] private Utilities.KeyTypes key;
-    Vector3 GetWidth { get { return GetComponent<SpriteRenderer>().bounds.size; } }
     private OverlapMoveCheck moverCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
     private OverlapTargetCheck _targetCheck;
@@ -25,7 +23,8 @@ public class Moveable : InteractableBase
 
     public override bool Interact(PlayerStateMachineManager player)
     {
-        Debug.Log(player.currentState.LookDirection);
+        //Debug.Log(player.currentState.LookDirection);
+        //pass in set direction of transform t00
         moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
         Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
         this.transform.SetParent(player.transform);
