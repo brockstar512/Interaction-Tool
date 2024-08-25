@@ -1920,7 +1920,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1206445154
 Transform:
   m_ObjectHideFlags: 0
@@ -3709,8 +3709,6 @@ MonoBehaviour:
   detectionLayer:
     serializedVersion: 2
     m_Bits: 4294967295
-  pullSpriteField: {fileID: 1216329953}
-  pushSpriteField: {fileID: 1206445155}
 --- !u!1001 &6009130602128501319
 PrefabInstance:
   m_ObjectHideFlags: 0
