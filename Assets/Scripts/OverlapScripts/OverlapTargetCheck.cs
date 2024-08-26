@@ -25,18 +25,17 @@ namespace Player.ItemOverlap
 
         public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
         {
-            Debug.Log($"Checking lock {key}");
             SetMovingOverlappingArea(this.transform.position);
             Collider2D col = GetMostOverlappedCol();
 
             if (col == null)
                 return await Task.FromResult(false);
-            Debug.Log($"Checking col {col.gameObject.name}");
 
-            //Collider2D[] col = GetAllOverlappedCol();
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
             
             KeyPort port = col.GetComponent<KeyPort>();
+            //Debug.Log($"percentage  {GetPercentOfOverlap(col.bounds, overlapField.bounds)}");
+
             if (port != null && 
                 GetPercentOfOverlap(col.bounds, overlapField.bounds) > 95.0f &&
                 port.Lock(key))

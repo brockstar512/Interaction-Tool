@@ -16,19 +16,16 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
     // Start is called before the first frame update
     void Start()
     {
-        //this.gameObject.layer = LayerMask.NameToLayer(Utilities.InteractableLayer);
-        //detectionLayer = LayerMask.NameToLayer(Utilities.InteractableLayer);
         detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
         _sr = GetComponent<SpriteRenderer>();
         _helper = new OverlapCheckHelper();
-        SetOverlappingArea(_sr);
+        //SetOverlappingArea(_sr);
     }
 
 
-    //issue is this is grabbing it's own sprite renderer... i could make is ull and if it's null it grabs it's own... other wise it grabs what is being passed in
-    protected void SetOverlappingArea(SpriteRenderer detectionField = null)
+    protected void SetOverlappingArea()
     {
-        SpriteRenderer sr = detectionField == null ? this.GetComponent<SpriteRenderer>() : detectionField;
+        SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
         float centerY = sr.bounds.center.y;
         float extendsX = sr.bounds.extents.x; 
