@@ -80,7 +80,6 @@
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/ItemManager/ItemManager.cs" />
-    <Compile Include="Assets/Scripts/Interface/IDoesOverlapLayer.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />
-    <Compile Include="Assets/Scripts/Interface/IOverlapTarget.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />
