@@ -83,7 +83,7 @@ public class Slidable : InteractableBase
         await Task.Delay(animationDelay);
         _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
         _moverCheck.SetDirectionOfOverlap(direction*-1);
-        _targetCheck =Instantiate( targetCheckPrefab, this.transform.position, Quaternion.identity, this.transform);
+        _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
 
         transform.DOMove(destination, time).onComplete = CleanUp;
     }

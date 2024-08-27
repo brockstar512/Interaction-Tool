@@ -46,7 +46,6 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Scripts/OverlapScripts/New Overlap/OverlapItem.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
@@ -59,12 +58,9 @@
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/New Overlap/OverlapMoving.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/Helper/OverlapHelpers.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/New Overlap/OverlapTarget.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
@@ -103,7 +99,6 @@
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/New Overlap/OverlapMovingDamage.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
     <Compile Include="Assets/Scripts/Interface/IHurt.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />

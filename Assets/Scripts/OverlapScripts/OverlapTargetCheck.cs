@@ -135,6 +135,7 @@ namespace Player.ItemOverlap
                 return await Task.FromResult(false);
 
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
+            Debug.Log(overlapField.gameObject.name);
             
             KeyPort port = col.GetComponent<KeyPort>();
             Debug.Log($"percentage  {GetPercentOfOverlap(col.bounds, overlapField.bounds)}");

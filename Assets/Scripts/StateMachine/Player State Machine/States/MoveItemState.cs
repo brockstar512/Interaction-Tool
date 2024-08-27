@@ -8,7 +8,7 @@ public class MoveItemState : PlayerBaseState
     private Vector2 LimitedMovementBounds = Vector2.zero;
     AnimationPushAndPull animationPushAndPull;
     private Moveable _moveableItem;
-
+    //this should have the moveable space check
     public MoveItemState()
     {
         animationPushAndPull = new AnimationPushAndPull();
