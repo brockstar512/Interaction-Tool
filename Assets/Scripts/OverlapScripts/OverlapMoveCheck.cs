@@ -10,10 +10,13 @@ namespace Player.ItemOverlap
         OverlapMoveCheckHelper _helper;
         public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
-        
+        private SpriteRenderer _sr;
+
         private void Awake()
         {
             _helper = new OverlapMoveCheckHelper();
+            _sr = GetComponent<SpriteRenderer>();
+
         }
 
         private void Start()
@@ -37,11 +40,10 @@ namespace Player.ItemOverlap
         
         private void SetMovingOverlappingArea(Vector2 characterPos)
         {
-            SpriteRenderer sr = GetComponent<SpriteRenderer>();
-            float centerX = sr.bounds.center.x; 
-            float centerY = sr.bounds.center.y;
-            float extendsX = sr.bounds.extents.x; 
-            float extendsY = sr.bounds.extents.y;
+            float centerX = _sr.bounds.center.x; 
+            float centerY = _sr.bounds.center.y;
+            float extendsX = _sr.bounds.extents.x; 
+            float extendsY = _sr.bounds.extents.y;
         
             _areaTopRightCornerAABB = new Vector2(centerX +extendsX ,centerY +extendsY);
             _areaBottomLeftCornerAABB = new Vector2(centerX -extendsX,centerY -extendsY);

@@ -94,8 +94,9 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
                 item = overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection);
             if (item == null)
                 return;
+            
+            currentState.Action(this);
         }
-        currentState.Action(this);
     }
 
     public void Release()

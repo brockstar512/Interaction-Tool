@@ -8,6 +8,7 @@ namespace Player.ItemOverlap
     {
         // Start is called before the first frame update
         private OverlapCheckHelper _helper;
+        private SpriteRenderer _sr;
         public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
         void Awake()
@@ -17,6 +18,7 @@ namespace Player.ItemOverlap
         
         private void Start()
         {
+            _sr = GetComponent<SpriteRenderer>();
             RemoveDetectionLayers();
         }
         
@@ -31,11 +33,10 @@ namespace Player.ItemOverlap
 
         private void SetMovingOverlappingArea(Vector2 characterPos)
         {
-            SpriteRenderer sr = GetComponent<SpriteRenderer>();
-            float centerX = sr.bounds.center.x; 
-            float centerY = sr.bounds.center.y;
-            float extendsX = sr.bounds.extents.x; 
-            float extendsY = sr.bounds.extents.y;
+            float centerX = _sr.bounds.center.x; 
+            float centerY = _sr.bounds.center.y;
+            float extendsX = _sr.bounds.extents.x; 
+            float extendsY = _sr.bounds.extents.y;
         
             _areaTopRightCornerAABB = new Vector2(centerX +extendsX ,centerY +extendsY);
             _areaBottomLeftCornerAABB = new Vector2(centerX -extendsX,centerY -extendsY);
@@ -73,7 +74,7 @@ namespace Player.ItemOverlap
         }
         class OverlapCheckHelper
         {
-            readonly Vector2 horizontalScale = new Vector2(0.1f, 0.4f);
+            readonly Vector2 horizontalScale = new Vector2(0.1f, 0.25f);
             readonly Vector2 verticalScale = new Vector2(0.8f, 0.1f);
             readonly Vector2 upPos = new Vector2(0, 0.3f);
             readonly Vector2 downPos = new Vector2(0, 0);
