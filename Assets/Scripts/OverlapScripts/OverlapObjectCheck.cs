@@ -16,14 +16,22 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
     // Start is called before the first frame update
     void Start()
     {
-        detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+        RemoveDetectionLayers();
         _sr = GetComponent<SpriteRenderer>();
         _helper = new OverlapCheckHelper();
-        //SetOverlappingArea(_sr);
     }
+    
+    private void AddDetectionLayers()
+    {
+            
+    }
+    private void RemoveDetectionLayers()
+    {
+        detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
 
-
-    protected void SetOverlappingArea()
+    }
+    
+    private void SetOverlappingArea()
     {
         SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
@@ -33,21 +41,19 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         _areaTopRightCornerAABB = new Vector2(centerX+extendsX,centerY+extendsY);
         _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
     }
-    protected void SetMovingOverlappingArea(Vector2 characterPos)
+    private void SetMovingOverlappingArea(Vector2 characterPos)
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         float centerX = sr.bounds.center.x; 
         float centerY = sr.bounds.center.y;
         float extendsX = sr.bounds.extents.x; 
         float extendsY = sr.bounds.extents.y;
-        //Debug.Log( sr.bounds);
-        //worldspace to local space... or local space to world space
-
+        
         _areaTopRightCornerAABB = new Vector2(centerX +extendsX ,centerY +extendsY);
         _areaBottomLeftCornerAABB = new Vector2(centerX -extendsX,centerY -extendsY);
     }
     
-    protected Collider2D GetMostOverlappedCol()
+    private Collider2D GetMostOverlappedCol()
     {
         // Physics2D.queriesStartInColliders = false;
         Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
@@ -58,14 +64,8 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         //Debug.Log(col.gameObject.name);
         return col;
     }
-    protected Collider2D[] GetAllOverlappedCol()
-    {
-        // Physics2D.queriesStartInColliders = false;
-        Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB,detectionLayer);
-        return overlappingCols;
-    }
     
-    protected Collider2D DetermineMostOverlap(Collider2D[] lib)
+    private Collider2D DetermineMostOverlap(Collider2D[] lib)
     {
         Collider2D result = lib[0];
         float currentResult = 0;
@@ -84,7 +84,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         return result;
     }
     
-    protected float GetOverlappingArea(Collider2D overlappingObject)
+    private float GetOverlappingArea(Collider2D overlappingObject)
     { 
         
         (Vector2 overlappingTopRightCornerAABB,Vector2 overlappingBottomLeftCornerAABB) = GetAABBCorners(overlappingObject);
@@ -94,7 +94,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         return xLength * yLength;
     }
     
-    (Vector2, Vector2) GetAABBCorners(Collider2D overlappingObject)
+    private (Vector2, Vector2) GetAABBCorners(Collider2D overlappingObject)
     {   
 
         Bounds objectsBound = overlappingObject.bounds;
@@ -110,7 +110,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         return (topRightCorner, bottomLeftCorner);
     }
     
-    protected void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
 
         CustomDebug.DrawRectange(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB); 
@@ -125,11 +125,56 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         Collider2D overlappingObject = GetMostOverlappedCol();
         return overlappingObject?.GetComponent<InteractableBase>();
     }
+    
+    class OverlapCheckHelper
+    {
+        readonly Vector2 verticalScale= new Vector2(.5f, .25f);
+        readonly Vector2 horizontalScale = new Vector2(0.25f,0.5f);
+        readonly Vector2 upPos = new Vector2(0,0.5f);
+        readonly Vector2 downPos = new Vector2(0,0);
+        readonly Vector2 rightPos = new Vector2(.2f,.2f);
+        readonly Vector2 leftPos = new Vector2(.2f,.2f);
 
-
-
+ 
 
         
+        public Vector2 UpdateScale(Vector2 lookDirection)
+        {
+            Vector2 updateScale = Vector2.zero;
+            
+            if (lookDirection == Vector2.down || lookDirection == Vector2.up)
+            {
+                updateScale = verticalScale;
+            }
+            if (lookDirection == Vector2.right ||lookDirection == Vector2.left)
+            {
+                updateScale = horizontalScale;
+            }
+            
+            return updateScale;
+        }
+        public Vector2 UpdatePosition(Vector2 lookDirection)
+        {
+            Vector2 updatePosition = Vector2.zero;
+            
+            if (lookDirection == Vector2.down)
+            {
+                updatePosition = downPos;
+            }
+            if (lookDirection == Vector2.right || lookDirection == Vector2.left)
+            {
+                updatePosition = rightPos;
+            }
+            if (lookDirection == Vector2.up)
+            {
+                updatePosition = upPos;
+            }
+
+    
+            return updatePosition;
+        }
+    }
+    
 }
 
 }

@@ -19,14 +19,9 @@ public class Slidable : InteractableBase
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
-        //obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
         UpdateLayerName();
-        // moverCheck = GetComponentInChildren<OverlapMoveCheck>();
-        // targetCheck = GetComponentInChildren<OverlapTargetCheck>();
-
     }
 
-    //true or false if you are able to interact
     public override bool Interact(PlayerStateMachineManager state)
     {
         
@@ -107,13 +102,11 @@ public class Slidable : InteractableBase
 
     async void CleanUp()
     {
-        //move to the internal script
         bool isPlaced = await _targetCheck.IsOnKeyPort(key);
         _moverCheck.CleanUp();
         _targetCheck.CleanUp();
         if (isPlaced)
         {
-            // Debug.Log("Destorying sliding");
             Destroy(this);
         }
 
