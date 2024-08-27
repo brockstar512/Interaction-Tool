@@ -115,7 +115,7 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
     class OverlapCheckHelper
     {
         readonly Vector2 verticalScale= new Vector2(.5f, .25f);
-        readonly Vector2 horizontalScale = new Vector2(0.25f,0.5f);
+        readonly Vector2 horizontalScale = new Vector2(0.25f,0.25f);
         readonly Vector2 upPos = new Vector2(0,0.5f);
         readonly Vector2 downPos = new Vector2(0,0);
         readonly Vector2 rightPos = new Vector2(.2f,.2f);

@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Player.ItemOverlap;
 
 public class MoveItemState : PlayerBaseState
 {
     protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
-    AnimationPushAndPull animationPushAndPull;
+    private AnimationPushAndPull animationPushAndPull;
+    private OverlapPullItemCheck _overlapPushItemCheck;
     private Moveable _moveableItem;
     //this should have the moveable space check
     public MoveItemState()
@@ -18,6 +18,7 @@ public class MoveItemState : PlayerBaseState
     {
         LimitedMovementBounds = LookDirection;
         animationPushAndPull.EnterPushAnimation(stateManager);
+        _overlapPushItemCheck = stateManager.transform.GetComponentInChildren<OverlapPullItemCheck>();
         if (stateManager.item is Moveable moveable)
         {
             _moveableItem = moveable;
@@ -58,6 +59,12 @@ public class MoveItemState : PlayerBaseState
             _movement.y *= 0;
         }
         if ( (_movement *-1) == LookDirection && _moveableItem.CannotMove())
+        {
+            animationPushAndPull.Play(stateManager);
+            return;
+        }
+
+        if(_movement  == LookDirection && _overlapPushItemCheck.DoesOverlap(LookDirection))
         {
             animationPushAndPull.Play(stateManager);
             return;
