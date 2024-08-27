@@ -10,8 +10,6 @@ namespace Player.ItemOverlap
         OverlapMoveCheckHelper _helper;
         public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
-
-
         
         private void Awake()
         {
@@ -27,6 +25,7 @@ namespace Player.ItemOverlap
         {
             
         }
+        
         private void RemoveDetectionLayers()
         {
             //removes these layers from detection
@@ -35,7 +34,6 @@ namespace Player.ItemOverlap
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));   
         }
-        
         
         private void SetMovingOverlappingArea(Vector2 characterPos)
         {
@@ -75,7 +73,7 @@ namespace Player.ItemOverlap
             return false;
         }
         
-            class OverlapMoveCheckHelper 
+        class OverlapMoveCheckHelper 
             {
                 readonly Vector2 verticalScale = new Vector2(1.0f, .1f);
                 readonly Vector2 horizontalScale = new Vector2(0.1f,0.75f);

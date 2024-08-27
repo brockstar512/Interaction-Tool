@@ -16,31 +16,18 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
     // Start is called before the first frame update
     void Start()
     {
-        RemoveDetectionLayers();
+        AddDetectionLayers();
         _sr = GetComponent<SpriteRenderer>();
         _helper = new OverlapCheckHelper();
     }
     
     private void AddDetectionLayers()
     {
-            
-    }
-    private void RemoveDetectionLayers()
-    {
         detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
 
     }
+
     
-    private void SetOverlappingArea()
-    {
-        SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
-        float centerX = sr.bounds.center.x; 
-        float centerY = sr.bounds.center.y;
-        float extendsX = sr.bounds.extents.x; 
-        float extendsY = sr.bounds.extents.y;
-        _areaTopRightCornerAABB = new Vector2(centerX+extendsX,centerY+extendsY);
-        _areaBottomLeftCornerAABB = new Vector2(centerX-extendsX,centerY-extendsY);
-    }
     private void SetMovingOverlappingArea(Vector2 characterPos)
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -134,8 +121,6 @@ public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
         readonly Vector2 downPos = new Vector2(0,0);
         readonly Vector2 rightPos = new Vector2(.2f,.2f);
         readonly Vector2 leftPos = new Vector2(.2f,.2f);
-
- 
 
         
         public Vector2 UpdateScale(Vector2 lookDirection)

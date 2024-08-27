@@ -38,8 +38,7 @@ public class Slidable : InteractableBase
         if (hit.collider != null)
         {
             //Debug.Log(hit.collider.gameObject.name);
-
-            //Debug.Log(Mathf.Abs(transform.position.x - hit.collider.transform.position.x));
+            
             if (Mathf.Abs(transform.position.x - hit.collider.transform.position.x) <= GetWidth.x && Mathf.Abs(direction.x) == 1)
             {
                 return false;

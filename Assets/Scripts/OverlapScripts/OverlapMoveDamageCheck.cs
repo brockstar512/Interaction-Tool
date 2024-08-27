@@ -15,25 +15,29 @@ namespace Player.ItemOverlap
         private void Awake()
         {
             _helper = new OverlapMoveCheckHelper();
-            //RemoveDetectionLayers();
         }
 
         private void Start()
         {
-            // detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
-            //
-            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
-            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
-            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
-            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));
+            //this has to be in start and not Awake
             RemoveDetectionLayers();
+            AddDetectionLayers();
         }
 
+        private void AddDetectionLayers()
+        {
+            //if this hits another interactble item... handle stopping this later
+            // detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+   
+        }
         private void RemoveDetectionLayers()
         {
-            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
             
-            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
+            //right now this will not detect interactble or interacting...if i collide with interacting
+            //or interactable I should handle an emergency stop in the do tween
+            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
+
+            detectionLayer &= ~(1 <<LayerMask.NameToLayer(Utilities.InteractableLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));
@@ -85,11 +89,14 @@ namespace Player.ItemOverlap
             IHurt collidedSubject = collision.GetComponent<IHurt>();
             if (collidedSubject is not null)
             {
-                
+                //this should handle when it hits something
                 collidedSubject.ApplyDamage(this);
                 
             }
-            Destroy(collision.gameObject);
+            //this should not handle what happens when it hits something
+            //except if it hits something interacting or interactable it should do an emergency stop
+            //Debug.Log(collision.gameObject.name);
+            //Destroy(collision.gameObject);
         }
         
         private void OnDrawGizmos()
@@ -161,6 +168,5 @@ namespace Player.ItemOverlap
                             return updatePosition;
                         }
                     }
-
     }
 }

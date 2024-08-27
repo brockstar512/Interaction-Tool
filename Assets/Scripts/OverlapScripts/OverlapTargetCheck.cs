@@ -137,7 +137,7 @@ namespace Player.ItemOverlap
             SpriteRenderer overlapField = this.GetComponent<SpriteRenderer>();
             
             KeyPort port = col.GetComponent<KeyPort>();
-            //Debug.Log($"percentage  {GetPercentOfOverlap(col.bounds, overlapField.bounds)}");
+            Debug.Log($"percentage  {GetPercentOfOverlap(col.bounds, overlapField.bounds)}");
 
             if (port != null && 
                 GetPercentOfOverlap(col.bounds, overlapField.bounds) > 95.0f &&
