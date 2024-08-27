@@ -141,7 +141,7 @@ namespace Player.ItemOverlap
             Debug.Log($"percentage  {GetPercentOfOverlap(col.bounds, overlapField.bounds)}");
 
             if (port != null && 
-                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 95.0f &&
+                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 90.0f &&
                 port.Lock(key))
             {
                 Debug.Log("Lock it");
