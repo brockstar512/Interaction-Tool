@@ -7,14 +7,12 @@ public class Moveable : InteractableBase
 {
     [SerializeField] private Utilities.KeyTypes key;
     private OverlapMoveCheck moverCheck;
-    private IDoesOverlapLayer testCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
     private OverlapTargetCheck _targetCheck;
 
    //have drag with overlapping. change layer if dragging to ingor that layer and player
     private void Awake()
     {
-        //testCheck = new OverlapMoveCheck();
         rb = GetComponent<Rigidbody2D>();
         UpdateLayerName();
         moverCheck = GetComponentInChildren<OverlapMoveCheck>();
@@ -54,6 +52,8 @@ public class Moveable : InteractableBase
         
         if (isPlaced)
         {
+            _targetCheck.CleanUp();
+            moverCheck.CleanUp();
             // Debug.Log("Destorying sliding");
             Destroy(this);
         }

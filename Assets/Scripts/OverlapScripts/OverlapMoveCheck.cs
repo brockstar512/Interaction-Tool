@@ -73,6 +73,11 @@ namespace Player.ItemOverlap
             return false;
         }
         
+        public void CleanUp()
+        {
+            Destroy(this.gameObject);
+        }
+        
         class OverlapMoveCheckHelper 
             {
                 readonly Vector2 verticalScale = new Vector2(1.0f, .1f);
