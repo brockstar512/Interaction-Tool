@@ -3273,6 +3273,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7317155042657932468, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Color.a
+      value: 0.2627451
+      objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Name
       value: Slidable
@@ -3280,6 +3284,14 @@ PrefabInstance:
     - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.x
+      value: 1.0183134
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.0055291355
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932471, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3579,6 +3591,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item PickUp bell
       objectReference: {fileID: 0}
+    - target: {fileID: 1825406759125198478, guid: 46d38d093010b48afaf3a5da7b3d9198, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9124903857457223319, guid: 46d38d093010b48afaf3a5da7b3d9198, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4
@@ -3747,6 +3763,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item PickUp candle
       objectReference: {fileID: 0}
+    - target: {fileID: 7364456561327367300, guid: 9a79f509f902341cdba347245a786fdb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3763,6 +3783,10 @@ PrefabInstance:
     - target: {fileID: 923568524142310616, guid: ff9eee4b6e5684e7e9f2fe9618b74e0b, type: 3}
       propertyPath: m_Name
       value: Item PickUp grappling
+      objectReference: {fileID: 0}
+    - target: {fileID: 923568524142310616, guid: ff9eee4b6e5684e7e9f2fe9618b74e0b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7397947252378587247, guid: ff9eee4b6e5684e7e9f2fe9618b74e0b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3955,6 +3979,10 @@ PrefabInstance:
     - target: {fileID: 2525957372619321246, guid: f60bc88b948d04e6c9aa5d84513db933, type: 3}
       propertyPath: m_Name
       value: Moveable
+      objectReference: {fileID: 0}
+    - target: {fileID: 4634920778106815070, guid: f60bc88b948d04e6c9aa5d84513db933, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6899141965555347970, guid: f60bc88b948d04e6c9aa5d84513db933, type: 3}
       propertyPath: m_LocalPosition.x
