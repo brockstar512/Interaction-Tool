@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using System.Threading.Tasks;
+using DG.Tweening.Core;
 using Player.ItemOverlap;
 
 
@@ -15,6 +16,7 @@ public class Slidable : InteractableBase
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
     OverlapTargetCheck _targetCheck;
     OverlapMoveDamageCheck _moverCheck;
+    private Tweener slideAnimation;
 
     void Awake()
     {
@@ -83,9 +85,17 @@ public class Slidable : InteractableBase
         await Task.Delay(animationDelay);
         _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
         _moverCheck.SetDirectionOfOverlap(direction*-1);
+        _moverCheck.SetEmergencyStop(EmergencyStopTween);
         _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
 
-        transform.DOMove(destination, time).onComplete = CleanUp;
+        slideAnimation = transform.DOMove(destination, time);
+        slideAnimation.onComplete = CleanUp;
+    }
+    void EmergencyStopTween()
+    {
+        Debug.Log("Kill tween");
+        DOTween.Kill(slideAnimation);
+        CleanUp();
     }
 
     float MeasureTime(float distance)

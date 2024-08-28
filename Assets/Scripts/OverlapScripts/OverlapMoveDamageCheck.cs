@@ -11,6 +11,7 @@ namespace Player.ItemOverlap
         [SerializeField] protected LayerMask detectionLayer;
         private OverlapMoveCheckHelper _helper;
         private SpriteRenderer _sr;
+        private Action _emergencyStop;
 
         
         
@@ -40,7 +41,7 @@ namespace Player.ItemOverlap
             //or interactable I should handle an emergency stop in the do tween
             // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
 
-            detectionLayer &= ~(1 <<LayerMask.NameToLayer(Utilities.InteractableLayer));
+            // detectionLayer &= ~(1 <<LayerMask.NameToLayer(Utilities.InteractableLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
             detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));
@@ -63,6 +64,7 @@ namespace Player.ItemOverlap
 
             foreach (Collider2D collision in col)
             {
+                Debug.Log(collision.gameObject.name);
                 SlideCollision(collision);
             }
             
@@ -94,7 +96,14 @@ namespace Player.ItemOverlap
             {
                 //this should handle when it hits something
                 collidedSubject.ApplyDamage(this);
-                
+                return;
+
+            }
+            //if collider is not obstruction
+            if(collision.gameObject.layer != LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
+            {
+                Debug.Log("Emergency stop");
+                _emergencyStop?.Invoke();
             }
             //this should not handle what happens when it hits something
             //except if it hits something interacting or interactable it should do an emergency stop
@@ -115,8 +124,14 @@ namespace Player.ItemOverlap
             this.transform.localPosition = _helper.UpdatePosition(playerLookDirection);
         }
 
+        public void SetEmergencyStop(Action emergencyStopCallback)
+        {
+            _emergencyStop = emergencyStopCallback;
+        }
+
         public void CleanUp()
         {
+            _emergencyStop = null;
             Destroy(this.gameObject);
         }
         
