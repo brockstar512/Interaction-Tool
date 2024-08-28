@@ -94,7 +94,7 @@ public class Slidable : InteractableBase
     void EmergencyStopTween()
     {
         Debug.Log("Kill tween");
-        DOTween.Kill(slideAnimation);
+        slideAnimation.Kill();
         CleanUp();
     }
 
