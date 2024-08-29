@@ -3,21 +3,20 @@ using UnityEngine;
 using System.Threading.Tasks;
 using DG.Tweening.Core;
 using Player.ItemOverlap;
+using Unity.VisualScripting;
 
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
     [SerializeField] private Utilities.KeyTypes key;
-    public LayerMask obstructionLayer;
-    Vector3 getColWidth { get { return _col.bounds.size; } }
-    const int animationDelay = 250;
+    [SerializeField] private LayerMask obstructionLayer;
+    const int AnimationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
     OverlapTargetCheck _targetCheck;
     OverlapMoveDamageCheck _moverCheck;
     private Collider2D _col;
-    private Tweener slideAnimation;
 
     void Awake()
     {
@@ -28,7 +27,6 @@ public class Slidable : InteractableBase
 
     public override bool Interact(PlayerStateMachineManager state)
     {
-        
        return CanMove(state.currentState.LookDirection);
     }
 
@@ -45,6 +43,7 @@ public class Slidable : InteractableBase
         {
             //Debug.Log(hit.collider.gameObject.name);
             //if we are not right up next to the wall
+            Vector3 getColWidth = _col.bounds.size;
             if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
             {
                 return false;
@@ -53,85 +52,33 @@ public class Slidable : InteractableBase
             {
                 return false;
             }
-            
-            //slide the item
-            SlideItem(direction, hit);
-
-            return true;
         }
-        return false;
+        //slide the item
+        SlideItem(direction, hit);
+
+        return true;
     }
 
     async void SlideItem(Vector2 direction, RaycastHit2D hit)
     {
-        
-        //get a reference to the size of the item we are hitting
-        Vector3 hitSr = hit.collider.GetComponent<SpriteRenderer>().bounds.size; 
-        //get the radius so we have the distance to stop from its center
-        Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
-        //get a vector pointing to our sliding object
-        Vector2 sideOfDestination = direction * -1;
-        //get the location of the radius we need to stop at
-        hitItemsRadius *= sideOfDestination;
-        //get our current location of the object we are sliding
-        Vector3 currentLocation = this.transform.position;
-        Vector2 destination = Vector2.zero;
-        float distance = 0;
-        //do this if we are trying to slide it up or down. only deal with the y direction
-        if (direction == Vector2.down || direction == Vector2.up)
-        {
-
-            //get the location we hit
-            float hitLocation = hit.collider.transform.position.y;
-            //radius time the vector pointing from hit to us
-            float myWidthWithSidePos = (getColWidth.y / 2) * (direction.y * -1);
-            
-            //up (first explaination): it's the location of the hit + the width of the hit position + radius of the sliding block - collider radius + collider width * the direction it is sliding
-            //(we are trying to account for the  margin of the top of the collider to the point of the center of the sliding image)
-            //down (second explaination): it's the location of the hit + radius of the hit object + radius of the image that is sliding * the direction it is sliding
-            //(we are trying to account for the bottom of the moving sprite)
-            float yMargin = direction == Vector2.up ? 
-                hitLocation + hitItemsRadius.y + myWidthWithSidePos + (transform.GetComponent<SpriteRenderer>().bounds.center.y / 2) - (getColWidth.y / 2) + getColWidth.y:
-                hitLocation + hitItemsRadius.y + (transform.GetComponent<SpriteRenderer>().bounds.size.y / 2)  * (direction.y * -1);;
-            //set the destination to the it you needs to travel
-            destination = new Vector2(currentLocation.x, yMargin);
-            //the total distance is the margin of the center of the both items
-            distance = Mathf.Abs(_col.bounds.center.y - hit.collider.transform.position.y);
-        }
-        //do this if we are trying to slide it right or left. only deal with the x direction
-        if (direction == Vector2.right || direction == Vector2.left)
-        {
-            float distanceMargin = hit.collider.transform.position.x;
-            float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
-            destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
-            distance = Mathf.Abs(_col.bounds.center.x - hit.collider.transform.position.x);
-
-        }
-        //get the time for how long it will take to animate there
-        float time = MeasureTime(distance);
         //pause so the character can animate
-        await Task.Delay(animationDelay);
+        await Task.Delay(AnimationDelay);
         //create the movement checks
         _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
         _moverCheck.SetDirectionOfOverlap(direction*-1);
-        _moverCheck.SetEmergencyStop(EmergencyStopTween);
+        _moverCheck.SetEmergencyStop(EmergencyStop);
         _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
         //animate this to the location and give it a callback when complete
-        slideAnimation = transform.DOMove(destination, time);
-        slideAnimation.onComplete = CleanUp;
+        this.AddComponent<MoveSlideable>().Init(direction: direction);
+        //if the target is on something like water...
+        //if the slide damage runs into anything that is not a player
+
     }
-    void EmergencyStopTween()
+    void EmergencyStop()
     {
-        slideAnimation.Kill();
         CleanUp();
     }
-
-    float MeasureTime(float distance)
-    {
-        const float speed = 15;
-        return (distance / speed);
-    }
-
+    
     public override void Release(PlayerStateMachineManager player)
     {
         
