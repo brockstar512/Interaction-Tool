@@ -10,7 +10,7 @@ public class Slidable : InteractableBase
 {
     [SerializeField] private Utilities.KeyTypes key;
     public LayerMask obstructionLayer;
-    Vector3 GetWidth { get { return _col.bounds.size; } }
+    Vector3 getColWidth { get { return _col.bounds.size; } }
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
@@ -45,11 +45,11 @@ public class Slidable : InteractableBase
         {
             //Debug.Log(hit.collider.gameObject.name);
             //if we are not right up next to the wall
-            if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= GetWidth.x && Mathf.Abs(direction.x) == 1)
+            if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
             {
                 return false;
             }
-            if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= GetWidth.y && Mathf.Abs(direction.y) == 1)
+            if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
             {
                 return false;
             }
@@ -64,11 +64,7 @@ public class Slidable : InteractableBase
 
     async void SlideItem(Vector2 direction, RaycastHit2D hit)
     {
-        // Debug.Log(_col.bounds.center);
-        // Debug.Log(this.transform.position);
-        //(-1,-.37,0.0)
-        //(-1,0,0)
-
+        
         //get a reference to the size of the item we are hitting
         Vector3 hitSr = hit.collider.GetComponent<SpriteRenderer>().bounds.size; 
         //get the radius so we have the distance to stop from its center
@@ -84,19 +80,20 @@ public class Slidable : InteractableBase
         //do this if we are trying to slide it up or down. only deal with the y direction
         if (direction == Vector2.down || direction == Vector2.up)
         {
+
             //get the location we hit
-            float distanceMargin = hit.collider.transform.position.y;
+            float hitLocation = hit.collider.transform.position.y;
             //radius time the vector pointing from hit to us
-            float myWidthWithSidePos = (GetWidth.y / 2) * (direction.y * -1);
+            float myWidthWithSidePos = (getColWidth.y / 2) * (direction.y * -1);
             
-            //mark the destination as the distance you have to travel + the -of the hits radius + - of myRadius of the side that will be touching
-            //+GetWidth.y will get me to halway on the collider... //distanceMargin + hitItemsRadius.y + myWidthWithSidePos + GetWidth.y;
-            //we want to get the different of the radius of the collider and the sprtie image if we are going up to account for 3D
-            Debug.Log((transform.GetComponent<SpriteRenderer>().bounds.center.y / 2) - (GetWidth.y / 2) + " or " + GetWidth.y);
+            //up (first explaination): it's the location of the hit + the width of the hit position + radius of the sliding block - collider radius + collider width * the direction it is sliding
+            //(we are trying to account for the  margin of the top of the collider to the point of the center of the sliding image)
+            //down (second explaination): it's the location of the hit + radius of the hit object + radius of the image that is sliding * the direction it is sliding
+            //(we are trying to account for the bottom of the moving sprite)
             float yMargin = direction == Vector2.up ? 
-                distanceMargin + hitItemsRadius.y + myWidthWithSidePos + (transform.GetComponent<SpriteRenderer>().bounds.center.y / 2) - (GetWidth.y / 2) + GetWidth.y :
-                distanceMargin + hitItemsRadius.y + myWidthWithSidePos + GetWidth.y;
-            
+                hitLocation + hitItemsRadius.y + myWidthWithSidePos + (transform.GetComponent<SpriteRenderer>().bounds.center.y / 2) - (getColWidth.y / 2) + getColWidth.y:
+                hitLocation + hitItemsRadius.y + (transform.GetComponent<SpriteRenderer>().bounds.size.y / 2)  * (direction.y * -1);;
+            //set the destination to the it you needs to travel
             destination = new Vector2(currentLocation.x, yMargin);
             //the total distance is the margin of the center of the both items
             distance = Mathf.Abs(_col.bounds.center.y - hit.collider.transform.position.y);
@@ -105,7 +102,7 @@ public class Slidable : InteractableBase
         if (direction == Vector2.right || direction == Vector2.left)
         {
             float distanceMargin = hit.collider.transform.position.x;
-            float myWidthWithSidePos = (GetWidth.x / 2) * (direction.x * -1);
+            float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
             destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
             distance = Mathf.Abs(_col.bounds.center.x - hit.collider.transform.position.x);
 
