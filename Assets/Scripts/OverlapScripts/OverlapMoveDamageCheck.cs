@@ -102,7 +102,7 @@ namespace Player.ItemOverlap
             if(collision.gameObject.layer != LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
             {
                 Debug.Log("Emergency stop");
-                //Debug.Break();
+                Debug.Break();
                 //_emergencyStop?.Invoke();
             }
             //this should not handle what happens when it hits something
@@ -110,7 +110,7 @@ namespace Player.ItemOverlap
             Debug.Log(collision.gameObject.name);
             //Destroy(collision.gameObject);
         }
-        
+        //todo if it overlapps anything that is not a player or enemy stop it... consider make the width smaller
         private void OnDrawGizmos()
         {
 
@@ -137,8 +137,8 @@ namespace Player.ItemOverlap
         
          private class OverlapMoveCheckHelper 
                     {
-                        readonly Vector2 verticalScale = new Vector2(1.0f, .1f);
-                        readonly Vector2 horizontalScale = new Vector2(0.1f,1f);
+                        readonly Vector2 verticalScale = new Vector2(1.0f, .05f);
+                        readonly Vector2 horizontalScale = new Vector2(0.05f,1f);
                         readonly Vector2 upPos = new Vector2(0,-0.82f);//plays when moving down
                         readonly Vector2 downPos= new Vector2(0,0.25f);//plays whhen moving up
                         readonly Vector2  leftPos = new Vector2(.6f,-.34f);

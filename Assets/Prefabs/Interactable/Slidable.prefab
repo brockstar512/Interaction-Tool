@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7317155042657932471}
   - component: {fileID: 4584001313565389957}
   - component: {fileID: 8617182811198937470}
-  - component: {fileID: 7317155042657932457}
   - component: {fileID: 7317155042657932470}
   - component: {fileID: 7317155042657932468}
   m_Layer: 0
@@ -68,33 +67,6 @@ MonoBehaviour:
     m_Bits: 0
   moverCheckPrefab: {fileID: 1146870953546055049, guid: 2ae3d4ae6fc8b4e2dab55ee62b4746a9, type: 3}
   targetCheckPrefab: {fileID: 5317643693889752134, guid: f6e3a55ab81cd47f08e9b21e4f70d1d4, type: 3}
---- !u!50 &7317155042657932457
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7317155042657932469}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 0.0001
-  m_LinearDrag: 20
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!61 &7317155042657932470
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -129,7 +101,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0055291355, y: -0.36888492}
+  m_Offset: {x: -0.0073952675, y: -0.35664034}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -139,7 +111,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.0183134, y: 0.747761}
+  m_Size: {x: 0.9311342, y: 0.72327185}
   m_EdgeRadius: 0
 --- !u!212 &7317155042657932468
 SpriteRenderer:
@@ -185,7 +157,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 4334242479205817162, guid: f277e13d1158943af8e1e13c9a9272ec, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2627451}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
