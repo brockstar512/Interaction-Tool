@@ -102,12 +102,12 @@ namespace Player.ItemOverlap
             if(collision.gameObject.layer != LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
             {
                 Debug.Log("Emergency stop");
-                //Debug.Break();
+                Debug.Break();
                 //_emergencyStop?.Invoke();
             }
             //this should not handle what happens when it hits something
             //except if it hits something interacting or interactable it should do an emergency stop
-            Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
             //Destroy(collision.gameObject);
         }
         

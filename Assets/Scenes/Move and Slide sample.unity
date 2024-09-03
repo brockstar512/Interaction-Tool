@@ -2490,19 +2490,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Size.x
-      value: 0.9311342
+      value: 1.0438693
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Size.y
-      value: 0.72327185
+      value: 0.747761
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Offset.x
-      value: -0.0073952675
+      value: -0.0066211224
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Offset.y
-      value: -0.35664034
+      value: -0.36888492
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -3273,9 +3273,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7317155042657932468, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Color.a
+      value: 0.2627451
+      objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Name
       value: Slidable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.x
+      value: 1.0183134
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.0055291355
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932471, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_LocalPosition.x
