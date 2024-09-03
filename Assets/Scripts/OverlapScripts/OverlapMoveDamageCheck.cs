@@ -12,8 +12,10 @@ namespace Player.ItemOverlap
         private OverlapMoveCheckHelper _helper;
         private SpriteRenderer _sr;
         private Action _emergencyStop;
-//raycast top center and bottomm... get closest
         
+        //if player or enemy apply damage
+        //if interacting... emercency stop
+        //let obstruction or interactable or anything else other than an enemy hit it with a raycast
         
         private void Awake()
         {

@@ -64,8 +64,6 @@ public class Slidable : InteractableBase
             sideTwoPos.x -= _col.bounds.extents.x;
         }
         
-        Debug.Log(_col.bounds.extents.x);
-        Debug.Log(_col.bounds.center);
 
         RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction ,int.MaxValue,obstructionLayer);
         Debug.DrawRay(sideOnePos,direction, Color.blue);
