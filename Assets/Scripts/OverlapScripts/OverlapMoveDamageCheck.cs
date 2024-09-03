@@ -12,8 +12,10 @@ namespace Player.ItemOverlap
         private OverlapMoveCheckHelper _helper;
         private SpriteRenderer _sr;
         private Action _emergencyStop;
-
         
+        //if player or enemy apply damage
+        //if interacting... emercency stop
+        //let obstruction or interactable or anything else other than an enemy hit it with a raycast
         
         private void Awake()
         {
@@ -101,9 +103,15 @@ namespace Player.ItemOverlap
             //if collider is not obstruction
             if(collision.gameObject.layer != LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
             {
-                Debug.Log("Emergency stop");
-                Debug.Break();
+                //Debug.Log("Emergency stop");
+                //Debug.Break();
                 //_emergencyStop?.Invoke();
+            }
+            else if (collision.gameObject.layer == LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
+            {
+                //Debug.Log("Emergency stop");
+                //_emergencyStop?.Invoke();
+               // Debug.Break();
             }
             //this should not handle what happens when it hits something
             //except if it hits something interacting or interactable it should do an emergency stop

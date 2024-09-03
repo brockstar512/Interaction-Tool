@@ -1,8 +1,10 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using System.Threading.Tasks;
 using DG.Tweening.Core;
 using Player.ItemOverlap;
+using Unity.VisualScripting;
 
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -19,6 +21,8 @@ public class Slidable : InteractableBase
     private Collider2D _col;
     private Tweener slideAnimation;
 
+
+
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
@@ -26,11 +30,65 @@ public class Slidable : InteractableBase
         UpdateLayerName();
     }
 
+    private void FixedUpdate()
+    {
+        GetClosestRaycastHit(Vector2.left);
+    }
+
     public override bool Interact(PlayerStateMachineManager state)
     {
         
        return CanMove(state.currentState.LookDirection);
     }
+
+    Collider2D GetClosestRaycastHit(Vector2 direction)
+    {
+        Collider2D resultingHit = null;
+        Physics2D.queriesStartInColliders = false;
+
+        Vector3 startPos = _col.bounds.center;
+        Vector3 sideOnePos = _col.bounds.center;
+        Vector3 sideTwoPos = _col.bounds.center;
+
+
+        if (direction == Vector2.left ||direction == Vector2.right )
+        {
+            sideOnePos.y += _col.bounds.extents.y;
+            sideTwoPos.y -= _col.bounds.extents.y;
+
+        }
+        
+        if (direction == Vector2.up ||direction == Vector2.down )
+        {
+            sideOnePos.x += _col.bounds.extents.x;
+            sideTwoPos.x -= _col.bounds.extents.x;
+        }
+        
+
+        RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(sideOnePos,direction, Color.blue);
+
+
+        RaycastHit2D hitMiddle = Physics2D.Raycast(startPos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(startPos,direction, Color.red);
+
+        RaycastHit2D hitSideTwo = Physics2D.Raycast(sideTwoPos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(sideTwoPos,direction, Color.green);
+
+        
+        // if (direction == Vector2.left || direction == Vector2.right)
+        // {
+        //     float distanceOne = hitSideOne.collider !=null ? Mathf.Abs(hitSideOne.transform.position.x -this.transform.position.x) : int.MaxValue;
+        //     float distanceTwo = hitSideOne.collider !=null ? Mathf.Abs(hitSideTwo.transform.position.x -this.transform.position.x): int.MaxValue;
+        //     float distanceMiddle =  hitSideOne.collider !=null ?Mathf.Abs(hitMiddle.transform.position.x -this.transform.position.x) : int.MaxValue;
+        //
+        //
+        // }   
+
+
+        return resultingHit;
+    }
+    
 
     bool CanMove(Vector2 direction)
     {
@@ -40,6 +98,7 @@ public class Slidable : InteractableBase
         Vector3 startPos = _col.bounds.center;
         //his the destination
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
+        //Collider2D closestHit = GetClosestRaycastHit(direction);
         //if we hit a obstruction layer
         if (hit.collider != null)
         {
@@ -136,6 +195,8 @@ public class Slidable : InteractableBase
     {
         
     }
+    
+    
 
     async void CleanUp()
     {
