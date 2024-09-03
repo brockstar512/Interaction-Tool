@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -20,11 +21,18 @@ public class Slidable : InteractableBase
     private Collider2D _col;
     private Tweener slideAnimation;
 
+
+
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
         _col = GetComponent<Collider2D>();
         UpdateLayerName();
+    }
+
+    private void FixedUpdate()
+    {
+        GetClosestRaycastHit(Vector2.left);
     }
 
     public override bool Interact(PlayerStateMachineManager state)
@@ -39,8 +47,8 @@ public class Slidable : InteractableBase
         Physics2D.queriesStartInColliders = false;
 
         Vector3 startPos = _col.bounds.center;
-        Vector3 sideOnePos = Vector3.zero;
-        Vector3 sideTwoPos = Vector3.zero;
+        Vector3 sideOnePos = _col.bounds.center;
+        Vector3 sideTwoPos = _col.bounds.center;
 
 
         if (direction == Vector2.left ||direction == Vector2.right )
@@ -56,16 +64,18 @@ public class Slidable : InteractableBase
             sideTwoPos.x -= _col.bounds.extents.x;
         }
         
+        Debug.Log(_col.bounds.extents.x);
+        Debug.Log(_col.bounds.center);
 
         RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction ,int.MaxValue,obstructionLayer);
-        Debug.DrawRay(_col.transform.position + sideOnePos,direction, Color.blue);
+        Debug.DrawRay(sideOnePos,direction, Color.blue);
 
 
         RaycastHit2D hitMiddle = Physics2D.Raycast(startPos, direction ,int.MaxValue,obstructionLayer);
         Debug.DrawRay(startPos,direction, Color.red);
 
         RaycastHit2D hitSideTwo = Physics2D.Raycast(sideTwoPos, direction ,int.MaxValue,obstructionLayer);
-        Debug.DrawRay(_col.transform.position + sideTwoPos,direction, Color.green);
+        Debug.DrawRay(sideTwoPos,direction, Color.green);
 
         
         // if (direction == Vector2.left || direction == Vector2.right)
