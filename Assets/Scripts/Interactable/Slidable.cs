@@ -57,20 +57,25 @@ public class Slidable : InteractableBase
         }
         
 
-        RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction * 100,int.MaxValue,obstructionLayer);
+        RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(_col.transform.position + sideOnePos,direction, Color.blue);
 
-        RaycastHit2D hitMiddle = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
+
+        RaycastHit2D hitMiddle = Physics2D.Raycast(startPos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(startPos,direction, Color.red);
+
+        RaycastHit2D hitSideTwo = Physics2D.Raycast(sideTwoPos, direction ,int.MaxValue,obstructionLayer);
+        Debug.DrawRay(_col.transform.position + sideTwoPos,direction, Color.green);
+
         
-        RaycastHit2D hitSideTwo = Physics2D.Raycast(sideTwoPos, direction * 100,int.MaxValue,obstructionLayer);
-
-        if (direction == Vector2.left || direction == Vector2.right)
-        {
-            float distanceOne = Mathf.Abs(hitSideOne.transform.position.x -this.transform.position.x);
-            float distanceTwo = Mathf.Abs(hitSideTwo.transform.position.x -this.transform.position.x);
-            float distanceMiddle = Mathf.Abs(hitMiddle.transform.position.x -this.transform.position.x);
-
-
-        }
+        // if (direction == Vector2.left || direction == Vector2.right)
+        // {
+        //     float distanceOne = hitSideOne.collider !=null ? Mathf.Abs(hitSideOne.transform.position.x -this.transform.position.x) : int.MaxValue;
+        //     float distanceTwo = hitSideOne.collider !=null ? Mathf.Abs(hitSideTwo.transform.position.x -this.transform.position.x): int.MaxValue;
+        //     float distanceMiddle =  hitSideOne.collider !=null ?Mathf.Abs(hitMiddle.transform.position.x -this.transform.position.x) : int.MaxValue;
+        //
+        //
+        // }   
 
 
         return resultingHit;
@@ -84,35 +89,35 @@ public class Slidable : InteractableBase
         //start at the center of the bounds
         Vector3 startPos = _col.bounds.center;
         //his the destination
-        //RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
-        Collider2D closestHit = GetClosestRaycastHit(direction);
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
+        //Collider2D closestHit = GetClosestRaycastHit(direction);
         //if we hit a obstruction layer
-        if (closestHit != null)
+        if (hit.collider != null)
         {
             //Debug.Log(hit.collider.gameObject.name);
             //if we are not right up next to the wall
-            if (Mathf.Abs(startPos.x - closestHit.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
+            if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
             {
                 return false;
             }
-            if (Mathf.Abs(startPos.y - closestHit.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
+            if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
             {
                 return false;
             }
             
             //slide the item
-            SlideItem(direction, closestHit);
+            SlideItem(direction, hit);
 
             return true;
         }
         return false;
     }
 
-    async void SlideItem(Vector2 direction, Collider2D hitCollider)
+    async void SlideItem(Vector2 direction, RaycastHit2D hit)
     {
         
         //get a reference to the size of the item we are hitting
-        Vector3 hitSr = hitCollider.GetComponent<SpriteRenderer>().bounds.size; 
+        Vector3 hitSr = hit.collider.GetComponent<SpriteRenderer>().bounds.size; 
         //get the radius so we have the distance to stop from its center
         Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
         //get a vector pointing to our sliding object
@@ -128,7 +133,7 @@ public class Slidable : InteractableBase
         {
 
             //get the location we hit
-            float hitLocation = hitCollider.transform.position.y;
+            float hitLocation = hit.collider.transform.position.y;
             //radius time the vector pointing from hit to us
             float myWidthWithSidePos = (getColWidth.y / 2) * (direction.y * -1);
             
@@ -142,15 +147,15 @@ public class Slidable : InteractableBase
             //set the destination to the it you needs to travel
             destination = new Vector2(currentLocation.x, yMargin);
             //the total distance is the margin of the center of the both items
-            distance = Mathf.Abs(_col.bounds.center.y - hitCollider.transform.position.y);
+            distance = Mathf.Abs(_col.bounds.center.y - hit.collider.transform.position.y);
         }
         //do this if we are trying to slide it right or left. only deal with the x direction
         if (direction == Vector2.right || direction == Vector2.left)
         {
-            float distanceMargin = hitCollider.transform.position.x;
+            float distanceMargin = hit.collider.transform.position.x;
             float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
             destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
-            distance = Mathf.Abs(_col.bounds.center.x - hitCollider.transform.position.x);
+            distance = Mathf.Abs(_col.bounds.center.x - hit.collider.transform.position.x);
 
         }
         //get the time for how long it will take to animate there
@@ -182,6 +187,8 @@ public class Slidable : InteractableBase
     {
         
     }
+    
+    
 
     async void CleanUp()
     {
