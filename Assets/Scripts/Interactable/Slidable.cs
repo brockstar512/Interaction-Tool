@@ -11,14 +11,12 @@ public class Slidable : InteractableBase
 {
     [SerializeField] private Utilities.KeyTypes key;
     [SerializeField] private LayerMask obstructionLayer;
+    const int AnimationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
-    private OverlapTargetCheck _targetCheck;
-    private OverlapMoveDamageCheck _moverCheck;
-    private MoveSlideable _mover;
+    OverlapTargetCheck _targetCheck;
+    OverlapMoveDamageCheck _moverCheck;
     private Collider2D _col;
-    private const int AnimationDelay = 250;
-
 
     void Awake()
     {
@@ -71,7 +69,7 @@ public class Slidable : InteractableBase
         _moverCheck.SetEmergencyStop(EmergencyStop);
         _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
         //animate this to the location and give it a callback when complete
-        _mover =this.AddComponent<MoveSlideable>().Init(direction: direction);
+        this.AddComponent<MoveSlideable>().Init(direction: direction);
         //if the target is on something like water...
         //if the slide damage runs into anything that is not a player
 
@@ -91,7 +89,6 @@ public class Slidable : InteractableBase
         bool isPlaced = await _targetCheck.IsOnKeyPort(key);
         _moverCheck.CleanUp();
         _targetCheck.CleanUp();
-        Destroy(_mover);
         if (isPlaced)
         {
             Destroy(this);

@@ -8,21 +8,24 @@ public class MoveSlideable : MonoBehaviour
     private bool _canMove = false;
     private Rigidbody2D _rb;
     private Vector3 _dir = Vector3.zero;
-    public float _speed = 8f;
-    //consider an animation curve
+    private float _speed = 10f;
 
-    public MoveSlideable Init(Vector3 direction)
+
+    public void Init(Vector3 direction)
     {
+        _rb = GetComponent<Rigidbody2D>();
         _dir = direction;
+
+
         _canMove = true;
-        return this;
     }
-    
+
+    // Update is called once per frame
     void FixedUpdate()
     {
         if (_canMove)
         {
-            transform.Translate(_dir * _speed * Time.deltaTime);
+            _rb.MovePosition(transform.position + _dir * _speed * Time.deltaTime);
         }
     }
 }
