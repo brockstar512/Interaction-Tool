@@ -599,6 +599,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slidable (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932471, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
