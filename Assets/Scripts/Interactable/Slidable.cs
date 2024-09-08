@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using DG.Tweening.Core;
 using Player.ItemOverlap;
 using Unity.VisualScripting;
 using System.Linq;
+using UnityEngine.UIElements;
 
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -17,18 +19,24 @@ public class Slidable : InteractableBase
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
+    [SerializeField] const int contactPointCount = 3;
     OverlapTargetCheck _targetCheck;
     OverlapMoveDamageCheck _moverCheck;
     private Collider2D _col;
     private Tweener slideAnimation;
+    private List<ClosestContactPointHelper> contactPoints = new List<ClosestContactPointHelper>();
+    
 
-
+    
 
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
         _col = GetComponent<Collider2D>();
         UpdateLayerName();
+        
+        
+        
     }
 
     private void FixedUpdate()
@@ -42,30 +50,33 @@ public class Slidable : InteractableBase
        return CanMove(state.currentState.LookDirection);
     }
 
+
+    
+
     Collider2D GetClosestRaycastHit(Vector2 direction)
     {
-        Collider2D resultingHit = null;
-        Physics2D.queriesStartInColliders = false;
-
-        Vector3 startPos = _col.bounds.center;
-        Vector3 sideOnePos = _col.bounds.center;
-        Vector3 sideTwoPos = _col.bounds.center;
-
-
-        if (direction == Vector2.left ||direction == Vector2.right )
+        
+        for (int i = 0; i < contactPointCount; i++)
         {
-            sideOnePos.y += _col.bounds.extents.y;
-            sideTwoPos.y -= _col.bounds.extents.y;
+            //get the dierctions of raycasts
+            ClosestContactPointHelper closestContactPointHelper = new ClosestContactPointHelper(direction,obstructionLayer);
+            
+            if (direction == Vector2.down || direction == Vector2.up)
+            {
+                //set their starting pos
+                closestContactPointHelper.SetOriginPointX(_col.bounds.extents,i);
+            }
+            if(direction == Vector2.left || direction == Vector2.right)
+            {
+                //set their starting pos
+                closestContactPointHelper.SetOriginPointY(_col.bounds.extents,i);
+            }
 
+            contactPoints.Add(closestContactPointHelper);
         }
         
-        if (direction == Vector2.up ||direction == Vector2.down )
-        {
-            sideOnePos.x += _col.bounds.extents.x;
-            sideTwoPos.x -= _col.bounds.extents.x;
-        }
         
-
+/*
         RaycastHit2D hitSideOne = Physics2D.Raycast(sideOnePos, direction ,int.MaxValue,obstructionLayer);
         Debug.DrawRay(sideOnePos,direction, Color.blue);
         
@@ -74,14 +85,11 @@ public class Slidable : InteractableBase
 
         RaycastHit2D hitSideTwo = Physics2D.Raycast(sideTwoPos, direction ,int.MaxValue,obstructionLayer);
         Debug.DrawRay(sideTwoPos,direction, Color.green);
-        
-            // float distanceOne = float.MaxValue;
-            // float distanceTwo = float.MaxValue;
-            // float distanceMiddle = float.MaxValue;
+
       
         if (direction == Vector2.left || direction == Vector2.right)
         {
-            float[] numbers = new float[]
+            float[] singleCoordinate = 
             {
                 float.MaxValue,
                 float.MaxValue,
@@ -90,43 +98,55 @@ public class Slidable : InteractableBase
 
             if (hitSideOne.collider!=null)
             {
-                numbers[0] = Mathf.Abs(hitSideOne.transform.position.x - this.transform.position.x);
+                //singleCoordinate[0] = GetAbsoluteValueOfDistance(hitSideOne.transform.position.x,this.transform.position.x);
 
             }
             if (hitSideTwo.collider!=null)
             {
-                numbers[1] = Mathf.Abs(hitSideTwo.transform.position.x -this.transform.position.x);
+               // singleCoordinate[1] =GetAbsoluteValueOfDistance(hitSideTwo.transform.position.x,this.transform.position.x); 
 
             }
             if (hitMiddle.collider!=null)
             {
-                numbers[2] = Mathf.Abs(hitMiddle.transform.position.x - this.transform.position.x);
+                //singleCoordinate[2] = GetAbsoluteValueOfDistance(hitMiddle.transform.position.x,this.transform.position.x);
 
             }
             
             //float distanceOne = hitSideOne.collider!=null ? Mathf.Abs(hitSideOne.transform.position.x -this.transform.position.x) : int.MaxValue;
-            Debug.Log(numbers[0]);
+            Debug.Log(singleCoordinate[0]);
            // float distanceTwo = hitSideTwo.collider==null ? int.MaxValue: Mathf.Abs(hitSideTwo.transform.position.x -this.transform.position.x);
-            Debug.Log(numbers[1]);
+            Debug.Log(singleCoordinate[1]);
             //float distanceMiddle =  hitMiddle.collider!=null ?Mathf.Abs(hitMiddle.transform.position.x -this.transform.position.x) : int.MaxValue;
-            Debug.Log(numbers[2]);
+            Debug.Log(singleCoordinate[2]);
 
-            float singleCoordDestination = numbers.Min();
-            Debug.Log("Winner: "+ singleCoordDestination);
+            //float singleCoordDestination = singleCoordinate.Min();
+            int index = -1;
+            float singleCoordDestination = float.MaxValue;
+            for (int i = 0; i < singleCoordinate.Length; i++)
+            {
+                if (singleCoordDestination >= singleCoordinate[i])
+                {
+                    singleCoordDestination = singleCoordinate[i];
+                    index = i;
+                }
+                
+            }
 
-
-
+            
+            Debug.Log($"Winner:  {singleCoordDestination} at index {index}");
 
         }   
 
-
-        return resultingHit;
+*/
+        return null;
     }
 
-    float GetAbsoluteValueOfDistance(float from, float to)
-    {
-        return Mathf.Abs(from - to);
-    }
+
+  
+    // float GetAbsoluteValueOfDistance(float from, float to)
+    // {
+    //     return Mathf.Abs(from - to);
+    // }
     
 
     bool CanMove(Vector2 direction)
@@ -139,6 +159,7 @@ public class Slidable : InteractableBase
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
         //Collider2D closestHit = GetClosestRaycastHit(direction);
         //if we hit a obstruction layer
+        //todo if any racast is less than 1
         if (hit.collider != null)
         {
             //Debug.Log(hit.collider.gameObject.name);
@@ -248,4 +269,102 @@ public class Slidable : InteractableBase
         }
 
     }
+
+    private struct ClosestContactPointHelper
+    {
+        public Collider2D Col;
+        public float Distance;
+        private readonly Vector2 _direction;
+        private Vector2 _originPoint;
+        private readonly LayerMask _obstructionLayer;
+
+
+        public ClosestContactPointHelper(Vector2 direction, LayerMask detectionLayer)
+        {
+            _direction = direction;
+            Distance = Mathf.Infinity;
+            Col = null;
+            _originPoint = Vector3.zero;
+            _obstructionLayer = detectionLayer;
+        }
+        //if (direction == Vector2.left ||direction == Vector2.right )
+        public void SetOriginPointY(Vector3 callersBoundsExtends, int index)
+        {
+            _originPoint = callersBoundsExtends;
+
+                float parentSizeY = callersBoundsExtends.y;
+                switch (index)
+                {
+                 case 0:
+                     _originPoint.y += parentSizeY;
+                     break;
+                 case 2:
+                     _originPoint.y -= parentSizeY;
+                     break;
+                 default:
+                     break;
+                }
+        }
+        
+        //(direction == Vector2.up ||direction == Vector2.down )
+        public void SetOriginPointX(Vector3 callersBoundsExtends, int index)
+        {
+            _originPoint = callersBoundsExtends;
+            
+                float parentSizeX = callersBoundsExtends.x;
+                switch (index)
+                {
+                    case 0:
+                        _originPoint.x += parentSizeX;
+                        break;
+                    case 2:
+                        _originPoint.x -= parentSizeX;
+                        break;
+                    default:
+                        break;
+                }
+                return;
+        }
+        
+       Collider2D GetCollider()
+        {
+            RaycastHit2D hit = Physics2D.Raycast(_originPoint, _direction ,int.MaxValue,_obstructionLayer);
+            Debug.DrawRay(_originPoint,_direction, Color.blue);
+            
+            if (hit.collider!=null)
+            {
+                Col = hit.collider;
+               Distance = Mathf.Abs(_originPoint.x - hit.collider.transform.position.x);
+
+            }
+
+            return hit.collider;
+        }
+       
+       
+        float GetAbsoluteValueOfDistance(float from, float to)
+        {
+            return Mathf.Abs(from - to);
+        }
+
+        
+    }
+    
 }
+
+
+//create a struct for each point
+
+/*
+ *
+ *     // (string kind, string colour, int length) rayCastSet = ("annual", "blue", 1);
+   // (string kind, string colour, int length)[] colliderSets = new[]
+   // {
+   //     //rayCastSet,
+   //     ("annual", "blue", 1),
+   // };
+
+   private (Collider2D col, float distance, int length)[] _colliderSets =
+       new (Collider2D col, float distance, int length)[3];
+       
+ */
