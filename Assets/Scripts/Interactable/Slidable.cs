@@ -104,7 +104,7 @@ public class Slidable : InteractableBase
 
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
-
+        Debug.Log(hit.Distance);
 
         Vector3 currColSize = _col.bounds.extents; 
         Vector3 targetColSize = hit.Col.bounds.extents; 
@@ -122,7 +122,7 @@ public class Slidable : InteractableBase
             float bufferMargin = currColSize.y + targetColSize.y;
             bufferMargin *= sideOfDestination.y;
           
-            destination = new Vector2(currentLocation.x,currentLocation.y +travelDistance +bufferMargin);
+            destination = new Vector2(currentLocation.x,currentLocation.y +(travelDistance* direction.y) +bufferMargin);
             //the total distance is the margin of the center of the both items
         }
         //do this if we are trying to slide it right or left. only deal with the x direction
@@ -131,7 +131,7 @@ public class Slidable : InteractableBase
             float bufferMargin = currColSize.x + targetColSize.x;
             bufferMargin *= sideOfDestination.x;
 
-            destination = new Vector2(currentLocation.x +travelDistance +bufferMargin, currentLocation.y);
+            destination = new Vector2(currentLocation.x +(travelDistance* direction.x) +bufferMargin, currentLocation.y);
 
         }
         //get the time for how long it will take to animate there
@@ -147,66 +147,7 @@ public class Slidable : InteractableBase
         slideAnimation = transform.DOMove(destination, time);
         slideAnimation.onComplete = CleanUp;
     }
-/*
-    async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
-    {
-        
-        //get a reference to the size of the item we are hitting
-        Vector3 hitSr = hit.Col.bounds.size; 
-        //get the radius so we have the distance to stop from its center
-        Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
-        //get a vector pointing to our sliding object
-        Vector2 sideOfDestination = direction * -1;
-        //get the location of the radius we need to stop at
-        hitItemsRadius *= sideOfDestination;
-        //get our current location of the object we are sliding
-        Vector3 currentLocation = this.transform.position;
-        Vector2 destination = Vector2.zero;
-        float distance = 0;
-        //do this if we are trying to slide it up or down. only deal with the y direction
-        if (direction == Vector2.down || direction == Vector2.up)
-        {
 
-            //get the location we hit
-            float hitLocation = hit.Col.transform.position.y;
-            //radius time the vector pointing from hit to us
-            float myWidthWithSidePos = (getColWidth.y / 2) * (direction.y * -1);
-            
-            //up (first explaination): it's the location of the hit + the width of the hit position + radius of the sliding block - collider radius + collider width * the direction it is sliding
-            //(we are trying to account for the  margin of the top of the collider to the point of the center of the sliding image)
-            //down (second explaination): it's the location of the hit + radius of the hit object + radius of the image that is sliding * the direction it is sliding
-            //(we are trying to account for the bottom of the moving sprite)
-            float yMargin = direction == Vector2.up ? 
-                hitLocation + hitItemsRadius.y + myWidthWithSidePos + (transform.GetComponent<SpriteRenderer>().bounds.center.y / 2) - (getColWidth.y / 2) + getColWidth.y:
-                hitLocation + hitItemsRadius.y + (transform.GetComponent<SpriteRenderer>().bounds.size.y / 2)  * (direction.y * -1);;
-            //set the destination to the it you needs to travel
-            destination = new Vector2(currentLocation.x, yMargin);
-            //the total distance is the margin of the center of the both items
-            distance = Mathf.Abs(_col.bounds.center.y - hit.Col.transform.position.y);
-        }
-        //do this if we are trying to slide it right or left. only deal with the x direction
-        if (direction == Vector2.right || direction == Vector2.left)
-        {
-            float distanceMargin = hit.Col.transform.position.x;
-            float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
-            destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
-            distance = Mathf.Abs(_col.bounds.center.x - hit.Col.transform.position.x);
-
-        }
-        //get the time for how long it will take to animate there
-        float time = MeasureTime(distance);
-        //pause so the character can animate
-        await Task.Delay(animationDelay);
-        //create the movement checks
-        _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
-        _moverCheck.SetDirectionOfOverlap(direction*-1);
-        _moverCheck.SetEmergencyStop(EmergencyStopTween);
-        _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
-        //animate this to the location and give it a callback when complete
-        slideAnimation = transform.DOMove(destination, time);
-        slideAnimation.onComplete = CleanUp;
-    }
-    */
     void EmergencyStopTween()
     {
         slideAnimation.Kill();
