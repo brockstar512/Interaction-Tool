@@ -104,38 +104,34 @@ public class Slidable : InteractableBase
 
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
-        
-        //get a reference to the size of the item we are hitting
-        Vector3 hitItemsRadius = hit.Col.bounds.extents; 
-        //get the radius so we have the distance to stop from its center
-        // Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
-        //get a vector pointing to our sliding object
-        Vector2 sideOfDestination = direction * -1;
-        //get the location of the radius we need to stop at
-        hitItemsRadius *= sideOfDestination;
-        //get our current location of the object we are sliding
-        Vector3 currentLocation = _col.transform.position;
-        Vector2 destination = Vector2.zero;
 
+
+        Vector3 currColSize = _col.bounds.extents; 
+        Vector3 targetColSize = hit.Col.bounds.extents; 
+        float travelDistance = hit.Distance; 
+        //this is so is we are traveling up or right it will subtract to be on the lower side of the destinations position and add
+        //if we are traveling left or down to be above or to the right of desitination position
+        Vector2 sideOfDestination = direction * -1;
+        
+        Vector3 destination = Vector3.zero;
+        Vector3 currentLocation = this.transform.position;
+        
         //do this if we are trying to slide it up or down. only deal with the y direction
         if (direction == Vector2.down || direction == Vector2.up)
         {
-
-            //get the location we hit
-            float hitLocation = hit.Col.transform.position.y;
-            //radius time the vector pointing from hit to us
-            
-            float yMargin =  hitLocation + hitItemsRadius.y + (transform.GetComponent<SpriteRenderer>().bounds.extents.y)  * (direction.y * -1);;
-            //set the destination to the it you needs to travel
-            destination = new Vector2(currentLocation.x, yMargin);
+            float bufferMargin = currColSize.y + targetColSize.y;
+            bufferMargin *= sideOfDestination.y;
+          
+            destination = new Vector2(currentLocation.x,currentLocation.y +travelDistance +bufferMargin);
             //the total distance is the margin of the center of the both items
         }
         //do this if we are trying to slide it right or left. only deal with the x direction
         if (direction == Vector2.right || direction == Vector2.left)
         {
-            float distanceMargin = hit.Col.transform.position.x;
-            float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
-            destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
+            float bufferMargin = currColSize.x + targetColSize.x;
+            bufferMargin *= sideOfDestination.x;
+
+            destination = new Vector2(currentLocation.x +travelDistance +bufferMargin, currentLocation.y);
 
         }
         //get the time for how long it will take to animate there
