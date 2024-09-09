@@ -19,12 +19,11 @@ public class Slidable : InteractableBase
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
-    [SerializeField] const int contactPointCount = 3;
+    const int contactPointCount = 3;
     OverlapTargetCheck _targetCheck;
     OverlapMoveDamageCheck _moverCheck;
     private Collider2D _col;
     private Tweener slideAnimation;
-    private List<ClosestContactPointHelper> contactPoints = new List<ClosestContactPointHelper>();
     
 
     
@@ -39,10 +38,6 @@ public class Slidable : InteractableBase
         
     }
 
-    private void FixedUpdate()
-    {
-        GetClosestColliderHit(Vector2.right);
-    }
 
     public override bool Interact(PlayerStateMachineManager state)
     {
@@ -50,9 +45,9 @@ public class Slidable : InteractableBase
     }
 
     
-    Collider2D GetClosestColliderHit(Vector2 direction)
+    ClosestContactPointHelper GetClosestColliderHit(Vector2 direction)
     {
-        
+        List<ClosestContactPointHelper> contactPoints = new List<ClosestContactPointHelper>();
         for (int i = 0; i < contactPointCount; i++)
         {
             //get the dierctions of raycasts
@@ -78,41 +73,22 @@ public class Slidable : InteractableBase
         // }
 
         var results  = contactPoints.OrderBy(dis => dis.Distance).ToList();
-        Debug.Log($"Winner is {results[0].Col.gameObject.name} at {results[0].Distance}");
-        /*
-         *var itemWithMinimumPrice = lstBtn
-           .Where(p => p.CategoryID == btnObj.CategoryID && p.IsSelected && p.IsPriceApplied)
-           .OrderBy(p => p.Price)
-           .FirstOrDefault();
-         * 
-         */
-
-        return null;
+        Debug.Log($"Winner is {results[0].Col.gameObject.name} at {results[0].Distance} and {direction}");
+        Debug.Break();
+        return contactPoints.OrderBy(dis => dis.Distance).ToList()[0];
     }
-
-    
-    
 
     bool CanMove(Vector2 direction)
     {
-        //ignore collider on querying object
-        Physics2D.queriesStartInColliders = false;
-        //start at the center of the bounds
-        Vector3 startPos = _col.bounds.center;
-        //his the destination
-        RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
-        //Collider2D closestHit = GetClosestRaycastHit(direction);
-        //if we hit a obstruction layer
+        ClosestContactPointHelper hit = GetClosestColliderHit(direction);
+        
+        
         //todo if any racast is less than 1
-        if (hit.collider != null)
+        if (hit.Col != null)
         {
             //Debug.Log(hit.collider.gameObject.name);
             //if we are not right up next to the wall
-            if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
-            {
-                return false;
-            }
-            if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
+            if (hit.Distance <= getColWidth.x)
             {
                 return false;
             }
@@ -124,12 +100,45 @@ public class Slidable : InteractableBase
         }
         return false;
     }
+    
 
-    async void SlideItem(Vector2 direction, RaycastHit2D hit)
+    // bool CanMove(Vector2 direction)
+    // {
+    //     //ignore collider on querying object
+    //     Physics2D.queriesStartInColliders = false;
+    //     //start at the center of the bounds
+    //     Vector3 startPos = _col.bounds.center;
+    //     //his the destination
+    //     RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
+    //     //Collider2D closestHit = GetClosestRaycastHit(direction);
+    //     //if we hit a obstruction layer
+    //     //todo if any racast is less than 1
+    //     if (hit.collider != null)
+    //     {
+    //         //Debug.Log(hit.collider.gameObject.name);
+    //         //if we are not right up next to the wall
+    //         if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
+    //         {
+    //             return false;
+    //         }
+    //         if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
+    //         {
+    //             return false;
+    //         }
+    //         
+    //         //slide the item
+    //         SlideItem(direction, hit);
+    //
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
         
         //get a reference to the size of the item we are hitting
-        Vector3 hitSr = hit.collider.GetComponent<SpriteRenderer>().bounds.size; 
+        Vector3 hitSr = hit.Col.GetComponent<SpriteRenderer>().bounds.size; 
         //get the radius so we have the distance to stop from its center
         Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
         //get a vector pointing to our sliding object
@@ -145,7 +154,7 @@ public class Slidable : InteractableBase
         {
 
             //get the location we hit
-            float hitLocation = hit.collider.transform.position.y;
+            float hitLocation = hit.Col.transform.position.y;
             //radius time the vector pointing from hit to us
             float myWidthWithSidePos = (getColWidth.y / 2) * (direction.y * -1);
             
@@ -159,15 +168,15 @@ public class Slidable : InteractableBase
             //set the destination to the it you needs to travel
             destination = new Vector2(currentLocation.x, yMargin);
             //the total distance is the margin of the center of the both items
-            distance = Mathf.Abs(_col.bounds.center.y - hit.collider.transform.position.y);
+            distance = Mathf.Abs(_col.bounds.center.y - hit.Col.transform.position.y);
         }
         //do this if we are trying to slide it right or left. only deal with the x direction
         if (direction == Vector2.right || direction == Vector2.left)
         {
-            float distanceMargin = hit.collider.transform.position.x;
+            float distanceMargin = hit.Col.transform.position.x;
             float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
             destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
-            distance = Mathf.Abs(_col.bounds.center.x - hit.collider.transform.position.x);
+            distance = Mathf.Abs(_col.bounds.center.x - hit.Col.transform.position.x);
 
         }
         //get the time for how long it will take to animate there
@@ -221,7 +230,7 @@ public class Slidable : InteractableBase
         private readonly Vector2 _direction;
         private Vector2 _originPoint;
         private readonly LayerMask _obstructionLayer;
-
+        //todo dynaimcal set the origin points based off the size so that if I want to make the size of the slidable bigger it will dynamically create the points based off how big it is so it can be more than 3
 
         public ClosestContactPointHelper(Vector2 direction, LayerMask detectionLayer)
         {
@@ -267,6 +276,8 @@ public class Slidable : InteractableBase
         
        public void SetColliderHit()
         {
+            //ignore collider on querying object
+            Physics2D.queriesStartInColliders = false;
             RaycastHit2D hit = Physics2D.Raycast(_originPoint, _direction ,int.MaxValue,_obstructionLayer);
             Debug.DrawRay(_originPoint,_direction, Color.blue);
             

@@ -2505,7 +2505,7 @@ GameObject:
   - component: {fileID: 1773602780}
   - component: {fileID: 1773602783}
   m_Layer: 0
-  m_Name: Wall
+  m_Name: Wall L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2755,7 +2755,7 @@ GameObject:
   - component: {fileID: 2025808991}
   - component: {fileID: 2025808996}
   m_Layer: 0
-  m_Name: Wall
+  m_Name: Wall D long
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2944,7 +2944,7 @@ GameObject:
   - component: {fileID: 2034716028}
   - component: {fileID: 2034716032}
   m_Layer: 0
-  m_Name: Wall
+  m_Name: Wall Box D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3390,6 +3390,22 @@ PrefabInstance:
     - target: {fileID: 7317155042657932469, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_Name
       value: Slidable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.x
+      value: 0.98413396
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Size.y
+      value: 0.74124336
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.008854389
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317155042657932470, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.3656261
       objectReference: {fileID: 0}
     - target: {fileID: 7317155042657932471, guid: 1e243f9a4c1d942f9a7b9c9dc6d30b0e, type: 3}
       propertyPath: m_LocalPosition.x
