@@ -73,8 +73,8 @@ public class Slidable : InteractableBase
         // }
 
         var results  = contactPoints.OrderBy(dis => dis.Distance).ToList();
-        Debug.Log($"Winner is {results[0].Col.gameObject.name} at {results[0].Distance} and {direction}");
-        Debug.Break();
+        //Debug.Log($"Winner is {results[0].Col.gameObject.name} at {results[0].Distance} and {direction}");
+        //Debug.Break();
         return contactPoints.OrderBy(dis => dis.Distance).ToList()[0];
     }
 
@@ -102,43 +102,61 @@ public class Slidable : InteractableBase
     }
     
 
-    // bool CanMove(Vector2 direction)
-    // {
-    //     //ignore collider on querying object
-    //     Physics2D.queriesStartInColliders = false;
-    //     //start at the center of the bounds
-    //     Vector3 startPos = _col.bounds.center;
-    //     //his the destination
-    //     RaycastHit2D hit = Physics2D.Raycast(startPos, direction * 100,int.MaxValue,obstructionLayer);
-    //     //Collider2D closestHit = GetClosestRaycastHit(direction);
-    //     //if we hit a obstruction layer
-    //     //todo if any racast is less than 1
-    //     if (hit.collider != null)
-    //     {
-    //         //Debug.Log(hit.collider.gameObject.name);
-    //         //if we are not right up next to the wall
-    //         if (Mathf.Abs(startPos.x - hit.collider.transform.position.x) <= getColWidth.x && Mathf.Abs(direction.x) == 1)
-    //         {
-    //             return false;
-    //         }
-    //         if (Mathf.Abs(startPos.y - hit.collider.transform.position.y) <= getColWidth.y && Mathf.Abs(direction.y) == 1)
-    //         {
-    //             return false;
-    //         }
-    //         
-    //         //slide the item
-    //         SlideItem(direction, hit);
-    //
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
         
         //get a reference to the size of the item we are hitting
-        Vector3 hitSr = hit.Col.GetComponent<SpriteRenderer>().bounds.size; 
+        Vector3 hitItemsRadius = hit.Col.bounds.extents; 
+        //get the radius so we have the distance to stop from its center
+        // Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
+        //get a vector pointing to our sliding object
+        Vector2 sideOfDestination = direction * -1;
+        //get the location of the radius we need to stop at
+        hitItemsRadius *= sideOfDestination;
+        //get our current location of the object we are sliding
+        Vector3 currentLocation = _col.transform.position;
+        Vector2 destination = Vector2.zero;
+
+        //do this if we are trying to slide it up or down. only deal with the y direction
+        if (direction == Vector2.down || direction == Vector2.up)
+        {
+
+            //get the location we hit
+            float hitLocation = hit.Col.transform.position.y;
+            //radius time the vector pointing from hit to us
+            
+            float yMargin =  hitLocation + hitItemsRadius.y + (transform.GetComponent<SpriteRenderer>().bounds.extents.y)  * (direction.y * -1);;
+            //set the destination to the it you needs to travel
+            destination = new Vector2(currentLocation.x, yMargin);
+            //the total distance is the margin of the center of the both items
+        }
+        //do this if we are trying to slide it right or left. only deal with the x direction
+        if (direction == Vector2.right || direction == Vector2.left)
+        {
+            float distanceMargin = hit.Col.transform.position.x;
+            float myWidthWithSidePos = (getColWidth.x / 2) * (direction.x * -1);
+            destination = new Vector2(distanceMargin + hitItemsRadius.x + myWidthWithSidePos, currentLocation.y);
+
+        }
+        //get the time for how long it will take to animate there
+        float time = MeasureTime(hit.Distance);
+        //pause so the character can animate
+        await Task.Delay(animationDelay);
+        //create the movement checks
+        _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
+        _moverCheck.SetDirectionOfOverlap(direction*-1);
+        _moverCheck.SetEmergencyStop(EmergencyStopTween);
+        _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
+        //animate this to the location and give it a callback when complete
+        slideAnimation = transform.DOMove(destination, time);
+        slideAnimation.onComplete = CleanUp;
+    }
+/*
+    async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
+    {
+        
+        //get a reference to the size of the item we are hitting
+        Vector3 hitSr = hit.Col.bounds.size; 
         //get the radius so we have the distance to stop from its center
         Vector2 hitItemsRadius = new Vector2(hitSr.x / 2, hitSr.y / 2);
         //get a vector pointing to our sliding object
@@ -192,6 +210,7 @@ public class Slidable : InteractableBase
         slideAnimation = transform.DOMove(destination, time);
         slideAnimation.onComplete = CleanUp;
     }
+    */
     void EmergencyStopTween()
     {
         slideAnimation.Kill();
