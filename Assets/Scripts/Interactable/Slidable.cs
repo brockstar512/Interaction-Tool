@@ -66,29 +66,38 @@ public class Slidable : InteractableBase
             closestContactPointHelper.SetColliderHit();
             contactPoints.Add(closestContactPointHelper);
         }
+        
 
-        // foreach (var item in contactPoints)
+        //var results  = contactPoints.OrderBy(dis => dis.Distance).ToList();
+        // foreach (var item in results)
         // {
-        //     Debug.Log($"item {item.Distance} for {item.Col.gameObject.name}");
+        //     Debug.Log(item.Distance);
         // }
 
-        var results  = contactPoints.OrderBy(dis => dis.Distance).ToList();
-        //Debug.Log($"Winner is {results[0].Col.gameObject.name} at {results[0].Distance} and {direction}");
-        //Debug.Break();
         return contactPoints.OrderBy(dis => dis.Distance).ToList()[0];
     }
 
+    bool ItemAgainstTheWall(Vector2 direction, ClosestContactPointHelper hit)
+    {
+        float extendSideItem = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y)) == Vector2.right
+            ? _col.bounds.extents.x
+            : _col.bounds.extents.y;
+        float extendSideObstruction = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y)) == Vector2.right
+            ? hit.Col.bounds.extents.x
+            : hit.Col.bounds.extents.y;
+
+        float colliderInternalTotal = extendSideItem + extendSideObstruction;
+
+        return hit.Distance - colliderInternalTotal < 1f ? true : false;
+    }
+    
     bool CanMove(Vector2 direction)
     {
         ClosestContactPointHelper hit = GetClosestColliderHit(direction);
-        
-        
-        //todo if any racast is less than 1
+
         if (hit.Col != null)
         {
-            //Debug.Log(hit.collider.gameObject.name);
-            //if we are not right up next to the wall
-            if (hit.Distance <= getColWidth.x)
+            if (ItemAgainstTheWall(direction,hit))
             {
                 return false;
             }
