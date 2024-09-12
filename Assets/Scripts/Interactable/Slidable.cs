@@ -43,7 +43,6 @@ public class Slidable : InteractableBase
     {
        return CanMove(state.currentState.LookDirection);
     }
-
     
     ClosestContactPointHelper GetClosestColliderHit(Vector2 direction)
     {
@@ -67,13 +66,6 @@ public class Slidable : InteractableBase
             contactPoints.Add(closestContactPointHelper);
         }
         
-
-        //var results  = contactPoints.OrderBy(dis => dis.Distance).ToList();
-        // foreach (var item in results)
-        // {
-        //     Debug.Log(item.Distance);
-        // }
-
         return contactPoints.OrderBy(dis => dis.Distance).ToList()[0];
     }
 
@@ -113,8 +105,7 @@ public class Slidable : InteractableBase
 
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
-        Debug.Log(hit.Distance);
-
+        
         Vector3 currColSize = _col.bounds.extents; 
         Vector3 targetColSize = hit.Col.bounds.extents; 
         float travelDistance = hit.Distance; 
@@ -195,7 +186,8 @@ public class Slidable : InteractableBase
         private readonly Vector2 _direction;
         private Vector2 _originPoint;
         private readonly LayerMask _obstructionLayer;
-        //todo dynaimcal set the origin points based off the size so that if I want to make the size of the slidable bigger it will dynamically create the points based off how big it is so it can be more than 3
+        //todo dynaimcal set the origin points based off the size so that if I want to make the size of the slidable bigger
+        //it will dynamically create the points based off how big it is so it can be more than 3
 
         public ClosestContactPointHelper(Vector2 direction, LayerMask detectionLayer)
         {
