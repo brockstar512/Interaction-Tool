@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29821f24d2f4442082771f40397f1cc, type: 3}
-  m_Name: Key
+  m_Script: {fileID: 11500000, guid: 3677460557bcb46eba80b2870693eabc, type: 3}
+  m_Name: WhipItemObject
   m_EditorClassIdentifier: 
-  sprite: {fileID: -2144329234367100646, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
-  Damage: 10
+  sprite: {fileID: 5928165169668120885, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}

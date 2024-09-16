@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29821f24d2f4442082771f40397f1cc, type: 3}
-  m_Name: Candle
+  m_Script: {fileID: 11500000, guid: 8588de6b209134242ac0ecbd7ce52823, type: 3}
+  m_Name: GrapplingHookItemObject
   m_EditorClassIdentifier: 
-  sprite: {fileID: -930058404848530059, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
-  Damage: 10
+  sprite: {fileID: 4255852585849884111, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}

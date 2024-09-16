@@ -1,16 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Items;
 
-//this should be in charge of invoking the item change event
 public class ItemManager 
 {
     private int _currentIndex = 0;
     private List<IItem> inventory;
     private int inventoryLimit;
     public event Action<Sprite> ItemSwitch;
-    private ItemsFactory itemsFactory;
 
 
     //pass in hud and get the functions that update hud
@@ -28,7 +26,6 @@ public class ItemManager
         {
             return null;
         }
-        Debug.Log($"Item number: {_currentIndex}");
         return inventory[_currentIndex];
     }
 

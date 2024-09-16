@@ -34,7 +34,6 @@ public class UseItemState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        Debug.Log("Using item");
         IItem item = stateManager.itemManager.GetItem();
         if(item != null)
         {

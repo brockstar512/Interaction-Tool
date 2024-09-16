@@ -1,30 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
-public class Item : ScriptableObject, IItem
+namespace Items
 {
-    [SerializeField] Sprite sprite;
-    public Sprite Sprite
+    [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
+    public abstract class Item : ScriptableObject, IItem
     {
-         get { return sprite; }
-       
+        //could use a factory to generate a concret class rather than pass around scriptable objects
+        [SerializeField] Sprite sprite;
+        public Sprite Sprite => sprite;
+
+        public abstract void Use();
+
     }
-
-
-    //attack points
-    public float Damage = 10;
-    
-    //the pickabable holds this
-    public void Use()
-    {
-        Debug.Log("Attack:" + Damage);
-       
-    }
-
 }
 

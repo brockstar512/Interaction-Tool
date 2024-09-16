@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29821f24d2f4442082771f40397f1cc, type: 3}
-  m_Name: GrapplingGun
+  m_Script: {fileID: 11500000, guid: 80585275457264534b9012c7b110e516, type: 3}
+  m_Name: SwordItemObject
   m_EditorClassIdentifier: 
-  sprite: {fileID: -1407014589730669687, guid: 9ba1a277daf6d43ebb60cbb4693388ab, type: 3}
-  Damage: 10
+  sprite: {fileID: -7856210644490039255, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
