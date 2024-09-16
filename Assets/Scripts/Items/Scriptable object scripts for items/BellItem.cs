@@ -7,6 +7,7 @@ namespace Items.Scriptable_object_scripts_for_items
     [CreateAssetMenu(fileName = "BellItemObject", menuName = "ScriptableObjects/Bell")]
     public class BellItem : Item
     {
+        //animations should be here
         public override void Use()
         {
             Debug.Log("Bell");

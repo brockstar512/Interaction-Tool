@@ -19,7 +19,7 @@ public class Slidable : InteractableBase
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
-    const int contactPointCount = 3;
+    const int ContactPointCount = 3;
     OverlapTargetCheck _targetCheck;
     OverlapMoveDamageCheck _moverCheck;
     private Collider2D _col;
@@ -31,6 +31,8 @@ public class Slidable : InteractableBase
     void Awake()
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
+        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+
         _col = GetComponent<Collider2D>();
         UpdateLayerName();
         
@@ -47,7 +49,7 @@ public class Slidable : InteractableBase
     ClosestContactPointHelper GetClosestColliderHit(Vector2 direction)
     {
         List<ClosestContactPointHelper> contactPoints = new List<ClosestContactPointHelper>();
-        for (int i = 0; i < contactPointCount; i++)
+        for (int i = 0; i < ContactPointCount; i++)
         {
             //get the dierctions of raycasts
             ClosestContactPointHelper closestContactPointHelper = new ClosestContactPointHelper(direction,obstructionLayer);
