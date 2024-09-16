@@ -76,7 +76,6 @@
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />
-    <Compile Include="Assets/Scenes/Test.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleChewedState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/Old/PlayerMovement.cs" />
