@@ -6,4 +6,11 @@ public interface IItem
 {
     public Sprite Sprite { get; }
     public void Use();
+
+    public IItem GetWeaponFromFactory()
+    {
+        return new Key();
+    }
+    
+
 }

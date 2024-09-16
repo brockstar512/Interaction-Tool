@@ -46,13 +46,17 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
+    <Compile Include="Assets/Scripts/Items/UseableItems.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs" />
+    <Compile Include="Assets/Scripts/Items/ItemsFactory.cs" />
+    <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapPullItemCheck.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
@@ -68,7 +72,6 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
-    <Compile Include="Assets/Scripts/ItemManager/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />
     <Compile Include="Assets/Scenes/Test.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleChewedState.cs" />
@@ -79,7 +82,6 @@
     <Compile Include="Assets/Scripts/Utils/Utilities.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
-    <Compile Include="Assets/Scripts/ItemManager/ItemManager.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
@@ -90,7 +92,6 @@
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
-    <Compile Include="Assets/Scripts/ItemManager/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />
+    <Compile Include="Assets/Scripts/Player/ItemManager/ItemManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />

@@ -10,6 +10,7 @@ public class ItemManager
     private List<IItem> inventory;
     private int inventoryLimit;
     public event Action<Sprite> ItemSwitch;
+    private ItemsFactory itemsFactory;
 
 
     //pass in hud and get the functions that update hud
