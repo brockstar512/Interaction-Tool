@@ -3,6 +3,9 @@ using Player.ItemOverlap;
 
 public class MoveItemState : PlayerBaseState
 {
+    //should I change to PushItemState to make it like pokemon using strength 
+    //then I can make pull item state and it can be like timed pulls to get to a draw bridge... that could be interesting when
+    //you ring your bell then have a certain amount of time to get through a gate while the enemies are chasing you
     protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
     private AnimationPushAndPull animationPushAndPull;

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class UseItemState : PlayerBaseState
 {
-
+    Vector3 playerDirection = Vector3.zero;
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        //shouldn't this own the inventory?
+        playerDirection = LookDirection;
         Action(stateManager);
     }
 
@@ -30,13 +30,13 @@ public class UseItemState : PlayerBaseState
     {
        
     }
-
+//to do should actions be private... should all states functions be private except enter and maybe exit
     public override void Action(PlayerStateMachineManager stateManager)
     {
         IItem item = stateManager.itemManager.GetItem();
         if(item != null)
         {
-            item.Use();
+            item.Use(playerDirection);
         }
         
         stateManager.SwitchState(stateManager.defaultState);

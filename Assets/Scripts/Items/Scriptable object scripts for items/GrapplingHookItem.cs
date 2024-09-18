@@ -9,9 +9,10 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         [SerializeField] private HookProjectile projectile;
         
-        public override void Use()
+        public override void Use(Vector3 playerDirection)
         {
-            Debug.Log("Grappling hook");
+           
+            Debug.Log($"Grappling hook {playerDirection}");
         }
     }
 }

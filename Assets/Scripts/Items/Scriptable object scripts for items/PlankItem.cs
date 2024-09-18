@@ -9,9 +9,9 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class PlankItem : Item
     {
-        public override void Use()
+        public override void Use(Vector3 playerDirection)
         {
-            Debug.Log("Plank");
+            Debug.Log($"PLank {playerDirection}");
 
         }
     }
