@@ -5,7 +5,6 @@ using UnityEngine;
 public class UseItemState : PlayerBaseState
 {
 
-
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         //shouldn't this own the inventory?

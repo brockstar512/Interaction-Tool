@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: GrapplingHookItemObject
   m_EditorClassIdentifier: 
   sprite: {fileID: 4255852585849884111, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
+  projectile: {fileID: 5407319548600939932, guid: 06f2998a42a6b4f57b724b1509ec0c48, type: 3}
+  line: {fileID: 0}

@@ -6,7 +6,6 @@ public class MoveItemState : PlayerBaseState
     protected override float Speed { get { return 2; } }
     private Vector2 LimitedMovementBounds = Vector2.zero;
     private AnimationPushAndPull animationPushAndPull;
-    private OverlapPullItemCheck _overlapPushItemCheck;
     private Moveable _moveableItem;
     //this should have the moveable space check
     public MoveItemState()
@@ -18,7 +17,6 @@ public class MoveItemState : PlayerBaseState
     {
         LimitedMovementBounds = LookDirection;
         animationPushAndPull.EnterPushAnimation(stateManager);
-        _overlapPushItemCheck = stateManager.transform.GetComponentInChildren<OverlapPullItemCheck>();
         if (stateManager.item is Moveable moveable)
         {
             _moveableItem = moveable;
@@ -64,13 +62,13 @@ public class MoveItemState : PlayerBaseState
             return;
         }
 
-        if(_movement  == LookDirection && _overlapPushItemCheck.DoesOverlap(LookDirection))
+        if(_movement  == LookDirection)
         {
             animationPushAndPull.Play(stateManager);
             return;
         }
         
-        stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
+        // stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
         stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
         animationPushAndPull.Play(stateManager);
     }

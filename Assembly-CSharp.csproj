@@ -60,7 +60,6 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/OverlapPullItemCheck.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />

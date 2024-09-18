@@ -23,6 +23,8 @@ public class Moveable : InteractableBase
 
     public override bool Interact(PlayerStateMachineManager player)
     {
+        return false;
+        //todo rework moving like pokemon using strength later
         //Debug.Log(player.currentState.LookDirection);
         //pass in set direction of transform t00
         moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
