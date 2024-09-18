@@ -6,6 +6,6 @@ public interface IItem
 {
     public Sprite Sprite { get; }
 
-    public void Use(Vector3 playerDirection);
+    public void Use(Vector3 playerLocation, Vector3 playerDirection);
 
 }

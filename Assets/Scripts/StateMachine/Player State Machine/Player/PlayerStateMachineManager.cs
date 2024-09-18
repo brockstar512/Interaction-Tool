@@ -84,11 +84,15 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void UseItem()
     {
+        Debug.Log("useItem");
+
         SwitchState(useItemState);
     }
 
     public void Interact()
     {
+        Debug.Log("interact");
+
         if (currentState is DefaultState)
         {
                 item = overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection);
@@ -101,6 +105,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void Release()
     {
+        Debug.Log("Release");
         currentState.Action(this);
     }
 

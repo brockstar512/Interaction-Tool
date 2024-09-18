@@ -48,7 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   line: {fileID: 3497793881835208768}
-  origin: {fileID: 0}
+  origin: {x: 0, y: 0, z: 0}
+  direction: {x: 0, y: 0, z: 0}
+  speed: 7
 --- !u!212 &4026086761605681340
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -91,7 +93,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7676382691749075051, guid: 96e382e7ad8ba4893902e29731291e76, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -172,7 +174,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0709a640b53ad4788bc6e05221069071, type: 2}
+  - {fileID: 2100000, guid: 86b284a19d20d4ca899f9aafbcfbc3ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

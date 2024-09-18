@@ -54,6 +54,8 @@ public class InputManager : MonoBehaviour
 
     public void UseItem(InputAction.CallbackContext context)
     {
+        Debug.Log("Useing");
+        PlayerBaseState current = stateManager.getState;
         stateManager.UseItem();
     }
 

@@ -8,7 +8,7 @@ namespace Items.Scriptable_object_scripts_for_items
     public class BellItem : Item
     {
         //animations should be here
-        public override void Use(Vector3 playerDirection)
+        public override void Use(Vector3 playerLocation, Vector3 playerDirection)
         {
             Debug.Log($"Bell {playerDirection}");
 

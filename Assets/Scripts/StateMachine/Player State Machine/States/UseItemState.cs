@@ -36,7 +36,7 @@ public class UseItemState : PlayerBaseState
         IItem item = stateManager.itemManager.GetItem();
         if(item != null)
         {
-            item.Use(playerDirection);
+            item.Use(stateManager.transform.position, LookDirection);
         }
         
         stateManager.SwitchState(stateManager.defaultState);

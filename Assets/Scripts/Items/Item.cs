@@ -9,7 +9,7 @@ namespace Items
         [SerializeField] Sprite sprite;
         public Sprite Sprite => sprite;
 
-        public abstract void Use(Vector3 playerDirection);
+        public abstract void Use(Vector3 playerLocation, Vector3 playerDirection);
 
     }
 }

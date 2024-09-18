@@ -8,7 +8,7 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class WhipItem : Item
     {
-        public override void Use(Vector3 playerDirection)
+        public override void Use(Vector3 playerLocation, Vector3 playerDirection)
         {
             Debug.Log($"Whip {playerDirection}");
 
