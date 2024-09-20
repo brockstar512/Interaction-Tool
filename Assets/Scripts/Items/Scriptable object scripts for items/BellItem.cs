@@ -20,7 +20,6 @@ namespace Items.Scriptable_object_scripts_for_items
         
         void Action()
         {
-         
             PutAway();
         }
         

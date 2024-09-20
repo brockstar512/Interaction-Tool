@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player.InputManager;
 
 [RequireComponent(typeof(InputManager))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -11,28 +12,21 @@ public class PlayerMovementManager : MonoBehaviour
 
     const float WALK_SPEED = 5f;
     const float SLOW_SPEED = 2f;
-    Rigidbody2D rb;
+    Rigidbody2D _rb;
 
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     public void Move(Vector2 movement)
     {
-
-        rb.MovePosition(rb.position + movement * GetSpeed() * Time.deltaTime);
-        
+        _rb.MovePosition(_rb.position + movement * GetSpeed() * Time.deltaTime);
     }
 
     float GetSpeed()
     {
-        //if()
-        //{
-
-        //}
-
         return WALK_SPEED;
     }
 

@@ -10,6 +10,7 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         [SerializeField] private HookProjectile projectilePrefab;
         HookProjectile _projectile;
+        private AnimationGrapplingHook animationGrapplingHook = new AnimationGrapplingHook();
         
         public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
@@ -17,6 +18,13 @@ namespace Items.Scriptable_object_scripts_for_items
             DefaultState = defaultStateArg;
             _projectile = Instantiate(projectilePrefab,playerLocation,Quaternion.identity).Init(playerLocation, playerDirection);
             Debug.Log($"Grappling hook {playerDirection}");
+            // animationGrapplingHook.Play();
+            Action();
+        }
+        
+        void Action()
+        {
+           
         }
         
         public override void PutAway()
