@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+using Interactable;
 
-public class UseItemState : PlayerBaseState
+public class UseItemState : PlayerBaseState, IButtonUp
 {
     Vector3 playerDirection = Vector3.zero;
+    private bool isHoldingDown;
+    //release will determine if this is pressed down or not
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         playerDirection = LookDirection;
@@ -30,15 +34,25 @@ public class UseItemState : PlayerBaseState
     {
        
     }
-//to do should actions be private... should all states functions be private except enter and maybe exit
     public override void Action(PlayerStateMachineManager stateManager)
     {
         IItem item = stateManager.itemManager.GetItem();
         if(item != null)
         {
-            item.Use(stateManager.transform.position, LookDirection);
+            item.Use(stateManager.transform.position, LookDirection,stateManager.SwitchState, stateManager.defaultState);
+        }
+        else
+        {
+            stateManager.SwitchState(stateManager.defaultState);
         }
         
-        stateManager.SwitchState(stateManager.defaultState);
+        
     }
+
+    public void ButtonUp()
+    {
+        Debug.Log($"Button up");
+    }
+    
+    
 }

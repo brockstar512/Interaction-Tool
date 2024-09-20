@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Items
@@ -7,9 +8,16 @@ namespace Items
     {
         //could use a factory to generate a concret class rather than pass around scriptable objects
         [SerializeField] Sprite sprite;
+        protected Action<DefaultState> ItemFinishedCallback;
+        protected DefaultState DefaultState = null;
         public Sprite Sprite => sprite;
 
-        public abstract void Use(Vector3 playerLocation, Vector3 playerDirection);
+        public abstract void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction,
+            DefaultState defaultStateArg);
+
+        public abstract void PutAway();
+
+
 
     }
 }

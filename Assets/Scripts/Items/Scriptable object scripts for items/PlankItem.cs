@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,10 +9,23 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class PlankItem : Item
     {
-        public override void Use(Vector3 playerLocation, Vector3 playerDirection)
+        public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
+            ItemFinishedCallback = callbackAction;
+            DefaultState = defaultStateArg;
             Debug.Log($"PLank {playerDirection}");
+            Action();
 
+        }
+        
+        void Action()
+        {
+            PutAway();
+        }
+        
+        public override void PutAway()
+        {
+            ItemFinishedCallback?.Invoke(DefaultState);
         }
     }
 }

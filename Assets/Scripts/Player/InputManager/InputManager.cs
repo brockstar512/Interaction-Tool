@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
+using Interactable;
+
 
 
 [RequireComponent(typeof(PlayerStateMachineManager))]
@@ -21,50 +19,73 @@ public class InputManager : MonoBehaviour
         playerInputActions.Player.Enable();
         playerInputActions.Player.Interact.performed += Interact;
         playerInputActions.Player.UseItem.performed += UseItem;
+        playerInputActions.Player.UseItem.canceled += ButtonUp;
         playerInputActions.Player.SwitchItem.performed += SwitchItem;
-        playerInputActions.Player.Interact.canceled += Release;
+        playerInputActions.Player.Interact.canceled += ReleaseInteraction;
 
 
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         stateManager.UpdateMove(playerInputActions.Player.Movement.ReadValue<Vector2>());
     }
 
-    public void Interact(InputAction.CallbackContext context)
+    private void Interact(InputAction.CallbackContext context)
     {
         stateManager.Interact();
     }
 
-    public void Release(InputAction.CallbackContext context)
+    private void ReleaseInteraction(InputAction.CallbackContext context)
     {
         PlayerBaseState current = stateManager.getState;
+        // if (current is IButtonUp usingItem)
+        // {
+        //     usingItem.ButtonUp();
+        //     return;
+        // }
         if (current is not MoveItemState)
         {
             return;
         }
+        
         stateManager.Release();
     }
 
-    public void SwitchItem(InputAction.CallbackContext context)
+    private void SwitchItem(InputAction.CallbackContext context)
     {
         stateManager.itemManager.SwitchItem();
     }
 
-    public void UseItem(InputAction.CallbackContext context)
+    private void UseItem(InputAction.CallbackContext context)
     {
-        Debug.Log("Useing");
         PlayerBaseState current = stateManager.getState;
+        if (current is IButtonUp usingItem)
+        {
+            usingItem.ButtonUp();
+
+            return;
+        }
         stateManager.UseItem();
     }
+
+    private void ButtonUp(InputAction.CallbackContext context)
+    {
+        PlayerBaseState current = stateManager.getState;
+        if (current is IButtonUp usingItem)
+        {
+            usingItem.ButtonUp();
+        }
+    }
+    
 
     private void OnDestroy()
     {
         playerInputActions.Player.Interact.performed -= Interact;
         playerInputActions.Player.UseItem.performed -= UseItem;
+        playerInputActions.Player.UseItem.canceled -= ButtonUp;
         playerInputActions.Player.SwitchItem.performed -= SwitchItem;
-        playerInputActions.Player.Interact.canceled -= Release;
+        playerInputActions.Player.Interact.canceled -= ReleaseInteraction;
 
     }
 

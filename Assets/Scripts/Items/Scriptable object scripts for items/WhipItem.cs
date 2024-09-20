@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Items.Scriptable_object_scripts_for_items
 {
@@ -8,10 +9,22 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class WhipItem : Item
     {
-        public override void Use(Vector3 playerLocation, Vector3 playerDirection)
+        public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
+            ItemFinishedCallback = callbackAction;
+            DefaultState = defaultStateArg;
             Debug.Log($"Whip {playerDirection}");
-
+            Action();
+        }
+        
+        void Action()
+        {
+            PutAway();
+        }
+        
+        public override void PutAway()
+        {
+            ItemFinishedCallback?.Invoke(DefaultState);
         }
     }
 }

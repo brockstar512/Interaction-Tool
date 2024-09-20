@@ -5,9 +5,6 @@ using Unity.VisualScripting;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {
-    //have a hurt state... tht determines if you die
-    
-    //simplify to basestate
     public PlayerBaseState currentState{ get; private set; }
 
     //States
