@@ -70,13 +70,13 @@ namespace Player.InputManager
             
                 return;
             }
-            Debug.Log("Use item");
+            //Debug.Log("Use item");
             _stateManager.UseItem();
         }
 
         private void ButtonUp(InputAction.CallbackContext context)
         {
-            Debug.Log("Item up 2");
+            //Debug.Log("Item up 2");
 
             PlayerBaseState current = _stateManager.getState;
             if (current is IButtonUp usingItem)

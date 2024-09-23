@@ -6,7 +6,7 @@ using Interactable;
 
 public class UseItemState : PlayerBaseState, IButtonUp
 {
-
+    private Action _buttonUp;
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Action(stateManager);
@@ -36,7 +36,11 @@ public class UseItemState : PlayerBaseState, IButtonUp
         IItem item = stateManager.itemManager.GetItem();
         if(item != null)
         {
-            item.Use(stateManager.transform.position, LookDirection,stateManager.SwitchState, stateManager.defaultState);
+            if (item is IButtonUp needsButtonUpInvoker)
+            {
+                _buttonUp = needsButtonUpInvoker.ButtonUp;
+            }
+            item.Use(stateManager, stateManager.SwitchState, stateManager.defaultState);
         }
         else
         {
@@ -48,7 +52,10 @@ public class UseItemState : PlayerBaseState, IButtonUp
     //this needs to stop the items where the buttons are held down
     public void ButtonUp()
     {
+        //should I change it to where only this is what changes the state back to default?... no different items do diiferent things, so this tells what the item should do and the item deterines if it is done
         Debug.Log($"Button up");
+        _buttonUp?.Invoke();
+        _buttonUp = null;
     }
     
     

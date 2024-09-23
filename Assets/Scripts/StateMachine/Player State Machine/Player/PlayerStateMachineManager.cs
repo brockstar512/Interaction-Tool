@@ -87,7 +87,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void Interact()
     {
-        Debug.Log("interact");
+        //Debug.Log("interact");
 
         if (currentState is DefaultState)
         {

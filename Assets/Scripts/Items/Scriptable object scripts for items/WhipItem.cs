@@ -7,11 +7,11 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class WhipItem : Item
     {
-        public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
             ItemFinishedCallback = callbackAction;
             DefaultState = defaultStateArg;
-            Debug.Log($"Whip {playerDirection}");
+            //Debug.Log($"Whip {playerDirection}");
             Action();
         }
         

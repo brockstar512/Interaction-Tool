@@ -8,11 +8,11 @@ namespace Items.Scriptable_object_scripts_for_items
     [CreateAssetMenu(fileName = "SwordItemObject", menuName = "ScriptableObjects/Sword")]
     public class SwordItem : Item
     {
-        public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
             ItemFinishedCallback = callbackAction;
             DefaultState = defaultStateArg;
-            Debug.Log($"Sword {playerDirection}");
+           // Debug.Log($"Sword {playerDirection}");
 
         }
         

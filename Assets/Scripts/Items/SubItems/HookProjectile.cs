@@ -8,31 +8,50 @@ namespace Items.SubItems{
     {
         [SerializeField] private LineRenderer line;
         [SerializeField] private Vector3 origin;
-        [SerializeField] private Vector3 direction;
+        // [SerializeField] private Vector3 direction;
         [SerializeField] private float speed;
-
-
-        public HookProjectile Init(Vector3 origin, Vector3 direction)
+        [SerializeField] private Sprite rightSprite;
+        [SerializeField] private Sprite leftSprite;
+        [SerializeField] private Sprite downSprite;
+        [SerializeField] private Sprite upSprite;
+        private SpriteRenderer _sr;
+        public HookProjectile Init(Vector3 originPoint)
         {
-            //should the grappling hook item be in control of moving it... this should just be instantiated and keep track of what interects it
-            this.origin = origin;
-            this.direction = direction;
+            this.origin = originPoint;
             return this;
+        }
+        
+        public void SetHookSprite(Vector3 spriteDirection)
+        {   
+            _sr = GetComponent<SpriteRenderer>();
+            if (spriteDirection == Vector3.right)
+            {
+                _sr.sprite = rightSprite;
+            }
+            if (spriteDirection == Vector3.left)
+            {
+                _sr.sprite = leftSprite;
+            }
+            if (spriteDirection == Vector3.up)
+            {
+                _sr.sprite = upSprite;
+            }
+            if (spriteDirection == Vector3.down)
+            {
+                _sr.sprite = downSprite;
+
+            }
+            
         }
         
        
         void Update()
         {
-            Move();
             line.positionCount = 2;
             line.SetPosition(0, origin);
             line.SetPosition(1, this.transform.position);
         }
-
-        void Move()
-        {
-            transform.Translate(direction* speed * Time.deltaTime);
-        }
+        
         
     }
 }

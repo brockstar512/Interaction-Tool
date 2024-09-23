@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 
 
-public class AnimationGrapplingHook 
+public class AnimationGrapplingHook : AnimationState
 {
     readonly int ShootRight = Animator.StringToHash("GrapplingHookShootRight");
     readonly int ShootUp = Animator.StringToHash("GrapplingHookShootUp");

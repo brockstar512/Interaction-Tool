@@ -59,7 +59,8 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
-    <Compile Include="Assets/Scripts/Interactable/IButtonUp.cs" />
+    <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
+    <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
+    <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />

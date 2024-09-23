@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 
 
-public class AnimationBell : MonoBehaviour
+public class AnimationBell : AnimationState
 {
     readonly int BellRight = Animator.StringToHash("BellRight");
     readonly int BellUp = Animator.StringToHash("BellUp");

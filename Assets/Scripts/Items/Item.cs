@@ -12,7 +12,7 @@ namespace Items
         protected DefaultState DefaultState = null;
         public Sprite Sprite => sprite;
 
-        public abstract void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction,
+        public abstract void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction,
             DefaultState defaultStateArg);
 
         public abstract void PutAway();

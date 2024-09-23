@@ -9,17 +9,18 @@ namespace Items.Scriptable_object_scripts_for_items
     public class BellItem : Item
     {
         //animations should be here
-        public override void Use(Vector3 playerLocation, Vector3 playerDirection, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        private readonly AnimationBell _animationBell = new AnimationBell();
+        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
             ItemFinishedCallback = callbackAction;
             DefaultState = defaultStateArg;
-            Debug.Log($"Bell {playerDirection}");
-            Action();
+            Action(stateManager);
 
         }
         
-        void Action()
+        async void Action(PlayerStateMachineManager stateManager)
         {
+            await _animationBell.Play(stateManager);
             PutAway();
         }
         
