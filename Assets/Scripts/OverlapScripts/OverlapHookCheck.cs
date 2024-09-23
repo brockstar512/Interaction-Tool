@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Player.ItemOverlap
 {
+    //todo evenutally i will need to clean and oranize all of these overlap scripts
 
     public class OverlapHookCheck : MonoBehaviour, IGetMostOverlap
     {
@@ -18,10 +19,17 @@ namespace Player.ItemOverlap
             _sr = GetComponent<SpriteRenderer>();
         }
 
+        
         private void AddDetectionLayers()
         {
             detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
-
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
+        }
+        
+        
+        private void Update()
+        {
+            SetMovingOverlappingArea(this.transform.position);
         }
 
         private void SetMovingOverlappingArea(Vector2 characterPos)

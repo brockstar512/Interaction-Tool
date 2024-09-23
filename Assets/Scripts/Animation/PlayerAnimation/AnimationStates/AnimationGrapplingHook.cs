@@ -3,53 +3,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-
-public class AnimationGrapplingHook : AnimationState
+namespace Animation.PlayerAnimation.AnimationStates
 {
-    readonly int ShootRight = Animator.StringToHash("GrapplingHookShootRight");
-    readonly int ShootUp = Animator.StringToHash("GrapplingHookShootUp");
-    readonly int ShootDown = Animator.StringToHash("GrapplingHookShootDown");
-    readonly int ShootLeft = Animator.StringToHash("GrapplingHookShootLeft");
-
-    readonly Dictionary<int, float> TimeSheet;
-    
-    public AnimationGrapplingHook()
+    public class AnimationGrapplingHook : AnimationState
     {
-        TimeSheet = new()
-        {
-            { ShootRight, 0.292f },
-            { ShootUp, 0.292f },
-            { ShootDown,  0.292f },
-            { ShootLeft,  0.292f }
-        };
+        readonly int _shootRight = Animator.StringToHash("GrapplingHookShootRight");
+        readonly int _shootUp = Animator.StringToHash("GrapplingHookShootUp");
+        readonly int _shootDown = Animator.StringToHash("GrapplingHookShootDown");
+        readonly int _shootLeft = Animator.StringToHash("GrapplingHookShootLeft");
 
-    }
-    
-    public async Task Play(PlayerStateMachineManager state)
-    {
-        if (state.currentState.LookDirection == Vector2.down)
+        readonly Dictionary<int, float> TimeSheet;
+
+        public AnimationGrapplingHook()
         {
-            state.animator.Play(ShootDown);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[ShootDown]);
-            return;
+            TimeSheet = new()
+            {
+                { _shootRight, 0.292f },
+                { _shootUp, 0.292f },
+                { _shootDown, 0.292f },
+                { _shootLeft, 0.292f }
+            };
+
         }
-        if (state.currentState.LookDirection == Vector2.right)
+
+        public async Task Play(PlayerStateMachineManager state)
         {
-            state.animator.Play(ShootRight);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[ShootRight]);
-            return;
-        }
-        if (state.currentState.LookDirection == Vector2.left)
-        {
-            state.animator.Play(ShootLeft);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[ShootLeft]);
-            return;
-        }
-        if (state.currentState.LookDirection == Vector2.up)
-        {
-            state.animator.Play(ShootUp);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[ShootUp]);
-            return;
+            if (state.currentState.LookDirection == Vector2.down)
+            {
+                state.animator.Play(_shootDown);
+                await Awaitable.WaitForSecondsAsync(TimeSheet[_shootDown]);
+                return;
+            }
+
+            if (state.currentState.LookDirection == Vector2.right)
+            {
+                state.animator.Play(_shootRight);
+                await Awaitable.WaitForSecondsAsync(TimeSheet[_shootRight]);
+                return;
+            }
+
+            if (state.currentState.LookDirection == Vector2.left)
+            {
+                state.animator.Play(_shootLeft);
+                await Awaitable.WaitForSecondsAsync(TimeSheet[_shootLeft]);
+                return;
+            }
+
+            if (state.currentState.LookDirection == Vector2.up)
+            {
+                state.animator.Play(_shootUp);
+                await Awaitable.WaitForSecondsAsync(TimeSheet[_shootUp]);
+                return;
+            }
         }
     }
 }

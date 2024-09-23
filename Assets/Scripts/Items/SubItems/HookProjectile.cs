@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
 
 namespace Items.SubItems{
@@ -8,18 +9,31 @@ namespace Items.SubItems{
     {
         [SerializeField] private LineRenderer line;
         [SerializeField] private Vector3 origin;
-        // [SerializeField] private Vector3 direction;
         [SerializeField] private float speed;
         [SerializeField] private Sprite rightSprite;
         [SerializeField] private Sprite leftSprite;
         [SerializeField] private Sprite downSprite;
         [SerializeField] private Sprite upSprite;
         private SpriteRenderer _sr;
+
         public HookProjectile Init(Vector3 originPoint)
         {
             this.origin = originPoint;
+            //AddDetectionLayers();
             return this;
         }
+
+        public void BuildCallback()
+        {
+            //pass in the argument with what I need to do whe I hit something... that means the state ..
+            //this could be better set up in the action function of the item
+            //the outcomes are 
+            //1) it hits and objectruction
+            //2) its hits and interactbale
+            //3) it hits a bad guy
+            //4) it hits a hook for a path
+        }
+        
         
         public void SetHookSprite(Vector3 spriteDirection)
         {   

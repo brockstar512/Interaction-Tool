@@ -70,6 +70,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
+    <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
