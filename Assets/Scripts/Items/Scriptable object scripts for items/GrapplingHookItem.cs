@@ -15,23 +15,26 @@ namespace Items.Scriptable_object_scripts_for_items
         private readonly AnimationGrapplingHookSetUp _animationGrapplingHookSetUp = new AnimationGrapplingHookSetUp();
         private readonly AnimationGrapplingHook _animationGrapplingHookFire = new AnimationGrapplingHook();
         private Tweener _projectileAnimation;
-        private const float MaxDistance = 7.5f;
+        private const float MaxDistance = 5f;
         private Vector3 _originPoint = Vector3.zero;
+        private Vector3 _currentLocation = Vector3.zero;
+        private Vector3 _maxLocation = Vector3.zero;
+
 
         public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
         {
             if (_projectile != null)
             {
+                Debug.Log("Grappling hook is active");
+                // _projectileAnimation.Kill();
+                // SendGrapplingHook();
                 return;
+                //send out again?
             }
                 
             ItemFinishedCallback = callbackAction;
             DefaultState = defaultStateArg;
             Action(stateManager);
-            
-                /*
-                 * MissingReferenceException while executing 'canceled' callbacks of 'Player/UseItem[/Keyboard/rightShift]'
-                 */
         }
         
         async void Action(PlayerStateMachineManager stateManager)
@@ -39,37 +42,34 @@ namespace Items.Scriptable_object_scripts_for_items
             await _animationGrapplingHookSetUp.Play(stateManager);
             //maybe break this animation down?
             _originPoint = stateManager.GetComponentInChildren<OriginPoint>().transform.position;
-            Vector3 destination = (stateManager.currentState.LookDirection * MaxDistance) + (Vector2)_originPoint;
+            _currentLocation = _originPoint;
+            _maxLocation = (stateManager.currentState.LookDirection * MaxDistance) + (Vector2)_originPoint;
             _projectile = Instantiate(projectilePrefab, _originPoint,Quaternion.identity).Init(_originPoint);
             _projectile.SetHookSprite(stateManager.currentState.LookDirection);
             //get the distance so we can caculate the time.
-            float time = MeasureTime(GetDistance(_originPoint,destination));
-            SendGrapplingHook(destination,time);
-            //await _animationGrapplingHook.Play(stateManager);
+            SendGrapplingHook();
             await _animationGrapplingHookFire.Play(stateManager);
-
-
         }
-        void SendGrapplingHook(Vector3 destination,float time)
+        void SendGrapplingHook()
         {
-            if (_projectileAnimation == null)
-                return;
-            
-            _projectileAnimation = _projectile.transform.DOMove(destination, time).SetEase(Ease.Linear);
+            _currentLocation = _projectile.transform.position;
+            float time = MeasureTime(GetDistance(_currentLocation,_maxLocation));
+            _projectileAnimation = _projectile.transform.DOMove(_maxLocation, time).SetEase(Ease.Linear);
             _projectileAnimation.onComplete = RetractGrapplingHook;
         }
+        
         void RetractGrapplingHook()
         {
-
-
-            Vector3 currentPos = _projectile == null ? Vector3.zero : _projectile.transform.position;
-            float time = MeasureTime(GetDistance(currentPos,_originPoint));
-            
-            if (_projectile != null)
+            if (_projectile == null)
             {
-                _projectileAnimation = _projectile.transform.DOMove(_originPoint, time).SetEase(Ease.Linear);
-                _projectileAnimation.onComplete = PutAway;
+                PutAway();
+                return;
             }
+
+            _currentLocation = _projectile.transform.position;
+            float time = MeasureTime(GetDistance(_currentLocation,_originPoint));
+            _projectileAnimation = _projectile.transform.DOMove(_originPoint, time).SetEase(Ease.Linear);
+            _projectileAnimation.onComplete = PutAway;
         }
 
         void HitSomething()
@@ -80,19 +80,11 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public void ButtonUp()
         {
-            //todo we want to ake sure the edge cases work consistantly...
             //1) when to goes all the way and starts to retract and button goes up
             //2)when the item is halfway there and the button goes up
             //3)when we are fully done with the state and we transition and button goes up
-            //todo now we need to run this when we hit a wall, or we hit an interactable.. if
+            
             Debug.Log("Button up");
-            if (_projectile == null)
-            {
-                // Debug.Log("PROJECTILE IS NULL");
-                // Destroy(_projectile.gameObject);
-                return;
-
-            }
             _projectileAnimation.Kill();
             RetractGrapplingHook();
         }
@@ -101,7 +93,7 @@ namespace Items.Scriptable_object_scripts_for_items
         {
             Debug.Log("item is done");
             _projectileAnimation.Kill();
-            if (_projectile.gameObject != null)
+            if (_projectile != null)
             {
                 Destroy(_projectile.gameObject);
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ namespace Player.ItemOverlap
 {
     //todo evenutally i will need to clean and oranize all of these overlap scripts
 
-    public class OverlapHookCheck : MonoBehaviour, IGetMostOverlap
+    public class OverlapHookCheck : MonoBehaviour
     {
         [SerializeField] Vector2 areaTopRightCornerAABB,areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
@@ -26,7 +27,6 @@ namespace Player.ItemOverlap
             detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
         }
         
-        
         private void Update()
         {
             SetMovingOverlappingArea(this.transform.position);
@@ -43,7 +43,7 @@ namespace Player.ItemOverlap
             areaBottomLeftCornerAABB = new Vector2(centerX - extendsX, centerY - extendsY);
         }
 
-        private Collider2D GetMostOverlappedCol()
+        public Collider2D GetMostOverlappedCol()
         {
             // Physics2D.queriesStartInColliders = false;
             Collider2D[] overlappingCols =
@@ -111,14 +111,9 @@ namespace Player.ItemOverlap
 
         }
 
-        public InteractableBase GetOverlapObject(Vector2 characterPos, Vector2 lookDirection)
-        {
 
-            SetMovingOverlappingArea(characterPos);
-            Collider2D overlappingObject = GetMostOverlappedCol();
-            return overlappingObject?.GetComponent<InteractableBase>();
-        }
-
+        
+       
         class OverlapCheckHelper
         {
             readonly Vector2 verticalScale = new Vector2(.5f, .25f);

@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build;
 using UnityEngine;
+using Player.ItemOverlap;
+using Unity.VisualScripting;
 
 namespace Items.SubItems{
     
@@ -15,12 +18,30 @@ namespace Items.SubItems{
         [SerializeField] private Sprite downSprite;
         [SerializeField] private Sprite upSprite;
         private SpriteRenderer _sr;
+        private OverlapHookCheck _overlapHookCheck;
+
+        private void Awake()
+        {
+            _overlapHookCheck = GetComponentInChildren<OverlapHookCheck>();
+        }
 
         public HookProjectile Init(Vector3 originPoint)
         {
             this.origin = originPoint;
             //AddDetectionLayers();
             return this;
+        }
+
+        private void FixedUpdate()
+        {
+            Collider2D col = _overlapHookCheck.GetMostOverlappedCol();
+            if (col != null)
+            {
+                //we only care about hooks or throwables
+                Debug.Log($"This is the one we want {col.gameObject.name}");
+
+                
+            }
         }
 
         public void BuildCallback()
