@@ -107,6 +107,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />

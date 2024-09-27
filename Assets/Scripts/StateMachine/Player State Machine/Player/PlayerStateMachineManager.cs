@@ -78,17 +78,17 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         }
     }
 
+    //button controlled
     public void UseItem()
     {
         Debug.Log("useItem");
 
         SwitchState(useItemState);
     }
-
+    
+    //button controlled
     public void Interact()
     {
-        //Debug.Log("interact");
-
         if (currentState is DefaultState)
         {
             UpdateItem(
@@ -101,7 +101,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
             currentState.Action(this);
         }
     }
-
+    
+    //button controlled
     public void Release()
     {
         Debug.Log("Release");
@@ -117,6 +118,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     {
         item = newItem;
     }
+
+
     public void PlayerDeath()
     {
         //

@@ -10,10 +10,10 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         //animations should be here
         private readonly AnimationBell _animationBell = new AnimationBell();
-        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = callbackAction;
-            DefaultState = defaultStateArg;
+            ItemFinishedCallback = stateManager.SwitchState;
+            TargetState = stateManager.defaultState;
             Action(stateManager);
 
         }
@@ -26,7 +26,7 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(DefaultState);
+            ItemFinishedCallback?.Invoke(TargetState);
         }
     }
 }

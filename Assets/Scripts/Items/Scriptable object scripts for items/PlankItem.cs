@@ -9,11 +9,11 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class PlankItem : Item
     {
-        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = callbackAction;
-            DefaultState = defaultStateArg;
-            //Debug.Log($"PLank {playerDirection}");
+            ItemFinishedCallback = stateManager.SwitchState;
+            TargetState = stateManager.defaultState;
+
             Action();
 
         }
@@ -25,7 +25,7 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(DefaultState);
+            ItemFinishedCallback?.Invoke(TargetState);
         }
     }
 }

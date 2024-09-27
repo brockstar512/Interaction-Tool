@@ -5,6 +5,7 @@ using Interactable;
 using DG.Tweening;
 using Animation.PlayerAnimation.AnimationStates;
 using Interface;
+using Unity.VisualScripting;
 
 namespace Items.Scriptable_object_scripts_for_items
 {
@@ -12,6 +13,7 @@ namespace Items.Scriptable_object_scripts_for_items
     public class GrapplingHookItem : Item, IButtonUp
     {
         [SerializeField] private HookProjectile projectilePrefab;
+        [SerializeField] private HookRopeBridge hookRopeBridgePrefab;
         HookProjectile _projectile;
         private readonly AnimationGrapplingHookSetUp _animationGrapplingHookSetUp = new AnimationGrapplingHookSetUp();
         private readonly AnimationGrapplingHook _animationGrapplingHookFire = new AnimationGrapplingHook();
@@ -20,9 +22,10 @@ namespace Items.Scriptable_object_scripts_for_items
         private Vector3 _originPoint = Vector3.zero;
         private Vector3 _currentLocation = Vector3.zero;
         private Vector3 _maxLocation = Vector3.zero;
+        private PlayerStateMachineManager _cachedStateManager;
 
-
-        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        
+        public override void Use(PlayerStateMachineManager stateManager)
         {
             if (_projectile != null)
             {
@@ -30,9 +33,9 @@ namespace Items.Scriptable_object_scripts_for_items
                 return;
                 //send out again?
             }
-                
-            ItemFinishedCallback = callbackAction;
-            DefaultState = defaultStateArg;
+
+            ItemFinishedCallback = stateManager.SwitchState;
+            _cachedStateManager = stateManager;
             Action(stateManager);
         }
         
@@ -73,17 +76,19 @@ namespace Items.Scriptable_object_scripts_for_items
 
         void HitSomething(Collider2D col)
         {
+            //notifies whatever it hit that it was hit as well as 
+            //does what the character needs to do as a result of the type of hit
             IInteractWithHookProjectile somethingHit = col.GetComponent<IInteractWithHookProjectile>();
             if (somethingHit is null)
                 return;
             somethingHit.InteractWithHookProjectile(_projectile);
+            
             switch (somethingHit)
             {
                 case HookConnector hookConnector:
                     Hit(hookConnector);
                     //we dont want it to retract
                     return;
-                    break;
                 case Throwable throwable:
                     Hit(throwable);
                     break;
@@ -101,17 +106,41 @@ namespace Items.Scriptable_object_scripts_for_items
 
         void Hit(Throwable throwable)
         {
-            
+            _cachedStateManager.UpdateItem(throwable);
+            ItemFinishedCallback?.Invoke(_cachedStateManager.throwItemState);
         }
-        void Hit(EnemyPlaceholder throwable)
+        
+        void Hit(EnemyPlaceholder enemyPlaceholder)
         {
-            
+
         }
+        
         void Hit(HookConnector hookConnector)
         {
             Debug.Log("Connect line");
+            //get this from the animation
+            Vector2 start = _originPoint;
+            Vector2 end = hookConnector.transform.position;
+            Instantiate(hookRopeBridgePrefab, _originPoint,Quaternion.identity).Connect(start,end);
+            _projectileAnimation.Kill();
+            //dispose of item
+            Destroy(_projectile.gameObject);
+
         }
         
+        float GetDistance(Vector3 start, Vector3 finish)
+        {
+            //this will always be 0 in one coord so no matter if it's vertical or horizontal it will return the distance
+            Vector3 dist = finish - start;
+            return dist.x + dist.y;
+        }
+        
+        float MeasureTime(float distance)
+        {
+            const float speed = 8.5f;
+            //time should always be positive
+            return Mathf.Abs(distance / speed);
+        }
         
         public void ButtonUp()
         {
@@ -129,24 +158,7 @@ namespace Items.Scriptable_object_scripts_for_items
             }
 
             //this could be a different state depending what we latch onto
-            ItemFinishedCallback?.Invoke(DefaultState);
+            ItemFinishedCallback?.Invoke(_cachedStateManager.defaultState);
         }
-        
-
-        float GetDistance(Vector3 start, Vector3 finish)
-        {
-            //this will always be 0 in one coord so no matter if it's vertical or horizontal it will return the distance
-            Vector3 dist = finish - start;
-            return dist.x + dist.y;
-        }
-        
-        float MeasureTime(float distance)
-        {
-            const float speed = 8.5f;
-            //time should always be positive
-            return Mathf.Abs(distance / speed);
-        }
-
-
     }
 }

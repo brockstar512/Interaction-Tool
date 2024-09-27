@@ -31,6 +31,7 @@ public class UseItemState : PlayerBaseState, IButtonUp
     {
        
     }
+    
     public override void Action(PlayerStateMachineManager stateManager)
     {
         IItem item = stateManager.itemManager.GetItem();
@@ -39,21 +40,25 @@ public class UseItemState : PlayerBaseState, IButtonUp
         {
             if (item is IButtonUp needsButtonUpInvoker)
             {
+                //if the item needs to be notified when the button is up...
+                //this assigns the invoker here...
+                //when the delegate is invoked.. whether it is null or not it will be fired.
+                //the item needs to inhereit the interface to take responsibilty for how it 
+                //responds to button up events
                 _buttonUp = needsButtonUpInvoker.ButtonUp;
             }
-            item.Use(stateManager, stateManager.SwitchState, stateManager.defaultState);
+            item.Use(stateManager);
         }
         else
         {
             stateManager.SwitchState(stateManager.defaultState);
         }
-        
-        
     }
+
+    
     //this needs to stop the items where the buttons are held down
     public void ButtonUp()
     {
-        //should I change it to where only this is what changes the state back to default?... no different items do diiferent things, so this tells what the item should do and the item deterines if it is done
         Debug.Log($"Button up");
         _buttonUp?.Invoke();
         _buttonUp = null;

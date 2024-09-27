@@ -7,10 +7,10 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class WhipItem : Item
     {
-        public override void Use(PlayerStateMachineManager stateManager, Action<DefaultState> callbackAction, DefaultState defaultStateArg)
+        public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = callbackAction;
-            DefaultState = defaultStateArg;
+            ItemFinishedCallback = stateManager.SwitchState;
+            TargetState = stateManager.defaultState;
             //Debug.Log($"Whip {playerDirection}");
             Action();
         }
@@ -22,7 +22,7 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(DefaultState);
+            ItemFinishedCallback?.Invoke(TargetState);
         }
     }
 }
