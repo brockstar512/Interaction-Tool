@@ -1,27 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Interface;
+using Items.SubItems;
 
-public class EnemyPlaceholder : MonoBehaviour, IHurt
+public class EnemyPlaceholder : MonoBehaviour, IHurt, IInteractWithHookProjectile
 {
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ApplyDamage(IDamage damagingThing)
     {
         Debug.Log("apply damage");
         Destroy(this.gameObject);
     }
-    
 
+    public void InteractWithHookProjectile(HookProjectile projectile)
+    {
+        ApplyDamage(projectile);
+    }
 }

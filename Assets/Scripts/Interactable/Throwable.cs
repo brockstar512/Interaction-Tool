@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Interface;
+using Items.SubItems;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Throwable : InteractableBase
+public class Throwable : InteractableBase, IInteractWithHookProjectile
 {
+
+
     Vector3 startingPoint;
     float distanceFromGround;
     float DISTANCE_LIMIT = 7.5f;//anymore will go in a straight line when it reaches point
@@ -95,5 +99,11 @@ public class Throwable : InteractableBase
         curve.keys = keyframes;
 
         Toss(state.currentState.LookDirection);
+    }
+    
+    public void InteractWithHookProjectile(HookProjectile projectile)
+    {
+        this.transform.parent = projectile.transform;
+        this.GetComponent<Collider2D>().isTrigger = true;
     }
 }

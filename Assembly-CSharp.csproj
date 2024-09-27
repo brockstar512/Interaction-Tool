@@ -72,6 +72,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
+    <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/HookProjectile.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />

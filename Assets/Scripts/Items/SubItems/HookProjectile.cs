@@ -1,14 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 using Player.ItemOverlap;
-using Unity.VisualScripting;
+using System;
+using Interface;
 
 namespace Items.SubItems{
     
-    public class HookProjectile : MonoBehaviour
+    public class HookProjectile : MonoBehaviour, IDamage
     {
         [SerializeField] private LineRenderer line;
         [SerializeField] private Vector3 origin;
@@ -19,15 +16,16 @@ namespace Items.SubItems{
         [SerializeField] private Sprite upSprite;
         private SpriteRenderer _sr;
         private OverlapHookCheck _overlapHookCheck;
-
+        Action<Collider2D> _hitSomethingCallback;
         private void Awake()
         {
             _overlapHookCheck = GetComponentInChildren<OverlapHookCheck>();
         }
 
-        public HookProjectile Init(Vector3 originPoint)
+        public HookProjectile Init(Vector3 originPoint, Action<Collider2D> hitSomethingCallback)
         {
             this.origin = originPoint;
+            _hitSomethingCallback = hitSomethingCallback;
             //AddDetectionLayers();
             return this;
         }
@@ -35,26 +33,13 @@ namespace Items.SubItems{
         private void FixedUpdate()
         {
             Collider2D col = _overlapHookCheck.GetMostOverlappedCol();
-            if (col != null)
-            {
-                //we only care about hooks or throwables
-                Debug.Log($"This is the one we want {col.gameObject.name}");
-
-                
-            }
+            //this will only run is we hit something and the callback is not null
+            //once we invoke the call back it will be null
+            if (col is null && _hitSomethingCallback is not null)
+                return;
+            _hitSomethingCallback?.Invoke(col);
+            _hitSomethingCallback = null;
         }
-
-        public void BuildCallback()
-        {
-            //pass in the argument with what I need to do whe I hit something... that means the state ..
-            //this could be better set up in the action function of the item
-            //the outcomes are 
-            //1) it hits and objectruction
-            //2) its hits and interactbale
-            //3) it hits a bad guy
-            //4) it hits a hook for a path
-        }
-        
         
         public void SetHookSprite(Vector3 spriteDirection)
         {   
@@ -82,11 +67,15 @@ namespace Items.SubItems{
        
         void Update()
         {
+            DrawLineConnector();
+        }
+
+        void DrawLineConnector()
+        {
             line.positionCount = 2;
             line.SetPosition(0, origin);
             line.SetPosition(1, this.transform.position);
         }
-        
         
     }
 }

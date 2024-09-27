@@ -34,6 +34,7 @@ public class UseItemState : PlayerBaseState, IButtonUp
     public override void Action(PlayerStateMachineManager stateManager)
     {
         IItem item = stateManager.itemManager.GetItem();
+        
         if(item != null)
         {
             if (item is IButtonUp needsButtonUpInvoker)

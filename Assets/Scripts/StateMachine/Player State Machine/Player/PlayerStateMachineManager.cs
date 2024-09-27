@@ -91,7 +91,10 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
         if (currentState is DefaultState)
         {
-                item = overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection);
+            UpdateItem(
+                overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection)
+                );
+            
             if (item == null)
                 return;
             
@@ -109,7 +112,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     {
         movement = inputMovement;
     }
-    
+
+    public void UpdateItem(InteractableBase newItem)
+    {
+        item = newItem;
+    }
     public void PlayerDeath()
     {
         //
