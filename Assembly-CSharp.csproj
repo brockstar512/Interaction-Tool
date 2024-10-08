@@ -52,6 +52,7 @@
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
     <Compile Include="Assets/Scripts/Items/UseableItems.cs" />
+    <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookSocketCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
+    <Compile Include="Assets/Scripts/Interactable/BombThrowable.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />

@@ -20,7 +20,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     [SerializeField] Transform shadow;
     [SerializeField] AnimationCurve curve;
 
-    private void Awake()
+    protected void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         UpdateLayerName();
@@ -33,7 +33,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         return true;
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         if (isThrown)
         {
@@ -48,7 +48,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         }
     }
 
-    Throwable PickUp(Transform parent)
+    protected Throwable PickUp(Transform parent)
     {
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         this.transform.SetParent(parent);
@@ -58,7 +58,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         return this;
     }
 
-    private void Toss(Vector3 direction)
+    protected void Toss(Vector3 direction)
     {
         shadow.gameObject.SetActive(true);
         shadow.position = new Vector3(shadow.position.x, shadow.position.y , shadow.position.z);//- .25f
@@ -69,7 +69,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 
     }
     //the tranform of the parent is straight. the throwable follows a curve
-    private void InAir()
+    protected void InAir()
     {
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         //x is height

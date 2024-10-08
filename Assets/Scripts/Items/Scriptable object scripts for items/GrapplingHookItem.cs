@@ -5,6 +5,7 @@ using Interactable;
 using DG.Tweening;
 using Animation.PlayerAnimation.AnimationStates;
 using Interface;
+using Player.ItemOverlap;
 using Unity.VisualScripting;
 
 namespace Items.Scriptable_object_scripts_for_items
@@ -14,7 +15,9 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         [SerializeField] private HookProjectile projectilePrefab;
         [SerializeField] private HookRopeBridge hookRopeBridgePrefab;
+        [SerializeField] private OverlapHookSocketCheck hookStartOverlapStartPrefab;
         HookProjectile _projectile;
+        OverlapHookSocketCheck _hookStartOverlap;
         private readonly AnimationGrapplingHookSetUp _animationGrapplingHookSetUp = new AnimationGrapplingHookSetUp();
         private readonly AnimationGrapplingHook _animationGrapplingHookFire = new AnimationGrapplingHook();
         private Tweener _projectileAnimation;
@@ -33,10 +36,16 @@ namespace Items.Scriptable_object_scripts_for_items
                 return;
                 //send out again?
             }
-
             ItemFinishedCallback = stateManager.SwitchState;
             _cachedStateManager = stateManager;
+            _hookStartOverlap = Instantiate(hookStartOverlapStartPrefab, _cachedStateManager.transform.position, Quaternion.identity);
+
             Action(stateManager);
+        }
+
+        void FixedUpdate()
+        {
+            
         }
         
         async void Action(PlayerStateMachineManager stateManager)
@@ -115,17 +124,29 @@ namespace Items.Scriptable_object_scripts_for_items
 
         }
         
-        void Hit(HookConnector hookConnector)
+        async void Hit(HookConnector hookConnector)
         {
-            Debug.Log("Connect line");
+            //Debug.Log("Connect line");
             //get this from the animation
-            Vector2 start = _originPoint;
-            Vector2 end = hookConnector.transform.position;
-            Instantiate(hookRopeBridgePrefab, _originPoint,Quaternion.identity).Connect(start,end);
-            _projectileAnimation.Kill();
-            //dispose of item
-            Destroy(_projectile.gameObject);
+            Debug.Log("Player location:  "+_cachedStateManager.transform.position);
+            HookConnector hookConnectorStartPin = await _hookStartOverlap.GetMostOverlappedHookStartCol(_cachedStateManager.transform.position);
+            
+            if (hookConnectorStartPin != null)
+            {
+                Debug.Log($"Connect line {hookConnectorStartPin.gameObject.name}");
 
+                Vector2 start = hookConnectorStartPin.transform.position;
+                Vector2 end = hookConnector.transform.position;
+                Instantiate(hookRopeBridgePrefab, _originPoint, Quaternion.identity).Connect(start, end);
+                _projectileAnimation.Kill();
+                //dispose of item
+                Destroy(_projectile.gameObject);
+                Destroy(_hookStartOverlap.gameObject);
+                Destroy(hookConnectorStartPin);
+                Destroy(hookConnector);
+                return;
+            }
+            //retract grappling hook. you didnt hit a start point
         }
         
         float GetDistance(Vector3 start, Vector3 finish)
@@ -155,6 +176,8 @@ namespace Items.Scriptable_object_scripts_for_items
             if (_projectile != null)
             {
                 Destroy(_projectile.gameObject);
+                Destroy(_hookStartOverlap.gameObject);
+
             }
 
             //this could be a different state depending what we latch onto

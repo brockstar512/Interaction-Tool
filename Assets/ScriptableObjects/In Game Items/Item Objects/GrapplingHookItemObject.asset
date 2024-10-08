@@ -15,3 +15,4 @@ MonoBehaviour:
   sprite: {fileID: 4255852585849884111, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
   projectilePrefab: {fileID: 5407319548600939932, guid: 06f2998a42a6b4f57b724b1509ec0c48, type: 3}
   hookRopeBridgePrefab: {fileID: 1615016105562448186, guid: 3a73f4c08367648c488b3df6d16529ce, type: 3}
+  hookStartOverlapStartPrefab: {fileID: 507565790331131896, guid: b365b0863c55a4726bcbdf35b9abc976, type: 3}

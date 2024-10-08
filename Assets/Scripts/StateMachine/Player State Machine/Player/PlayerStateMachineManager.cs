@@ -81,9 +81,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     //button controlled
     public void UseItem()
     {
-        Debug.Log("useItem");
-
-        SwitchState(useItemState);
+        if (currentState is DefaultState)
+        {
+            Debug.Log("useItem");
+            SwitchState(useItemState);
+        }
     }
     
     //button controlled
