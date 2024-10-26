@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,14 +14,28 @@ namespace Player.ItemOverlap
         [SerializeField] protected LayerMask detectionLayer;
         private SpriteRenderer _sr;
 
-        void Start()
+        void Awake()
         {
             _sr = GetComponent<SpriteRenderer>();
+        }
+
+        private void Start()
+        {
+            AddDetectionLayers();
+        }
+
+        private void AddDetectionLayers()
+        {
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SocketUnusedLayer);
         }
         
 
         private void SetMovingOverlappingArea(Vector2 characterPos)
         {
+            if (_sr is null)
+                return;
+            Debug.Log($"UPDATED SPACE {characterPos}");
+            this.transform.position = characterPos;
             float centerX = _sr.bounds.center.x;
             float centerY = _sr.bounds.center.y;
             float extendsX = _sr.bounds.extents.x;
@@ -37,12 +52,14 @@ namespace Player.ItemOverlap
             // Physics2D.queriesStartInColliders = false;
             Collider2D[] overlappingCols =
                 Physics2D.OverlapAreaAll(areaTopRightCornerAABB, areaBottomLeftCornerAABB, detectionLayer);
+            
+
             if (overlappingCols.Length == 0)
                  return null;
 
             for (int i = 0; i < overlappingCols.Length; i++)
             {
-                Debug.Log("Found start");
+                Debug.Log($"iterating {overlappingCols[i].gameObject.name}");
                 HookConnector connector = overlappingCols[i].GetComponent<HookConnector>();
                 if (connector != null)
                 {
@@ -54,7 +71,30 @@ namespace Player.ItemOverlap
             //Debug.Log(col.gameObject.name);
             return null;
         }
+        
+        public HookConnector GetMostOverlappedHookEndCol(Vector2 characterPos)
+        {
+            Debug.Log($"Movement {characterPos}");
+            SetMovingOverlappingArea(characterPos);
+            // Physics2D.queriesStartInColliders = false;
+            Collider2D[] overlappingCols =
+                Physics2D.OverlapAreaAll(areaTopRightCornerAABB, areaBottomLeftCornerAABB, detectionLayer);
+            if (overlappingCols.Length == 0)
+                return null;
 
-
+            for (int i = 0; i < overlappingCols.Length; i++)
+            {
+                Debug.Log("Found start");
+                HookConnector connector = overlappingCols[i].GetComponent<HookConnector>();
+                if (connector != null)
+                {
+                    //Task.FromResult
+                    return connector;
+                }
+            }
+            
+            //Debug.Log(col.gameObject.name);
+            return null;
+        }
     }
 }

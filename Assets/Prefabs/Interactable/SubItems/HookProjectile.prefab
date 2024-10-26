@@ -49,11 +49,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   line: {fileID: 3497793881835208768}
   origin: {x: 0, y: 0, z: 0}
+  playerPos: {x: 0, y: 0, z: 0}
   speed: 7
   rightSprite: {fileID: -4655091340081931964, guid: 96e382e7ad8ba4893902e29731291e76, type: 3}
   leftSprite: {fileID: -5745564738101870264, guid: 96e382e7ad8ba4893902e29731291e76, type: 3}
   downSprite: {fileID: -7672256323015125316, guid: 96e382e7ad8ba4893902e29731291e76, type: 3}
   upSprite: {fileID: 7676382691749075051, guid: 96e382e7ad8ba4893902e29731291e76, type: 3}
+  hookOverlapPrefab: {fileID: 507565790331131896, guid: b365b0863c55a4726bcbdf35b9abc976, type: 3}
+  hookRopeBridgePrefab: {fileID: 1615016105562448186, guid: 3a73f4c08367648c488b3df6d16529ce, type: 3}
 --- !u!212 &4026086761605681340
 SpriteRenderer:
   m_ObjectHideFlags: 0

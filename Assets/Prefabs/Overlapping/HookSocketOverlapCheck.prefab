@@ -103,4 +103,4 @@ MonoBehaviour:
   areaBottomLeftCornerAABB: {x: 0, y: 0}
   detectionLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4096

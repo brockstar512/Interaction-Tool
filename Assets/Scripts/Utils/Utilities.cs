@@ -11,7 +11,10 @@ public static class Utilities
     public const string PlayerLayer = "Player";
     public const string KeyPortLayer = "KeyPort";
     public const string TargetOverlapLayer = "TargetOverlapLayer";
+    public const string SocketUsedLayer = "HookSocketUsed";
+    public const string SocketUnusedLayer = "HookSocketUnused";
 
+    
     
     public enum KeyTypes
     {

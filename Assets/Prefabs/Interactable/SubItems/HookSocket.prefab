@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2734472754861958871}
   - component: {fileID: 6899039230819813656}
   - component: {fileID: 530680355137697178}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: HookSocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29fe87683154ea49e9e2364c8e398f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hookRopeBridgePrefab: {fileID: 1615016105562448186, guid: 3a73f4c08367648c488b3df6d16529ce, type: 3}
 --- !u!61 &530680355137697178
 BoxCollider2D:
   m_ObjectHideFlags: 0

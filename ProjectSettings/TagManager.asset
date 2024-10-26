@@ -13,11 +13,11 @@ TagManager:
   - UI
   - Obstruction
   - Player
-  - Interacting
+  - HookSocketUsed
   - Interactable
   - KeyPort
   - TargetOverlapLayer
-  - 
+  - HookSocketUnused
   - 
   - 
   - 
