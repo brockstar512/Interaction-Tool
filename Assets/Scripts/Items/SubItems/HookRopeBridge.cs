@@ -8,11 +8,9 @@ public class HookRopeBridge : MonoBehaviour
 
 
 
-    public void Connect(Vector2 start, Vector2 end)
+    public void Connect(Vector3 start, Vector3 end)
     {
         this.transform.position = start;
-        Vector2 currentDirection = (end - start).normalized;
-        Debug.Log($"this incoming direction {currentDirection} and this is the start of the end bridge direction {bridgeDirection}");
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = 2;
         _lineRenderer.SetPosition(0, start);

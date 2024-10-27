@@ -1,6 +1,8 @@
 using UnityEngine;
 using Player.ItemOverlap;
 using System;
+using Interface;
+
 namespace Items.SubItems{
     
     public class HookProjectile : MonoBehaviour, IDamage
@@ -23,18 +25,20 @@ namespace Items.SubItems{
         public HookConnector hookConnectorEndPin { get; private set; } = null;
          
 
-        Action<Collider2D> _hitSomethingCallback;
+        Action<IInteractWithHookProjectile> _hitSomethingCallback;
         private void Awake()
         {
             _overlapHookCheck = GetComponentInChildren<OverlapHookCheck>();
         }
 
-        public HookProjectile Init(Vector3 gunBarrel, Action<Collider2D> hitSomethingCallback,Vector3 playerLocation)
+        public HookProjectile Init(Vector3 gunBarrel, Action<IInteractWithHookProjectile> hitSomethingCallback,Vector3 playerLocation)
         {
             this.playerPos = playerLocation;
             this.origin = gunBarrel;
             _hitSomethingCallback = hitSomethingCallback;
             _hookStartOverlap = Instantiate(hookOverlapPrefab, playerLocation, Quaternion.identity);
+            _hookStartOverlap.gameObject.transform.name = "begin pin check";
+
             _hookEndOverlap = Instantiate(hookOverlapPrefab, playerLocation, Quaternion.identity);
 
             CheckForStartPin();
@@ -53,10 +57,9 @@ namespace Items.SubItems{
         
         void CheckForEndPin()
         {
-            //Debug.Log(this.transform.position);
-            // _hookEndOverlap.gameObject.transform.name = "End checker";
+            _hookEndOverlap.gameObject.transform.name = "End pin check";
             hookConnectorEndPin = _hookEndOverlap.GetMostOverlappedHookEndCol(this.transform.position);
-            // Debug.Log($"Looking for end overlap did I find it? {hookConnectorEndPin is not null}");
+
             if (hookConnectorEndPin is not null)
             {
                 Utilities.PutObjectOnLayer(Utilities.SocketUsedLayer,hookConnectorStartPin.gameObject);
@@ -72,28 +75,36 @@ namespace Items.SubItems{
             {
                 Utilities.PutObjectOnLayer(Utilities.SocketUsedLayer,hookConnectorEndPin.gameObject);
                 hookConnectorStartPin.InteractWithHookProjectile(this);
-                Destroy(this.gameObject);
+                _hitSomethingCallback?.Invoke(hookConnectorEndPin);
+
             }
         }
         
-//todo put items on back on unhooked layers on destroy. in interactwithhook projectils destroy the other items
-
         private void FixedUpdate()
         {
-            //ConnectBridge();
+            //logic for bridge connector
             if (_hasStartPin)
             {
                 CheckForEndPin();
             }
-            
+            //checking for throwables to interact with or enemies to interact with
             Collider2D col = _overlapHookCheck.GetMostOverlappedCol();
+            
             //this will only run is we hit something and the callback is not null
             //once we invoke the call back it will be null
             if (col is null && _hitSomethingCallback is not null)
                 return;
-            // Debug.Log($"Hit {col.gameObject.name}");
-            // _hitSomethingCallback?.Invoke(col);
-            // _hitSomethingCallback = null;
+            //todo we do not want to hit the hook connectors twivce
+            //todo destroy the connector and when thats destory makeit so the collider is destroyed
+            //todo then only have none connector logic here
+            
+            IInteractWithHookProjectile somethingHit = col?.GetComponent<IInteractWithHookProjectile>();
+            if (somethingHit is null || somethingHit is HookConnector)
+                return;
+            
+            Debug.Log($"We hit inside hook projectile {somethingHit.GetType()}");
+            _hitSomethingCallback?.Invoke(somethingHit);
+            _hitSomethingCallback = null;
         }
         
         public void SetHookSprite(Vector3 spriteDirection)

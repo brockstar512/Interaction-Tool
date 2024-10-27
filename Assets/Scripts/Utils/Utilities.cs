@@ -33,6 +33,19 @@ public static class Utilities
     {
         return new GameObject(objectName).AddComponent<T>();
     }
+   
+    public static Vector2 GridDirection(this Vector3 vector)
+    {
+        vector = vector.normalized;
+        return new Vector2(Mathf.Round(vector.x), Mathf.Round(vector.y));
+    }
+
+    //not tested
+    public static T HasComponent<T>(this T component, Collider2D collider2D)
+    {
+        T componentType = collider2D.GetComponent<T>();
+        return componentType;
+    }
     
 
 }

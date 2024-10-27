@@ -42,16 +42,15 @@ namespace Items.Scriptable_object_scripts_for_items
         async void Action(PlayerStateMachineManager stateManager)
         {
             await _animationGrapplingHookSetUp.Play(stateManager);
-            //maybe break this animation down?
             _originPoint = stateManager.GetComponentInChildren<OriginPoint>().transform.position;
             _currentLocation = _originPoint;
             _maxLocation = (stateManager.currentState.LookDirection * MaxDistance) + (Vector2)_originPoint;
             _projectile = Instantiate(projectilePrefab, _originPoint,Quaternion.identity).Init(_originPoint,HitSomething,stateManager.transform.position);
             _projectile.SetHookSprite(stateManager.currentState.LookDirection);
-            //get the distance so we can caculate the time.
             SendGrapplingHook();
             await _animationGrapplingHookFire.Play(stateManager);
         }
+       
         void SendGrapplingHook()
         {
             _currentLocation = _projectile.transform.position;
@@ -67,7 +66,6 @@ namespace Items.Scriptable_object_scripts_for_items
                 PutAway();
                 return;
             }
-            Debug.Break();
 
             _currentLocation = _projectile.transform.position;
             float time = MeasureTime(GetDistance(_currentLocation,_originPoint));
@@ -75,46 +73,42 @@ namespace Items.Scriptable_object_scripts_for_items
             _projectileAnimation.onComplete = PutAway;
         }
 
-        void HitSomething(Collider2D col)
+        void HitSomething(IInteractWithHookProjectile somethingHit)
         {
             //notifies whatever it hit that it was hit as well as 
             //does what the character needs to do as a result of the type of hit
-            IInteractWithHookProjectile somethingHit = col.GetComponent<IInteractWithHookProjectile>();
-            if (somethingHit is null)
-                return;
-            somethingHit.InteractWithHookProjectile(_projectile);
-            
+            Debug.Log($"We hit {somethingHit.GetType()}");
             switch (somethingHit)
             {
                 case HookConnector hookConnector:
-                    //Hit(hookConnector);
-                    //we dont want it to retract
-                    return;
+                    _projectileAnimation.Kill();
+                    Destroy(_projectile.hookConnectorStartPin);
+                    Destroy(_projectile.hookConnectorEndPin);
+                    Destroy(_projectile.gameObject);
+                    //destroy the item (grappling hook) that we have
+                break;
                 case Throwable throwable:
-                    Hit(throwable);
+                    SetUpNextStateAfterHit(throwable);
+                    _projectileAnimation.Kill();
+                    //this should retract grappling hook
+                    RetractGrapplingHook();
                     break;
                 case EnemyPlaceholder enemy:
-                    Hit(enemy);
-                    break;
-                default:
+                    _projectileAnimation.Kill();
+                    //this should retract grappling hook
+                    RetractGrapplingHook();
                     break;
             }
             
-            _projectileAnimation.Kill();
-            //this should retract grappling hook
-            RetractGrapplingHook();
         }
 
-        void Hit(Throwable throwable)
+        void SetUpNextStateAfterHit(Throwable throwable)
         {
             _cachedStateManager.UpdateItem(throwable);
             ItemFinishedCallback?.Invoke(_cachedStateManager.throwItemState);
         }
         
-        void Hit(EnemyPlaceholder enemyPlaceholder)
-        {
 
-        }
         
         
         float GetDistance(Vector3 start, Vector3 finish)

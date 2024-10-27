@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Items.SubItems;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace Player.ItemOverlap
 {
@@ -34,7 +30,6 @@ namespace Player.ItemOverlap
         {
             if (_sr is null)
                 return;
-            Debug.Log($"UPDATED SPACE {characterPos}");
             this.transform.position = characterPos;
             float centerX = _sr.bounds.center.x;
             float centerY = _sr.bounds.center.y;
@@ -44,12 +39,10 @@ namespace Player.ItemOverlap
             areaTopRightCornerAABB = new Vector2(centerX + extendsX, centerY + extendsY);
             areaBottomLeftCornerAABB = new Vector2(centerX - extendsX, centerY - extendsY);
         }
-        //might need to call this asyncronously
         
         public async Task<HookConnector> GetMostOverlappedHookStartCol(Vector2 characterPos)
         {
             SetMovingOverlappingArea(characterPos);
-            // Physics2D.queriesStartInColliders = false;
             Collider2D[] overlappingCols =
                 Physics2D.OverlapAreaAll(areaTopRightCornerAABB, areaBottomLeftCornerAABB, detectionLayer);
             
@@ -59,7 +52,7 @@ namespace Player.ItemOverlap
 
             for (int i = 0; i < overlappingCols.Length; i++)
             {
-                Debug.Log($"iterating {overlappingCols[i].gameObject.name}");
+                // Debug.Log($"iterating {overlappingCols[i].gameObject.name}");
                 HookConnector connector = overlappingCols[i].GetComponent<HookConnector>();
                 if (connector != null)
                 {
@@ -74,7 +67,7 @@ namespace Player.ItemOverlap
         
         public HookConnector GetMostOverlappedHookEndCol(Vector2 characterPos)
         {
-            Debug.Log($"Movement {characterPos}");
+            // Debug.Log($"Movement {characterPos}");
             SetMovingOverlappingArea(characterPos);
             // Physics2D.queriesStartInColliders = false;
             Collider2D[] overlappingCols =
@@ -84,16 +77,13 @@ namespace Player.ItemOverlap
 
             for (int i = 0; i < overlappingCols.Length; i++)
             {
-                Debug.Log("Found start");
                 HookConnector connector = overlappingCols[i].GetComponent<HookConnector>();
                 if (connector != null)
                 {
-                    //Task.FromResult
                     return connector;
                 }
             }
             
-            //Debug.Log(col.gameObject.name);
             return null;
         }
     }

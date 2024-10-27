@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2734472754861958871}
   - component: {fileID: 6899039230819813656}
   - component: {fileID: 530680355137697178}
+  - component: {fileID: 2093148552065702973}
   m_Layer: 12
   m_Name: HookSocket
   m_TagString: Untagged
@@ -147,3 +148,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2093148552065702973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4155421352989165565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 709d34239e915435cb70feae71b589ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileSize: 1
+  tileOffset: {x: 0, y: 0, z: 0}
