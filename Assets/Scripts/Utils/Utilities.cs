@@ -40,12 +40,12 @@ public static class Utilities
         return new Vector2(Mathf.Round(vector.x), Mathf.Round(vector.y));
     }
 
-    //not tested
-    public static T HasComponent<T>(this T component, Collider2D collider2D)
-    {
-        T componentType = collider2D.GetComponent<T>();
-        return componentType;
-    }
+    // //not tested... didnt work
+    // public static T GetClassComponent<T>(this Collider2D collider2D, T component)
+    // {
+    //     T componentType = collider2D.GetComponent<T>();
+    //     return componentType;
+    // }
     
 
 }

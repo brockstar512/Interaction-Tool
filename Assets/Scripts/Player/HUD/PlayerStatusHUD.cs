@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -13,7 +14,7 @@ public class PlayerStatusHUD : MonoBehaviour
 
 
 
-    private void UpdateItemUI(Sprite sprite)
+    private void UpdateItemUI([CanBeNull] Sprite sprite)
     {
         currentItem.sprite = sprite;
     }

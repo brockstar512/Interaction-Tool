@@ -16,10 +16,10 @@ namespace Items.SubItems{
         [SerializeField] private Sprite downSprite;
         [SerializeField] private Sprite upSprite;
         [SerializeField] private OverlapHookSocketCheck hookOverlapPrefab;
+        private OverlapHookSocketCheck _hookStartOverlap;
+        private OverlapHookSocketCheck _hookEndOverlap;
         private SpriteRenderer _sr;
         private OverlapHookCheck _overlapHookCheck;
-        OverlapHookSocketCheck _hookStartOverlap;
-        OverlapHookSocketCheck _hookEndOverlap;
         private bool _hasStartPin = false;
         public HookConnector hookConnectorStartPin { get; private set; } = null;
         public HookConnector hookConnectorEndPin { get; private set; } = null;
@@ -151,7 +151,6 @@ namespace Items.SubItems{
         }
         
         
-       
         void Update()
         {
             DrawLineConnector();

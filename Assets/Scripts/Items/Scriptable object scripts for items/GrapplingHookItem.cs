@@ -85,6 +85,7 @@ namespace Items.Scriptable_object_scripts_for_items
                     Destroy(_projectile.hookConnectorStartPin);
                     Destroy(_projectile.hookConnectorEndPin);
                     Destroy(_projectile.gameObject);
+                    _cachedStateManager.itemManager.DisposeOfCurrentItem();
                     //destroy the item (grappling hook) that we have
                 break;
                 case Throwable throwable:

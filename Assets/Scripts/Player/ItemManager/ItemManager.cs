@@ -7,7 +7,7 @@ public class ItemManager
 {
     private int _currentIndex = 0;
     private List<IItem> inventory;
-    private int inventoryLimit;
+    private const int inventoryLimit = 2;
     public event Action<Sprite> ItemSwitch;
 
 
@@ -16,7 +16,6 @@ public class ItemManager
     {
        _currentIndex = 0;
        inventory = new List<IItem>();
-       inventoryLimit = 2;
     }
 
 
@@ -67,4 +66,17 @@ public class ItemManager
 
     }
 
+    public void DisposeOfCurrentItem()
+    {
+        inventory.RemoveAt(_currentIndex);
+        //if we are at the end and the item index is not 0 we are going to decrement the index
+        //otherwise the item that was ahead will fall down to the current index
+        //if it's not 0 that will help in the event that you can only have one item
+        _currentIndex = _currentIndex == inventoryLimit &&_currentIndex!=0  ? _currentIndex-- : _currentIndex;
+        //update UI to match the inventory
+        Sprite newSprite = (_currentIndex > inventory.Count)||(inventory.Count == 0) ? null : inventory[_currentIndex].Sprite;
+        ItemSwitch?.Invoke(newSprite);
+
+
+    }
 }
