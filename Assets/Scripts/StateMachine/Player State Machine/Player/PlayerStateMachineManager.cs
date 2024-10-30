@@ -100,8 +100,10 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
             if (item == null)
                 return;
             
-            currentState.Action(this);
         }
+        //moved out of the block so ifgrappling use item called this the state would still beupdated to throw
+        currentState.Action(this);
+
     }
     
     //button controlled
@@ -116,9 +118,23 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         movement = inputMovement;
     }
 
-    public void UpdateItem(InteractableBase newItem)
+    void UpdateItem(InteractableBase newItem)
+    {
+        //this is the keys for every interactable item
+        item = newItem;
+    }
+   
+
+    public void SwitchStateFromEquippedItem(InteractableBase newItem = null)
     {
         item = newItem;
+        if (item is not null)
+        {
+            SwitchState(this.throwItemState);
+            return;
+        }
+
+        SwitchState(this.defaultState);
     }
 
 
@@ -128,3 +144,4 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     }
 
 }
+//i could have different inventorys that when the item it call the ui and items do different things so throwable is acutall a item

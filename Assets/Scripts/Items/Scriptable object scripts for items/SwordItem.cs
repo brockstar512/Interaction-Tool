@@ -10,15 +10,12 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = stateManager.SwitchState;;
-            TargetState = stateManager.defaultState;
-           // Debug.Log($"Sword {playerDirection}");
-
+            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;;
         }
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(TargetState);
+            ItemFinishedCallback?.Invoke(null);
         }
     }
 }

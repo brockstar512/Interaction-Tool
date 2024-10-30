@@ -22,9 +22,12 @@ namespace Items.Scriptable_object_scripts_for_items
         private Vector3 _originPoint = Vector3.zero;
         private Vector3 _currentLocation = Vector3.zero;
         private Vector3 _maxLocation = Vector3.zero;
-        private PlayerStateMachineManager _cachedStateManager;
+        InteractableBase item { get; set; } = null;
+        Action _disposeOfItem = null;
 
-        
+
+
+
         public override void Use(PlayerStateMachineManager stateManager)
         {
             if (_projectile != null)
@@ -33,8 +36,9 @@ namespace Items.Scriptable_object_scripts_for_items
                 return;
                 //send out again?
             }
-            ItemFinishedCallback = stateManager.SwitchState;
-            _cachedStateManager = stateManager;
+            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
+            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+
             Action(stateManager);
         }
 
@@ -85,11 +89,10 @@ namespace Items.Scriptable_object_scripts_for_items
                     Destroy(_projectile.hookConnectorStartPin);
                     Destroy(_projectile.hookConnectorEndPin);
                     Destroy(_projectile.gameObject);
-                    _cachedStateManager.itemManager.DisposeOfCurrentItem();
-                    //destroy the item (grappling hook) that we have
+                    _disposeOfItem?.Invoke();
                 break;
                 case Throwable throwable:
-                    SetUpNextStateAfterHit(throwable);
+                    item = throwable;
                     _projectileAnimation.Kill();
                     //this should retract grappling hook
                     RetractGrapplingHook();
@@ -102,14 +105,6 @@ namespace Items.Scriptable_object_scripts_for_items
             }
             
         }
-
-        void SetUpNextStateAfterHit(Throwable throwable)
-        {
-            _cachedStateManager.UpdateItem(throwable);
-            ItemFinishedCallback?.Invoke(_cachedStateManager.throwItemState);
-        }
-        
-
         
         
         float GetDistance(Vector3 start, Vector3 finish)
@@ -134,15 +129,15 @@ namespace Items.Scriptable_object_scripts_for_items
 
         public override void PutAway()
         {
-            // Debug.Log("item is done");
             _projectileAnimation.Kill();
             if (_projectile != null)
             {
                 Destroy(_projectile.gameObject);
             }
 
-            //this could be a different state depending what we latch onto
-            ItemFinishedCallback?.Invoke(_cachedStateManager.defaultState);
+            //if this is null it will go to default...
+            //depending on the item it will figure it out in the callback
+            ItemFinishedCallback?.Invoke(item);
         }
     }
 }

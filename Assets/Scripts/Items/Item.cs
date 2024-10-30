@@ -8,8 +8,7 @@ namespace Items
     {
         //could use a factory to generate a concret class rather than pass around scriptable objects
         [SerializeField] Sprite sprite;
-        protected Action<PlayerBaseState> ItemFinishedCallback;
-        protected PlayerBaseState TargetState = null;
+        protected Action<InteractableBase> ItemFinishedCallback;
         public Sprite Sprite => sprite;
 
         public abstract void Use(PlayerStateMachineManager stateManager);

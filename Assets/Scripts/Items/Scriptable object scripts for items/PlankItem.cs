@@ -9,10 +9,12 @@ namespace Items.Scriptable_object_scripts_for_items
 
     public class PlankItem : Item
     {
+        Action _disposeOfItem = null;
+
         public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = stateManager.SwitchState;
-            TargetState = stateManager.defaultState;
+            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
 
             Action();
 
@@ -25,7 +27,8 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(TargetState);
+            _disposeOfItem?.Invoke();
+            ItemFinishedCallback?.Invoke(null);
         }
     }
 }

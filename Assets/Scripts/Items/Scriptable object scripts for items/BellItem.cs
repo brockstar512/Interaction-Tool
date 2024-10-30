@@ -12,8 +12,7 @@ namespace Items.Scriptable_object_scripts_for_items
         private readonly AnimationBell _animationBell = new AnimationBell();
         public override void Use(PlayerStateMachineManager stateManager)
         {
-            ItemFinishedCallback = stateManager.SwitchState;
-            TargetState = stateManager.defaultState;
+            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
             Action(stateManager);
 
         }
@@ -26,7 +25,7 @@ namespace Items.Scriptable_object_scripts_for_items
         
         public override void PutAway()
         {
-            ItemFinishedCallback?.Invoke(TargetState);
+            ItemFinishedCallback?.Invoke(null);
         }
     }
 }

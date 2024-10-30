@@ -6,6 +6,7 @@ using Interactable;
 
 public class UseItemState : PlayerBaseState, IButtonUp
 {
+    //maybe this has the callvack
     private Action _buttonUp;
     public override void EnterState(PlayerStateMachineManager stateManager)
     {

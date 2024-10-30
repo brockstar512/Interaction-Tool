@@ -46,5 +46,7 @@ public class EquipItemState : PlayerBaseState
         UpdateLookDirection(stateManager.movement);
     }
 
+
+
     
 }
