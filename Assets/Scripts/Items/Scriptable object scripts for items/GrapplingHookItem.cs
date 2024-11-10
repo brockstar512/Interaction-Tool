@@ -5,8 +5,7 @@ using Interactable;
 using DG.Tweening;
 using Animation.PlayerAnimation.AnimationStates;
 using Interface;
-using Player.ItemOverlap;
-using Unity.VisualScripting;
+
 
 namespace Items.Scriptable_object_scripts_for_items
 {
@@ -22,8 +21,8 @@ namespace Items.Scriptable_object_scripts_for_items
         private Vector3 _originPoint = Vector3.zero;
         private Vector3 _currentLocation = Vector3.zero;
         private Vector3 _maxLocation = Vector3.zero;
-        InteractableBase item { get; set; } = null;
-        Action _disposeOfItem = null;
+        InteractableBase item { get; set; }
+        Action _disposeOfItem;
 
 
 
@@ -36,6 +35,7 @@ namespace Items.Scriptable_object_scripts_for_items
                 return;
                 //send out again?
             }
+            
             _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
             ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
 
@@ -84,7 +84,8 @@ namespace Items.Scriptable_object_scripts_for_items
             Debug.Log($"We hit {somethingHit.GetType()}");
             switch (somethingHit)
             {
-                case HookConnector hookConnector:
+                //fine
+                case HookConnector:
                     _projectileAnimation.Kill();
                     Destroy(_projectile.hookConnectorStartPin);
                     Destroy(_projectile.hookConnectorEndPin);
@@ -97,7 +98,7 @@ namespace Items.Scriptable_object_scripts_for_items
                     //this should retract grappling hook
                     RetractGrapplingHook();
                     break;
-                case EnemyPlaceholder enemy:
+                case EnemyPlaceholder:
                     _projectileAnimation.Kill();
                     //this should retract grappling hook
                     RetractGrapplingHook();
@@ -109,7 +110,8 @@ namespace Items.Scriptable_object_scripts_for_items
         
         float GetDistance(Vector3 start, Vector3 finish)
         {
-            //this will always be 0 in one coord so no matter if it's vertical or horizontal it will return the distance
+            //this will always be 0 in one coord
+            //so no matter if it's vertical or horizontal it will return the distance
             Vector3 dist = finish - start;
             return dist.x + dist.y;
         }
@@ -138,6 +140,7 @@ namespace Items.Scriptable_object_scripts_for_items
             //if this is null it will go to default...
             //depending on the item it will figure it out in the callback
             ItemFinishedCallback?.Invoke(item);
+            
         }
     }
 }
