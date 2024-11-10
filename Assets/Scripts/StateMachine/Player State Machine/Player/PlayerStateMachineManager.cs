@@ -127,13 +127,9 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public void SwitchStateFromEquippedItem(InteractableBase newItem = null)
     {
-        Debug.Log($"is this item null 3? {newItem}");
         item = newItem;
         if (item != null)
         {
-            
-            Debug.Log($"is this item null 4? {newItem}");
-
             SwitchState(this.throwItemState);
             return;
         }
