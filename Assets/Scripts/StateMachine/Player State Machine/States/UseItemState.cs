@@ -60,7 +60,6 @@ public class UseItemState : PlayerBaseState, IButtonUp
     //this needs to stop the items where the buttons are held down
     public void ButtonUp()
     {
-        Debug.Log($"Button up");
         _buttonUp?.Invoke();
         _buttonUp = null;
     }

@@ -3,7 +3,6 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using System.Threading.Tasks;
-// using DG.Tweening.Core;
 using Player.ItemOverlap;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
@@ -15,7 +14,6 @@ public class Slidable : InteractableBase
 {
     [SerializeField] private Utilities.KeyTypes key;
     public LayerMask obstructionLayer;
-    Vector3 getColWidth { get { return _col.bounds.size; } }
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField]  OverlapTargetCheck targetCheckPrefab;
@@ -35,11 +33,7 @@ public class Slidable : InteractableBase
 
         _col = GetComponent<Collider2D>();
         UpdateLayerName();
-        
-        
-        
     }
-
 
     public override bool Interact(PlayerStateMachineManager state)
     {
@@ -104,7 +98,6 @@ public class Slidable : InteractableBase
         return false;
     }
     
-
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
         
@@ -152,6 +145,7 @@ public class Slidable : InteractableBase
 
     void EmergencyStopTween()
     {
+        //if we hit an obstructable stop immediatly
         slideAnimation.Kill();
         CleanUp();
     }
@@ -167,8 +161,6 @@ public class Slidable : InteractableBase
         
     }
     
-    
-
     async void CleanUp()
     {
         bool isPlaced = await _targetCheck.IsOnKeyPort(key);

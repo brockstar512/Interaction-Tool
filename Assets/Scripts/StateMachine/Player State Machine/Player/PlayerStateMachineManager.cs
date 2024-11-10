@@ -83,7 +83,6 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     {
         if (currentState is DefaultState)
         {
-            Debug.Log("useItem");
             SwitchState(useItemState);
         }
     }
@@ -109,7 +108,6 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     //button controlled
     public void Release()
     {
-        Debug.Log("Release");
         currentState.Action(this);
     }
 

@@ -37,7 +37,6 @@ namespace Items.Scriptable_object_scripts_for_items
         //of the item if we hit a hook connector
         Action _disposeOfItem;
         
-
         public override void Use(PlayerStateMachineManager stateManager)
         {
             if (_projectile != null)
