@@ -59,6 +59,7 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/SwordItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/BombThrowableSubitems/FlashingDriver.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookProjectile.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleChewedState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs" />
@@ -105,14 +108,12 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
-    <Compile Include="Assets/Scripts/Items/SubItems/HookProjectile.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
-    <Compile Include="Assets/Scripts/Items/SubItems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
-    <Compile Include="Assets/Scripts/Items/SubItems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/GrapplingHookItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
