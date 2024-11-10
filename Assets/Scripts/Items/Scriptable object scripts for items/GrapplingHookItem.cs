@@ -21,7 +21,7 @@ namespace Items.Scriptable_object_scripts_for_items
         private Vector3 _originPoint = Vector3.zero;
         private Vector3 _currentLocation = Vector3.zero;
         private Vector3 _maxLocation = Vector3.zero;
-        InteractableBase item { get; set; }
+        private InteractableBase item { get; set; } = null;
         Action _disposeOfItem;
 
 
@@ -35,12 +35,13 @@ namespace Items.Scriptable_object_scripts_for_items
                 return;
                 //send out again?
             }
-            
+
             _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
             ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
 
             Action(stateManager);
         }
+
 
         
         async void Action(PlayerStateMachineManager stateManager)
@@ -79,6 +80,8 @@ namespace Items.Scriptable_object_scripts_for_items
 
         void HitSomething(IInteractWithHookProjectile somethingHit)
         {
+            Debug.Log($"Here is item 1 {item==null}");
+
             //notifies whatever it hit that it was hit as well as 
             //does what the character needs to do as a result of the type of hit
             Debug.Log($"We hit {somethingHit.GetType()}");
@@ -131,11 +134,14 @@ namespace Items.Scriptable_object_scripts_for_items
 
         public override void PutAway()
         {
+            Debug.Log("Shooting grappling hook");
             _projectileAnimation.Kill();
             if (_projectile != null)
             {
                 Destroy(_projectile.gameObject);
             }
+            Debug.Log($"Here is item 2 {item==null}");
+
 
             //if this is null it will go to default...
             //depending on the item it will figure it out in the callback
