@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -5,106 +6,30 @@ using DG.Tweening;
 using UnityEngine;
 
 namespace Flashing{
-
-    public class ObjectFlash : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+    public abstract class ObjectFlash : MonoBehaviour
     {
-        [SerializeField] private Color flashColor = Color.white;
-        [SerializeField] private float flashTime = .25f;
-        private SpriteRenderer _sr;
-        private Material _mat;
-        private Coroutine _flashCoroutine;
-        private Tweener _fadingTweenDriver;
+        [HideInInspector]
+        public float flashTime = 1f;
+        [HideInInspector]
+        public SpriteRenderer sr;
+        protected Tweener FadingTweenDriver;
 
-        // [SerializeField] private float _frequency = .5f;
-        // Start is called before the first frame update
-        void Awake()
+        public virtual void Awake()
         {
-            _sr = GetComponent<SpriteRenderer>();
-            _mat = _sr.material;
+            sr = GetComponent<SpriteRenderer>();
+            SetFlashTime();
         }
-
-        [ContextMenu("Flash")]
-        public void FlashItem()
+        public abstract void SetFlashTime();
+        protected void FadeOut()
         {
-            // _flashCoroutine = StartCoroutine(Flash());
-            // _flashCoroutine = StartCoroutine(FlashAlpha());
-            FadeOut();
+            FadingTweenDriver =sr.DOFade(.33f, flashTime).SetEase(Ease.InSine);
+            FadingTweenDriver.onComplete = FadeIn;
         }
-
-        void FadeOut()
+        protected void FadeIn()
         {
-            _sr.DOFade(.5f, flashTime).onComplete();
-            _fadingTweenDriver =_sr.DOFade(.5f, flashTime).SetEase(Ease.InSine);
-            _fadingTweenDriver.onComplete = FadeIn;
+            FadingTweenDriver =sr.DOFade(1f, flashTime).SetEase(Ease.InSine);
+            FadingTweenDriver.onComplete = FadeOut;
         }
-        void FadeIn()
-        {
-            
-        }
-   
-        private IEnumerator Flash()
-        {
-            //set the color
-            SetFlashColor();
-            float currentFlashAmount = 0f;
-            //lerp flash amount
-            float elapsedTime = 0f;
-            while (elapsedTime < flashTime)
-            {
-                elapsedTime += Time.deltaTime;
-                currentFlashAmount = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
-                SetFlashAmount(currentFlashAmount);
-                yield return null;
-            }
-        }
-
-        private void SetFlashColor()
-        {
-            _mat.SetColor("_FlashColor",flashColor);
-        }
-
-        private void SetFlashAmount(float amount)
-        {
-            _mat.SetFloat("_FlashAmount",amount);
-        }
-        
-        private IEnumerator FlashAlpha()
-        {
-            //set the color
-            SetFlashColor();
-            float currentFlashAmount = 0f;
-            //lerp flash amount
-            float elapsedTime = 0f;
-            while (elapsedTime < flashTime)
-            {
-                elapsedTime += Time.deltaTime;
-                currentFlashAmount = Mathf.Lerp(1f, .5f, (elapsedTime / flashTime));
-                Color tmp = _sr.color;
-                tmp.a = currentFlashAmount;
-                _sr.color = tmp;
-                yield return null;
-            }
-        }
-        // private async Task FlashAlphaAsync(bool isFading)
-        // {
-        //     float startingColor = isFading ? 1 : .5f;
-        //
-        //     float destinationColor = isFading ? .5f : 1;
-        //     float currentFlashAmount = 0f;
-        //     //lerp flash amount
-        //     float elapsedTime = 0f;
-        //     while (elapsedTime < flashTime)
-        //     {
-        //         Debug.Log("running");
-        //         elapsedTime += Time.deltaTime;
-        //         currentFlashAmount = Mathf.Lerp(startingColor, destinationColor, (elapsedTime / flashTime));
-        //         Color tmp = _sr.color;
-        //         tmp.a = currentFlashAmount;
-        //         _sr.color = tmp;
-        //         
-        //     }
-        //     await Task.CompletedTask;
-        // }
-
     }
 }

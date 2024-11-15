@@ -105,6 +105,7 @@
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
+    <Compile Include="Assets/Scripts/Interface/IFlash.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/Flashing/ObjectFlash.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
@@ -115,8 +116,10 @@
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/GrapplingHookItem.cs" />
+    <Compile Include="Assets/Scripts/Flashing/CharacterFlash.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
+    <Compile Include="Assets/Scripts/Flashing/BombFlash.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
     <Compile Include="Assets/Scripts/Interface/IHurt.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />
