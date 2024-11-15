@@ -72,7 +72,6 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
-    <Compile Include="Assets/Scripts/Items/SubItems/BombThrowableSubitems/FlashingDriver.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -107,6 +106,7 @@
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
+    <Compile Include="Assets/Scripts/Flashing/ObjectFlash.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
