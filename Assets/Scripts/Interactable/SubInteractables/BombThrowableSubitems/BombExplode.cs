@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Explode
@@ -12,6 +13,7 @@ namespace Explode
         [SerializeField] private Transform parentBody;
         private readonly float _timer = 10f;
         private CancellationTokenSource _cancellationTokenSource;
+        [SerializeField] private Transform explosion;
 
         // This will be called when the game starts
         async void Start()
@@ -68,6 +70,7 @@ namespace Explode
         {
             // Perform the explosion
             Debug.Log($"Exploding!");
+            Instantiate(explosion.gameObject,transform.position,quaternion.identity);
             Destroy(this.gameObject);
         }
 
