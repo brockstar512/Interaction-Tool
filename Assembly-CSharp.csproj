@@ -103,6 +103,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/CustomDebug.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
+    <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/Interface/IFlash.cs" />
