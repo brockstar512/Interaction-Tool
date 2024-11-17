@@ -60,6 +60,7 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
+    <Compile Include="Assets/Scripts/Interface/IExlosionDamage.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
+    <Compile Include="Assets/Scripts/Interface/NewBehaviourScript.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationHurtToe.cs" />
     <Compile Include="Assets/Scripts/Interface/IHurt.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />
+    <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/Explosion.cs" />
     <Compile Include="Assets/Scripts/Animation/ExplosionAnimation/ExplosionAnimation.cs" />
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />

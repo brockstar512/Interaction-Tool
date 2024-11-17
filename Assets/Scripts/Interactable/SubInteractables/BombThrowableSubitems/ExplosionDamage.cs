@@ -1,19 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Animation.PlayerAnimation.AnimationStates;
 using UnityEngine;
 
 namespace Explode
 {
     public class ExplosionDamage : MonoBehaviour, IDamage
     {
-        private ExplosionAnimation _explosionAnimation;
-        private void Awake()
-        {
-            _explosionAnimation = new ExplosionAnimation();
-        }
-
+        
         private void OnCollisionEnter(Collision other)
         {
             float SplashRange = 5; //this sprite bounds

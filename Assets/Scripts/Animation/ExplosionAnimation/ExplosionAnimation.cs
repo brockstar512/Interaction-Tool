@@ -21,8 +21,9 @@ namespace Animation.PlayerAnimation.AnimationStates
             };
         }
         
-        public async Task Play()
+        public async Task Play(Animator explosionAnimator)
         {
+            explosionAnimator.Play(_bombExplosion);
             await Awaitable.WaitForSecondsAsync(TimeSheet[_bombExplosion]);
             await Task.CompletedTask;
         }

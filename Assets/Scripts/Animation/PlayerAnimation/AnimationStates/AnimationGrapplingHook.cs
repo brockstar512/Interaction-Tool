@@ -24,6 +24,7 @@ namespace Animation.PlayerAnimation.AnimationStates
                 { _shootLeft, 0.292f }
             };
 
+            
         }
 
         public async Task Play(PlayerStateMachineManager state)

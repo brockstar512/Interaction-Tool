@@ -13,7 +13,7 @@ namespace Explode
         [SerializeField] private Transform parentBody;
         private readonly float _timer = 10f;
         private CancellationTokenSource _cancellationTokenSource;
-        [SerializeField] private Transform explosion;
+        [SerializeField] private Explosion explosion;
 
         // This will be called when the game starts
         async void Start()
@@ -70,7 +70,17 @@ namespace Explode
         {
             // Perform the explosion
             Debug.Log($"Exploding!");
-            Instantiate(explosion.gameObject,transform.position,quaternion.identity);
+            
+            IExlosionDamage explode = Instantiate(explosion,transform.position,quaternion.identity).GetComponent<IExlosionDamage>();
+            if (explode != null)
+            {
+                explode.AnimateExplosion();
+            }
+            // else
+            // {
+            //     Destroy();
+            // }
+
             Destroy(this.gameObject);
         }
 
