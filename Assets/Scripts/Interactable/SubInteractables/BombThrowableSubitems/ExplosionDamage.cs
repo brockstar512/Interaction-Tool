@@ -5,8 +5,9 @@ namespace Explode
     public class ExplosionDamage : MonoBehaviour, IDamage
     {
         
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"Damaging something");
             float SplashRange = 5; //this sprite bounds
             float SplashDamage = 5f;
             if (SplashDamage > 0)
