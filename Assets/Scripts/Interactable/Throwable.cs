@@ -13,7 +13,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     const float Speed = 12f;
     //how far it will go...
     //anymore will go in a straight line when it reaches point
-    const float DistanceLimit = 7.5f;
+    float DistanceLimit = 7.5f;
     //cached starting point so the distance
     Vector3 _startingPoint;
     //how high it will go
@@ -23,14 +23,20 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     //which direction to make it thrown
     Vector2 _throwDirection;
     //what we are throwing
-    [SerializeField] Transform throwable;
+    [SerializeField] private Transform throwable;
     //the shadow to give it the illusion of height
-    [SerializeField] Transform shadow;
+    [SerializeField] private Transform shadow;
     //the tween arch for it's path
-    [SerializeField] AnimationCurve curve;
+    [SerializeField] private AnimationCurve curve;
 
     protected void Awake()
     {
+        // for (int i = 0; i < curve.keys.Length;i++)
+        // {
+        //     Debug.Log($"Here is ker {i} is {curve.keys[i].}");
+        //     //y coord...is value ... time is x coord
+        // }
+        DistanceLimit = curve.keys[1].time;
         rb = GetComponent<Rigidbody2D>();
         //update the layer so we can interact with it
         UpdateLayerName();
@@ -75,7 +81,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         return this;
     }
 
-    protected void Toss(Vector3 direction)
+    private void Toss(Vector3 direction)
     {
         //turn on the shadow when it is thrown
         shadow.gameObject.SetActive(true);
@@ -89,10 +95,9 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         _throwDirection = direction;
         //set the boolean to true that it is thrown
         _isThrown = true;
-
     }
 
-    protected void InAir()
+    private void InAir()
     {
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         //x is height
@@ -104,16 +109,24 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 
     public override void Release(PlayerStateMachineManager state)
     {
+        float startPos = state.transform.GetComponent<SpriteRenderer>().bounds.size.y;
+        Vector3 direction = state.currentState.LookDirection;
+        
+        SetUpArch(startPos,direction);
+    }
+
+    private void SetUpArch(float startArchPoint, Vector3 direction)
+    {
         //when we leave the state release will be called and it will be thrown and we immediately go to 
         //default state
-        _distanceFromGround = state.transform.GetComponent<SpriteRenderer>().bounds.size.y;
+        _distanceFromGround = startArchPoint;
         //set the animation tween values
         Keyframe[] keyframes = curve.keys;
         keyframes[0].value = _distanceFromGround;
         keyframes[1].value = 0;
         curve.keys = keyframes;
         //throw the item 
-        Toss(state.currentState.LookDirection);
+        Toss(direction);
     }
     
     public void InteractWithHookProjectile(HookProjectile projectile)

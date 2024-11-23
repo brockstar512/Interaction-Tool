@@ -329,7 +329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &37585505
 Transform:
   m_ObjectHideFlags: 0
@@ -4421,7 +4421,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 295175900014993229}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8be765a93f3d649c1ac64b5686f73a51, type: 3}
   m_Name: 
@@ -4511,32 +4511,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c9f902d6cc614c76beaf9cb41e3fbc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwable: {fileID: 4224156888784808983}
-  shadow: {fileID: 681226305544110534}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 2
-      inSlope: 0.80197126
-      outSlope: 0.80197126
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.08219184
-    - serializedVersion: 3
-      time: 7.4489746
-      value: 0.029663086
-      inSlope: -1.136039
-      outSlope: -1.136039
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.037670583
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   bounceSequence:
   - serializedVersion: 2
     m_Curve:
@@ -4566,20 +4540,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: -0.000027395785
       value: -0.00001069298
-      inSlope: 0.42656872
-      outSlope: 0.42656872
+      inSlope: 1.4283495
+      outSlope: 1.4283495
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.05387232
+      outWeight: 0.02721086
     - serializedVersion: 3
-      time: 0.99990207
-      value: -0.00001638013
-      inSlope: -0.43777823
-      outSlope: -0.43777823
+      time: 3.5140305
+      value: 0.011100538
+      inSlope: -1.2383991
+      outSlope: -1.2383991
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.043765888
+      inWeight: 0.01700687
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -4587,26 +4561,28 @@ MonoBehaviour:
   - serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1.3703077
-      outSlope: 1.3703077
+      time: -0.000027395785
+      value: -0.00001069298
+      inSlope: 3.2358148
+      outSlope: 3.2358148
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.044217687
+      outWeight: 0.01379316
     - serializedVersion: 3
-      time: 0.5009155
-      value: -0.000000118045136
-      inSlope: -1.5986985
-      outSlope: -1.5986985
+      time: 0.5021
+      value: -0.0015022634
+      inSlope: -5.8678083
+      outSlope: -5.8678083
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.044217683
+      inWeight: 0.04131109
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  shadow: {fileID: 681226305544110534}
+  throwable: {fileID: 4224156888784808983}
 --- !u!1 &7056063883103933471
 GameObject:
   m_ObjectHideFlags: 0
