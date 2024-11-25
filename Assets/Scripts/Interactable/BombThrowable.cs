@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,10 @@ class BombThrowable : InteractableBase
     float Speed = 15f;
     //how far it will go...
     //anymore will go in a straight line when it reaches point
-    private float DistanceLimit = 7.5f;
+    private float DistanceLimit = 0;
     //cached starting point so the distance
     Vector3 _startingPoint;
-    //how high it will go
-    float _distanceFromGround;
+ 
     //so we can keep track of how far it is going
     bool _isThrown = false;
     //which direction to make it thrown
@@ -34,23 +34,7 @@ class BombThrowable : InteractableBase
         //update the layer so we can interact with it
         UpdateLayerName();
     }
-
-    void GetTotalDistance()
-    {
-        float sum = bounceSequence.Sum(x => x.keys[1].time);
-        // float result = DOVirtual.EasedValue(min, max, t, Ease.OutSine);
-        // throwSpeedTween = DOMove(destination, time);
-        throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, 1f)
-            .SetEase(Ease.InOutQuad);
-        //todo need to cancel tween
-        /*
-         *
-\          // Tween a float called myFloat to 52 in 1 second
-           DOTween.To(()=> myFloat, x=> myFloat = x, 52, 1);
-           DOTween.To(getter, setter, to, float duration)
-           
-         */
-    }
+    
     public override bool Interact(PlayerStateMachineManager player)
     {
         //pick up the item and set the parent as the player
@@ -88,8 +72,7 @@ class BombThrowable : InteractableBase
             {
                 //increase tp the next curve
                 currentBounceIndex++;
-                //shorten the distanceLimit
-                // DistanceLimit *= .2f;
+                Speed *= .75f;
                 DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
                 SetUpArch(transform.position.y, direction);
             }
@@ -110,6 +93,9 @@ class BombThrowable : InteractableBase
     
     protected void Toss(Vector3 direction)
     {
+        // float time = bounceSequence[0].keys[1].time / Speed;
+        // throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, time)
+        //     .SetEase(Ease.InOutQuad);
         //turn on the shadow when it is thrown
         // shadow.gameObject.SetActive(true);
         //move the shadow
@@ -135,21 +121,25 @@ class BombThrowable : InteractableBase
     protected void SetUpArch(float startArchPoint, Vector3 dir)
     {
         //when we leave the state release will be called and it will be thrown and we immediately go to 
-        //default state
-        _distanceFromGround = startArchPoint;
-        //set the animation tween values
-        // Keyframe[] keyframes = bounceSequence[currentBounceIndex].keys;
-        // keyframes[0].value = _distanceFromGround;
-        // keyframes[1].value = 0;
-        // bounceSequence[currentBounceIndex].keys = keyframes;
+        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
+
         //throw the item 
         Toss(dir);
     }
-
-    void SetDistance()
+    
+    float GetTotalDistance()
     {
-        
+        float sum = bounceSequence.Sum(x => x.keys[1].time);
+        return sum;
     }
 
-
+    private void OnDestroy()
+    {
+        throwSpeedTween?.Kill();
+    }
+    /*
+     * throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, 1f)
+       .SetEase(Ease.InOutQuad);
+     */
+    
 }
