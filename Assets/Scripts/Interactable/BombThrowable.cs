@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
+using DG.Tweening;
 
 //https://yal.cc/top-down-bouncing-loot-effects/
 class BombThrowable : InteractableBase
 {
     [SerializeField]private List<AnimationCurve> bounceSequence;
-    [SerializeField] private AnimationCurve speedAcceleration;
     private int currentBounceIndex { get; set; } = 0;
     protected Vector3 direction = Vector3.zero;
     
     //how fast it will be thrown
-    const float Speed = 15f;
+    float Speed = 15f;
     //how far it will go...
     //anymore will go in a straight line when it reaches point
     private float DistanceLimit = 7.5f;
@@ -26,12 +26,30 @@ class BombThrowable : InteractableBase
     Vector2 _throwDirection;
     [SerializeField] Transform shadow;
     [SerializeField] Transform throwable;
-    
+    private Tweener throwSpeedTween;
+
     protected void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         //update the layer so we can interact with it
         UpdateLayerName();
+    }
+
+    void GetTotalDistance()
+    {
+        float sum = bounceSequence.Sum(x => x.keys[1].time);
+        // float result = DOVirtual.EasedValue(min, max, t, Ease.OutSine);
+        // throwSpeedTween = DOMove(destination, time);
+        throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, 1f)
+            .SetEase(Ease.InOutQuad);
+        //todo need to cancel tween
+        /*
+         *
+\          // Tween a float called myFloat to 52 in 1 second
+           DOTween.To(()=> myFloat, x=> myFloat = x, 52, 1);
+           DOTween.To(getter, setter, to, float duration)
+           
+         */
     }
     public override bool Interact(PlayerStateMachineManager player)
     {
