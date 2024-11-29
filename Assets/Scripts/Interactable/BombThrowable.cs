@@ -26,7 +26,6 @@ class BombThrowable : InteractableBase
     Vector2 _throwDirection;
     [SerializeField] Transform shadow;
     [SerializeField] Transform throwable;
-    private Tweener throwSpeedTween;
 
     protected void Awake()
     {
@@ -62,12 +61,12 @@ class BombThrowable : InteractableBase
         {
             InAir();
         }
-        //if it's thrown and we have reached the distance limit
-        //destroy it
+        
+        //determine if it needs to go to the next bounce
         if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
         {
             _isThrown = false;
-            //if it has more distance to go
+            //if it does not have more distance to go
             if ( currentBounceIndex < bounceSequence.Count-1)
             {
                 //increase tp the next curve
@@ -133,13 +132,6 @@ class BombThrowable : InteractableBase
         return sum;
     }
 
-    private void OnDestroy()
-    {
-        throwSpeedTween?.Kill();
-    }
-    /*
-     * throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, 1f)
-       .SetEase(Ease.InOutQuad);
-     */
+  
     
 }

@@ -8,18 +8,18 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Throwable : InteractableBase, IInteractWithHookProjectile
 {
-
+    //if it needs to bounces add to the list
+    [SerializeField] protected List<AnimationCurve> bounceSequence;
+    //keep track of the index of the arches in the animation curve
+    private int currentIndex = 0;
     //how fast it will be thrown
     const float Speed = 12f;
-    //how far it will go...
-    //anymore will go in a straight line when it reaches point
-    float DistanceLimit = 7.5f;
+    //how far it will go...this is set by the last key in the animation set key frames
+    float DistanceLimit;
     //cached starting point so the distance
     Vector3 _startingPoint;
-    //how high it will go
-    float _distanceFromGround;
     //so we can keep track of how far it is going
-    bool _isThrown = false;
+    bool _isThrown;
     //which direction to make it thrown
     Vector2 _throwDirection;
     //what we are throwing
@@ -31,12 +31,6 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 
     protected void Awake()
     {
-        // for (int i = 0; i < curve.keys.Length;i++)
-        // {
-        //     Debug.Log($"Here is ker {i} is {curve.keys[i].}");
-        //     //y coord...is value ... time is x coord
-        // }
-        DistanceLimit = curve.keys[1].time;
         rb = GetComponent<Rigidbody2D>();
         //update the layer so we can interact with it
         UpdateLayerName();
@@ -61,6 +55,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
         {
             _isThrown = false;
+            //wait for the break animation to play
             Destroy(this.gameObject);
 
         }
@@ -109,25 +104,14 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 
     public override void Release(PlayerStateMachineManager state)
     {
-        float startPos = state.transform.GetComponent<SpriteRenderer>().bounds.size.y;
         Vector3 direction = state.currentState.LookDirection;
-        
-        SetUpArch(startPos,direction);
-    }
-
-    private void SetUpArch(float startArchPoint, Vector3 direction)
-    {
-        //when we leave the state release will be called and it will be thrown and we immediately go to 
-        //default state
-        _distanceFromGround = startArchPoint;
-        //set the animation tween values
-        Keyframe[] keyframes = curve.keys;
-        keyframes[0].value = _distanceFromGround;
-        keyframes[1].value = 0;
-        curve.keys = keyframes;
+        //get the distance based off the keyframe end
+        DistanceLimit = curve.keys[1].time;
         //throw the item 
         Toss(direction);
     }
+
+
     
     public void InteractWithHookProjectile(HookProjectile projectile)
     {
