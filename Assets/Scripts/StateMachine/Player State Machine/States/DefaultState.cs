@@ -57,9 +57,6 @@ public class DefaultState : PlayerBaseState
             case Pickupable pickupable:
                 stateManager.SwitchState(stateManager.equipItemState);
                 break;
-            case BombThrowable pickupable:
-                stateManager.SwitchState(stateManager.throwItemState);
-                break;
             default:
                 Debug.Log("is defualt");
                 break;

@@ -11,25 +11,23 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     //if it needs to bounces add to the list
     [SerializeField] protected List<AnimationCurve> bounceSequence;
     //keep track of the index of the arches in the animation curve
-    private int currentIndex = 0;
+    protected int currentBounceIndex = 0;
     //how fast it will be thrown
-    float Speed = 12f;
+    protected float Speed = 12f;
     //how far it will go...this is set by the last key in the animation set key frames
-    float DistanceLimit;
+    protected float DistanceLimit;
     //cached starting point so the distance
-    Vector3 _startingPoint;
+    protected Vector3 _startingPoint;
     //so we can keep track of how far it is going
-    bool _isThrown;
+    protected bool _isThrown;
     //which direction to make it thrown
-    Vector2 _throwDirection;
+    protected Vector2 _throwDirection;
     //what we are throwing
-    [SerializeField] private Transform throwable;
+    [SerializeField] protected Transform throwable;
     //the shadow to give it the illusion of height
-    [SerializeField] private Transform shadow;
-    //the tween arch for it's path
-    [SerializeField] private AnimationCurve curve;
-
-    protected void Awake()
+    [SerializeField] protected Transform shadow;
+    
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         //update the layer so we can interact with it
@@ -76,7 +74,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         return this;
     }
 
-    private void Toss(Vector3 direction)
+    protected void Toss(Vector3 direction)
     {
         //turn on the shadow when it is thrown
         shadow.gameObject.SetActive(true);
@@ -92,11 +90,11 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         _isThrown = true;
     }
 
-    private void InAir()
+    protected void InAir()
     {
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         //x is height
-        float yPos = bounceSequence[currentIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
+        float yPos = bounceSequence[currentBounceIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
   
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
@@ -106,12 +104,10 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     {
         Vector3 direction = state.currentState.LookDirection;
         //get the distance based off the keyframe end
-        DistanceLimit = bounceSequence[currentIndex].keys[1].time;
+        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
         //throw the item 
         Toss(direction);
     }
-
-
     
     public void InteractWithHookProjectile(HookProjectile projectile)
     {
