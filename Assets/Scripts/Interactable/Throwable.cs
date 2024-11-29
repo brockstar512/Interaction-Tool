@@ -13,7 +13,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     //keep track of the index of the arches in the animation curve
     private int currentIndex = 0;
     //how fast it will be thrown
-    const float Speed = 12f;
+    float Speed = 12f;
     //how far it will go...this is set by the last key in the animation set key frames
     float DistanceLimit;
     //cached starting point so the distance
@@ -43,20 +43,20 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         return true;
     }
 
-    protected void FixedUpdate()
+    private void FixedUpdate()
     {
         //if it's thrown run the in air logic
         if (_isThrown)
         {
             InAir();
         }
-        //if it's thrown and we have reached the distance limit
-        //destroy it
+        
         if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
         {
             _isThrown = false;
             //wait for the break animation to play
             Destroy(this.gameObject);
+            //if it does not have more distance to go
 
         }
     }
@@ -96,7 +96,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     {
         Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         //x is height
-        float yPos = curve.Evaluate(Vector2.Distance(_startingPoint, travelPos));
+        float yPos = bounceSequence[currentIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
   
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
@@ -106,7 +106,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     {
         Vector3 direction = state.currentState.LookDirection;
         //get the distance based off the keyframe end
-        DistanceLimit = curve.keys[1].time;
+        DistanceLimit = bounceSequence[currentIndex].keys[1].time;
         //throw the item 
         Toss(direction);
     }

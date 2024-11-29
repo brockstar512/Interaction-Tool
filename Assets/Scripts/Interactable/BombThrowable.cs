@@ -11,7 +11,6 @@ class BombThrowable : InteractableBase
     [SerializeField]private List<AnimationCurve> bounceSequence;
     private int currentBounceIndex { get; set; } = 0;
     protected Vector3 direction = Vector3.zero;
-    
     //how fast it will be thrown
     float Speed = 15f;
     //how far it will go...
@@ -19,7 +18,6 @@ class BombThrowable : InteractableBase
     private float DistanceLimit = 0;
     //cached starting point so the distance
     Vector3 _startingPoint;
- 
     //so we can keep track of how far it is going
     bool _isThrown = false;
     //which direction to make it thrown
@@ -42,8 +40,6 @@ class BombThrowable : InteractableBase
     }
     protected BombThrowable PickUp(Transform parent)
     {
-        //when we pick it up set the trigger to true so it doesn't interact with anything else
-        //todo consider updating the layer as well if there is a problem with anyone else picking it
         //up while it's picked up
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         //set the parent as the player
@@ -72,8 +68,10 @@ class BombThrowable : InteractableBase
                 //increase tp the next curve
                 currentBounceIndex++;
                 Speed *= .75f;
+                //when we leave the state release will be called and it will be thrown and we immediately go to 
                 DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-                SetUpArch(transform.position.y, direction);
+                //throw the item 
+                Toss(direction);            
             }
             
         }
@@ -92,11 +90,8 @@ class BombThrowable : InteractableBase
     
     protected void Toss(Vector3 direction)
     {
-        // float time = bounceSequence[0].keys[1].time / Speed;
-        // throwSpeedTween = DOTween.To(() => Speed, x => Speed = x, 5f, time)
-        //     .SetEase(Ease.InOutQuad);
         //turn on the shadow when it is thrown
-        // shadow.gameObject.SetActive(true);
+        shadow.gameObject.SetActive(true);
         //move the shadow
         shadow.position = new Vector3(shadow.position.x, shadow.position.y , shadow.position.z);//- .25f
         //remove it as the child of player
@@ -111,27 +106,11 @@ class BombThrowable : InteractableBase
     
     public override void Release(PlayerStateMachineManager state)
     {
-        float startPos = state.transform.GetComponent<SpriteRenderer>().bounds.size.y;
         direction = state.currentState.LookDirection;
-        
-        SetUpArch(startPos,direction);
-    }
-    
-    protected void SetUpArch(float startArchPoint, Vector3 dir)
-    {
         //when we leave the state release will be called and it will be thrown and we immediately go to 
         DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-
         //throw the item 
-        Toss(dir);
+        Toss(direction);
     }
-    
-    float GetTotalDistance()
-    {
-        float sum = bounceSequence.Sum(x => x.keys[1].time);
-        return sum;
-    }
-
-  
     
 }
