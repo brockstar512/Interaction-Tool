@@ -29,10 +29,12 @@ public class AnimationEquipItem : AnimationState
     public async Task Play(PlayerStateMachineManager playerstate)
     {
             await PickUpAnimation.Play(playerstate);
-
+            SpriteRenderer itemOriginSpriteRenderer = playerstate.GetComponentInChildren<OriginPoint>().getSpriteRenderer;
+            itemOriginSpriteRenderer.sprite = playerstate.itemManager.GetCurrentSprite();
             playerstate.animator.Play(HoldStillDown);
             await Awaitable.WaitForSecondsAsync(TimeSheet[HoldStillDown]);
             await Task.Delay(250);
+            itemOriginSpriteRenderer.sprite = null;
 
     }
 }

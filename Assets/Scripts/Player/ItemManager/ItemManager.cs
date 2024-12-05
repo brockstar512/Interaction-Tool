@@ -10,7 +10,6 @@ public class ItemManager
     private const int inventoryLimit = 2;
     public event Action<Sprite> ItemSwitch;
 
-
     //pass in hud and get the functions that update hud
     public ItemManager()
     {
@@ -66,6 +65,10 @@ public class ItemManager
 
     }
 
+    public Sprite GetCurrentSprite()
+    {
+        return inventory[_currentIndex].Sprite;
+    }
     public void DisposeOfCurrentItem()
     {
         inventory.RemoveAt(_currentIndex);
