@@ -2883,15 +2883,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6845226724817759255, guid: b9981da929fba4630bca64a4b389a182, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7774554876919637067, guid: b9981da929fba4630bca64a4b389a182, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7831358135567999541, guid: b9981da929fba4630bca64a4b389a182, type: 3}
       propertyPath: m_Name
       value: Bomb Throwable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7831358135567999541, guid: b9981da929fba4630bca64a4b389a182, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8362385430404227409, guid: b9981da929fba4630bca64a4b389a182, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3559,78 +3563,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1259046544743669035, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1259046544743669035, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452560269886, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_PreInfinity
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_PostInfinity
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_RotationOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[0].time
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[1].time
-      value: 7.4489746
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[0].value
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[1].value
-      value: 0.029663086
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[0].inSlope
-      value: 0.80197126
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[1].inSlope
-      value: -1.136039
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[0].outSlope
-      value: 0.80197126
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[1].inWeight
-      value: 0.037670583
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[1].outSlope
-      value: -1.136039
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: bounceSequence.Array.data[0].m_Curve.Array.data[0].outWeight
-      value: 0.08219184
-      objectReference: {fileID: 0}
     - target: {fileID: 3802924452717067769, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -3674,10 +3606,6 @@ PrefabInstance:
     - target: {fileID: 3802924452717067771, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
       propertyPath: m_Name
       value: Throwable
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802924452717067771, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

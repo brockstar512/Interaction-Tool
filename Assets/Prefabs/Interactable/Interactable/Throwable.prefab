@@ -223,7 +223,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02b3dd3e3fa54932a7a79263068d353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSequence: []
+  bounceSequence:
+  - serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: 0.80197126
+      outSlope: 0.80197126
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.08219184
+    - serializedVersion: 3
+      time: 7.4489746
+      value: 0.029663086
+      inSlope: -1.136039
+      outSlope: -1.136039
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.037670583
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   throwable: {fileID: 3802924452560269887}
   shadow: {fileID: 3802924453372314613}
 --- !u!212 &1259046544743669035
@@ -233,7 +256,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3802924452717067771}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -270,7 +293,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
