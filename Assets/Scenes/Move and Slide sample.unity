@@ -3466,6 +3466,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1259046544743669035, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802924452560269886, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3802924452717067764, guid: ecaf16354d8694f02a00e02370f1cb57, type: 3}
       propertyPath: bounceSequence.Array.size
       value: 1

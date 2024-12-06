@@ -28,6 +28,12 @@ public class AnimationPickUp : AnimationState
 
     public async Task Play(PlayerStateMachineManager state)
     {
+        Transform originHolder = state.GetComponentInChildren<OriginPoint>().transform;
+        if (state.item is Throwable throwItem)
+        {
+            throwItem.transform.SetParent(originHolder);
+        }
+        
         if (state.currentState.LookDirection == Vector2.down)
         {
             state.animator.Play(PickUpDown);

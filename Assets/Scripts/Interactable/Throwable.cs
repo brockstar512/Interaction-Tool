@@ -26,7 +26,8 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     [SerializeField] protected Transform throwable;
     //the shadow to give it the illusion of height
     [SerializeField] protected Transform shadow;
-    
+    //we throw before we animation, so we should be able to calculate the correct distance to the ground...I don't know if it would or wouldnt work in the animation cycle
+    protected Bounds PlayerSpriteBounds;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -38,6 +39,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
     {
         //pick up the item and set the parent as the player
         PickUp(player.transform);
+        PlayerSpriteBounds = player.gameObject.GetComponent<SpriteRenderer>().bounds;
         return true;
     }
 
@@ -66,11 +68,10 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         //up while it's picked up
         this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
         //set the parent as the player
-        this.transform.SetParent(parent);
-        //move it so it looks good...this will change if I just get a sprite of him carrying it
-        this.transform.localPosition = new Vector3(0, 0, 0);//+ 2.32f
-        throwable.localPosition = new Vector3(0, 2.32f, 0); 
-        //this is not being cached/used elsewahere but we are still returning it
+        //this.transform.SetParent(parent);
+        //move it so it looks good...
+        this.transform.localPosition = new Vector3(0, 0, 0);
+
         return this;
     }
 
@@ -82,7 +83,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         shadow.position = new Vector3(shadow.position.x, shadow.position.y , shadow.position.z);//- .25f
         //remove it as the child of player
         this.transform.SetParent(null);
-        //cache where it starts so we can keep track of the distance
+        //cache where it starts so we can keep track of the distance...and where the ground is so it doesn't start where the origin point is when its over it's head
         _startingPoint = transform.position;
         //cache the direction
         _throwDirection = direction;
@@ -102,6 +103,14 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 
     public override void Release(PlayerStateMachineManager state)
     {
+        
+        
+        // Keyframe keys = new()[2];
+        //current location + start keyframe
+        //current location + end keyframe
+        //bounceSequence[currentBounceIndex].keys[0].value = transform.position.y;
+        // Debug.Log(bounceSequence[currentBounceIndex].keys[0].value);
+        // Debug.Log(transform.position.y);
         Vector3 direction = state.currentState.LookDirection;
         //get the distance based off the keyframe end
         DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
@@ -117,4 +126,25 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         //set it as a trigger so it can be retracted without any interuption on the way back
         this.GetComponent<Collider2D>().isTrigger = true;
     }
+
+    float GetYPose(Vector2 travelPos)
+    {
+        return bounceSequence[currentBounceIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
+    }
+
+    Vector3 GetGroundPosition()
+    {
+        
+        return Vector3.zero;
+    }
 }
+//locallocation - sprite
+/*
+ *
+ *  _distanceFromGround = startArchPoint;
+   //set the animation tween values
+   Keyframe[] keyframes = curve.keys;
+   keyframes[0].value = _distanceFromGround;
+   keyframes[1].value = 0;
+   curve.keys = keyframes;
+ */

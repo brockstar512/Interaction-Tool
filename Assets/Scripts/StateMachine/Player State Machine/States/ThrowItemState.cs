@@ -9,7 +9,7 @@ public class ThrowItemState : PlayerBaseState
     readonly AnimationThrow _throwAnimation;
     readonly AnimationCarry _carryAnimation;
     AnimationState _currentAnimation = null;
-
+    
     public ThrowItemState()
     {
         _pickUpAnimation = new AnimationPickUp();
