@@ -223,32 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02b3dd3e3fa54932a7a79263068d353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bounceSequence: []
   throwable: {fileID: 3802924452560269887}
   shadow: {fileID: 3802924453372314613}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 2
-      inSlope: 0.80197126
-      outSlope: 0.80197126
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.08219184
-    - serializedVersion: 3
-      time: 7.4489746
-      value: 0.029663086
-      inSlope: -1.136039
-      outSlope: -1.136039
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.037670583
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!212 &1259046544743669035
 SpriteRenderer:
   m_ObjectHideFlags: 0

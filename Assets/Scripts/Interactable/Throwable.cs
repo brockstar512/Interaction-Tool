@@ -71,7 +71,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         //this.transform.SetParent(parent);
         //move it so it looks good...
         this.transform.localPosition = new Vector3(0, 0, 0);
-
+        
         return this;
     }
 
@@ -89,6 +89,7 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         _throwDirection = direction;
         //set the boolean to true that it is thrown
         _isThrown = true;
+        
     }
 
     protected void InAir()
@@ -99,18 +100,15 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
   
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
+        // Debug.Break();
     }
 
     public override void Release(PlayerStateMachineManager state)
     {
-        
-        
-        // Keyframe keys = new()[2];
-        //current location + start keyframe
-        //current location + end keyframe
-        //bounceSequence[currentBounceIndex].keys[0].value = transform.position.y;
-        // Debug.Log(bounceSequence[currentBounceIndex].keys[0].value);
-        // Debug.Log(transform.position.y);
+        //set this location as to the ground location so the animation child starts at the correct position
+        this.transform.position = GetGroundPosition();
+
+        //get the direction
         Vector3 direction = state.currentState.LookDirection;
         //get the distance based off the keyframe end
         DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
@@ -126,25 +124,10 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         //set it as a trigger so it can be retracted without any interuption on the way back
         this.GetComponent<Collider2D>().isTrigger = true;
     }
-
-    float GetYPose(Vector2 travelPos)
+    
+    Vector2 GetGroundPosition()
     {
-        return bounceSequence[currentBounceIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
-    }
-
-    Vector3 GetGroundPosition()
-    {
-        
-        return Vector3.zero;
+        //distance from the ground so the animation curve starts at the correct height and not the height + overhead origin point
+        return new Vector2(transform.position.x,(this.transform.position - PlayerSpriteBounds.size).y);
     }
 }
-//locallocation - sprite
-/*
- *
- *  _distanceFromGround = startArchPoint;
-   //set the animation tween values
-   Keyframe[] keyframes = curve.keys;
-   keyframes[0].value = _distanceFromGround;
-   keyframes[1].value = 0;
-   curve.keys = keyframes;
- */
