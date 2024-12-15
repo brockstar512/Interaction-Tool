@@ -46,6 +46,7 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/2023.2.20f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Openable.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/SwordItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
@@ -80,6 +82,8 @@
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
+    <Compile Include="Assets/Scripts/Interactable/ChestPickable.cs" />
+    <Compile Include="Assets/Scripts/Interactable/OpenableLock.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
     <Compile Include="Assets/Scripts/Interactable/BombThrowable.cs" />
@@ -121,6 +125,7 @@
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/GrapplingHookItem.cs" />
     <Compile Include="Assets/Scripts/Flashing/CharacterFlash.cs" />
+    <Compile Include="Assets/Scripts/Animation/ChestAnimation/ChestOpenAnimation.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
     <Compile Include="Assets/Scripts/Flashing/BombFlash.cs" />
@@ -133,6 +138,7 @@
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />
     <Compile Include="Assets/Scripts/Player/ItemManager/ItemManager.cs" />
+    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/OpenItemState.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable.cs" />
     <Compile Include="Assets/Scripts/Interactable/Slidable.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/UseItemState.cs" />

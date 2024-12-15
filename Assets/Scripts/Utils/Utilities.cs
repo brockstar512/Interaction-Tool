@@ -4,7 +4,7 @@ using UnityEngine;
 public static class Utilities 
 {
     //originalLayerMask &= ~(1 << layerToRemove);
-
+    public const string NoneLayer = "None";
     public const string InteractableLayer = "Interactable";
     public const string InteractingLayer = "Interacting";
     public const string SlidableObstructionLayer = "Obstruction";

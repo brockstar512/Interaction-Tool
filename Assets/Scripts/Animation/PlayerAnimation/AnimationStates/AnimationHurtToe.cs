@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 
 
-public class AnimationHurtToe : AnimationStateAsync
+public class AnimationHurtToe : AnimationState
 {
     readonly int HurtToeRightHash = Animator.StringToHash("HurtToeRight");
     readonly int HurtToeLeftHash = Animator.StringToHash("HurtToeLeft");
@@ -24,7 +24,7 @@ public class AnimationHurtToe : AnimationStateAsync
         };
 
     }
-    public override async Task Play(PlayerStateMachineManager state)
+    public async Task Play(PlayerStateMachineManager state)
     {
 
         if (state.currentState.LookDirection == Vector2.down)

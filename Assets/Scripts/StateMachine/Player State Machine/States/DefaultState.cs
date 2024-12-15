@@ -57,6 +57,9 @@ public class DefaultState : PlayerBaseState
             case Pickupable pickupable:
                 stateManager.SwitchState(stateManager.equipItemState);
                 break;
+            case Openable openable:
+                stateManager.SwitchState(stateManager.OpenItemState);
+                break;
             default:
                 Debug.Log("is defualt");
                 break;

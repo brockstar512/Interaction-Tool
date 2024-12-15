@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
-
+// [RequireComponent(typeof(SpriteRenderer))]
+// [RequireComponent(typeof(Rigidbody2D))]
 public class Pickupable : InteractableBase
 {
 
-    [SerializeField] private Item item;
+    [SerializeField] protected Item item;
     public Item Item
     {
         get { return item; }
         set { item = value; }
     }
     SpriteRenderer sr;
-    // public Sprite getSprite => sr.sprite;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -36,13 +36,13 @@ public class Pickupable : InteractableBase
 
    
 
-    public void PickedUp()
+    public virtual void PickedUp()
     {
         Destroy(this.gameObject);
     }
 
 
-    public void Swap(Item newItem)
+    public virtual void Swap(Item newItem)
     {
 
         item = newItem;
