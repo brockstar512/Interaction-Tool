@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ChestOpen
+  m_Name: DoorOpenable
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,17 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -4728720704448996728, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
-    - time: 0.041666668
-      value: {fileID: -1074728245842564163, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
-    - time: 0.083333336
-      value: {fileID: 7894964145814599815, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
+      value: {fileID: 4201244177849950752, guid: 0c8ea8c18dfb04b52823ad07a00e20f8, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 24
+  m_SampleRate: 1
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -48,20 +44,18 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -4728720704448996728, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
-    - {fileID: -1074728245842564163, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
-    - {fileID: 7894964145814599815, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
+    - {fileID: 4201244177849950752, guid: 0c8ea8c18dfb04b52823ad07a00e20f8, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.125
+    m_StopTime: 1
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
     m_HasAdditiveReferencePose: 0
-    m_LoopTime: 0
+    m_LoopTime: 1
     m_LoopBlend: 0
     m_LoopBlendOrientation: 0
     m_LoopBlendPositionY: 0

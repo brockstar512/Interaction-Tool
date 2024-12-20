@@ -9,7 +9,7 @@ namespace Items.Scriptable_object_scripts_for_items
    public class Key : Item
    {
       Action _disposeOfItem = null;
-
+      public Utilities.KeyTypes keyType;
 
       public override void Use(PlayerStateMachineManager stateManager)
       {

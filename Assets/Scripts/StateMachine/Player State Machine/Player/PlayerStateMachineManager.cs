@@ -17,7 +17,6 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     public readonly DeathState deathState = new DeathState();
 
     public PlayerBaseState getState => currentState; 
-
     
     //should this be interface variables... should I put them in a payer controller? or state machine components
     public Vector2 movement { get; private set; }
