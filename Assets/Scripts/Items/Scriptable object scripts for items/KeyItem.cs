@@ -21,7 +21,7 @@ namespace Items.Scriptable_object_scripts_for_items
 
       void Action()
       {
-         _disposeOfItem?.Invoke();
+         //_disposeOfItem?.Invoke();
          PutAway();
       }
       

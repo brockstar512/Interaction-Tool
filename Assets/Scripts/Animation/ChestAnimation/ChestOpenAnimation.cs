@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ChestOpenAnimation : AnimationState
 {
-    readonly int ChestDefault = Animator.StringToHash("BellRight");
+    readonly int ChestDefault = Animator.StringToHash("ChestDefault");
     readonly int ChestOpen = Animator.StringToHash("ChestOpen");
     readonly Dictionary<int, float> TimeSheet;
     private Animator animator { get; set; }

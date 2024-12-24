@@ -5,7 +5,7 @@ using UnityEngine;
 public class Openable : InteractableBase
 {
     private ChestOpenAnimation _chestOpenAnimation;
-    private bool isClosed = true;
+    protected bool isClosed = true;
     
     private void Awake()
     {
@@ -19,10 +19,16 @@ public class Openable : InteractableBase
         if (isClosed)
         {
             isClosed = false;
-            _chestOpenAnimation.Play();
+            OpenAnimation();
 
         }
         return isClosed;
+
+    }
+
+    public virtual void OpenAnimation()
+    {
+        _chestOpenAnimation.Play();
 
     }
 
@@ -30,5 +36,3 @@ public class Openable : InteractableBase
     {
     }
 }
-//can give item... or health status ...openable can be a door as well. there should be a key to determine 
-//locked openable to inherit from openable...chest should as well// lock base.open... base.open give item 
