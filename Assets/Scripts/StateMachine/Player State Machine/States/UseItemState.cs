@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Interactable;
+using Items.Scriptable_object_scripts_for_items;
 
 public class UseItemState : PlayerBaseState, IButtonUp
 {
@@ -35,9 +36,10 @@ public class UseItemState : PlayerBaseState, IButtonUp
     
     public override void Action(PlayerStateMachineManager stateManager)
     {
+        
         IItem item = stateManager.itemManager.GetItem();
         
-        if(item != null)
+        if(item != null && item is not Key)
         {
             if (item is IButtonUp needsButtonUpInvoker)
             {

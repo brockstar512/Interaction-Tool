@@ -15,19 +15,19 @@ namespace Items.Scriptable_object_scripts_for_items
       {
          ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
          _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-
          Action();
       }
 
       void Action()
       {
-         //_disposeOfItem?.Invoke();
-         PutAway();
+         _disposeOfItem?.Invoke();
+         //PutAway();
       }
       
       
       public override void PutAway()
       {
+         Debug.Log("Finished");
          ItemFinishedCallback?.Invoke(null);
       }
    }
