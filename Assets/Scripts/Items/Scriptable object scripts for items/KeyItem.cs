@@ -13,7 +13,7 @@ namespace Items.Scriptable_object_scripts_for_items
 
       public override void Use(PlayerStateMachineManager stateManager)
       {
-         ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+
          _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
          Action();
       }
@@ -21,14 +21,14 @@ namespace Items.Scriptable_object_scripts_for_items
       void Action()
       {
          _disposeOfItem?.Invoke();
-         //PutAway();
+         PutAway();
       }
       
       
       public override void PutAway()
       {
          Debug.Log("Finished");
-         ItemFinishedCallback?.Invoke(null);
+         // ItemFinishedCallback?.Invoke(null);
       }
    }
 }

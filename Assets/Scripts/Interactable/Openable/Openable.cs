@@ -10,16 +10,7 @@ public abstract class Openable : InteractableBase
 
     protected bool CorrectKey(IItem item)
     {
-        if (item is Key Item)
-        {
-            Debug.Log($"Key Type: {Item.keyType}");
-        }
         
-
-        if (key == Utilities.KeyTypes.None)
-        {
-            return true;
-        }
         if (item is Key keyItem && keyItem.keyType == key)
         {
             return true;
@@ -29,11 +20,15 @@ public abstract class Openable : InteractableBase
     }
     
     public override bool Interact(PlayerStateMachineManager player)
-    {
-        
-        Debug.Log($"Interact {player.itemManager.GetItem()}");
+    { 
+        if (key == Utilities.KeyTypes.None)
+        {
+            OpenAnimation();
+            return true;
+        }
         if (CorrectKey(player.itemManager.GetItem()))
         {
+            ((Key)player.itemManager.GetItem()).Use(player);
             OpenAnimation();
             return true;
         }
