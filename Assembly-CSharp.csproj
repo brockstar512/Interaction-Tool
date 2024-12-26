@@ -85,6 +85,7 @@
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Openable/OpenableChest.cs" />
     <Compile Include="Assets/Scripts/Interactable/ChestPickable.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />

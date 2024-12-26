@@ -8,6 +8,7 @@ public class OpenItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
+        Debug.Log("Player state");
         stateManager.item.Interact(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
     }
@@ -31,6 +32,7 @@ public class OpenItemState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        
+        stateManager.item.Release(stateManager);
+
     }
 }

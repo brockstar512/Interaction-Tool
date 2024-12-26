@@ -2,21 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OpenableDoor : Openable
+public class OpenableChest : Openable
 {
-    private SingleDoorAnimation _singleDoorAnimation;
-
+    private ChestOpenAnimation _chestOpenAnimation;
+    
     private void Awake()
     {
         UpdateLayerName();
         Animator anim = GetComponent<Animator>();
-        _singleDoorAnimation = new SingleDoorAnimation(anim);
+        _chestOpenAnimation = new ChestOpenAnimation(anim);
     }
     
+
     protected override void OpenAnimation()
     {
-        _singleDoorAnimation.Play();
+        _chestOpenAnimation.Play();
+
     }
-    
+
 
 }

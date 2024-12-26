@@ -18,8 +18,9 @@ public static class Utilities
     
     public enum KeyTypes
     {
-        Door,
-        MasterDoor,
+        None,
+        Key,
+        MasterKey,
         SlidingBlock,
         MovingBlock,
     }

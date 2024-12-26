@@ -2,7 +2,7 @@
 using UnityEngine;
 using Items.Scriptable_object_scripts_for_items;
 
-public class OpenableLock : Openable
+public class OpenableLock : OpenableChest
 {
     [SerializeField] private Utilities.KeyTypes key;
     private DoubleDoorAnimation _doubleDoorAnimation;
@@ -23,7 +23,7 @@ public class OpenableLock : Openable
         return false;
     }
 
-    public override void OpenAnimation()
+    protected override void OpenAnimation()
     {
         _doubleDoorAnimation.Play();
     }

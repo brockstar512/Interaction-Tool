@@ -1,38 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using Items.Scriptable_object_scripts_for_items;
 using UnityEngine;
 
-public class Openable : InteractableBase
+public abstract class Openable : InteractableBase
 {
-    private ChestOpenAnimation _chestOpenAnimation;
+    [SerializeField] private Utilities.KeyTypes key;
     protected bool isClosed = true;
-    
-    private void Awake()
+
+    protected bool CorrectKey(IItem item)
     {
-        UpdateLayerName();
-        Animator anim = GetComponent<Animator>();
-        _chestOpenAnimation = new ChestOpenAnimation(anim);
+        if (key == Utilities.KeyTypes.None)
+        {
+            return true;
+        }
+        if (item is Key keyItem && keyItem.keyType == key)
+        {
+            return true;
+        }
+
+        return false;
     }
     
     public override bool Interact(PlayerStateMachineManager player)
     {
-        if (isClosed)
+        
+        Debug.Log("Interact");
+        if (CorrectKey(player.itemManager.GetItem()))
         {
-            isClosed = false;
             OpenAnimation();
-
+            return true;
         }
-        return isClosed;
 
+        return false;
     }
 
-    public virtual void OpenAnimation()
-    {
-        _chestOpenAnimation.Play();
+    protected virtual void OpenAnimation() { }
 
-    }
 
     public override void Release(PlayerStateMachineManager player)
     {
+        Debug.Log("Destroy");
     }
 }

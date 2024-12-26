@@ -13,8 +13,10 @@ public class OpenableDoubleDoor : Openable
         _doubleDoorAnimation = new DoubleDoorAnimation(anim);
     }
     
-    public override void OpenAnimation()
+    protected override void OpenAnimation()
     {
+        Debug.Log("Play animatione");
+
         _doubleDoorAnimation.Play();
     }
 }
