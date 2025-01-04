@@ -15,6 +15,8 @@ public class EnemyPlaceholder : MonoBehaviour, IHurt, IInteractWithHookProjectil
 
     public void InteractWithHookProjectile(HookProjectile projectile)
     {
+        Debug.Log("apply grappling hook damage");
+
         ApplyDamage(projectile);
     }
 }

@@ -8,6 +8,9 @@ namespace Items.Scriptable_object_scripts_for_items
     [CreateAssetMenu(fileName = "BellItemObject", menuName = "ScriptableObjects/Bell")]
     public class BellItem : Item
     {
+        public OverlapCircleCollider bellSoundAreaPrefab;
+        private IBellSound currentBellSound;
+
         //animations should be here
         private readonly AnimationBell _animationBell = new AnimationBell();
         public override void Use(PlayerStateMachineManager stateManager)
@@ -19,7 +22,16 @@ namespace Items.Scriptable_object_scripts_for_items
         
         async void Action(PlayerStateMachineManager stateManager)
         {
+            if (currentBellSound != null)
+            {
+                PutAway();
+                return;
+            }
+            
+            currentBellSound = Instantiate(bellSoundAreaPrefab, stateManager.transform.position,Quaternion.identity).Init();
             await _animationBell.Play(stateManager);
+            currentBellSound.Stop();
+            currentBellSound = null;
             PutAway();
         }
         

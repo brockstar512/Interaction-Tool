@@ -77,7 +77,6 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
-    <Compile Include="Assets/Scripts/Interface/NewBehaviourScript.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/OpenableLock.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
@@ -113,8 +112,10 @@
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/CustomDebug.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/BellSubItems/OverlapCircleCollider.cs" />
     <Compile Include="Assets/Scripts/Interface/IAnimationState.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs" />
+    <Compile Include="Assets/Scripts/Interface/IBellSound.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationStateAsync.cs" />
     <Compile Include="Assets/Scripts/Interface/IFlash.cs" />

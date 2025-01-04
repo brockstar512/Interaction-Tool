@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: BellItemObject
   m_EditorClassIdentifier: 
   sprite: {fileID: -7427439631875473252, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
+  bellSoundAreaPrefab: {fileID: 3106874701675788802, guid: 26b6c629001ec4edc86a39749ad32cd4, type: 3}
