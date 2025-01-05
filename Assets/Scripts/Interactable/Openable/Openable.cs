@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Items.Scriptable_object_scripts_for_items;
+using Items.Scripts;
 using UnityEngine;
 
 public abstract class Openable : InteractableBase

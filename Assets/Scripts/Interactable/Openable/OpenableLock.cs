@@ -1,6 +1,6 @@
 
 using UnityEngine;
-using Items.Scriptable_object_scripts_for_items;
+using Items.Scripts;
 
 public class OpenableLock : OpenableChest
 {

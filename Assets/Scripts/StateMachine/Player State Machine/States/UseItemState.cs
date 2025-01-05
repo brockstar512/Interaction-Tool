@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Interactable;
-using Items.Scriptable_object_scripts_for_items;
+using Items.Scripts;
 
 public class UseItemState : PlayerBaseState, IButtonUp
 {
