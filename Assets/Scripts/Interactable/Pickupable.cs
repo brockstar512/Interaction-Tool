@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Items;
-// [RequireComponent(typeof(SpriteRenderer))]
-// [RequireComponent(typeof(Rigidbody2D))]
+
 public class Pickupable : InteractableBase
 {
 
@@ -25,13 +22,11 @@ public class Pickupable : InteractableBase
     public override bool Interact(PlayerStateMachineManager player)
     {
         player.itemManager.PickUpItem(this);
-        //if I need to query something in the inventory I can or a needed item in order to add
         return true;
     }
 
     public override void Release(PlayerStateMachineManager player)
     {
-        throw new System.NotImplementedException();
     }
 
    
@@ -44,7 +39,6 @@ public class Pickupable : InteractableBase
 
     public virtual void Swap(Item newItem)
     {
-
         item = newItem;
         RefreshHolderUI();
     }

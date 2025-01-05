@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Threading;
@@ -10,19 +8,16 @@ namespace Items.Scripts
 {
     public class CandleItem : Item, IButtonUp
     {
-        private float _currentTime = 10f;
-
-        private void Awake()
-        {
-            _currentTime = 15f;
-        }
-
+        private CandleState _candleState = new CandleState();
+        // private float _currentTime = 10f;
         private CancellationTokenSource _cancellationTokenSource;
+        
         public override void Use(PlayerStateMachineManager stateManager)
         {  
-            Debug.Log($"Candle {_currentTime}");
+            Debug.Log($"Instance ID: {GetInstanceID()}, CurrentTime: {_candleState.CurrentTime}");
+            Debug.Log($"Candle {_candleState.CurrentTime}");
              ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-             if (_currentTime <= 0f)
+             if (_candleState.CurrentTime <= 0f)
              {
                  PutAway();
              }
@@ -34,7 +29,6 @@ namespace Items.Scripts
             _cancellationTokenSource = new CancellationTokenSource();
             // Start the timer with cancellation support
             await StartTimer(_cancellationTokenSource.Token);
-            
             
             Debug.Log("Task finished!");
             //if that is finished destroy/dispose
@@ -49,23 +43,23 @@ namespace Items.Scripts
         {
             try
             {
-                while (_currentTime > 0)
+                while (_candleState.CurrentTime > 0)
                 {
                     // Check for cancellation
                     cancellationToken.ThrowIfCancellationRequested();
 
                     // Log the remaining time
-                    Debug.Log($"Time remaining: {_currentTime} seconds");
+                    Debug.Log($"Time remaining: {_candleState.CurrentTime} seconds");
 
                     // Wait for 1 second (or adjust interval as needed)
                     await Task.Delay(1000, cancellationToken);
 
                     // Decrement the timer
-                    _currentTime--;
+                    _candleState.CurrentTime--;
                 }
 
                 // Timer completed
-                Debug.Log("Time is up! Executing explosion...");
+                Debug.Log("Time is up!");
             }
             catch (TaskCanceledException)
             {
@@ -96,3 +90,8 @@ namespace Items.Scripts
 }
 
 
+public class CandleState
+{
+    public float CurrentTime = 10f;
+    public CancellationTokenSource CancellationTokenSource;
+}
