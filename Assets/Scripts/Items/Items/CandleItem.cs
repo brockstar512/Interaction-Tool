@@ -8,14 +8,11 @@ namespace Items.Scripts
 {
     public class CandleItem : Item, IButtonUp
     {
-        private CandleState _candleState = new CandleState();
-        // private float _currentTime = 10f;
+        private readonly CandleState _candleState = new CandleState();
         private CancellationTokenSource _cancellationTokenSource;
         
         public override void Use(PlayerStateMachineManager stateManager)
         {  
-            Debug.Log($"Instance ID: {GetInstanceID()}, CurrentTime: {_candleState.CurrentTime}");
-            Debug.Log($"Candle {_candleState.CurrentTime}");
              ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
              if (_candleState.CurrentTime <= 0f)
              {
@@ -93,5 +90,4 @@ namespace Items.Scripts
 public class CandleState
 {
     public float CurrentTime = 10f;
-    public CancellationTokenSource CancellationTokenSource;
 }

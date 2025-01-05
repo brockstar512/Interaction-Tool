@@ -4,18 +4,15 @@ using Items;
 public class Pickupable : InteractableBase
 {
 
-    [SerializeField] protected Item item;
-    public Item Item
-    {
-        get { return item; }
-        set { item = value; }
-    }
+    [SerializeField] protected Item itemPrefab;
+    [HideInInspector] public Item item = null;
     SpriteRenderer sr;
     private void Awake()
     {
+        item = Instantiate(itemPrefab,this.transform);
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        sr.sprite = Item.Sprite;
+        sr.sprite = item.Sprite;
         UpdateLayerName();
     }
 
@@ -27,16 +24,14 @@ public class Pickupable : InteractableBase
 
     public override void Release(PlayerStateMachineManager player)
     {
+        
     }
-
-   
-
+    
     public virtual void PickedUp()
     {
         Destroy(this.gameObject);
     }
-
-
+    
     public virtual void Swap(Item newItem)
     {
         item = newItem;
@@ -45,7 +40,7 @@ public class Pickupable : InteractableBase
 
     private void RefreshHolderUI()
     {
-        this.sr.sprite = Item.Sprite;
+        this.sr.sprite = item.Sprite;
     }
 
 }

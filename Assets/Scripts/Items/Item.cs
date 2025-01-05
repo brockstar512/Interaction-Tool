@@ -7,6 +7,7 @@ namespace Items
     {
 
         [SerializeField] Sprite sprite;
+        
         protected Action<InteractableBase> ItemFinishedCallback;
         public Sprite Sprite => sprite;
         public abstract void Use(PlayerStateMachineManager stateManager);

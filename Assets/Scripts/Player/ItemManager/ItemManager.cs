@@ -29,8 +29,8 @@ public class ItemManager
 
     public void PickUpItem(Pickupable holder)
     {
-        ItemSwitch?.Invoke(holder.Item.Sprite);
-        var pickup = holder.Item;
+        ItemSwitch?.Invoke(holder.item.Sprite);
+        var pickup = holder.item;
 
         if (inventory.Count >= inventoryLimit)
         {
