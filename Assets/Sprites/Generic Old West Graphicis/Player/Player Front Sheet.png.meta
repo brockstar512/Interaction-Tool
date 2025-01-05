@@ -1090,7 +1090,48 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Player Front Sheet_0: -2985951961245068601
+      Player Front Sheet_1: 4345456885232566559
+      Player Front Sheet_10: 8599618858986939050
+      Player Front Sheet_11: 4656768021040582893
+      Player Front Sheet_12: 4220391674745477572
+      Player Front Sheet_13: -4956967651339100385
+      Player Front Sheet_14: -7164402921370861259
+      Player Front Sheet_15: -4457645870625837642
+      Player Front Sheet_16: 9180875458871865607
+      Player Front Sheet_17: -2964127528918069871
+      Player Front Sheet_18: -2443483724131162101
+      Player Front Sheet_19: 4347297425073274439
+      Player Front Sheet_2: -1330373724013752203
+      Player Front Sheet_20: 485303994259235795
+      Player Front Sheet_21: -4822838442108499966
+      Player Front Sheet_22: -5158502281509788064
+      Player Front Sheet_23: -8717797257194423178
+      Player Front Sheet_24: 2343908356006011437
+      Player Front Sheet_25: 731975017900153262
+      Player Front Sheet_26: -1572338025878470758
+      Player Front Sheet_27: 5028355820448347797
+      Player Front Sheet_28: -1195844941320862123
+      Player Front Sheet_29: 1776923274740340094
+      Player Front Sheet_3: 7576963290353975566
+      Player Front Sheet_30: -310501430428872174
+      Player Front Sheet_31: -4769325285552735061
+      Player Front Sheet_32: 1172525883022358631
+      Player Front Sheet_33: 9222143398785187532
+      Player Front Sheet_34: -4003990966085961861
+      Player Front Sheet_35: 5323995542559833038
+      Player Front Sheet_36: -4395765861562780051
+      Player Front Sheet_37: 7906181627599864483
+      Player Front Sheet_38: 4564606073127423943
+      Player Front Sheet_39: 642032336695012969
+      Player Front Sheet_4: 9203020519968672882
+      Player Front Sheet_40: 380946669793473416
+      Player Front Sheet_5: -5051896569583448071
+      Player Front Sheet_6: 8385675439987269202
+      Player Front Sheet_7: 6607443041776429209
+      Player Front Sheet_8: 5986536202865933769
+      Player Front Sheet_9: 1768790011513719283
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

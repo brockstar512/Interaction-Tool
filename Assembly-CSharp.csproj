@@ -106,6 +106,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/PlankItem.cs" />
+    <Compile Include="Assets/Scripts/Interface/IInitializeScriptableObject.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />

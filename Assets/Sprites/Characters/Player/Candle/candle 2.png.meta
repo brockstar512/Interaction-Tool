@@ -250,7 +250,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      candle 2_0: -6735484334407130973
+      candle 2_1: -2519714836697027640
+      candle 2_2: -3459443727434652987
+      candle 2_3: -1934710427557320592
+      candle 2_4: 4523945992932523645
+      candle 2_5: -3703683872731928088
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

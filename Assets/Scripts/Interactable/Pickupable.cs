@@ -6,20 +6,26 @@ using Items;
 // [RequireComponent(typeof(Rigidbody2D))]
 public class Pickupable : InteractableBase
 {
+    //enum to make a factory for this with switch
 
     [SerializeField] protected Item item;
-    public Item Item
-    {
-        get { return item; }
-        set { item = value; }
-    }
+    public Item Item;
+
     SpriteRenderer sr;
     private void Awake()
     {
+        //ScriptableObject.CreateInstance<CandleConfig>();
+        Debug.Log(item.GetType());
+        Item = ScriptableObject.CreateInstance<Item>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         sr.sprite = Item.Sprite;
         UpdateLayerName();
+        
+        if (Item is IInitializeScriptableObject<Item> thing)
+        {
+            thing.Init();
+        }
     }
 
     public override bool Interact(PlayerStateMachineManager player)
