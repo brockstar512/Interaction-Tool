@@ -13,7 +13,7 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         [SerializeField] private Transform lightPrefab;
         private Transform _light;
-
+        
         public override void Use(PlayerStateMachineManager stateManager)
         {  
              ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;

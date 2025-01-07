@@ -7,8 +7,13 @@ using Items.Scriptable_object_scripts_for_items;
 
 public class UseItemState : PlayerBaseState, IButtonUp
 {
-    //maybe this has the callvack
+    AnimationMove MoveAnimation;
     private Action _buttonUp;
+    
+    public UseItemState()
+    {
+        MoveAnimation = new AnimationMove();
+    }
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
         Action(stateManager);
@@ -31,6 +36,11 @@ public class UseItemState : PlayerBaseState, IButtonUp
 
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
+        if (stateManager.itemManager.GetItem().CanWalk)
+        {
+            base.Move(stateManager);
+            MoveAnimation.Play(stateManager);
+        }
        
     }
     
