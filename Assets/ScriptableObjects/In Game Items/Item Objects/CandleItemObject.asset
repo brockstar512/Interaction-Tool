@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: CandleItemObject
   m_EditorClassIdentifier: 
   sprite: {fileID: -3562913506027399902, guid: 6518122496d84448ebb48b8fb28d2ca1, type: 3}
+  lightPrefab: {fileID: 7580259100497420386, guid: 2068c362119ac4179a4fd3de008b3533, type: 3}

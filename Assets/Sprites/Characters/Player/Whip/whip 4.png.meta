@@ -178,7 +178,10 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      whip 4_0: 5157677719324241217
+      whip 4_1: 6136250092966388877
+      whip 4_2: -1472718715110959318
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
