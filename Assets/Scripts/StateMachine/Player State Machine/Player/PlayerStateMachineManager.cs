@@ -24,7 +24,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     public InteractableBase item { get; private set; }
 
-    public ItemManager itemManager { get; private set; }
+    public IItemManager itemManager { get; private set; }
 
     
     public Animator animator { get; private set; }
@@ -37,7 +37,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        itemManager = new ItemManager();
+        itemManager = GetComponentInChildren<IItemManager>();
         animator = GetComponent<Animator>();
         overlapObjectCheck = GetComponentInChildren<IGetMostOverlap>();
         playerStatusManager = GetComponent<PlayerStatusManager>();

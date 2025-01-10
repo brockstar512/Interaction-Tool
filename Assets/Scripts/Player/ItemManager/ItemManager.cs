@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 
-public class ItemManager 
+public class ItemManager : MonoBehaviour, IItemManager
 {
     private int _currentIndex = 0;
     private List<IItem> inventory;
     private const int inventoryLimit = 2;
     public event Action<Sprite> ItemSwitch;
 
-    //pass in hud and get the functions that update hud
-    public ItemManager()
+    public void Awake()
     {
        _currentIndex = 0;
        inventory = new List<IItem>();

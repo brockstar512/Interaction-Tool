@@ -8,7 +8,7 @@ namespace Interface
         public PlayerBaseState currentState{ get; }
         public Vector2 movement { get;}
         public Animator animator { get; }
-        public ItemManager itemManager { get;}
+        public IItemManager itemManager { get;}
         public Rigidbody2D rb { get; }
 
     }
