@@ -9,7 +9,6 @@ using Interface;
 
 namespace Items.Scriptable_object_scripts_for_items
 {
-    [CreateAssetMenu(fileName = "GrapplingHookItemObject", menuName = "ScriptableObjects/Grappling Hook")]
     public class GrapplingHookItem : Item, IButtonUp
     {
         //prefab for projectile

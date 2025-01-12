@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace Items
 {
-    [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
-    public abstract class Item : ScriptableObject, IItem
+    public abstract class Item : MonoBehaviour, IItem
     {
         //determines if player can walk when using the item
         [SerializeField] bool canWalk;
@@ -18,9 +17,11 @@ namespace Items
         public abstract void Use(PlayerStateMachineManager stateManager);
 
         public abstract void PutAway();
-
-
-
+ 
+        public void TakeChild(Transform parentTransform)
+        {
+            gameObject.transform.SetParent(parentTransform);
+        }
     }
 }
 

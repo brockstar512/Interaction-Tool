@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Interactable;
+using Unity.VisualScripting;
 
 namespace Items.Scriptable_object_scripts_for_items
 {
-    [CreateAssetMenu(fileName = "CandleItemObject", menuName = "ScriptableObjects/Candle")]
     public class CandleItem : Item, IButtonUp
     {
-        [SerializeField] private Transform lightPrefab;
-        private Transform _light;
+        public CandleLight candleLightPrefab;
+        private ICandleLight _candleLight;
         
         public override void Use(PlayerStateMachineManager stateManager)
         {  
@@ -22,19 +17,22 @@ namespace Items.Scriptable_object_scripts_for_items
         
         void Action(PlayerStateMachineManager stateManager)
         {
-            _light = Instantiate(lightPrefab,stateManager.transform);
+            if(_candleLight == null)
+            {
+                _candleLight = Instantiate(candleLightPrefab,stateManager.transform);
+            }
+            _candleLight.On();
         }
+        
         public override void PutAway()
         {
             ItemFinishedCallback?.Invoke(null);
         }
         
-        
-        
 
         public void ButtonUp()
         {
-            Destroy(_light.gameObject);
+            _candleLight.Off();
             PutAway();
         }
     }

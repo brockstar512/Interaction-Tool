@@ -24,9 +24,4 @@ public class ChestPickable : Pickupable
         Destroy(this);
     }
     
-    public override void Swap(Item newItem)
-    {
-        
-    }
-
 }

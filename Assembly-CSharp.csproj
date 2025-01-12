@@ -53,7 +53,6 @@
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
-    <Compile Include="Assets/Scripts/Items/UseableItems.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookSocketCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
@@ -66,11 +65,13 @@
     <Compile Include="Assets/Scripts/Interface/IExlosionDamage.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/OpenableDoubleDoor.cs" />
+    <Compile Include="Assets/Scripts/Interface/ICandleLight.cs" />
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
+    <Compile Include="Assets/Scripts/Items/SubItems/CandleSubItems/CandleLight.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationBell.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Assets/Scripts/Animation/DoorAnimation/SingleDoorAnimation.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/Explosion.cs" />
+    <Compile Include="Assets/Scripts/Items/IItemPickUp.cs" />
     <Compile Include="Assets/Scripts/Animation/ExplosionAnimation/ExplosionAnimation.cs" />
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />

@@ -5,12 +5,10 @@ using UnityEngine;
 public class EquipItemState : PlayerBaseState
 {
     AnimationEquipItem EquipItemAnimation;
-    AnimationPickUp PickUpAnimation;
 
     public EquipItemState()
     {
         EquipItemAnimation = new AnimationEquipItem();
-        PickUpAnimation = new AnimationPickUp();
     }
 
 

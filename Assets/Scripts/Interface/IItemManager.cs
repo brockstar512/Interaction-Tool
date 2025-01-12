@@ -7,7 +7,7 @@ public interface IItemManager
     public event Action<Sprite> ItemSwitch;
     public IItem GetItem();
 
-    public void PickUpItem(Pickupable holder);
+    public void PickUpItem(IItemPickUp holder);
 
     public void SwitchItem();
 

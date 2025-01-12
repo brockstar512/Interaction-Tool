@@ -2,30 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
-// [RequireComponent(typeof(SpriteRenderer))]
-// [RequireComponent(typeof(Rigidbody2D))]
-public class Pickupable : InteractableBase
+
+public class Pickupable : InteractableBase, IItemPickUp
 {
 
-    [SerializeField] protected Item item;
-    public Item Item
-    {
-        get { return item; }
-        set { item = value; }
-    }
-    SpriteRenderer sr;
+    public IItem item { get; protected set; }
+    public Sprite Sprite => sr.sprite;
+    private SpriteRenderer sr { get; set; }
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        sr.sprite = Item.Sprite;
+        item = GetComponentInChildren<IItem>();
+        sr.sprite = item.Sprite;
         UpdateLayerName();
     }
 
     public override bool Interact(PlayerStateMachineManager player)
     {
+        //equip item state calls this and this calls pickup item in item inventory
         player.itemManager.PickUpItem(this);
-        //if I need to query something in the inventory I can or a needed item in order to add
         return true;
     }
 
@@ -33,25 +29,32 @@ public class Pickupable : InteractableBase
     {
         throw new System.NotImplementedException();
     }
-
-   
-
+    
     public virtual void PickedUp()
     {
         Destroy(this.gameObject);
     }
-
-
-    public virtual void Swap(Item newItem)
+    
+    public void Swap(IItem newItem)
     {
-
-        item = newItem;
-        RefreshHolderUI();
+        if (item != null)
+        {
+            newItem.TakeChild(transform);
+            item = newItem;
+            RefreshHolderUI();
+        }
     }
 
     private void RefreshHolderUI()
     {
-        this.sr.sprite = Item.Sprite;
+        this.sr.sprite = item.Sprite;
+    }
+    
+    IItem ItemFactory<T>(T item) where T : MonoBehaviour, IItem
+    {
+        GameObject newItemObject = new GameObject();
+        T component = newItemObject.AddComponent<T>();
+        return component;
     }
 
 }
