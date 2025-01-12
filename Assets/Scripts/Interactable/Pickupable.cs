@@ -50,11 +50,4 @@ public class Pickupable : InteractableBase, IItemPickUp
         this.sr.sprite = item.Sprite;
     }
     
-    IItem ItemFactory<T>(T item) where T : MonoBehaviour, IItem
-    {
-        GameObject newItemObject = new GameObject();
-        T component = newItemObject.AddComponent<T>();
-        return component;
-    }
-
 }
