@@ -92,13 +92,10 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     {
         if (currentState is DefaultState)
         {
-            UpdateItem(
-                overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection)
-                );
+            UpdateItem(overlapObjectCheck.GetOverlapObject(this.transform.position,currentState.LookDirection));
             
             if (item == null)
                 return;
-            
         }
         //moved out of the block so ifgrappling use item called this the state would still beupdated to throw
         currentState.Action(this);
@@ -142,4 +139,3 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     }
 
 }
-//i could have different inventorys that when the item it call the ui and items do different things so throwable is acutall a item

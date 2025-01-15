@@ -36,6 +36,7 @@ public class UseItemState : PlayerBaseState, IButtonUp
 
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
+        //if you can move with the item, move and animate
         if (stateManager.itemManager.GetItem().CanWalk)
         {
             base.Move(stateManager);
@@ -46,32 +47,29 @@ public class UseItemState : PlayerBaseState, IButtonUp
     
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        
+        //get the item
         IItem item = stateManager.itemManager.GetItem();
-        
-        if(item != null && item is not Key)
+        //if there is an item
+        if(item != null)
         {
+            //subscribe to the button up if the item does something when you release the button
             if (item is IButtonUp needsButtonUpInvoker)
             {
-                //if the item needs to be notified when the button is up...
-                //this assigns the invoker here...
-                //when the delegate is invoked.. whether it is null or not it will be fired.
-                //the item needs to inhereit the interface to take responsibilty for how it 
-                //responds to button up events
                 _buttonUp = needsButtonUpInvoker.ButtonUp;
             }
+            //use the item
             item.Use(stateManager);
         }
         else
         {
+            //if there is no item... go back to the default state
             stateManager.SwitchState(stateManager.defaultState);
         }
     }
-
     
-    //this needs to stop the items where the buttons are held down
     public void ButtonUp()
     {
+        //invoke the function that is subscribe to the button up
         _buttonUp?.Invoke();
         _buttonUp = null;
     }
