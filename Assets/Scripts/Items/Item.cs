@@ -21,6 +21,7 @@ namespace Items
         public void TakeChild(Transform parentTransform)
         {
             gameObject.transform.SetParent(parentTransform);
+            gameObject.transform.localPosition = Vector3.zero;
         }
     }
 }

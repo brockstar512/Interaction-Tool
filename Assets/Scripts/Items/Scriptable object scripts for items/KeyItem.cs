@@ -8,17 +8,35 @@ namespace Items.Scriptable_object_scripts_for_items
    {
       Action _disposeOfItem = null;
       public Utilities.KeyTypes keyType;
+      private IGetMostOverlap overlapObjectCheck {  get;  set; }
 
+      private void Awake()
+      {
+         overlapObjectCheck = GetComponentInChildren<IGetMostOverlap>();
+      }
       public override void Use(PlayerStateMachineManager stateManager)
       {
-
-         _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-         Action();
+         ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+         Action(stateManager.transform.position,stateManager.currentState.LookDirection,stateManager.itemManager.GetItem());
       }
 
-      void Action()
+      void Action(Vector3 characterPos, Vector3 LookDirection, IItem item)
       {
-         _disposeOfItem?.Invoke();
+         InteractableBase interactable = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
+         Debug.Log("action 1");
+
+         if (interactable == null)
+         {
+            return;
+         }
+         Debug.Log("action 2");
+         // if (interactable is Openable openable 
+         //     && openable.Interact(stateManager))
+         // {
+         //    Debug.Log("action 2");
+         //
+         //    _disposeOfItem?.Invoke();
+         // }
          PutAway();
       }
       
@@ -26,7 +44,8 @@ namespace Items.Scriptable_object_scripts_for_items
       public override void PutAway()
       {
          Debug.Log("Finished");
-         // ItemFinishedCallback?.Invoke(null);
+         _disposeOfItem = null;
+         ItemFinishedCallback?.Invoke(null);
       }
    }
 }
