@@ -1,18 +1,46 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class Door : MonoBehaviour
+namespace Doors
 {
-    private void Awake()
+    public abstract class Door : MonoBehaviour, ILocked
     {
-        UpdateLayerName();
-    }
+        [SerializeField] private Utilities.KeyTypes keyType;
+        protected bool IsOpen = true;
+        protected void UpdateLayerName()
+        {
+            this.gameObject.layer = LayerMask.NameToLayer(Utilities.DoorLayer);
+        }
+        protected virtual void OpenAnimation()
+        {
+        }
+        protected bool CorrectKey(Utilities.KeyTypes key)
+        {
 
-    protected void UpdateLayerName()
-    {
-        this.gameObject.layer = LayerMask.NameToLayer(Utilities.DoorLayer);
-    }
+            if (keyType == key)
+            {
+                return true;
+            }
 
+            return false;
+        }
+        public Task<bool> CanOpen(Utilities.KeyTypes key)
+        {
+            if (IsOpen)
+            {
+                return Task.FromResult(false);
+            }
+
+            if (CorrectKey(key))
+            {
+                OpenAnimation();
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        }
+
+   
+
+    }
 }

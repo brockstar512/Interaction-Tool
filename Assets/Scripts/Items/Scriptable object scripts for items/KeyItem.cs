@@ -18,25 +18,26 @@ namespace Items.Scriptable_object_scripts_for_items
       {
          ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
          Action(stateManager.transform.position,stateManager.currentState.LookDirection,stateManager.itemManager.GetItem());
+         
       }
 
-      void Action(Vector3 characterPos, Vector3 LookDirection, IItem item)
+      async void Action(Vector3 characterPos, Vector3 LookDirection, IItem item)
       {
-         InteractableBase interactable = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
-         Debug.Log("action 1");
-
-         if (interactable == null)
+         if (item is Key key)
          {
-            return;
+            InteractableBase interactable = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
+            if (interactable == null)
+            {
+               return;
+            }
+
+            //await lock
+            if (true)
+            {
+               _disposeOfItem?.Invoke();
+            }
+            
          }
-         Debug.Log("action 2");
-         // if (interactable is Openable openable 
-         //     && openable.Interact(stateManager))
-         // {
-         //    Debug.Log("action 2");
-         //
-         //    _disposeOfItem?.Invoke();
-         // }
          PutAway();
       }
       

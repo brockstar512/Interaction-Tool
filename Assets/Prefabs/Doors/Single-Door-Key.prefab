@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8658543696207675361}
   - component: {fileID: 7152433879992488957}
   m_Layer: 9
-  m_Name: Single-Door-Openable
+  m_Name: Single-Door-Key
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,3 +169,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4729d3d9175224d528994fd4257febc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyType: 1
