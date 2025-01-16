@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IGetMostOverlap
+public interface IGetMostOverlap<T>
 {
-   public InteractableBase GetOverlapObject(Vector2 characterPos, Vector2 lookDirection);
+   public T GetOverlapObject(Vector2 characterPos, Vector2 lookDirection);
 }

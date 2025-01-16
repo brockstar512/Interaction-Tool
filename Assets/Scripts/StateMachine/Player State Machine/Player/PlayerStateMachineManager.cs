@@ -29,7 +29,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     
     public Animator animator { get; private set; }
     
-    private IGetMostOverlap overlapObjectCheck {  get;  set; }
+    private IGetMostOverlap<InteractableBase> overlapObjectCheck {  get;  set; }
     
     public PlayerStatusManager playerStatusManager { get; private set; }
 
@@ -39,7 +39,7 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
         rb = GetComponent<Rigidbody2D>();
         itemManager = GetComponentInChildren<IItemManager>();
         animator = GetComponent<Animator>();
-        overlapObjectCheck = GetComponentInChildren<IGetMostOverlap>();
+        overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<InteractableBase>>();
         playerStatusManager = GetComponent<PlayerStatusManager>();
         currentState = defaultState;
 

@@ -4,7 +4,7 @@ namespace Player.ItemOverlap
 {
     
 
-public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap
+public class OverlapObjectCheck : MonoBehaviour, IGetMostOverlap<InteractableBase>
 { 
     public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
     OverlapCheckHelper _helper;

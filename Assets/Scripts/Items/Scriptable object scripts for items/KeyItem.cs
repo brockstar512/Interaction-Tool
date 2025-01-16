@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using Doors;
+using Unity.VisualScripting;
 
 namespace Items.Scriptable_object_scripts_for_items
 {
@@ -8,15 +10,16 @@ namespace Items.Scriptable_object_scripts_for_items
    {
       Action _disposeOfItem = null;
       public Utilities.KeyTypes keyType;
-      private IGetMostOverlap overlapObjectCheck {  get;  set; }
+      private IGetMostOverlap<ILocked> overlapObjectCheck {  get;  set; }
 
       private void Awake()
       {
-         overlapObjectCheck = GetComponentInChildren<IGetMostOverlap>();
+         overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<ILocked>>();
       }
       public override void Use(PlayerStateMachineManager stateManager)
       {
          ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+         _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
          Action(stateManager.transform.position,stateManager.currentState.LookDirection,stateManager.itemManager.GetItem());
       }
 
@@ -24,17 +27,10 @@ namespace Items.Scriptable_object_scripts_for_items
       {
          if (item is Key key)
          {
-            Debug.Log("Using key");
-            PutAway();
-            return;
-            InteractableBase interactable = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
-            if (interactable == null)
-            {
-               return;
-            }
-
-            //await lock
-            if (true)
+            ILocked door = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
+            
+            //turn this to Ilock?
+            if (door != null && await door.CanOpen(key.keyType))
             {
                _disposeOfItem?.Invoke();
             }
@@ -46,7 +42,6 @@ namespace Items.Scriptable_object_scripts_for_items
       
       public override void PutAway()
       {
-         Debug.Log("Finished");
          _disposeOfItem = null;
          ItemFinishedCallback?.Invoke(null);
       }

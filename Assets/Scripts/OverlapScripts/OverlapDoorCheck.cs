@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Doors{
-public class OverlapDoorCheck : MonoBehaviour, IGetMostOverlap
+public class OverlapDoorCheck : MonoBehaviour, IGetMostOverlap<ILocked>
 { 
     public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
     OverlapCheckHelper _helper;
@@ -19,7 +19,7 @@ public class OverlapDoorCheck : MonoBehaviour, IGetMostOverlap
     
     private void AddDetectionLayers()
     {
-        detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+        detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.LockedLayer);
 
     }
     
@@ -98,13 +98,13 @@ public class OverlapDoorCheck : MonoBehaviour, IGetMostOverlap
 
     }
 
-    public InteractableBase GetOverlapObject(Vector2 characterPos, Vector2 lookDirection)
+    public ILocked GetOverlapObject(Vector2 characterPos, Vector2 lookDirection)
     {
         this.transform.localScale = _helper.UpdateScale(lookDirection);
         this.transform.localPosition = _helper.UpdatePosition(lookDirection);
         SetMovingOverlappingArea(characterPos);
         Collider2D overlappingObject = GetMostOverlappedCol();
-        return overlappingObject?.GetComponent<InteractableBase>();
+        return overlappingObject?.GetComponent<ILocked>();
     }
     
     class OverlapCheckHelper

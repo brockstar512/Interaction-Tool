@@ -2,21 +2,23 @@ using UnityEngine;
 
 namespace Doors
 {
-    public class MasterLockDoubleDoor : Door
+    public class DoorLocked : Locked
     {
-        private DoubleDoorAnimation _doubleDoorAnimation;
+        private SingleDoorAnimation _singleDoorAnimation;
 
         private void Awake()
         {
             UpdateLayerName();
             Animator anim = GetComponent<Animator>();
-            _doubleDoorAnimation = new DoubleDoorAnimation(anim);
+            _singleDoorAnimation = new SingleDoorAnimation(anim);
         }
 
         protected override void OpenAnimation()
         {
-            Debug.Log("Play animatione");
-            _doubleDoorAnimation.Play();
+            base.OpenAnimation();
+            _singleDoorAnimation.Play();
         }
+
+
     }
 }

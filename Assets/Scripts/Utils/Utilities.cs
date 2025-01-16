@@ -13,7 +13,7 @@ public static class Utilities
     public const string TargetOverlapLayer = "TargetOverlapLayer";
     public const string SocketUsedLayer = "HookSocketUsed";
     public const string SocketUnusedLayer = "HookSocketUnused";
-    public const string DoorLayer = "Door";
+    public const string LockedLayer = "Locked";
 
 
     

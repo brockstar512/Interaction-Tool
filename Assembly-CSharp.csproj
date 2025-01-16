@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
-    <Compile Include="Assets/Scripts/Doors/MasterLockDoubleDoor.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
     <Compile Include="Assets/Scripts/Interactable/BombThrowable.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
+    <Compile Include="Assets/Scripts/Doors/MasterLockDoubleLocked.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/Openable.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
@@ -107,7 +107,6 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/PlankItem.cs" />
-    <Compile Include="Assets/Scripts/Doors/LockedDoor.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />
@@ -124,16 +123,17 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/Flashing/ObjectFlash.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
+    <Compile Include="Assets/Scripts/Doors/Locked.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/Interface/IItemManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />
-    <Compile Include="Assets/Scripts/Doors/Door.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/GrapplingHookItem.cs" />
     <Compile Include="Assets/Scripts/Flashing/CharacterFlash.cs" />
+    <Compile Include="Assets/Scripts/Doors/DoorLocked.cs" />
     <Compile Include="Assets/Scripts/Animation/ChestAnimation/ChestOpenAnimation.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />

@@ -3,25 +3,24 @@ using UnityEngine;
 
 namespace Doors
 {
-    public abstract class Door : MonoBehaviour, ILocked
+    public abstract class Locked : MonoBehaviour, ILocked
     {
         [SerializeField] private Utilities.KeyTypes keyType;
-        protected bool IsOpen = true;
+        protected bool IsOpen = false;
         protected void UpdateLayerName()
         {
-            this.gameObject.layer = LayerMask.NameToLayer(Utilities.DoorLayer);
+            this.gameObject.layer = LayerMask.NameToLayer(Utilities.LockedLayer);
         }
         protected virtual void OpenAnimation()
         {
+            IsOpen = true;
         }
         protected bool CorrectKey(Utilities.KeyTypes key)
         {
-
             if (keyType == key)
             {
                 return true;
             }
-
             return false;
         }
         public Task<bool> CanOpen(Utilities.KeyTypes key)
