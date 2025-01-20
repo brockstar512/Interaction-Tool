@@ -30,6 +30,8 @@ public class Slidable : InteractableBase
     {
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
         obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
+        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.LockedLayer);
+
 
         _col = GetComponent<Collider2D>();
         UpdateLayerName();
@@ -92,7 +94,6 @@ public class Slidable : InteractableBase
             
             //slide the item
             SlideItem(direction, hit);
-
             return true;
         }
         return false;
@@ -116,16 +117,22 @@ public class Slidable : InteractableBase
         {
             float bufferMargin = currColSize.y + targetColSize.y;
             bufferMargin *= sideOfDestination.y;
-          
-            destination = new Vector2(currentLocation.x,currentLocation.y +(travelDistance* direction.y) +bufferMargin);
+
+            if (direction == Vector2.down)
+            {
+                //take in consideration of depth...without this the sliding item would edge up to the edge of the sprite
+                //i am not doing this for other side...not sure if left or right need height consideration
+                bufferMargin -= (currColSize.x/2);
+            }
+            
             //the total distance is the margin of the center of the both items
+            destination = new Vector2(currentLocation.x,currentLocation.y +(travelDistance* direction.y) +bufferMargin);
         }
         //do this if we are trying to slide it right or left. only deal with the x direction
         if (direction == Vector2.right || direction == Vector2.left)
         {
             float bufferMargin = currColSize.x + targetColSize.x;
             bufferMargin *= sideOfDestination.x;
-
             destination = new Vector2(currentLocation.x +(travelDistance* direction.x) +bufferMargin, currentLocation.y);
 
         }
@@ -211,7 +218,6 @@ public class Slidable : InteractableBase
         public void SetOriginPointX(Collider2D callersCol, int index)
         {
             _originPoint = callersCol.bounds.center;
-            
                 switch (index)
                 {
                     case 0:
