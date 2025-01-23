@@ -851,6 +851,10 @@
       <Project>{d580a425-aa3f-9e57-7c5d-6d82aac0cc17}</Project>
       <Name>Unity.AI.Navigation</Name>
     </ProjectReference>
+    <ProjectReference Include="NavMeshPlus.csproj">
+      <Project>{203f5aa9-e2ff-1301-f28a-b1fcbcd2eb3e}</Project>
+      <Name>NavMeshPlus</Name>
+    </ProjectReference>
     <ProjectReference Include="PsdPlugin.csproj">
       <Project>{096a6e72-33b5-2473-9534-1bf90e4cc3e1}</Project>
       <Name>PsdPlugin</Name>
@@ -879,13 +883,17 @@
       <Project>{0250856a-1137-00d9-6f8e-5bb9c968c66c}</Project>
       <Name>Unity.2D.IK.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.2D.IK.Runtime.csproj">
-      <Project>{287164eb-b5a6-1c03-92a6-fe09cecf0dae}</Project>
-      <Name>Unity.2D.IK.Runtime</Name>
+    <ProjectReference Include="NavMeshPlusEditor.csproj">
+      <Project>{c4706988-dddb-9670-5001-2d2846b14bae}</Project>
+      <Name>NavMeshPlusEditor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj">
       <Project>{172eb68a-6be4-e05b-a197-77cb23caf4fb}</Project>
       <Name>Unity.2D.SpriteShape.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.2D.IK.Runtime.csproj">
+      <Project>{287164eb-b5a6-1c03-92a6-fe09cecf0dae}</Project>
+      <Name>Unity.2D.IK.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Shared.csproj">
       <Project>{a3df8d2a-ec1f-409a-735b-24f692beac50}</Project>
