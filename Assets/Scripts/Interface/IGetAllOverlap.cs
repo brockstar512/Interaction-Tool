@@ -1,9 +1,7 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
-public interface IGetAllOverlap<T>
+public interface IGetAllOverlap<T> where T : Component
 {
-    public T[] GetAllOverlapObject(Vector2 areaCheckerBounds);
-
-    public void Hello();
-
+    Task<T[]> GetAllOverlapObject(Bounds areaChecker);
 }

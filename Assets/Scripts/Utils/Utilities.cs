@@ -47,6 +47,10 @@ public static class Utilities
         return new Vector2(Mathf.Round(vector.x), Mathf.Round(vector.y));
     }
 
+    public static Vector2 GetDirectionFromTwoPoints(Vector2 start, Vector2 end)
+    {
+        return (end - start).normalized;
+    }
     // //not tested... didnt work
     // public static T GetClassComponent<T>(this Collider2D collider2D, T component)
     // {

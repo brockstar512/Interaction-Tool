@@ -2859,15 +2859,14 @@ GameObject:
   - component: {fileID: 1271801714}
   - component: {fileID: 1271801713}
   - component: {fileID: 1271801712}
-  - component: {fileID: 1271801711}
   - component: {fileID: 1271801710}
   m_Layer: 16
-  m_Name: Wall D long (2)
+  m_Name: depth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1271801710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2884,18 +2883,6 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
---- !u!114 &1271801711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1271801709}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a18cca6eed264ce1be4902bd46a20ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &1271801712
 Rigidbody2D:
   serializedVersion: 4
@@ -4183,15 +4170,14 @@ GameObject:
   - component: {fileID: 2025808995}
   - component: {fileID: 2025808992}
   - component: {fileID: 2025808991}
-  - component: {fileID: 2025808996}
   - component: {fileID: 2025808997}
   m_Layer: 16
-  m_Name: Wall D long
+  m_Name: depth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &2025808991
 Rigidbody2D:
   serializedVersion: 4
@@ -4348,18 +4334,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   tileOffset: {x: 0, y: 0, z: 0}
---- !u!114 &2025808996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2025808990}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a18cca6eed264ce1be4902bd46a20ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2025808997
 MonoBehaviour:
   m_ObjectHideFlags: 0

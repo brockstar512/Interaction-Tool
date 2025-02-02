@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Player.ItemOverlap
@@ -13,45 +14,32 @@ namespace Player.ItemOverlap
         {
             lr= GetComponent<LineRenderer>();
         }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            AddDetectionLayers();
-        }
-
-        public void Hello()
-        {
-            
-        }
-
+        
+        
         private void AddDetectionLayers()
         {
             detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.DepthLayer);
         }
-
-        private void SetMovingOverlappingArea(Vector2 areaCheckerBounds)
+        private void SetMovingOverlappingArea(Bounds bounds)
         {
             //get line rendere
-            float centerX = lr.bounds.center.x;
-            float centerY = lr.bounds.center.y;
-            float extendsX = lr.bounds.extents.x;
-            float extendsY = lr.bounds.extents.y;
+            float centerX = bounds.center.x;
+            float centerY = bounds.center.y;
+            float extendsX = bounds.extents.x;
+            float extendsY = bounds.extents.y;
 
             _areaTopRightCornerAABB = new Vector2(centerX + extendsX, centerY + extendsY);
             _areaBottomLeftCornerAABB = new Vector2(centerX - extendsX, centerY - extendsY);
         }
         
-        public Collider2D[] GetAllOverlapObject(Vector2 areaCheckerBounds)
+        public async Task<Collider2D[]> GetAllOverlapObject(Bounds areaChecker)
         {
-            Debug.Break();
-            SetMovingOverlappingArea(areaCheckerBounds);
+            AddDetectionLayers();
+            SetMovingOverlappingArea(areaChecker);
 
-            Collider2D[] overlappingCols =
-                Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB, detectionLayer);
-            if (overlappingCols.Length == 0)
-                return null;
-            return overlappingCols;
+            var overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB, detectionLayer);
+            
+            return overlappingCols ?? Array.Empty<Collider2D>();
         }
         
 
