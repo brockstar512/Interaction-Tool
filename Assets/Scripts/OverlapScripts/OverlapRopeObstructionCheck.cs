@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Player.ItemOverlap
@@ -6,8 +7,12 @@ namespace Player.ItemOverlap
     {
         public Vector2 _areaTopRightCornerAABB, _areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
-        [SerializeField] LineRenderer lr;
+        LineRenderer lr;
 
+        private void Awake()
+        {
+            lr= GetComponent<LineRenderer>();
+        }
 
         // Start is called before the first frame update
         void Start()
