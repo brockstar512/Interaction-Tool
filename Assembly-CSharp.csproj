@@ -62,6 +62,7 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
+    <Compile Include="Assets/Scripts/Interface/IGetAllOverlap.cs" />
     <Compile Include="Assets/Scripts/Interface/IExlosionDamage.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Interface/ICandleLight.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/PlankItem.cs" />
+    <Compile Include="Assets/Scripts/OverlapScripts/OverlapRopeObstructionCheck.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />

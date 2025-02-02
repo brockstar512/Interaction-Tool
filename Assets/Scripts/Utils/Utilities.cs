@@ -14,6 +14,10 @@ public static class Utilities
     public const string SocketUsedLayer = "HookSocketUsed";
     public const string SocketUnusedLayer = "HookSocketUnused";
     public const string LockedLayer = "Locked";
+    public const string ObstructionLayer = "Obstruction";
+    public const string DepthLayer = "Depth";
+
+
 
 
     
