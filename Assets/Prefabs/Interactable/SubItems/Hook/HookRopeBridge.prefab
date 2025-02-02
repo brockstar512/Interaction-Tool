@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 8813295490374209367}
   - component: {fileID: 3400489008475174134}
   - component: {fileID: 1615016105562448186}
-  - component: {fileID: 4570837365146944237}
   - component: {fileID: 8507454570401055624}
+  - component: {fileID: 4570837365146944237}
   m_Layer: 15
   m_Name: HookRopeBridge
   m_TagString: Untagged
@@ -154,7 +154,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bridgeDirection: {x: 0, y: 0}
-  overlappingDepthPrefab: {fileID: 866550732286406015, guid: 4b90477f293ea4933add2228638e4f7f, type: 3}
+--- !u!114 &8507454570401055624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2537227951836271864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 418b672116abd42afb901eacf2fcab3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _areaTopRightCornerAABB: {x: 0, y: 0}
+  _areaBottomLeftCornerAABB: {x: 0, y: 0}
+  detectionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  lr: {fileID: 3400489008475174134}
 --- !u!61 &4570837365146944237
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -201,20 +218,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8507454570401055624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2537227951836271864}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 418b672116abd42afb901eacf2fcab3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _areaTopRightCornerAABB: {x: 0, y: 0}
-  _areaBottomLeftCornerAABB: {x: 0, y: 0}
-  detectionLayer:
-    serializedVersion: 2
-    m_Bits: 0

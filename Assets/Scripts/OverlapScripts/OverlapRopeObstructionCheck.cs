@@ -6,18 +6,13 @@ namespace Player.ItemOverlap
     {
         public Vector2 _areaTopRightCornerAABB, _areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
-        private SpriteRenderer _sr;
-        private LineRenderer lr;
+        [SerializeField] LineRenderer lr;
 
 
         // Start is called before the first frame update
         void Start()
         {
             AddDetectionLayers();
-            _sr = GetComponent<SpriteRenderer>();
-            lr= GetComponent<LineRenderer>();
-            // lr.bounds
-
         }
 
         public void Hello()
@@ -44,6 +39,7 @@ namespace Player.ItemOverlap
         
         public Collider2D[] GetAllOverlapObject(Vector2 areaCheckerBounds)
         {
+            Debug.Break();
             SetMovingOverlappingArea(areaCheckerBounds);
 
             Collider2D[] overlappingCols =
