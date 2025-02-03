@@ -28,7 +28,7 @@ public class HookRopeBridge : MonoBehaviour
         Vector2 center = (min+max) / 2;
         _collider.offset = (center - (Vector2)transform.position);
         _collider.size = _lineRenderer.bounds.size;
-        _depthsCol = await overlappingDepth.GetAllOverlapObject(_lineRenderer.bounds);
+        _depthsCol = overlappingDepth.GetAllOverlapObject(_lineRenderer.bounds);
         BuildWalls(_depthsCol,Utilities.GetDirectionFromTwoPoints(start, end));
     }
 

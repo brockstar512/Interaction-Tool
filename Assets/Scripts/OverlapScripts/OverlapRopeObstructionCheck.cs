@@ -32,7 +32,7 @@ namespace Player.ItemOverlap
             _areaBottomLeftCornerAABB = new Vector2(centerX - extendsX, centerY - extendsY);
         }
         
-        public async Task<Collider2D[]> GetAllOverlapObject(Bounds areaChecker)
+        public Collider2D[] GetAllOverlapObject(Bounds areaChecker)
         {
             AddDetectionLayers();
             SetMovingOverlappingArea(areaChecker);

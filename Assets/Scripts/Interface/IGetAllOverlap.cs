@@ -3,5 +3,5 @@ using UnityEngine;
 
 public interface IGetAllOverlap<T> where T : Component
 {
-    Task<T[]> GetAllOverlapObject(Bounds areaChecker);
+    T[] GetAllOverlapObject(Bounds areaChecker);
 }
