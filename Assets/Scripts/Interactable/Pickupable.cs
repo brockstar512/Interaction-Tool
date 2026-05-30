@@ -7,15 +7,20 @@ public class Pickupable : InteractableBase, IItemPickUp
 {
 
     public IItem item { get; protected set; }
-    public Sprite Sprite => sr.sprite;
-    private SpriteRenderer sr { get; set; }
-    private void Awake()
+    public virtual Sprite Sprite => sr.sprite;
+    protected SpriteRenderer sr { get; private set; }
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         item = GetComponentInChildren<IItem>();
-        sr.sprite = item.Sprite;
+        ApplyItemSprite();
         UpdateLayerName();
+    }
+
+    protected virtual void ApplyItemSprite()
+    {
+        sr.sprite = item.Sprite;
     }
 
     public override bool Interact(PlayerStateMachineManager player)

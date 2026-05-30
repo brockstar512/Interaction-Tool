@@ -51,6 +51,7 @@
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interface/ICommand.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
+    <Compile Include="Assets/Scripts/Utils/YDepthSort.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookSocketCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
