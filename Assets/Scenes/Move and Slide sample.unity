@@ -231,7 +231,6 @@ GameObject:
   - component: {fileID: 37002994}
   - component: {fileID: 37002993}
   - component: {fileID: 37002992}
-  - component: {fileID: 37002991}
   m_Layer: 16
   m_Name: depth (1)
   m_TagString: Untagged
@@ -239,22 +238,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &37002991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 37002990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!50 &37002992
 Rigidbody2D:
   serializedVersion: 4
@@ -1665,7 +1648,6 @@ GameObject:
   m_Component:
   - component: {fileID: 560763061}
   - component: {fileID: 560763062}
-  - component: {fileID: 560763063}
   m_Layer: 0
   m_Name: Walkable
   m_TagString: Untagged
@@ -1742,22 +1724,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &560763063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560763060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1001 &600559921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2164,7 +2130,6 @@ GameObject:
   - component: {fileID: 883337363}
   - component: {fileID: 883337362}
   - component: {fileID: 883337361}
-  - component: {fileID: 883337360}
   m_Layer: 0
   m_Name: Wall D long (1)
   m_TagString: Untagged
@@ -2172,22 +2137,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &883337360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 883337359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 0
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!114 &883337361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3001,7 +2950,6 @@ GameObject:
   - component: {fileID: 1182298968}
   - component: {fileID: 1182298967}
   - component: {fileID: 1182298966}
-  - component: {fileID: 1182298965}
   m_Layer: 16
   m_Name: depth (2)
   m_TagString: Untagged
@@ -3009,22 +2957,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1182298965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1182298964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!50 &1182298966
 Rigidbody2D:
   serializedVersion: 4
@@ -3304,7 +3236,6 @@ GameObject:
   - component: {fileID: 1271801714}
   - component: {fileID: 1271801713}
   - component: {fileID: 1271801712}
-  - component: {fileID: 1271801710}
   m_Layer: 16
   m_Name: depth
   m_TagString: Untagged
@@ -3312,22 +3243,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1271801710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1271801709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!50 &1271801712
 Rigidbody2D:
   serializedVersion: 4
@@ -3838,7 +3753,6 @@ GameObject:
   - component: {fileID: 1599134785}
   - component: {fileID: 1599134784}
   - component: {fileID: 1599134783}
-  - component: {fileID: 1599134782}
   m_Layer: 16
   m_Name: depth (3)
   m_TagString: Untagged
@@ -3846,22 +3760,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1599134782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1599134781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!50 &1599134783
 Rigidbody2D:
   serializedVersion: 4
@@ -4195,7 +4093,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1772521963}
-  - component: {fileID: 1772521964}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -4219,22 +4116,6 @@ Transform:
   - {fileID: 2067968695}
   m_Father: {fileID: 1855284379}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1772521964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1772521962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &1773602777
 GameObject:
   m_ObjectHideFlags: 0
@@ -4249,7 +4130,6 @@ GameObject:
   - component: {fileID: 1773602781}
   - component: {fileID: 1773602780}
   - component: {fileID: 1773602783}
-  - component: {fileID: 1773602784}
   m_Layer: 0
   m_Name: Wall L
   m_TagString: Untagged
@@ -4425,22 +4305,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a18cca6eed264ce1be4902bd46a20ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1773602784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1773602777}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &1785448378
 GameObject:
   m_ObjectHideFlags: 0
@@ -4625,86 +4489,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2877476567474224492, guid: 2aafb13b3bf8740a98cac71908ad7cfa, type: 3}
   m_PrefabInstance: {fileID: 1798204919}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1810808971
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1810808972}
-  - component: {fileID: 1810808974}
-  - component: {fileID: 1810808973}
-  m_Layer: 0
-  m_Name: Navmesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1810808972
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810808971}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1810808973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810808971}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70bd44a44cd62c64fbfc1eea95b24880, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideByGrid: 0
-  m_UseMeshPrefab: {fileID: 0}
-  m_CompressBounds: 0
-  m_OverrideVector: {x: 1, y: 1, z: 1}
---- !u!114 &1810808974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810808971}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e04976799df50f54ba128eff723155a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_BuildHeightMesh: 0
-  m_MinRegionArea: 0
-  m_HideEditorLogs: 0
-  m_NavMeshData: {fileID: 23800000, guid: f75b74bd7d0df4a1ca0e807114cf65d2, type: 2}
 --- !u!1001 &1812450966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4869,7 +4653,6 @@ GameObject:
   - component: {fileID: 1898598268}
   - component: {fileID: 1898598267}
   - component: {fileID: 1898598266}
-  - component: {fileID: 1898598265}
   m_Layer: 16
   m_Name: depth (4)
   m_TagString: Untagged
@@ -4877,22 +4660,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1898598265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1898598264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!50 &1898598266
 Rigidbody2D:
   serializedVersion: 4
@@ -5062,7 +4829,6 @@ GameObject:
   - component: {fileID: 2025808995}
   - component: {fileID: 2025808992}
   - component: {fileID: 2025808991}
-  - component: {fileID: 2025808997}
   m_Layer: 16
   m_Name: depth
   m_TagString: Untagged
@@ -5226,22 +4992,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   tileOffset: {x: 0, y: 0, z: 0}
---- !u!114 &2025808997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2025808990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &2034716026
 GameObject:
   m_ObjectHideFlags: 0
@@ -5256,7 +5006,6 @@ GameObject:
   - component: {fileID: 2034716029}
   - component: {fileID: 2034716028}
   - component: {fileID: 2034716032}
-  - component: {fileID: 2034716033}
   m_Layer: 0
   m_Name: Wall Box D
   m_TagString: Untagged
@@ -5432,22 +5181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a18cca6eed264ce1be4902bd46a20ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2034716033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034716026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &2067968694
 GameObject:
   m_ObjectHideFlags: 0
@@ -5572,7 +5305,6 @@ SceneRoots:
   - {fileID: 1812450966}
   - {fileID: 883337364}
   - {fileID: 1855284379}
-  - {fileID: 1810808972}
   - {fileID: 1679896727}
   - {fileID: 1162617530}
   - {fileID: 695921452}

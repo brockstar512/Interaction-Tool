@@ -847,14 +847,6 @@
       <Project>{63f9968a-0e93-7995-02e9-c5c906d7d6ec}</Project>
       <Name>Unity.Rider.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.AI.Navigation.csproj">
-      <Project>{d580a425-aa3f-9e57-7c5d-6d82aac0cc17}</Project>
-      <Name>Unity.AI.Navigation</Name>
-    </ProjectReference>
-    <ProjectReference Include="NavMeshPlus.csproj">
-      <Project>{203f5aa9-e2ff-1301-f28a-b1fcbcd2eb3e}</Project>
-      <Name>NavMeshPlus</Name>
-    </ProjectReference>
     <ProjectReference Include="PsdPlugin.csproj">
       <Project>{096a6e72-33b5-2473-9534-1bf90e4cc3e1}</Project>
       <Name>PsdPlugin</Name>
@@ -882,10 +874,6 @@
     <ProjectReference Include="Unity.2D.IK.Editor.csproj">
       <Project>{0250856a-1137-00d9-6f8e-5bb9c968c66c}</Project>
       <Name>Unity.2D.IK.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="NavMeshPlusEditor.csproj">
-      <Project>{c4706988-dddb-9670-5001-2d2846b14bae}</Project>
-      <Name>NavMeshPlusEditor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj">
       <Project>{172eb68a-6be4-e05b-a197-77cb23caf4fb}</Project>
@@ -999,10 +987,6 @@
       <Project>{492c76b4-0ea1-9482-50b9-04aa83fe02cd}</Project>
       <Name>Unity.VisualScripting.Core.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.AI.Navigation.Updater.csproj">
-      <Project>{36a8070d-a732-7748-5d63-b82bd702c190}</Project>
-      <Name>Unity.AI.Navigation.Updater</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
       <Project>{cc1db244-5c47-a55a-1142-88d3510ca275}</Project>
       <Name>Unity.VisualScripting.Flow.Editor</Name>
@@ -1031,10 +1015,6 @@
       <Project>{e1c7a8c6-69db-fa84-3fdd-809cbec0663b}</Project>
       <Name>Unity.VisualScripting.State.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.AI.Navigation.Editor.csproj">
-      <Project>{03cdaf55-9066-04bc-a75c-00e564167f04}</Project>
-      <Name>Unity.AI.Navigation.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Mathematics.csproj">
       <Project>{207f7eaa-4525-ddae-f02a-d88bf222018d}</Project>
       <Name>Unity.Mathematics</Name>
@@ -1058,10 +1038,6 @@
     <ProjectReference Include="Unity.2D.Sprite.Editor.csproj">
       <Project>{afb6433f-310b-d754-4b9f-f506f786085d}</Project>
       <Name>Unity.2D.Sprite.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.AI.Navigation.Editor.ConversionSystem.csproj">
-      <Project>{1771358e-bc0e-4e56-dc6e-5bd322048646}</Project>
-      <Name>Unity.AI.Navigation.Editor.ConversionSystem</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Sysroot.Linux_x86_64.csproj">
       <Project>{dee1d530-8d18-88dc-d156-bffe5ee5cf75}</Project>
