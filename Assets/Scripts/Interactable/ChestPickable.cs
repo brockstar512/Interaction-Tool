@@ -1,12 +1,11 @@
 using Items;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
 public class ChestPickable : Pickupable
 {
-    [FormerlySerializedAs("item")]
-    [SerializeField] private Item _containedItem;
+    [SerializeField] private Pickupable _droppedItemHolderPrefab;
+    [SerializeField] private float _dropForce = 3f;
 
     private ChestOpenAnimation _chestOpenAnimation;
     public override Sprite Sprite => item?.Sprite;
@@ -14,19 +13,31 @@ public class ChestPickable : Pickupable
     protected override void Awake()
     {
         base.Awake();
-        item = _containedItem;
         Animator anim = GetComponent<Animator>();
         _chestOpenAnimation = new ChestOpenAnimation(anim);
     }
 
     protected override void ApplyItemSprite() { }
-    
+
     public override bool Interact(PlayerStateMachineManager player)
     {
+        if (item == null) return false;
         _chestOpenAnimation.Play();
         return base.Interact(player);
     }
-    
+
+    public override void Swap(IItem displaced)
+    {
+        if (_droppedItemHolderPrefab == null || displaced is not Item itemToDrop) return;
+        var dropHolder = Instantiate(_droppedItemHolderPrefab);
+        dropHolder.gameObject.SetActive(false);
+        itemToDrop.gameObject.SetActive(true);
+        itemToDrop.TakeChild(dropHolder.transform);
+        dropHolder.transform.position = transform.position;
+        dropHolder.gameObject.SetActive(true);
+        dropHolder.rb.AddForce(Random.insideUnitCircle.normalized * _dropForce, ForceMode2D.Impulse);
+    }
+
     public override void PickedUp()
     {
         item = null;

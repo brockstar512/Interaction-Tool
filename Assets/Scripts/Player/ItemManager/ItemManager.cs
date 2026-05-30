@@ -33,24 +33,16 @@ public class ItemManager : MonoBehaviour, IItemManager
         var pickup = holder.item;
         //make this a parent of the item object now
         pickup.TakeChild(transform);
-        //if the inventory is more than the limit
         if (inventory.Count >= inventoryLimit)
         {
-            //get the item that we need to remove from the inventory
-            var putdown = inventory[_currentIndex] as Item;
-            //remove it
+            var displaced = inventory[_currentIndex] as Item;
             inventory.RemoveAt(_currentIndex);
-            //put it into the holder
-            holder.Swap(putdown);
-            //insert the new item into the inventory
+            holder.Swap(displaced);
             inventory.Insert(_currentIndex, pickup);
             return;
         }
-        
-        //if there is space in the
-        //inventory add the item
+
         inventory.Add(pickup);
-        //set the index as the new item
         _currentIndex = inventory.IndexOf(pickup);
         holder.PickedUp();
     }

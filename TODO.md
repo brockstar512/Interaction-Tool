@@ -29,6 +29,14 @@
 
 ---
 
+## Push & Pull
+- [ ] `MoveItemState` — implement push and pull input handling for `Moveable` objects
+- [ ] Wire up `AnimationPushAndPull` — animation class exists but is not triggered by any state
+- [ ] Decide directional logic: push = player moves toward object, pull = player moves away
+- [ ] Add movement constraint so the object only slides along the valid push/pull axis
+
+---
+
 ## Sword & Whip
 - [ ] `SwordItem.Use()` — only stores the callback, never plays an animation. Hook up sword swing animation before calling `PutAway`
 - [ ] `WhipItem.Use()` — calls `PutAway()` immediately with no delay or animation. Add whip-crack animation and hitbox before returning to default state

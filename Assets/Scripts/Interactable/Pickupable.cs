@@ -40,7 +40,7 @@ public class Pickupable : InteractableBase, IItemPickUp
         Destroy(this.gameObject);
     }
     
-    public void Swap(IItem newItem)
+    public virtual void Swap(IItem newItem)
     {
         if (item != null)
         {
