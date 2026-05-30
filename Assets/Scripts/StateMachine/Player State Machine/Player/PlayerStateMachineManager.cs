@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 {
+
     public PlayerBaseState currentState{ get; private set; }
 
     //States
@@ -53,12 +54,15 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
 
     void Update()
     {
+
         currentState.UpdateState(this);
     }
 
     void FixedUpdate()
     {
         currentState.FixedUpdateState(this);
+        // Physics2D.IgnoreCollision(col, col2, true);
+
     }
 
     void OnCollisionEnter(Collision collision)

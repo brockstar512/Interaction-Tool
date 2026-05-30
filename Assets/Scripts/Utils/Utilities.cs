@@ -14,6 +14,10 @@ public static class Utilities
     public const string SocketUsedLayer = "HookSocketUsed";
     public const string SocketUnusedLayer = "HookSocketUnused";
     public const string LockedLayer = "Locked";
+    public const string ObstructionLayer = "Obstruction";
+    public const string DepthLayer = "Depth";
+
+
 
 
     
@@ -43,6 +47,10 @@ public static class Utilities
         return new Vector2(Mathf.Round(vector.x), Mathf.Round(vector.y));
     }
 
+    public static Vector2 GetDirectionFromTwoPoints(Vector2 start, Vector2 end)
+    {
+        return (end - start).normalized;
+    }
     // //not tested... didnt work
     // public static T GetClassComponent<T>(this Collider2D collider2D, T component)
     // {

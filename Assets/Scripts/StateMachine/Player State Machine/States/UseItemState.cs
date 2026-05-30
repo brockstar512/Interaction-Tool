@@ -37,7 +37,7 @@ public class UseItemState : PlayerBaseState, IButtonUp
     public override void FixedUpdateState(PlayerStateMachineManager stateManager)
     {
         //if you can move with the item, move and animate
-        if (stateManager.itemManager.GetItem().CanWalk)
+        if (stateManager.itemManager.GetItem() != null && stateManager.itemManager.GetItem().CanWalk)
         {
             base.Move(stateManager);
             MoveAnimation.Play(stateManager);
