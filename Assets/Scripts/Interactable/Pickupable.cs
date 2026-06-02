@@ -20,7 +20,16 @@ public class Pickupable : InteractableBase, IItemPickUp
 
     protected virtual void ApplyItemSprite()
     {
-        sr.sprite = item.Sprite;
+        if (item != null) sr.sprite = item.Sprite;
+    }
+
+    public void InitAsDropHolder(Item droppedItem)
+    {
+        droppedItem.gameObject.SetActive(true);
+        droppedItem.TakeChild(transform);
+        item = droppedItem;
+        if (sr != null) sr.sprite = droppedItem.Sprite;
+        UpdateLayerName();
     }
 
     public override bool Interact(PlayerStateMachineManager player)

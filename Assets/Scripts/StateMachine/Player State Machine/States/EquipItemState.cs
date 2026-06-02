@@ -19,7 +19,11 @@ public class EquipItemState : PlayerBaseState
 
     public async override void EnterState(PlayerStateMachineManager stateManager)
     {
-        stateManager.item.Interact(stateManager);
+        if (!stateManager.item.Interact(stateManager))
+        {
+            stateManager.SwitchState(stateManager.defaultState);
+            return;
+        }
         await EquipItemAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
     }

@@ -29,13 +29,11 @@ public class ChestPickable : Pickupable
     public override void Swap(IItem displaced)
     {
         if (_droppedItemHolderPrefab == null || displaced is not Item itemToDrop) return;
-        var dropHolder = Instantiate(_droppedItemHolderPrefab);
-        dropHolder.gameObject.SetActive(false);
-        itemToDrop.gameObject.SetActive(true);
-        itemToDrop.TakeChild(dropHolder.transform);
-        dropHolder.transform.position = transform.position;
-        dropHolder.gameObject.SetActive(true);
+        //this is wrong and should not be the chests responbisility
+        var dropHolder = Instantiate(_droppedItemHolderPrefab, transform.position, Quaternion.identity);
+        dropHolder.InitAsDropHolder(itemToDrop);
         dropHolder.rb.AddForce(Random.insideUnitCircle.normalized * _dropForce, ForceMode2D.Impulse);
+        PickedUp();
     }
 
     public override void PickedUp()
