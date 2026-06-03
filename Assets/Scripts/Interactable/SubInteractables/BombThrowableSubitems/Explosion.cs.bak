@@ -18,19 +18,8 @@ namespace Explode
 
         public async void AnimateExplosion()
         {
-            try
-            {
-                await _explosionAnimation.Play(_explosionAnimator);
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"Explosion.AnimateExplosion failed: {ex}");
-            }
-            finally
-            {
-                Destroy(this.gameObject);
-            }
+            await _explosionAnimation.Play(_explosionAnimator);
+            Destroy(this.gameObject);
         }
-
     }
 }

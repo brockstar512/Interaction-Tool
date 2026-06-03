@@ -18,18 +18,14 @@ namespace Explode
         // This will be called when the game starts
         async void Start()
         {
-            try
-            {
-                _cancellationTokenSource = new CancellationTokenSource();
-                await StartTimer(_timer, _cancellationTokenSource.Token);
-            }
-            catch (System.OperationCanceledException) { }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"BombExplode.Start failed: {ex}");
-            }
-        }
+            Debug.Log("Task started...");
+            _cancellationTokenSource = new CancellationTokenSource();
 
+            // Start the timer with cancellation support
+            await StartTimer(_timer, _cancellationTokenSource.Token);
+
+            Debug.Log("Task finished!");
+        }
 
         private async Task StartTimer(float waitTime, CancellationToken cancellationToken)
         {

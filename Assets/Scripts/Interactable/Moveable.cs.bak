@@ -49,22 +49,18 @@ public class Moveable : InteractableBase
     
     async void CleanUp()
     {
-        try
+        //move to the internal script
+        bool isPlaced = await _targetCheck.IsOnKeyPort(key);
+        
+        if (isPlaced)
         {
-            bool isPlaced = await _targetCheck.IsOnKeyPort(key);
-            if (isPlaced)
-            {
-                _targetCheck.CleanUp();
-                moverCheck.CleanUp();
-                Destroy(this);
-            }
+            _targetCheck.CleanUp();
+            moverCheck.CleanUp();
+            // Debug.Log("Destorying sliding");
+            Destroy(this);
         }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Moveable.CleanUp failed: {ex}");
-        }
-    }
 
+    }
 
 
 }

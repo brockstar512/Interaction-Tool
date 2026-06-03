@@ -101,50 +101,54 @@ public class Slidable : InteractableBase
     
     async void SlideItem(Vector2 direction, ClosestContactPointHelper hit)
     {
-        try
+        
+        Vector3 currColSize = _col.bounds.extents; 
+        Vector3 targetColSize = hit.Col.bounds.extents; 
+        float travelDistance = hit.Distance; 
+        //this is so is we are traveling up or right it will subtract to be on the lower side of the destinations position and add
+        //if we are traveling left or down to be above or to the right of desitination position
+        Vector2 sideOfDestination = direction * -1;
+        
+        Vector3 destination = Vector3.zero;
+        Vector3 currentLocation = this.transform.position;
+        
+        //do this if we are trying to slide it up or down. only deal with the y direction
+        if (direction == Vector2.down || direction == Vector2.up)
         {
-            Vector3 currColSize = _col.bounds.extents;
-            Vector3 targetColSize = hit.Col.bounds.extents;
-            float travelDistance = hit.Distance;
-            Vector2 sideOfDestination = direction * -1;
+            float bufferMargin = currColSize.y + targetColSize.y;
+            bufferMargin *= sideOfDestination.y;
 
-            Vector3 destination = Vector3.zero;
-            Vector3 currentLocation = this.transform.position;
-
-            if (direction == Vector2.down || direction == Vector2.up)
+            if (direction == Vector2.down)
             {
-                float bufferMargin = currColSize.y + targetColSize.y;
-                bufferMargin *= sideOfDestination.y;
-
-                if (direction == Vector2.down)
-                {
-                    bufferMargin -= (currColSize.x / 2);
-                }
-
-                destination = new Vector2(currentLocation.x, currentLocation.y + (travelDistance * direction.y) + bufferMargin);
+                //take in consideration of depth...without this the sliding item would edge up to the edge of the sprite
+                //i am not doing this for other side...not sure if left or right need height consideration
+                bufferMargin -= (currColSize.x/2);
             }
-            if (direction == Vector2.right || direction == Vector2.left)
-            {
-                float bufferMargin = currColSize.x + targetColSize.x;
-                bufferMargin *= sideOfDestination.x;
-                destination = new Vector2(currentLocation.x + (travelDistance * direction.x) + bufferMargin, currentLocation.y);
-            }
-
-            float time = MeasureTime(hit.Distance);
-            await Task.Delay(animationDelay);
-            _moverCheck = Instantiate(moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
-            _moverCheck.SetDirectionOfOverlap(direction * -1);
-            _moverCheck.SetEmergencyStop(EmergencyStopTween);
-            _targetCheck = Instantiate(targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
-            slideAnimation = transform.DOMove(destination, time);
-            slideAnimation.onComplete = CleanUp;
+            
+            //the total distance is the margin of the center of the both items
+            destination = new Vector2(currentLocation.x,currentLocation.y +(travelDistance* direction.y) +bufferMargin);
         }
-        catch (System.Exception ex)
+        //do this if we are trying to slide it right or left. only deal with the x direction
+        if (direction == Vector2.right || direction == Vector2.left)
         {
-            Debug.LogError($"Slidable.SlideItem failed: {ex}");
+            float bufferMargin = currColSize.x + targetColSize.x;
+            bufferMargin *= sideOfDestination.x;
+            destination = new Vector2(currentLocation.x +(travelDistance* direction.x) +bufferMargin, currentLocation.y);
+
         }
+        //get the time for how long it will take to animate there
+        float time = MeasureTime(hit.Distance);
+        //pause so the character can animate
+        await Task.Delay(animationDelay);
+        //create the movement checks
+        _moverCheck =Instantiate( moverCheckPrefab, moverCheckPrefab.transform.position, Quaternion.identity, this.transform);
+        _moverCheck.SetDirectionOfOverlap(direction*-1);
+        _moverCheck.SetEmergencyStop(EmergencyStopTween);
+        _targetCheck =Instantiate( targetCheckPrefab, this.transform.position + targetCheckPrefab.transform.position, Quaternion.identity, this.transform);
+        //animate this to the location and give it a callback when complete
+        slideAnimation = transform.DOMove(destination, time);
+        slideAnimation.onComplete = CleanUp;
     }
-
 
     void EmergencyStopTween()
     {
@@ -166,23 +170,15 @@ public class Slidable : InteractableBase
     
     async void CleanUp()
     {
-        bool isPlaced = false;
-        try
-        {
-            isPlaced = await _targetCheck.IsOnKeyPort(key);
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Slidable.CleanUp failed: {ex}");
-        }
+        bool isPlaced = await _targetCheck.IsOnKeyPort(key);
         _moverCheck.CleanUp();
         _targetCheck.CleanUp();
         if (isPlaced)
         {
             Destroy(this);
         }
-    }
 
+    }
 
     private struct ClosestContactPointHelper
     {

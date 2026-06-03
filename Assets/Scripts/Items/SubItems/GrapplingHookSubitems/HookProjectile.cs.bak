@@ -84,20 +84,16 @@ namespace Items.SubItems{
        
         async void CheckForStartPin()
         {
-            try
-            {
-                hookConnectorStartPin = await _hookStartOverlap.GetMostOverlappedHookStartCol(playerPos);
-                if (hookConnectorStartPin is null)
-                    return;
-                Utilities.PutObjectOnLayer(Utilities.SocketUsedLayer, hookConnectorStartPin.gameObject);
-                _hasStartPin = true;
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"HookProjectile.CheckForStartPin failed: {ex}");
-            }
+            //check if you are starting in proximity of a hook
+            hookConnectorStartPin = await _hookStartOverlap.GetMostOverlappedHookStartCol(playerPos);
+            //if we are not on a start pin don't do anything
+            if (hookConnectorStartPin is null)
+                return;
+            //otherwise change the layer of the layer of the socket so we won't hit it while we check with the end pin
+            Utilities.PutObjectOnLayer(Utilities.SocketUsedLayer,hookConnectorStartPin.gameObject);
+            //set the bool to true so update will run
+            _hasStartPin = true;
         }
-
         
         private void FixedUpdate()
         {
