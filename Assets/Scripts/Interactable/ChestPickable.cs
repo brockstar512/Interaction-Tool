@@ -9,6 +9,8 @@ public class ChestPickable : Pickupable
 
     private ChestOpenAnimation _chestOpenAnimation;
     public override Sprite Sprite => item?.Sprite;
+    public override IItem item => heldItem;
+    private IItem heldItem => GetComponentInChildren<IItem>();
 
     protected override void Awake()
     {

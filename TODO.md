@@ -4,6 +4,8 @@
 ### Custom Collision
 - [ ] **Make Custom Collision**
 
+### State
+- [ ] **movable and pullable**
 
 ### Health
 - [ ] **make health and life cycle system**

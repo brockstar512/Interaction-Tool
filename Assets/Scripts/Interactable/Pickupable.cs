@@ -6,7 +6,7 @@ using Items;
 public class Pickupable : InteractableBase, IItemPickUp
 {
     public override InteractionKind Kind => InteractionKind.Equip;
-    public IItem item { get; protected set; }
+    public virtual IItem item { get; protected set; }
     public virtual Sprite Sprite => sr.sprite;
     protected SpriteRenderer sr { get; private set; }
     protected virtual void Awake()

@@ -101,7 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ad84e9379a24d0c98b79e0df2fef3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: 7a62387dd294b4bc98b6e910afee62b8, type: 2}
+  _droppedItemHolderPrefab: {fileID: 7534149793979415145, guid: 13437e88d730d4ecfb1257e40a6bf430, type: 3}
+  _dropForce: 3
 --- !u!95 &3725979021003094858
 Animator:
   serializedVersion: 7
