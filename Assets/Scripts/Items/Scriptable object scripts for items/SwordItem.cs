@@ -7,9 +7,9 @@ namespace Items.Scriptable_object_scripts_for_items
 {
     public class SwordItem : Item
     {
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;;
+            ItemFinishedCallback = context.EndInteraction;
         }
         
         public override void PutAway()

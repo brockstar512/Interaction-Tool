@@ -12,14 +12,13 @@ namespace Items.Scriptable_object_scripts_for_items
 
         //animations should be here
         private readonly AnimationBell _animationBell = new AnimationBell();
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            Action(stateManager);
-
+            ItemFinishedCallback = context.EndInteraction;
+            Action(context);
         }
-        
-        async void Action(PlayerStateMachineManager stateManager)
+
+        async void Action(IInteractionContext context)
         {
             if (currentBellSound != null)
             {
@@ -29,8 +28,8 @@ namespace Items.Scriptable_object_scripts_for_items
 
             try
             {
-                currentBellSound = Instantiate(bellSoundAreaPrefab, stateManager.transform.position, Quaternion.identity).Init();
-                await _animationBell.Play(stateManager);
+                currentBellSound = Instantiate(bellSoundAreaPrefab, context.Transform.position, Quaternion.identity).Init();
+                await _animationBell.Play(context);
             }
             catch (System.Exception ex)
             {
@@ -43,9 +42,7 @@ namespace Items.Scriptable_object_scripts_for_items
                 PutAway();
             }
         }
-
-
-
+        
         
         public override void PutAway()
         {

@@ -7,13 +7,11 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         Action _disposeOfItem = null;
 
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-
+            ItemFinishedCallback = context.EndInteraction;
+            _disposeOfItem = context.Items.DisposeOfCurrentItem;
             Action();
-
         }
         
         void Action()

@@ -15,11 +15,11 @@ namespace Items
          overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<ILocked>>();
       }
 
-      public override void Use(PlayerStateMachineManager stateManager)
+      public override void Use(IInteractionContext context)
       {
-         ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-         _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-         TryOpen(stateManager.transform.position, stateManager.currentState.LookDirection, stateManager.itemManager.GetItem());
+         ItemFinishedCallback = context.EndInteraction;
+         _disposeOfItem = context.Items.DisposeOfCurrentItem;
+         TryOpen(context.Transform.position, context.LookDirection, context.Items.GetItem());
       }
 
       void TryOpen(Vector3 characterPos, Vector3 lookDirection, IItem item)

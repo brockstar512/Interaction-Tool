@@ -13,9 +13,9 @@ namespace Items
         private float _lightTime = 10f;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+            ItemFinishedCallback = context.EndInteraction;
 
             if (_lightTime <= 0f)
             {
@@ -23,7 +23,7 @@ namespace Items
             }
             else
             {
-                _candleLight ??= Instantiate(candleLightPrefab, stateManager.transform);
+                _candleLight ??= Instantiate(candleLightPrefab, context.Transform);
                 Action();
             }
         }

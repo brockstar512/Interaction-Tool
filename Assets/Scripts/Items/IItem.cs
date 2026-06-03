@@ -7,7 +7,7 @@ public interface IItem
     //destermines if player can walk while using item
     public bool CanWalk{ get; }
     //when the item is being use only the item can tell the state manager when to return
-    public void Use(PlayerStateMachineManager stateManager);
+    public void Use(IInteractionContext context);
     
     //helps pass the transform of the item to set the parent
     public void TakeChild(Transform parentTransform);

@@ -26,32 +26,29 @@ namespace Animation.PlayerAnimation.AnimationStates
 
         }
 
-        public async Task Play(PlayerStateMachineManager state)
+        public async Task Play(IInteractionContext ctx)
         {
-            if (state.currentState.LookDirection == Vector2.down)
+            if (ctx.LookDirection == Vector2.down)
             {
-                state.animator.Play(_setUpGrapplingDown);
+                ctx.Animator.Play(_setUpGrapplingDown);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingDown]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.right)
+            if (ctx.LookDirection == Vector2.right)
             {
-                state.animator.Play(_setUpGrapplingRight);
+                ctx.Animator.Play(_setUpGrapplingRight);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingRight]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.left)
+            if (ctx.LookDirection == Vector2.left)
             {
-                state.animator.Play(_setUpGrapplingLeft);
+                ctx.Animator.Play(_setUpGrapplingLeft);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingLeft]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.up)
+            if (ctx.LookDirection == Vector2.up)
             {
-                state.animator.Play(_setUpGrapplingUp);
+                ctx.Animator.Play(_setUpGrapplingUp);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingUp]);
                 return;
             }

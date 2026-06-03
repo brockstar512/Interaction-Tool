@@ -36,34 +36,30 @@ namespace Items.Scriptable_object_scripts_for_items
         //of the item if we hit a hook connector
         Action _disposeOfItem;
         
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
             if (_projectile != null)
             {
-                //int case it's spammed
                 return;
             }
-            
-            //if its a bridge dispose of the item
-            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-            //if you hit nothing go to default state...if its throwable go to throwable
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            //do the item action
-            Action(stateManager);
+
+            _disposeOfItem = context.Items.DisposeOfCurrentItem;
+            ItemFinishedCallback = context.EndInteraction;
+            Action(context);
         }
-        
-        async void Action(PlayerStateMachineManager stateManager)
+
+        async void Action(IInteractionContext context)
         {
             try
             {
-                await _animationGrapplingHookSetUp.Play(stateManager);
-                _originPoint = stateManager.GetComponentInChildren<OriginPoint>().transform.position;
+                await _animationGrapplingHookSetUp.Play(context);
+                _originPoint = context.Transform.GetComponentInChildren<OriginPoint>().transform.position;
                 _currentLocation = _originPoint;
-                _maxLocation = (stateManager.currentState.LookDirection * MaxDistance) + (Vector2)_originPoint;
-                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity).Init(_originPoint, HitSomething, stateManager.transform.position);
-                _projectile.SetHookSprite(stateManager.currentState.LookDirection);
+                _maxLocation = (context.LookDirection * MaxDistance) + (Vector2)_originPoint;
+                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity).Init(_originPoint, HitSomething, context.Transform.position);
+                _projectile.SetHookSprite(context.LookDirection);
                 SendGrapplingHook();
-                await _animationGrapplingHookFire.Play(stateManager);
+                await _animationGrapplingHookFire.Play(context);
             }
             catch (System.Exception ex)
             {
@@ -71,10 +67,6 @@ namespace Items.Scriptable_object_scripts_for_items
                 PutAway();
             }
         }
-
-
-
-       
         void SendGrapplingHook()
         {
             //get the location of the grappling hook so we can gage the time

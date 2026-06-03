@@ -25,29 +25,29 @@ public class AnimationBell : AnimationState
 
     }
     
-    public async Task Play(PlayerStateMachineManager state)
+    public async Task Play(IInteractionContext ctx)
     {
-        if (state.currentState.LookDirection == Vector2.down)
+        if (ctx.LookDirection == Vector2.down)
         {
-            state.animator.Play(BellDown);
+            ctx.Animator.Play(BellDown);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellDown]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.right)
+        if (ctx.LookDirection == Vector2.right)
         {
-            state.animator.Play(BellRight);
+            ctx.Animator.Play(BellRight);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellRight]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.left)
+        if (ctx.LookDirection == Vector2.left)
         {
-            state.animator.Play(BellLeft);
+            ctx.Animator.Play(BellLeft);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellLeft]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.up)
+        if (ctx.LookDirection == Vector2.up)
         {
-            state.animator.Play(BellUp);
+            ctx.Animator.Play(BellUp);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellUp]);
             return;
         }

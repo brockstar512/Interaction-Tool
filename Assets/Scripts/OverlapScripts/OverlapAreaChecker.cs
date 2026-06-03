@@ -10,7 +10,6 @@ namespace Player.ItemOverlap
         private SpriteRenderer _sr;
         private readonly OverlapCheckHelper _helper = new OverlapCheckHelper();
 
-        // Each checker ORs in the layer(s) it cares about.
         protected abstract void AddDetectionLayers();
 
         protected virtual void Start()
@@ -27,7 +26,7 @@ namespace Player.ItemOverlap
             return GetMostOverlappedCol();
         }
 
-        protected Collider2D GetMostOverlappedCol()
+        public Collider2D GetMostOverlappedCol()
         {
             Collider2D[] overlappingCols = Physics2D.OverlapAreaAll(_areaTopRightCornerAABB, _areaBottomLeftCornerAABB, detectionLayer);
             if (overlappingCols.Length == 0)
@@ -37,6 +36,7 @@ namespace Player.ItemOverlap
 
         protected void SetMovingOverlappingArea(Vector2 characterPos)
         {
+            if (_sr == null) _sr = GetComponent<SpriteRenderer>();
             float centerX = _sr.bounds.center.x;
             float centerY = _sr.bounds.center.y;
             float extendsX = _sr.bounds.extents.x;

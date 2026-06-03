@@ -14,7 +14,7 @@ namespace Items
 
         public bool CanWalk =>canWalk;
         public Sprite Sprite => sprite;
-        public abstract void Use(PlayerStateMachineManager stateManager);
+        public abstract void Use(IInteractionContext context);
 
         public abstract void PutAway();
  

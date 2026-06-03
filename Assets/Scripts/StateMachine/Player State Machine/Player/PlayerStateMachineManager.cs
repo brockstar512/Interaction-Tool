@@ -2,7 +2,7 @@ using Interface;
 using UnityEngine;
 
 
-public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
+public class PlayerStateMachineManager : MonoBehaviour, IStateMachine, IInteractionContext
 {
 
     public PlayerBaseState currentState{ get; private set; }
@@ -33,7 +33,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     private IGetMostOverlap<InteractableBase> overlapObjectCheck {  get;  set; }
     
     public PlayerStatusManager playerStatusManager { get; private set; }
-
+    IItemManager IInteractionContext.Items => itemManager;
+    Transform IInteractionContext.Transform => transform;
+    Vector2 IInteractionContext.LookDirection => currentState.LookDirection;
+    Animator IInteractionContext.Animator => animator;
+    void IInteractionContext.EndInteraction(InteractableBase next) => SwitchStateFromEquippedItem(next);
 
     void Awake()
     {
