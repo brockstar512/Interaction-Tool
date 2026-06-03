@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Openable/OpenableDoor.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pullable.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetAllOverlap.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Openable/GiveItemEffect.cs" />
     <Compile Include="Assets/Scripts/Interface/ICandleLight.cs" />
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />

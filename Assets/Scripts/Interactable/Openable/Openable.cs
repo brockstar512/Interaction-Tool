@@ -1,49 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
-using Items;
-using Items.Scriptable_object_scripts_for_items;
 using UnityEngine;
 
 public abstract class Openable : InteractableBase
 {
-    public override InteractionKind Kind => InteractionKind.Open;
     [SerializeField] private Utilities.KeyTypes key;
-    protected bool isClosed = true;
+    private bool _isOpen;
+    private IOpenEffect[] _effects;
 
-    protected bool CorrectKey(IItem item)
-    {
-        
-        if (item is Key keyItem && keyItem.keyType == key)
-        {
-            return true;
-        }
+    public override InteractionKind Kind => InteractionKind.Open;
 
-        return false;
-    }
-    
     public override bool Interact(IInteractionContext context)
     {
-        if (key == Utilities.KeyTypes.None)
-        {
-            OpenAnimation();
-            return true;
-        }
-        if (CorrectKey(context.Items.GetItem()))
-        {
-            ((Key)context.Items.GetItem()).Use(context);
-            OpenAnimation();
-            return true;
-        }
-
-        return false;
+        if (_isOpen) return false;
+        if (key != Utilities.KeyTypes.None && !TryUseKey(context)) return false;
+        Open(context);
+        return true;
     }
 
-    public override void Release(IInteractionContext context)
+    private void Open(IInteractionContext context)
     {
-        Debug.Log("Destroy");
+        _isOpen = true;
+        OpenAnimation();
+        _effects ??= GetComponents<IOpenEffect>();   // every effect on this object
+        foreach (var effect in _effects)
+            effect.OnOpen(context);
     }
 
     protected virtual void OpenAnimation() { }
-
-    
+    // CorrectKey / TryUseKey as you already have them
 }
