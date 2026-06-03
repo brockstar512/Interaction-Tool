@@ -10,7 +10,7 @@ namespace Doors
 
         protected void UpdateLayerName()
         {
-            this.gameObject.layer = Layers.Locked;
+            this.gameObject.layer = LayerMask.NameToLayer(Utilities.LockedLayer);
         }
 
         protected virtual void OpenAnimation()

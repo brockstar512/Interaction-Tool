@@ -28,9 +28,9 @@ public class Slidable : InteractableBase
 
     void Awake()
     {
-        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
-        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
-        obstructionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.LockedLayer);
+        obstructionLayer |= 0x1 << Layers.SlidableObstruction;
+        obstructionLayer |= 0x1 << Layers.Interactable;
+        obstructionLayer |= 0x1 << Layers.Locked;
 
 
         _col = GetComponent<Collider2D>();

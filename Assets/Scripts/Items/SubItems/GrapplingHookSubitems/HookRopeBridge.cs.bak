@@ -94,7 +94,7 @@ public class HookRopeBridge : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == Layers.Player)
+        if (other.gameObject.layer == LayerMask.NameToLayer(Utilities.PlayerLayer))
         {
             foreach (var col in _depthsCol)
             {
@@ -105,7 +105,7 @@ public class HookRopeBridge : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.layer == Layers.Player)
+        if (other.gameObject.layer == LayerMask.NameToLayer(Utilities.PlayerLayer))
         {
             foreach (var col in _depthsCol)
             {

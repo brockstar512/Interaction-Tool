@@ -13,7 +13,7 @@ public abstract class InteractableBase : MonoBehaviour
 
     protected void UpdateLayerName()
     {
-        this.gameObject.layer = Layers.Interactable;
+        this.gameObject.layer = LayerMask.NameToLayer(Utilities.InteractableLayer);
     }
     
 

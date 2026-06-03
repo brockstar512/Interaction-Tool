@@ -18,7 +18,7 @@ namespace Player.ItemOverlap
         
         private void AddDetectionLayers()
         {
-            detectionLayer |= 0x1 << Layers.Depth;
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.DepthLayer);
         }
         private void SetMovingOverlappingArea(Bounds bounds)
         {

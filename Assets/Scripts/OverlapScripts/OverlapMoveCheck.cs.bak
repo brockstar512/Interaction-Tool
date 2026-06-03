@@ -32,10 +32,10 @@ namespace Player.ItemOverlap
         private void RemoveDetectionLayers()
         {
             //removes these layers from detection
-            detectionLayer &= ~(1 << Layers.Interacting);
-            detectionLayer &= ~(1 << Layers.Player);
-            detectionLayer &= ~(1 << Layers.KeyPort);
-            detectionLayer &= ~(1 << Layers.TargetOverlap);   
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));   
         }
         
         private void SetMovingOverlappingArea(Vector2 characterPos)

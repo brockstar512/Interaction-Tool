@@ -25,12 +25,12 @@ namespace Player.ItemOverlap
 
         private void UpdateLayerName()
         {
-            this.gameObject.layer = Layers.TargetOverlap;
+            this.gameObject.layer = LayerMask.NameToLayer(Utilities.TargetOverlapLayer);
         }
 
         private void AddDetectionLayers()
         {
-            detectionLayer |= 0x1 << Layers.KeyPort;
+            detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.KeyPortLayer);
 
         }
         

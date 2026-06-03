@@ -10,6 +10,6 @@ public class Obstruction : MonoBehaviour
    
    protected void UpdateLayerName()
    {
-      this.gameObject.layer = Layers.SlidableObstruction;
+      this.gameObject.layer = LayerMask.NameToLayer(Utilities.SlidableObstructionLayer);
    }
 }

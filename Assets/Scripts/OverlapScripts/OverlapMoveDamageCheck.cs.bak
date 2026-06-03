@@ -33,7 +33,7 @@ namespace Player.ItemOverlap
         private void AddDetectionLayers()
         {
             //if this hits another interactble item... handle stopping this later
-            // detectionLayer |= 0x1 << Layers.Interactable;
+            // detectionLayer |= 0x1 << LayerMask.NameToLayer(Utilities.InteractableLayer);
    
         }
         private void RemoveDetectionLayers()
@@ -41,12 +41,12 @@ namespace Player.ItemOverlap
             
             //right now this will not detect interactble or interacting...if i collide with interacting
             //or interactable I should handle an emergency stop in the do tween
-            // detectionLayer &= ~(1 << Layers.Interacting);
+            // detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.InteractingLayer));
 
-            // detectionLayer &= ~(1 <<Layers.Interactable);
-            detectionLayer &= ~(1 << Layers.Player);
-            detectionLayer &= ~(1 << Layers.KeyPort);
-            detectionLayer &= ~(1 << Layers.TargetOverlap);
+            // detectionLayer &= ~(1 <<LayerMask.NameToLayer(Utilities.InteractableLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.PlayerLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.KeyPortLayer));
+            detectionLayer &= ~(1 << LayerMask.NameToLayer(Utilities.TargetOverlapLayer));
 
         }
 
@@ -101,13 +101,13 @@ namespace Player.ItemOverlap
 
             }
             //if collider is not obstruction
-            if(collision.gameObject.layer != Layers.SlidableObstruction)
+            if(collision.gameObject.layer != LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
             {
                 //Debug.Log("Emergency stop");
                 //Debug.Break();
                 //_emergencyStop?.Invoke();
             }
-            else if (collision.gameObject.layer == Layers.SlidableObstruction)
+            else if (collision.gameObject.layer == LayerMask.NameToLayer(Utilities.SlidableObstructionLayer))
             {
                 //Debug.Log("Emergency stop");
                 //_emergencyStop?.Invoke();
