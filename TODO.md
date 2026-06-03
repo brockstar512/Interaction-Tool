@@ -1,6 +1,8 @@
 # TODO
 
 ## In Progress
+### Custom Collision
+- [ ] **Make Custom Collision**
 
 ### Depth Sorting
 - [x] Write `YDepthSort.cs` — sets `sortingOrder` from Y position with a configurable anchor offset
