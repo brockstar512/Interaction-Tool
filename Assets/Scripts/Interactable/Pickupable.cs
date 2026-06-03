@@ -5,7 +5,7 @@ using Items;
 
 public class Pickupable : InteractableBase, IItemPickUp
 {
-
+    public override InteractionKind Kind => InteractionKind.Equip;
     public IItem item { get; protected set; }
     public virtual Sprite Sprite => sr.sprite;
     protected SpriteRenderer sr { get; private set; }
@@ -32,14 +32,14 @@ public class Pickupable : InteractableBase, IItemPickUp
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
-        //equip item state calls this and this calls pickup item in item inventory
-        player.itemManager.PickUpItem(this);
+        context.Items.PickUpItem(this);
         return true;
     }
 
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         throw new System.NotImplementedException();
     }

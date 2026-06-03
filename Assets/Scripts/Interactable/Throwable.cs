@@ -8,6 +8,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Throwable : InteractableBase, IInteractWithHookProjectile
 {
+    public override InteractionKind Kind => InteractionKind.Throw;
+
     //if it needs to bounces add to the list
     [SerializeField] protected List<AnimationCurve> bounceSequence;
     //keep track of the index of the arches in the animation curve
@@ -35,12 +37,20 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
-        //pick up the item and set the parent as the player
-        PickUp(player.transform);
-        PlayerSpriteBounds = player.gameObject.GetComponent<SpriteRenderer>().bounds;
+        PickUp(context.Transform);
+        PlayerSpriteBounds = context.Transform.gameObject.GetComponent<SpriteRenderer>().bounds;
         return true;
+    }
+
+    public override void Release(IInteractionContext context)
+    {
+        this.transform.position = GetGroundPosition();
+        Vector3 direction = context.LookDirection;
+        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
+        Toss(direction);
     }
 
     private void FixedUpdate()
@@ -101,19 +111,6 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
         // Debug.Break();
-    }
-
-    public override void Release(PlayerStateMachineManager state)
-    {
-        //set this location as to the ground location so the animation child starts at the correct position
-        this.transform.position = GetGroundPosition();
-
-        //get the direction
-        Vector3 direction = state.currentState.LookDirection;
-        //get the distance based off the keyframe end
-        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-        //throw the item 
-        Toss(direction);
     }
     
     public void InteractWithHookProjectile(HookProjectile projectile)

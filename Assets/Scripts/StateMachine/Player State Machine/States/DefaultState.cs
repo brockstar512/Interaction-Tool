@@ -5,8 +5,6 @@ public class DefaultState : PlayerBaseState
 {
     AnimationMove MoveAnimation;
     
-    //hurt
-    //slideing key
     public DefaultState()
     {
         MoveAnimation = new AnimationMove();
@@ -41,28 +39,34 @@ public class DefaultState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        switch (stateManager.item)
+        if (stateManager.item == null)
         {
-            case Throwable throwable:
+            Debug.Log("is default");
+            return;
+        }
+
+        switch (stateManager.item.Kind)
+        {
+            case InteractionKind.Throw:
                 stateManager.SwitchState(stateManager.throwItemState);
                 break;
-            case Moveable moveable:
+            case InteractionKind.Move:
                 stateManager.SwitchState(stateManager.moveItemState);
                 break;
-            case Slidable moveable:
+            case InteractionKind.Slide:
                 stateManager.SwitchState(stateManager.slideItemState);
                 break;
-            case Pickupable pickupable:
+            case InteractionKind.Equip:
                 stateManager.SwitchState(stateManager.equipItemState);
                 break;
-            case Openable openable:
+            case InteractionKind.Open:
                 stateManager.SwitchState(stateManager.OpenItemState);
                 break;
             default:
                 Debug.Log("is default");
                 break;
-
         }
-
     }
+
 }
+

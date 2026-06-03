@@ -19,11 +19,11 @@ public class ChestPickable : Pickupable
 
     protected override void ApplyItemSprite() { }
 
-    public override bool Interact(PlayerStateMachineManager player)
+    public override bool Interact(IInteractionContext context)
     {
         if (item == null) return false;
         _chestOpenAnimation.Play();
-        return base.Interact(player);
+        return base.Interact(context);
     }
 
     public override void Swap(IItem displaced)

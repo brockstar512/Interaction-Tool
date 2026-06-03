@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Player.ItemOverlap;
 
 public class Moveable : InteractableBase
 {
+    public override InteractionKind Kind => InteractionKind.Move;
+
     [SerializeField] private Utilities.KeyTypes key;
     private OverlapMoveCheck moverCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
@@ -21,24 +21,19 @@ public class Moveable : InteractableBase
 
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
         return false;
         //todo rework moving like pokemon using strength later
-        //Debug.Log(player.currentState.LookDirection);
-        //pass in set direction of transform t00
-        moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
-        Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
-        this.transform.SetParent(player.transform);
+        moverCheck.SetDirectionOfOverlap(context.LookDirection);
+        Utilities.PutObjectOnLayer(Utilities.InteractingLayer, this.gameObject);
+        this.transform.SetParent(context.Transform);
         rb.isKinematic = false;
-        
         return true;
     }
     
-    
-
-
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         rb.isKinematic = true;
         rb.velocity = Vector2.zero;

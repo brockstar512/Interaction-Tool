@@ -23,6 +23,7 @@ public class Slidable : InteractableBase
     private Collider2D _col;
     private Tweener slideAnimation;
     
+    public override InteractionKind Kind => InteractionKind.Slide;
 
     
 
@@ -37,10 +38,13 @@ public class Slidable : InteractableBase
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager state)
+
+    public override bool Interact(IInteractionContext context)
     {
-       return CanMove(state.currentState.LookDirection);
+        return CanMove(context.LookDirection);
     }
+
+    public override void Release(IInteractionContext context) { }
     
     ClosestContactPointHelper GetClosestColliderHit(Vector2 direction)
     {
@@ -157,11 +161,6 @@ public class Slidable : InteractableBase
     {
         const float speed = 15;
         return (distance / speed);
-    }
-
-    public override void Release(PlayerStateMachineManager player)
-    {
-        
     }
     
     async void CleanUp()

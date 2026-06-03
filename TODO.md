@@ -4,6 +4,13 @@
 ### Custom Collision
 - [ ] **Make Custom Collision**
 
+
+### Health
+- [ ] **make health and life cycle system**
+
+### Camera Follow
+- [ ] **Make camera follow system/camera for reagion**
+
 ### Depth Sorting
 - [x] Write `YDepthSort.cs` — sets `sortingOrder` from Y position with a configurable anchor offset
 - [ ] **Attach `YDepthSort` to these GameObjects in the scene/prefabs:**

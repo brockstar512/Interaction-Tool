@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Pullable.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Utils/YDepthSort.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Assets/Scripts/Utils/Layers.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/BellSubItems/OverlapCircleCollider.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs" />
+    <Compile Include="Assets/Scripts/Interactable/InteractionKind.cs" />
     <Compile Include="Assets/Scripts/Interface/IBellSound.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Interface/IExplosionDamage.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Doors/Locked.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
+    <Compile Include="Assets/Scripts/SpritePivotValidator.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/Interface/IItemManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />

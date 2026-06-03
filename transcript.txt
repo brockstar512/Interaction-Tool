@@ -9930,6 +9930,150 @@ namespace Player.ItemOverlap
     }
 }
 ========================================
+FILE: ./Assets/Scripts/SpritePivotValidator.cs
+========================================
+using UnityEditor;
+using UnityEngine;
+
+public static class SpritePivotValidator
+{
+    // Change this to the pivot you want.
+    // (0.5, 0.5) = center
+    // (0.5, 0)   = bottom center
+    // (0, 0)     = bottom left
+    private static readonly Vector2 TargetPivot = new Vector2(0.5f, 0.5f);
+
+    private const float Tolerance = 0.0001f;
+
+    [MenuItem("Tools/Sprites/Fix Selected Sprite Pivots")]
+    public static void FixSelectedSpritePivots()
+    {
+        foreach (Object obj in Selection.objects)
+        {
+            string path = AssetDatabase.GetAssetPath(obj);
+
+            if (string.IsNullOrEmpty(path))
+                continue;
+
+            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+
+            if (importer == null)
+                continue;
+
+            if (importer.textureType != TextureImporterType.Sprite)
+                continue;
+
+            bool changed = false;
+
+            if (importer.spriteImportMode == SpriteImportMode.Multiple)
+            {
+                SpriteMetaData[] spritesheet = importer.spritesheet;
+
+                for (int i = 0; i < spritesheet.Length; i++)
+                {
+                    SpriteMetaData sprite = spritesheet[i];
+
+                    if (Vector2.Distance(sprite.pivot, TargetPivot) > Tolerance ||
+                        sprite.alignment != (int)SpriteAlignment.Custom)
+                    {
+                        sprite.alignment = (int)SpriteAlignment.Custom;
+                        sprite.pivot = TargetPivot;
+                        spritesheet[i] = sprite;
+                        changed = true;
+                    }
+                }
+
+                if (changed)
+                {
+                    importer.spritesheet = spritesheet;
+                }
+            }
+            else
+            {
+                TextureImporterSettings settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+
+                if (Vector2.Distance(settings.spritePivot, TargetPivot) > Tolerance ||
+                    settings.spriteAlignment != (int)SpriteAlignment.Custom)
+                {
+                    settings.spriteAlignment = (int)SpriteAlignment.Custom;
+                    settings.spritePivot = TargetPivot;
+
+                    importer.SetTextureSettings(settings);
+                    changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                importer.SaveAndReimport();
+                Debug.Log($"Fixed sprite pivot: {path}");
+            }
+            else
+            {
+                Debug.Log($"Sprite pivot already correct: {path}");
+            }
+        }
+
+        AssetDatabase.Refresh();
+    }
+
+    [MenuItem("Tools/Sprites/Validate Selected Sprite Pivots")]
+    public static void ValidateSelectedSpritePivots()
+    {
+        foreach (Object obj in Selection.objects)
+        {
+            string path = AssetDatabase.GetAssetPath(obj);
+
+            if (string.IsNullOrEmpty(path))
+                continue;
+
+            TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+
+            if (importer == null)
+                continue;
+
+            if (importer.textureType != TextureImporterType.Sprite)
+                continue;
+
+            if (importer.spriteImportMode == SpriteImportMode.Multiple)
+            {
+                foreach (SpriteMetaData sprite in importer.spritesheet)
+                {
+                    bool valid =
+                        sprite.alignment == (int)SpriteAlignment.Custom &&
+                        Vector2.Distance(sprite.pivot, TargetPivot) <= Tolerance;
+
+                    if (!valid)
+                    {
+                        Debug.LogWarning(
+                            $"Invalid pivot in {path}, sprite '{sprite.name}'. " +
+                            $"Current: {sprite.pivot}, Expected: {TargetPivot}"
+                        );
+                    }
+                }
+            }
+            else
+            {
+                TextureImporterSettings settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+
+                bool valid =
+                    settings.spriteAlignment == (int)SpriteAlignment.Custom &&
+                    Vector2.Distance(settings.spritePivot, TargetPivot) <= Tolerance;
+
+                if (!valid)
+                {
+                    Debug.LogWarning(
+                        $"Invalid pivot in {path}. " +
+                        $"Current: {settings.spritePivot}, Expected: {TargetPivot}"
+                    );
+                }
+            }
+        }
+    }
+}
+========================================
 FILE: ./Assets/Scripts/Interface/ICandleLight.cs
 ========================================
 public interface ICandleLight
@@ -10073,19 +10217,15 @@ public interface IGetMostOverlap<T>
 ========================================
 FILE: ./Assets/Scripts/Interface/InteractionKit.cs
 ========================================
-// InteractionKit/Runtime/Core/IInteractionContext.cs
 using UnityEngine;
 
-namespace InteractionKit
+public interface IInteractionContext
 {
-    public interface IInteractionContext
-    {
-        IItemManager Items { get; }
-        Transform    Transform { get; }
-        Vector2      LookDirection { get; }
-        void RequestInteraction(InteractionKind kind, IInteractable source);
-        void EndInteraction();
-    }
+    IItemManager Items { get; }
+    Transform Transform { get; }
+    Vector2 LookDirection { get; }
+    Animator Animator { get; }
+    void EndInteraction(InteractableBase next = null);
 }
 ========================================
 FILE: ./Assets/Scripts/Interface/IBellSound.cs
@@ -10279,8 +10419,6 @@ public class DefaultState : PlayerBaseState
 {
     AnimationMove MoveAnimation;
     
-    //hurt
-    //slideing key
     public DefaultState()
     {
         MoveAnimation = new AnimationMove();
@@ -10315,31 +10453,37 @@ public class DefaultState : PlayerBaseState
 
     public override void Action(PlayerStateMachineManager stateManager)
     {
-        switch (stateManager.item)
+        if (stateManager.item == null)
         {
-            case Throwable throwable:
+            Debug.Log("is default");
+            return;
+        }
+
+        switch (stateManager.item.Kind)
+        {
+            case InteractionKind.Throw:
                 stateManager.SwitchState(stateManager.throwItemState);
                 break;
-            case Moveable moveable:
+            case InteractionKind.Move:
                 stateManager.SwitchState(stateManager.moveItemState);
                 break;
-            case Slidable moveable:
+            case InteractionKind.Slide:
                 stateManager.SwitchState(stateManager.slideItemState);
                 break;
-            case Pickupable pickupable:
+            case InteractionKind.Equip:
                 stateManager.SwitchState(stateManager.equipItemState);
                 break;
-            case Openable openable:
+            case InteractionKind.Open:
                 stateManager.SwitchState(stateManager.OpenItemState);
                 break;
             default:
                 Debug.Log("is default");
                 break;
-
         }
-
     }
+
 }
+
 
 ========================================
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs
@@ -10761,7 +10905,7 @@ using Interface;
 using UnityEngine;
 
 
-public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
+public class PlayerStateMachineManager : MonoBehaviour, IStateMachine, IInteractionContext
 {
 
     public PlayerBaseState currentState{ get; private set; }
@@ -10792,7 +10936,11 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine
     private IGetMostOverlap<InteractableBase> overlapObjectCheck {  get;  set; }
     
     public PlayerStatusManager playerStatusManager { get; private set; }
-
+    IItemManager IInteractionContext.Items => itemManager;
+    Transform IInteractionContext.Transform => transform;
+    Vector2 IInteractionContext.LookDirection => currentState.LookDirection;
+    Animator IInteractionContext.Animator => animator;
+    void IInteractionContext.EndInteraction(InteractableBase next) => SwitchStateFromEquippedItem(next);
 
     void Awake()
     {
@@ -11579,32 +11727,29 @@ namespace Animation.PlayerAnimation.AnimationStates
 
         }
 
-        public async Task Play(PlayerStateMachineManager state)
+        public async Task Play(IInteractionContext ctx)
         {
-            if (state.currentState.LookDirection == Vector2.down)
+            if (ctx.LookDirection == Vector2.down)
             {
-                state.animator.Play(_setUpGrapplingDown);
+                ctx.Animator.Play(_setUpGrapplingDown);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingDown]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.right)
+            if (ctx.LookDirection == Vector2.right)
             {
-                state.animator.Play(_setUpGrapplingRight);
+                ctx.Animator.Play(_setUpGrapplingRight);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingRight]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.left)
+            if (ctx.LookDirection == Vector2.left)
             {
-                state.animator.Play(_setUpGrapplingLeft);
+                ctx.Animator.Play(_setUpGrapplingLeft);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingLeft]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.up)
+            if (ctx.LookDirection == Vector2.up)
             {
-                state.animator.Play(_setUpGrapplingUp);
+                ctx.Animator.Play(_setUpGrapplingUp);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_setUpGrapplingUp]);
                 return;
             }
@@ -11655,29 +11800,29 @@ public class AnimationBell : AnimationState
 
     }
     
-    public async Task Play(PlayerStateMachineManager state)
+    public async Task Play(IInteractionContext ctx)
     {
-        if (state.currentState.LookDirection == Vector2.down)
+        if (ctx.LookDirection == Vector2.down)
         {
-            state.animator.Play(BellDown);
+            ctx.Animator.Play(BellDown);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellDown]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.right)
+        if (ctx.LookDirection == Vector2.right)
         {
-            state.animator.Play(BellRight);
+            ctx.Animator.Play(BellRight);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellRight]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.left)
+        if (ctx.LookDirection == Vector2.left)
         {
-            state.animator.Play(BellLeft);
+            ctx.Animator.Play(BellLeft);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellLeft]);
             return;
         }
-        if (state.currentState.LookDirection == Vector2.up)
+        if (ctx.LookDirection == Vector2.up)
         {
-            state.animator.Play(BellUp);
+            ctx.Animator.Play(BellUp);
             await Awaitable.WaitForSecondsAsync(TimeSheet[BellUp]);
             return;
         }
@@ -12156,32 +12301,29 @@ namespace Animation.PlayerAnimation.AnimationStates
             
         }
 
-        public async Task Play(PlayerStateMachineManager state)
+        public async Task Play(IInteractionContext ctx)
         {
-            if (state.currentState.LookDirection == Vector2.down)
+            if (ctx.LookDirection == Vector2.down)
             {
-                state.animator.Play(_shootDown);
+                ctx.Animator.Play(_shootDown);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_shootDown]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.right)
+            if (ctx.LookDirection == Vector2.right)
             {
-                state.animator.Play(_shootRight);
+                ctx.Animator.Play(_shootRight);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_shootRight]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.left)
+            if (ctx.LookDirection == Vector2.left)
             {
-                state.animator.Play(_shootLeft);
+                ctx.Animator.Play(_shootLeft);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_shootLeft]);
                 return;
             }
-
-            if (state.currentState.LookDirection == Vector2.up)
+            if (ctx.LookDirection == Vector2.up)
             {
-                state.animator.Play(_shootUp);
+                ctx.Animator.Play(_shootUp);
                 await Awaitable.WaitForSecondsAsync(TimeSheet[_shootUp]);
                 return;
             }
@@ -12565,39 +12707,33 @@ public class EnemyPlaceholder : MonoBehaviour, IHurt, IInteractWithHookProjectil
 ========================================
 FILE: ./Assets/Scripts/Interactable/InteractableBase.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class InteractableBase : MonoBehaviour
 {
     public Rigidbody2D rb { get; set; }
-    
-    public abstract bool Interact(PlayerStateMachineManager player);
 
-    public abstract void Release(PlayerStateMachineManager player);
+    public abstract InteractionKind Kind { get; }
+
+    public abstract bool Interact(IInteractionContext context);
+
+    public abstract void Release(IInteractionContext context);
 
     protected void UpdateLayerName()
     {
         this.gameObject.layer = Layers.Interactable;
     }
-    
-
-
-
 }
-
 ========================================
 FILE: ./Assets/Scripts/Interactable/Moveable.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Player.ItemOverlap;
 
 public class Moveable : InteractableBase
 {
+    public override InteractionKind Kind => InteractionKind.Move;
+
     [SerializeField] private Utilities.KeyTypes key;
     private OverlapMoveCheck moverCheck;
     public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
@@ -12614,24 +12750,19 @@ public class Moveable : InteractableBase
 
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
         return false;
         //todo rework moving like pokemon using strength later
-        //Debug.Log(player.currentState.LookDirection);
-        //pass in set direction of transform t00
-        moverCheck.SetDirectionOfOverlap(player.currentState.LookDirection);
-        Utilities.PutObjectOnLayer(Utilities.InteractingLayer,this.gameObject);
-        this.transform.SetParent(player.transform);
+        moverCheck.SetDirectionOfOverlap(context.LookDirection);
+        Utilities.PutObjectOnLayer(Utilities.InteractingLayer, this.gameObject);
+        this.transform.SetParent(context.Transform);
         rb.isKinematic = false;
-        
         return true;
     }
     
-    
-
-
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         rb.isKinematic = true;
         rb.velocity = Vector2.zero;
@@ -12672,7 +12803,7 @@ using Items;
 
 public class Pickupable : InteractableBase, IItemPickUp
 {
-
+    public override InteractionKind Kind => InteractionKind.Equip;
     public IItem item { get; protected set; }
     public virtual Sprite Sprite => sr.sprite;
     protected SpriteRenderer sr { get; private set; }
@@ -12699,14 +12830,14 @@ public class Pickupable : InteractableBase, IItemPickUp
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
-        //equip item state calls this and this calls pickup item in item inventory
-        player.itemManager.PickUpItem(this);
+        context.Items.PickUpItem(this);
         return true;
     }
 
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         throw new System.NotImplementedException();
     }
@@ -12761,6 +12892,7 @@ public class Slidable : InteractableBase
     private Collider2D _col;
     private Tweener slideAnimation;
     
+    public override InteractionKind Kind => InteractionKind.Slide;
 
     
 
@@ -12775,10 +12907,13 @@ public class Slidable : InteractableBase
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager state)
+
+    public override bool Interact(IInteractionContext context)
     {
-       return CanMove(state.currentState.LookDirection);
+        return CanMove(context.LookDirection);
     }
+
+    public override void Release(IInteractionContext context) { }
     
     ClosestContactPointHelper GetClosestColliderHit(Vector2 direction)
     {
@@ -12896,11 +13031,6 @@ public class Slidable : InteractableBase
         const float speed = 15;
         return (distance / speed);
     }
-
-    public override void Release(PlayerStateMachineManager player)
-    {
-        
-    }
     
     async void CleanUp()
     {
@@ -13015,6 +13145,27 @@ public class Slidable : InteractableBase
    }
        
  */
+========================================
+FILE: ./Assets/Scripts/Interactable/Pullable.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Pullable : InteractableBase
+{
+    public override InteractionKind Kind => InteractionKind.Pull;
+    public override bool Interact(IInteractionContext context)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Release(IInteractionContext context)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
 ========================================
 FILE: ./Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs
 ========================================
@@ -13205,6 +13356,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Throwable : InteractableBase, IInteractWithHookProjectile
 {
+    public override InteractionKind Kind => InteractionKind.Throw;
+
     //if it needs to bounces add to the list
     [SerializeField] protected List<AnimationCurve> bounceSequence;
     //keep track of the index of the arches in the animation curve
@@ -13232,12 +13385,20 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         UpdateLayerName();
     }
 
-    public override bool Interact(PlayerStateMachineManager player)
+
+    public override bool Interact(IInteractionContext context)
     {
-        //pick up the item and set the parent as the player
-        PickUp(player.transform);
-        PlayerSpriteBounds = player.gameObject.GetComponent<SpriteRenderer>().bounds;
+        PickUp(context.Transform);
+        PlayerSpriteBounds = context.Transform.gameObject.GetComponent<SpriteRenderer>().bounds;
         return true;
+    }
+
+    public override void Release(IInteractionContext context)
+    {
+        this.transform.position = GetGroundPosition();
+        Vector3 direction = context.LookDirection;
+        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
+        Toss(direction);
     }
 
     private void FixedUpdate()
@@ -13298,19 +13459,6 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
         throwable.localPosition = new Vector3(0, yPos, 0);
         rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
         // Debug.Break();
-    }
-
-    public override void Release(PlayerStateMachineManager state)
-    {
-        //set this location as to the ground location so the animation child starts at the correct position
-        this.transform.position = GetGroundPosition();
-
-        //get the direction
-        Vector3 direction = state.currentState.LookDirection;
-        //get the distance based off the keyframe end
-        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-        //throw the item 
-        Toss(direction);
     }
     
     public void InteractWithHookProjectile(HookProjectile projectile)
@@ -13382,16 +13530,16 @@ public abstract class Openable : InteractableBase
         return false;
     }
     
-    public override bool Interact(PlayerStateMachineManager player)
-    { 
+    public override bool Interact(IInteractionContext context)
+    {
         if (key == Utilities.KeyTypes.None)
         {
             OpenAnimation();
             return true;
         }
-        if (CorrectKey(player.itemManager.GetItem()))
+        if (CorrectKey(context.Items.GetItem()))
         {
-            ((Key)player.itemManager.GetItem()).Use(player);
+            ((Key)context.Items.GetItem()).Use(context);
             OpenAnimation();
             return true;
         }
@@ -13399,13 +13547,14 @@ public abstract class Openable : InteractableBase
         return false;
     }
 
-    protected virtual void OpenAnimation() { }
-
-
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         Debug.Log("Destroy");
     }
+
+    protected virtual void OpenAnimation() { }
+
+    
 }
 
 ========================================
@@ -13432,11 +13581,11 @@ public class ChestPickable : Pickupable
 
     protected override void ApplyItemSprite() { }
 
-    public override bool Interact(PlayerStateMachineManager player)
+    public override bool Interact(IInteractionContext context)
     {
         if (item == null) return false;
         _chestOpenAnimation.Play();
-        return base.Interact(player);
+        return base.Interact(context);
     }
 
     public override void Swap(IItem displaced)
@@ -13508,6 +13657,19 @@ class BombThrowable : Throwable
 }
 
 ========================================
+FILE: ./Assets/Scripts/Interactable/InteractionKind.cs
+========================================
+public enum InteractionKind
+{
+    None,
+    Throw,
+    Move,
+    Pull,
+    Slide,
+    Equip,
+    Open
+}
+========================================
 FILE: ./Assets/Scripts/Items/IItem.cs
 ========================================
 using UnityEngine;
@@ -13519,7 +13681,7 @@ public interface IItem
     //destermines if player can walk while using item
     public bool CanWalk{ get; }
     //when the item is being use only the item can tell the state manager when to return
-    public void Use(PlayerStateMachineManager stateManager);
+    public void Use(IInteractionContext context);
     
     //helps pass the transform of the item to set the parent
     public void TakeChild(Transform parentTransform);
@@ -14012,7 +14174,7 @@ namespace Items
 
         public bool CanWalk =>canWalk;
         public Sprite Sprite => sprite;
-        public abstract void Use(PlayerStateMachineManager stateManager);
+        public abstract void Use(IInteractionContext context);
 
         public abstract void PutAway();
  
@@ -14037,13 +14199,11 @@ namespace Items.Scriptable_object_scripts_for_items
     {
         Action _disposeOfItem = null;
 
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-
+            ItemFinishedCallback = context.EndInteraction;
+            _disposeOfItem = context.Items.DisposeOfCurrentItem;
             Action();
-
         }
         
         void Action()
@@ -14101,34 +14261,30 @@ namespace Items.Scriptable_object_scripts_for_items
         //of the item if we hit a hook connector
         Action _disposeOfItem;
         
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
             if (_projectile != null)
             {
-                //int case it's spammed
                 return;
             }
-            
-            //if its a bridge dispose of the item
-            _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-            //if you hit nothing go to default state...if its throwable go to throwable
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            //do the item action
-            Action(stateManager);
+
+            _disposeOfItem = context.Items.DisposeOfCurrentItem;
+            ItemFinishedCallback = context.EndInteraction;
+            Action(context);
         }
-        
-        async void Action(PlayerStateMachineManager stateManager)
+
+        async void Action(IInteractionContext context)
         {
             try
             {
-                await _animationGrapplingHookSetUp.Play(stateManager);
-                _originPoint = stateManager.GetComponentInChildren<OriginPoint>().transform.position;
+                await _animationGrapplingHookSetUp.Play(context);
+                _originPoint = context.Transform.GetComponentInChildren<OriginPoint>().transform.position;
                 _currentLocation = _originPoint;
-                _maxLocation = (stateManager.currentState.LookDirection * MaxDistance) + (Vector2)_originPoint;
-                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity).Init(_originPoint, HitSomething, stateManager.transform.position);
-                _projectile.SetHookSprite(stateManager.currentState.LookDirection);
+                _maxLocation = (context.LookDirection * MaxDistance) + (Vector2)_originPoint;
+                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity).Init(_originPoint, HitSomething, context.Transform.position);
+                _projectile.SetHookSprite(context.LookDirection);
                 SendGrapplingHook();
-                await _animationGrapplingHookFire.Play(stateManager);
+                await _animationGrapplingHookFire.Play(context);
             }
             catch (System.Exception ex)
             {
@@ -14136,10 +14292,6 @@ namespace Items.Scriptable_object_scripts_for_items
                 PutAway();
             }
         }
-
-
-
-       
         void SendGrapplingHook()
         {
             //get the location of the grappling hook so we can gage the time
@@ -14265,10 +14417,9 @@ namespace Items.Scriptable_object_scripts_for_items
 {
     public class WhipItem : Item
     {
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-
+            ItemFinishedCallback = context.EndInteraction;
             Action();
         }
         
@@ -14296,9 +14447,9 @@ namespace Items.Scriptable_object_scripts_for_items
 {
     public class SwordItem : Item
     {
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;;
+            ItemFinishedCallback = context.EndInteraction;
         }
         
         public override void PutAway()
@@ -14325,14 +14476,13 @@ namespace Items.Scriptable_object_scripts_for_items
 
         //animations should be here
         private readonly AnimationBell _animationBell = new AnimationBell();
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-            Action(stateManager);
-
+            ItemFinishedCallback = context.EndInteraction;
+            Action(context);
         }
-        
-        async void Action(PlayerStateMachineManager stateManager)
+
+        async void Action(IInteractionContext context)
         {
             if (currentBellSound != null)
             {
@@ -14342,8 +14492,8 @@ namespace Items.Scriptable_object_scripts_for_items
 
             try
             {
-                currentBellSound = Instantiate(bellSoundAreaPrefab, stateManager.transform.position, Quaternion.identity).Init();
-                await _animationBell.Play(stateManager);
+                currentBellSound = Instantiate(bellSoundAreaPrefab, context.Transform.position, Quaternion.identity).Init();
+                await _animationBell.Play(context);
             }
             catch (System.Exception ex)
             {
@@ -14356,9 +14506,7 @@ namespace Items.Scriptable_object_scripts_for_items
                 PutAway();
             }
         }
-
-
-
+        
         
         public override void PutAway()
         {
@@ -14387,11 +14535,11 @@ namespace Items
          overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<ILocked>>();
       }
 
-      public override void Use(PlayerStateMachineManager stateManager)
+      public override void Use(IInteractionContext context)
       {
-         ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
-         _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-         TryOpen(stateManager.transform.position, stateManager.currentState.LookDirection, stateManager.itemManager.GetItem());
+         ItemFinishedCallback = context.EndInteraction;
+         _disposeOfItem = context.Items.DisposeOfCurrentItem;
+         TryOpen(context.Transform.position, context.LookDirection, context.Items.GetItem());
       }
 
       void TryOpen(Vector3 characterPos, Vector3 lookDirection, IItem item)
@@ -14433,9 +14581,9 @@ namespace Items
         private float _lightTime = 10f;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public override void Use(PlayerStateMachineManager stateManager)
+        public override void Use(IInteractionContext context)
         {
-            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+            ItemFinishedCallback = context.EndInteraction;
 
             if (_lightTime <= 0f)
             {
@@ -14443,7 +14591,7 @@ namespace Items
             }
             else
             {
-                _candleLight ??= Instantiate(candleLightPrefab, stateManager.transform);
+                _candleLight ??= Instantiate(candleLightPrefab, context.Transform);
                 Action();
             }
         }

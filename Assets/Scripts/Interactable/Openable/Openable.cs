@@ -6,6 +6,7 @@ using UnityEngine;
 
 public abstract class Openable : InteractableBase
 {
+    public override InteractionKind Kind => InteractionKind.Open;
     [SerializeField] private Utilities.KeyTypes key;
     protected bool isClosed = true;
 
@@ -20,16 +21,16 @@ public abstract class Openable : InteractableBase
         return false;
     }
     
-    public override bool Interact(PlayerStateMachineManager player)
-    { 
+    public override bool Interact(IInteractionContext context)
+    {
         if (key == Utilities.KeyTypes.None)
         {
             OpenAnimation();
             return true;
         }
-        if (CorrectKey(player.itemManager.GetItem()))
+        if (CorrectKey(context.Items.GetItem()))
         {
-            ((Key)player.itemManager.GetItem()).Use(player);
+            ((Key)context.Items.GetItem()).Use(context);
             OpenAnimation();
             return true;
         }
@@ -37,11 +38,12 @@ public abstract class Openable : InteractableBase
         return false;
     }
 
-    protected virtual void OpenAnimation() { }
-
-
-    public override void Release(PlayerStateMachineManager player)
+    public override void Release(IInteractionContext context)
     {
         Debug.Log("Destroy");
     }
+
+    protected virtual void OpenAnimation() { }
+
+    
 }
