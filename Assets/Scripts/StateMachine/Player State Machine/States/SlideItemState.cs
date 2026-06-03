@@ -42,16 +42,25 @@ public class SlideItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        if (stateManager.item.Interact(stateManager))
+        try
         {
-            await KickAnimation.Play(stateManager);
+            if (stateManager.item.Interact(stateManager))
+            {
+                await KickAnimation.Play(stateManager);
+            }
+            else
+            {
+                await KickAnimation.Play(stateManager);
+                await HurtToeAnimation.Play(stateManager);
+            }
         }
-        else
+        catch (System.Exception ex)
         {
-            await KickAnimation.Play(stateManager);
-            await HurtToeAnimation.Play(stateManager);
+            Debug.LogError($"SlideItemState.Action failed: {ex}");
         }
-        //await KickAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        finally
+        {
+            stateManager.SwitchState(stateManager.defaultState);
+        }
     }
 }

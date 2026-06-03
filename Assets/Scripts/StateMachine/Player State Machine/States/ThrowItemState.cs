@@ -17,14 +17,22 @@ public class ThrowItemState : PlayerBaseState
         _carryAnimation = new AnimationCarry();
     }
     
-
     public override async void EnterState(PlayerStateMachineManager stateManager)
     {
-        _currentAnimation = _pickUpAnimation;
-        await _pickUpAnimation.Play(stateManager);
-        stateManager.item.Interact(stateManager);
-        _currentAnimation = _carryAnimation;
+        try
+        {
+            _currentAnimation = _pickUpAnimation;
+            await _pickUpAnimation.Play(stateManager);
+            stateManager.item.Interact(stateManager);
+            _currentAnimation = _carryAnimation;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"ThrowItemState.EnterState failed: {ex}");
+            stateManager.SwitchState(stateManager.defaultState);   // recover instead of hanging
+        }
     }
+    
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
         UpdateLookDirection(stateManager.movement);
@@ -50,11 +58,20 @@ public class ThrowItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        _currentAnimation = _throwAnimation;
-        stateManager.item.Release(stateManager);
-        await _throwAnimation.Play(stateManager);
-        _currentAnimation = null;
-        stateManager.SwitchState(stateManager.defaultState);
-        
+        try
+        {
+            _currentAnimation = _throwAnimation;
+            stateManager.item.Release(stateManager);
+            await _throwAnimation.Play(stateManager);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"ThrowItemState.Action failed: {ex}");
+        }
+        finally
+        {
+            _currentAnimation = null;
+            stateManager.SwitchState(stateManager.defaultState);
+        }
     }
 }

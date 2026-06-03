@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Explode
 {
-    public interface IExlosionDamage
+    public interface IExplosionDamage
     {
         public void AnimateExplosion();
     }

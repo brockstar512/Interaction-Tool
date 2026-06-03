@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Explode
 {
-    public class Explosion : MonoBehaviour, IExlosionDamage
+    public class Explosion : MonoBehaviour, IExplosionDamage
     {
         private ExplosionAnimation _explosionAnimation;
         private Animator _explosionAnimator;

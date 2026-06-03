@@ -7,39 +7,34 @@ namespace Doors
     {
         [SerializeField] private Utilities.KeyTypes keyType;
         protected bool IsOpen = false;
+
         protected void UpdateLayerName()
         {
             this.gameObject.layer = LayerMask.NameToLayer(Utilities.LockedLayer);
         }
+
         protected virtual void OpenAnimation()
         {
             IsOpen = true;
         }
+
         protected bool CorrectKey(Utilities.KeyTypes key)
         {
-            if (keyType == key)
-            {
-                return true;
-            }
-            return false;
+            return keyType == key;
         }
-        public Task<bool> CanOpen(Utilities.KeyTypes key)
+
+        public bool CanOpen(Utilities.KeyTypes key)
         {
-            if (IsOpen)
-            {
-                return Task.FromResult(false);
-            }
+            if (IsOpen) return false;
 
             if (CorrectKey(key))
             {
                 OpenAnimation();
-                return Task.FromResult(true);
+                return true;
             }
 
-            return Task.FromResult(false);
+            return false;
         }
-
-   
 
     }
 }

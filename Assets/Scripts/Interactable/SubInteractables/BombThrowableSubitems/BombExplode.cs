@@ -71,7 +71,7 @@ namespace Explode
             // Perform the explosion
             Debug.Log($"Exploding!");
             
-            IExlosionDamage explode = Instantiate(explosion,transform.position,quaternion.identity).GetComponent<IExlosionDamage>();
+            IExplosionDamage explode = Instantiate(explosion,transform.position,quaternion.identity).GetComponent<IExplosionDamage>();
             if (explode != null)
             {
                 explode.AnimateExplosion();

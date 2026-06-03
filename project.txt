@@ -6608,13 +6608,13 @@ namespace Flashing
 }
 
 ===== ./Assets/Scripts/Interface/IAnimationState.cs =====
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IAnimationState
-{
-}
+// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
+//
+// public interface IAnimationState
+// {
+// }
 
 ===== ./Assets/Scripts/Interface/IInteractWithHookProjecile.cs =====
 using Items.SubItems;
@@ -6642,44 +6642,31 @@ public interface IHurt
 
 }
 
-===== ./Assets/Scripts/Interface/IExlosionDamage.cs =====
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Explode
-{
-    public interface IExlosionDamage
-    {
-        public void AnimateExplosion();
-    }
-}
-
 ===== ./Assets/Scripts/Interface/ICommand.cs =====
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
-
-public interface ICommand 
-{
-    public Task Execute();
-    public bool CanExecute();
-    /*
-         public async Task Execute()
-    {
-        //Play();
-
-       
-    }*/
-}
+// using System.Collections;
+// using System.Collections.Generic;
+// using System.Threading.Tasks;
+// using UnityEngine;
+//
+// public interface ICommand 
+// {
+//     public Task Execute();
+//     public bool CanExecute();
+//     /*
+//          public async Task Execute()
+//     {
+//         //Play();
+//
+//        
+//     }*/
+// }
 
 ===== ./Assets/Scripts/Interface/ILocked.cs =====
 using System.Threading.Tasks;
 
 public interface ILocked
 {
-    public Task<bool> CanOpen(Utilities.KeyTypes keyType);
+    public bool CanOpen(Utilities.KeyTypes keyType);
 }
 
 ===== ./Assets/Scripts/Interface/IItemManager.cs =====
@@ -6701,6 +6688,19 @@ public interface IItemManager
     public Sprite GetCurrentSprite();
 }
 
+===== ./Assets/Scripts/Interface/IExplosionDamage.cs =====
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Explode
+{
+    public interface IExplosionDamage
+    {
+        public void AnimateExplosion();
+    }
+}
+
 ===== ./Assets/Scripts/Interface/IGetAllOverlap.cs =====
 using System.Threading.Tasks;
 using UnityEngine;
@@ -6720,6 +6720,25 @@ public interface IGetMostOverlap<T>
    public T GetOverlapObject(Vector2 characterPos, Vector2 lookDirection);
 }
 
+===== ./Assets/Scripts/Interface/InteractionKit.cs =====
+// InteractionKit/Runtime/Core/IInteractionContext.cs
+using UnityEngine;
+
+namespace InteractionKit
+{
+    public interface IInteractionContext
+    {
+        IItemManager Items     { get; }
+        Transform    Transform { get; }
+        Vector2      LookDirection { get; }
+
+        /// Ask the host to enter the state mapped to this interaction kind.
+        void RequestInteraction(InteractionKind kind, IInteractable source);
+
+        /// Item/interactable is done; host returns to its default state.
+        void EndInteraction();
+    }
+}
 ===== ./Assets/Scripts/Interface/IBellSound.cs =====
 using System.Collections;
 using System.Collections.Generic;
@@ -7003,17 +7022,26 @@ public class SlideItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        if (stateManager.item.Interact(stateManager))
+        try
         {
-            await KickAnimation.Play(stateManager);
+            if (stateManager.item.Interact(stateManager))
+            {
+                await KickAnimation.Play(stateManager);
+            }
+            else
+            {
+                await KickAnimation.Play(stateManager);
+                await HurtToeAnimation.Play(stateManager);
+            }
         }
-        else
+        catch (System.Exception ex)
         {
-            await KickAnimation.Play(stateManager);
-            await HurtToeAnimation.Play(stateManager);
+            Debug.LogError($"SlideItemState.Action failed: {ex}");
         }
-        //await KickAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        finally
+        {
+            stateManager.SwitchState(stateManager.defaultState);
+        }
     }
 }
 
@@ -7159,14 +7187,22 @@ public class ThrowItemState : PlayerBaseState
         _carryAnimation = new AnimationCarry();
     }
     
-
     public override async void EnterState(PlayerStateMachineManager stateManager)
     {
-        _currentAnimation = _pickUpAnimation;
-        await _pickUpAnimation.Play(stateManager);
-        stateManager.item.Interact(stateManager);
-        _currentAnimation = _carryAnimation;
+        try
+        {
+            _currentAnimation = _pickUpAnimation;
+            await _pickUpAnimation.Play(stateManager);
+            stateManager.item.Interact(stateManager);
+            _currentAnimation = _carryAnimation;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"ThrowItemState.EnterState failed: {ex}");
+            stateManager.SwitchState(stateManager.defaultState);   // recover instead of hanging
+        }
     }
+    
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
         UpdateLookDirection(stateManager.movement);
@@ -7192,12 +7228,21 @@ public class ThrowItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        _currentAnimation = _throwAnimation;
-        stateManager.item.Release(stateManager);
-        await _throwAnimation.Play(stateManager);
-        _currentAnimation = null;
-        stateManager.SwitchState(stateManager.defaultState);
-        
+        try
+        {
+            _currentAnimation = _throwAnimation;
+            stateManager.item.Release(stateManager);
+            await _throwAnimation.Play(stateManager);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"ThrowItemState.Action failed: {ex}");
+        }
+        finally
+        {
+            _currentAnimation = null;
+            stateManager.SwitchState(stateManager.defaultState);
+        }
     }
 }
 
@@ -8947,39 +8992,34 @@ namespace Doors
     {
         [SerializeField] private Utilities.KeyTypes keyType;
         protected bool IsOpen = false;
+
         protected void UpdateLayerName()
         {
             this.gameObject.layer = LayerMask.NameToLayer(Utilities.LockedLayer);
         }
+
         protected virtual void OpenAnimation()
         {
             IsOpen = true;
         }
+
         protected bool CorrectKey(Utilities.KeyTypes key)
         {
-            if (keyType == key)
-            {
-                return true;
-            }
-            return false;
+            return keyType == key;
         }
-        public Task<bool> CanOpen(Utilities.KeyTypes key)
+
+        public bool CanOpen(Utilities.KeyTypes key)
         {
-            if (IsOpen)
-            {
-                return Task.FromResult(false);
-            }
+            if (IsOpen) return false;
 
             if (CorrectKey(key))
             {
                 OpenAnimation();
-                return Task.FromResult(true);
+                return true;
             }
 
-            return Task.FromResult(false);
+            return false;
         }
-
-   
 
     }
 }
@@ -9569,7 +9609,7 @@ namespace Explode
             // Perform the explosion
             Debug.Log($"Exploding!");
             
-            IExlosionDamage explode = Instantiate(explosion,transform.position,quaternion.identity).GetComponent<IExlosionDamage>();
+            IExplosionDamage explode = Instantiate(explosion,transform.position,quaternion.identity).GetComponent<IExplosionDamage>();
             if (explode != null)
             {
                 explode.AnimateExplosion();
@@ -9632,7 +9672,7 @@ using UnityEngine;
 
 namespace Explode
 {
-    public class Explosion : MonoBehaviour, IExlosionDamage
+    public class Explosion : MonoBehaviour, IExplosionDamage
     {
         private ExplosionAnimation _explosionAnimation;
         private Animator _explosionAnimator;
@@ -10770,48 +10810,43 @@ namespace Items.Scriptable_object_scripts_for_items
 }
 
 ===== ./Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs =====
-using System.Collections;
 using UnityEngine;
 using System;
-using Doors;
-using Unity.VisualScripting;
 
-namespace Items.Scriptable_object_scripts_for_items
+
+namespace Items
 {
    public class Key : Item
    {
       Action _disposeOfItem = null;
       public Utilities.KeyTypes keyType;
-      private IGetMostOverlap<ILocked> overlapObjectCheck {  get;  set; }
+      private IGetMostOverlap<ILocked> overlapObjectCheck { get; set; }
 
       private void Awake()
       {
          overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<ILocked>>();
       }
+
       public override void Use(PlayerStateMachineManager stateManager)
       {
          ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
          _disposeOfItem = stateManager.itemManager.DisposeOfCurrentItem;
-         Action(stateManager.transform.position,stateManager.currentState.LookDirection,stateManager.itemManager.GetItem());
+         TryOpen(stateManager.transform.position, stateManager.currentState.LookDirection, stateManager.itemManager.GetItem());
       }
 
-      async void Action(Vector3 characterPos, Vector3 LookDirection, IItem item)
+      void TryOpen(Vector3 characterPos, Vector3 lookDirection, IItem item)
       {
          if (item is Key key)
          {
-            ILocked door = overlapObjectCheck.GetOverlapObject(characterPos, LookDirection);
-            
-            //turn this to Ilock?
-            if (door != null && await door.CanOpen(key.keyType))
+            ILocked door = overlapObjectCheck.GetOverlapObject(characterPos, lookDirection);
+            if (door != null && door.CanOpen(key.keyType))
             {
                _disposeOfItem?.Invoke();
             }
-            
          }
          PutAway();
       }
-      
-      
+
       public override void PutAway()
       {
          _disposeOfItem = null;
@@ -10826,43 +10861,42 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Interactable;
-using Unity.VisualScripting;
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace Items
 {
     public class CandleItem : Item, IButtonUp
     {
-        public CandleLight candleLightPrefab;
+         public CandleLight candleLightPrefab;
         private ICandleLight _candleLight;
         private float _lightTime = 10f;
         private CancellationTokenSource _cancellationTokenSource;
-        
-        public override void Use(PlayerStateMachineManager stateManager)
-        {  
-             ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
 
-             if (_lightTime <= 0f)
-             {
-                 PutAway();
-             }
-             else
-             {
-                 _candleLight ??= Instantiate(candleLightPrefab, stateManager.transform);
-                 Action();
-             }
+        public override void Use(PlayerStateMachineManager stateManager)
+        {
+            ItemFinishedCallback = stateManager.SwitchStateFromEquippedItem;
+
+            if (_lightTime <= 0f)
+            {
+                PutAway();
+            }
+            else
+            {
+                _candleLight ??= Instantiate(candleLightPrefab, stateManager.transform);
+                Action();
+            }
         }
-        
+
         async void Action()
         {
             _candleLight.On();
-            Debug.Log("Task started...");
+
+            _cancellationTokenSource?.Cancel();      // cancel + dispose any previous token
+            _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
-            // Start the timer with cancellation support
+
             await StartTimer(_cancellationTokenSource.Token);
-            Debug.Log("Task finished!");
-            //if that is finished destroy/dispose
         }
-        
+
         public override void PutAway()
         {
             ItemFinishedCallback?.Invoke(null);
@@ -10874,48 +10908,38 @@ namespace Items.Scriptable_object_scripts_for_items
             _candleLight.Off();
             PutAway();
         }
-        
+
         private async Task StartTimer(CancellationToken cancellationToken)
         {
             try
             {
                 while (_lightTime > 0)
                 {
-                    // Check for cancellation
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    // Log the remaining time
-                    Debug.Log($"Time remaining: {_lightTime} seconds");
-                    
-                    // Decrement the timer
                     _lightTime--;
-
-                    // Wait for 1 second (or adjust interval as needed)
                     await Task.Delay(1000, cancellationToken);
-
                 }
-
-                // Timer completed
-                Debug.Log("Time is up!");
             }
-            catch (TaskCanceledException)
-            {
-                // If the task was cancelled, log this
-                Debug.Log("Task was cancelled!");
-            }
+            catch (OperationCanceledException) { }   // catches both cancel paths
             catch (Exception ex)
             {
-                Debug.Log($"An error occurred: {ex.Message}");
+                Debug.Log($"Candle timer error: {ex.Message}");
             }
         }
-        
+
         private void CancelTask()
         {
-            // Only cancel if the CancellationTokenSource exists
-            if (_cancellationTokenSource != null)
-            {
-                _cancellationTokenSource.Cancel();
-            }
+            if (_cancellationTokenSource == null) return;
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        private void OnDestroy()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
     }
 }
