@@ -113,6 +113,7 @@
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />
+    <Compile Include="Assets/Scripts/Interface/IOpenEffect.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractableBase.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/CustomDebug.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/SlideItemState.cs" />
@@ -1042,13 +1043,13 @@
       <Project>{0250856a-1137-00d9-6f8e-5bb9c968c66c}</Project>
       <Name>Unity.2D.IK.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj">
-      <Project>{172eb68a-6be4-e05b-a197-77cb23caf4fb}</Project>
-      <Name>Unity.2D.SpriteShape.Runtime</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.2D.IK.Runtime.csproj">
       <Project>{287164eb-b5a6-1c03-92a6-fe09cecf0dae}</Project>
       <Name>Unity.2D.IK.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.2D.SpriteShape.Runtime.csproj">
+      <Project>{172eb68a-6be4-e05b-a197-77cb23caf4fb}</Project>
+      <Name>Unity.2D.SpriteShape.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Shared.csproj">
       <Project>{a3df8d2a-ec1f-409a-735b-24f692beac50}</Project>
