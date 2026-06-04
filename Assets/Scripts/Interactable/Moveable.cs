@@ -8,7 +8,7 @@ public class Moveable : InteractableBase
 
     [SerializeField] private Utilities.KeyTypes key;
     [SerializeField] private float pushDistance = 1f;   // one grid unit
-    [SerializeField] private float moveTime = .05f;     // units per second
+    [SerializeField] private float moveTime = .05f;
 
     private OverlapTargetCheck _targetCheck;
     private Collider2D _col;

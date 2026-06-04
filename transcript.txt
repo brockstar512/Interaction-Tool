@@ -10395,6 +10395,47 @@ public class EquipItemState : PlayerBaseState
 }
 
 ========================================
+FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/PullItemState.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PullItemState : PlayerBaseState
+{
+    
+    public override void EnterState(PlayerStateMachineManager stateManager)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void UpdateState(PlayerStateMachineManager stateManager)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ExitState(PlayerStateMachineManager stateManager)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Action(PlayerStateMachineManager stateManager)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+========================================
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs
 ========================================
 using Interface;
@@ -10751,93 +10792,42 @@ public class ThrowItemState : PlayerBaseState
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs
 ========================================
 using UnityEngine;
-using Player.ItemOverlap;
 
 public class MoveItemState : PlayerBaseState
 {
-    //should I change to PushItemState to make it like pokemon using strength 
-    //then I can make pull item state and it can be like timed pulls to get to a draw bridge... that could be interesting when
-    //you ring your bell then have a certain amount of time to get through a gate while the enemies are chasing you
-    protected override float Speed { get { return 2; } }
-    private Vector2 LimitedMovementBounds = Vector2.zero;
-    private AnimationPushAndPull animationPushAndPull;
-    private Moveable _moveableItem;
-    //this should have the moveable space check
+    const float PushHoldSeconds = 0.2f;          // keep the push pose on screen; tune to your clip
+    private readonly AnimationPushAndPull _pushAnimation;
+
     public MoveItemState()
     {
-        animationPushAndPull = new AnimationPushAndPull();
+        _pushAnimation = new AnimationPushAndPull();
     }
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        LimitedMovementBounds = LookDirection;
-        animationPushAndPull.EnterPushAnimation(stateManager);
-        if (stateManager.item is Moveable moveable)
-        {
-            _moveableItem = moveable;
-        }
-        stateManager.item.Interact(stateManager);
+        Action(stateManager);
     }
 
-    public override void UpdateState(PlayerStateMachineManager stateManager)
-    {
+    public override void UpdateState(PlayerStateMachineManager stateManager) { }
 
-    }
-
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
-    {
-
-    }
+    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
 
     public override void ExitState(PlayerStateMachineManager stateManager)
     {
-
+        _pushAnimation.LeavePushAnimation();
     }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
-        Move(stateManager);
-    }
+    public override void FixedUpdateState(PlayerStateMachineManager stateManager) { }
 
-    protected override void Move(PlayerStateMachineManager stateManager)
+    public override async void Action(PlayerStateMachineManager stateManager)
     {
-        Vector2 _movement = stateManager.movement;
-        
-        if (LimitedMovementBounds == Vector2.down || LimitedMovementBounds == Vector2.up)
-        {
-            _movement.x *= 0;
-        }
-        else if (LimitedMovementBounds == Vector2.right || LimitedMovementBounds == Vector2.left)
-        {
-            _movement.y *= 0;
-        }
-        if ( (_movement *-1) == LookDirection && _moveableItem.CannotMove())
-        {
-            animationPushAndPull.Play(stateManager);
-            return;
-        }
-
-        if(_movement  == LookDirection)
-        {
-            animationPushAndPull.Play(stateManager);
-            return;
-        }
-        
-        // stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
-        stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
-        animationPushAndPull.Play(stateManager);
-    }
-
-    public override void Action(PlayerStateMachineManager stateManager)
-    {
-        _moveableItem = null;
-        animationPushAndPull.LeavePushAnimation();
-        stateManager.item.Release(stateManager);
+        _pushAnimation.EnterPushAnimation(stateManager);
+        stateManager.item.Interact(stateManager);   // the single push, on the press
+        _pushAnimation.Play(stateManager);
         stateManager.SwitchState(stateManager.defaultState);
-        
+
     }
 }
-
 ========================================
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/Player/PlayerBaseState.cs
 ========================================
@@ -12682,6 +12672,7 @@ public abstract class InteractableBase : MonoBehaviour
 ========================================
 FILE: ./Assets/Scripts/Interactable/Moveable.cs
 ========================================
+using DG.Tweening;
 using UnityEngine;
 using Player.ItemOverlap;
 
@@ -12690,42 +12681,81 @@ public class Moveable : InteractableBase
     public override InteractionKind Kind => InteractionKind.Move;
 
     [SerializeField] private Utilities.KeyTypes key;
-    private OverlapMoveCheck moverCheck;
-    public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
-    private OverlapTargetCheck _targetCheck;
+    [SerializeField] private float pushDistance = 1f;   // one grid unit
+    [SerializeField] private float moveTime = .05f;     // units per second
 
-   //have drag with overlapping. change layer if dragging to ingor that layer and player
+    private OverlapTargetCheck _targetCheck;
+    private Collider2D _col;
+    private LayerMask _obstructionMask;
+    private Tweener _pushTween;
+    private bool _isMoving;
+    private Vector3 _origin;
+    private Vector3 _destination;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _col = GetComponent<Collider2D>();
         UpdateLayerName();
-        moverCheck = GetComponentInChildren<OverlapMoveCheck>();
         _targetCheck = GetComponentInChildren<OverlapTargetCheck>();
 
-
+        _obstructionMask = 0;
+        _obstructionMask |= 1 << Layers.SlidableObstruction;   // walls/boundaries (same place Slidable expects them)
+        _obstructionMask |= 1 << Layers.Interactable;          // other blocks, doors
+        _obstructionMask |= 1 << Layers.Locked;
+        // _obstructionMask |= 1 << Layers.Enemy;              // add your actual enemy layer here
     }
-
 
     public override bool Interact(IInteractionContext context)
     {
-        return false;
-        //todo rework moving like pokemon using strength later
-        moverCheck.SetDirectionOfOverlap(context.LookDirection);
-        Utilities.PutObjectOnLayer(Utilities.InteractingLayer, this.gameObject);
-        this.transform.SetParent(context.Transform);
-        rb.isKinematic = false;
+        if (_isMoving) return false;
+
+        Vector3 destination = transform.position + (Vector3)(context.LookDirection * pushDistance);
+        if (IsBlocked(destination)) return false;     // target cell already occupied
+
+        Push(destination);
         return true;
     }
-    
-    public override void Release(IInteractionContext context)
+
+    private void Push(Vector3 destination)
     {
-        rb.isKinematic = true;
-        rb.velocity = Vector2.zero;
-        this.transform.SetParent(null);
-        Utilities.PutObjectOnLayer(Utilities.InteractableLayer, this.gameObject);
+        _isMoving = true;
+        _origin = transform.position;
+        _destination = destination;
+
+        _pushTween = transform.DOMove(destination, moveTime).SetEase(Ease.OutSine)
+            .SetLink(gameObject)
+            .OnUpdate(AbortIfPathBlocked)
+            .OnComplete(OnPushComplete);
+    }
+
+    private void AbortIfPathBlocked()
+    {
+        if (!_isMoving) return;
+        if (!IsBlocked(_destination)) return;         // still clear → keep going
+
+        _pushTween.Kill();
+        transform.position = _origin;                 // snap back to the starting cell
+        _isMoving = false;
+    }
+
+    private bool IsBlocked(Vector3 cell)
+    {
+        Vector2 size = _col.bounds.size * 0.8f;       // inset so edge-touching doesn't count
+        Collider2D[] hits = Physics2D.OverlapBoxAll(cell, size, 0f, _obstructionMask);
+        foreach (Collider2D hit in hits)
+            if (hit != _col) return true;             // anything but ourselves blocks it
+        return false;
+    }
+
+    private void OnPushComplete()
+    {
+        _isMoving = false;
         CleanUp();
     }
-    
+
+    public override void Release(IInteractionContext context) { }
+
     async void CleanUp()
     {
         try
@@ -12734,7 +12764,6 @@ public class Moveable : InteractableBase
             if (isPlaced)
             {
                 _targetCheck.CleanUp();
-                moverCheck.CleanUp();
                 Destroy(this);
             }
         }
@@ -12743,11 +12772,7 @@ public class Moveable : InteractableBase
             Debug.LogError($"Moveable.CleanUp failed: {ex}");
         }
     }
-
-
-
 }
-
 ========================================
 FILE: ./Assets/Scripts/Interactable/Pickupable.cs
 ========================================
@@ -13103,12 +13128,20 @@ public class Slidable : InteractableBase
 ========================================
 FILE: ./Assets/Scripts/Interactable/Pullable.cs
 ========================================
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Pullable : InteractableBase
 {
+    Vector3 origin;
+    [SerializeField] private Transform handle;
+
+    //pull direction.
+    //origin. 
+    //distance
+    //time
     public override InteractionKind Kind => InteractionKind.Pull;
     public override bool Interact(IInteractionContext context)
     {
@@ -13513,62 +13546,15 @@ using UnityEngine;
 
 public class GiveItemEffect : MonoBehaviour, IOpenEffect
 {
-    [SerializeField] private Item item;          // what this chest holds
+    [SerializeField] private Item itemPrefab;   // a prefab — the chest spawns one when opened
+
     public void OnOpen(IInteractionContext context)
     {
-        context.Items.PickUpItem(item);              
+        if (itemPrefab == null) return;
+        Item item = Instantiate(itemPrefab);     // fresh scene instance, not the asset
+        context.Items.PickUpItem(item);          // ItemManager parents it to the player / drops the displaced one
     }
 }
-========================================
-FILE: ./Assets/Scripts/Interactable/ChestPickable.cs
-========================================
-using Items;
-using UnityEngine;
-
-[RequireComponent(typeof(Animator))]
-public class ChestPickable : Pickupable
-{
-    [SerializeField] private Pickupable _droppedItemHolderPrefab;
-
-    private ChestOpenAnimation _chestOpenAnimation;
-    public override Sprite Sprite => item?.Sprite;
-    public override IItem item => heldItem;
-    private IItem heldItem => GetComponentInChildren<IItem>();
-
-    protected override void Awake()
-    {
-        base.Awake();
-        Animator anim = GetComponent<Animator>();
-        _chestOpenAnimation = new ChestOpenAnimation(anim);
-    }
-
-    protected override void ApplyItemSprite() { }
-
-    public override bool Interact(IInteractionContext context)
-    {
-        if (item == null) return false;
-        _chestOpenAnimation.Play();
-        return base.Interact(context);
-    }
-
-    public override void Swap(IItem displaced)
-    {
-        if (_droppedItemHolderPrefab == null || displaced is not Item itemToDrop) return;
-        //this is wrong and should not be the chests responbisility
-        var dropHolder = Instantiate(_droppedItemHolderPrefab, transform.position, Quaternion.identity);
-        dropHolder.InitAsDropHolder(itemToDrop);
-        dropHolder.rb.AddForce(Random.insideUnitCircle.normalized * _dropForce, ForceMode2D.Impulse);
-        PickedUp();
-    }
-
-    public override void PickedUp()
-    {
-        item = null;
-        Destroy(this);
-    }
-    
-}
-
 ========================================
 FILE: ./Assets/Scripts/Interactable/BombThrowable.cs
 ========================================
@@ -14410,6 +14396,10 @@ namespace Items.Scriptable_object_scripts_for_items
 {
     public class SwordItem : Item
     {
+        //hold the button and tsushima minigame pops up
+        //otherwise its a swipe
+        //if another with a sword comes in you can block 
+        
         public override void Use(IInteractionContext context)
         {
             ItemFinishedCallback = context.EndInteraction;

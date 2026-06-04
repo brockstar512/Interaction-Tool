@@ -15,6 +15,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine, IInteract
     public readonly UseItemState useItemState = new UseItemState();
     public readonly EquipItemState equipItemState = new EquipItemState();
     public readonly OpenItemState OpenItemState = new OpenItemState();
+    public readonly PullItemState pullItemState = new PullItemState();
+
     public readonly DeathState deathState = new DeathState();
 
     public PlayerBaseState getState => currentState; 

@@ -62,6 +62,9 @@ public class DefaultState : PlayerBaseState
             case InteractionKind.Open:
                 stateManager.SwitchState(stateManager.OpenItemState);
                 break;
+            case InteractionKind.Pull:
+                stateManager.SwitchState(stateManager.pullItemState);
+                break;
             default:
                 Debug.Log("is default");
                 break;
