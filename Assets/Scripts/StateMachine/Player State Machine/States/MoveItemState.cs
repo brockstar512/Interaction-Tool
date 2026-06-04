@@ -1,87 +1,50 @@
 using UnityEngine;
-using Player.ItemOverlap;
 
 public class MoveItemState : PlayerBaseState
 {
-    //should I change to PushItemState to make it like pokemon using strength 
-    //then I can make pull item state and it can be like timed pulls to get to a draw bridge... that could be interesting when
-    //you ring your bell then have a certain amount of time to get through a gate while the enemies are chasing you
-    protected override float Speed { get { return 2; } }
-    private Vector2 LimitedMovementBounds = Vector2.zero;
-    private AnimationPushAndPull animationPushAndPull;
-    private Moveable _moveableItem;
-    //this should have the moveable space check
+    const float PushHoldSeconds = 0.2f;          // keep the push pose on screen; tune to your clip
+    private readonly AnimationPushAndPull _pushAnimation;
+
     public MoveItemState()
     {
-        animationPushAndPull = new AnimationPushAndPull();
+        _pushAnimation = new AnimationPushAndPull();
     }
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        LimitedMovementBounds = LookDirection;
-        animationPushAndPull.EnterPushAnimation(stateManager);
-        if (stateManager.item is Moveable moveable)
-        {
-            _moveableItem = moveable;
-        }
-        stateManager.item.Interact(stateManager);
+        _pushAnimation.EnterPushAnimation(stateManager);   // locks the pose to the facing axis
+        Action(stateManager);
     }
 
     public override void UpdateState(PlayerStateMachineManager stateManager)
     {
-
+        base.UpdateLookDirection(stateManager.movement);
     }
 
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
-    {
-
-    }
+    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
 
     public override void ExitState(PlayerStateMachineManager stateManager)
     {
-
+        _pushAnimation.LeavePushAnimation();
     }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
-        Move(stateManager);
-    }
+    public override void FixedUpdateState(PlayerStateMachineManager stateManager) { }
 
-    protected override void Move(PlayerStateMachineManager stateManager)
+    public override async void Action(PlayerStateMachineManager stateManager)
     {
-        Vector2 _movement = stateManager.movement;
-        
-        if (LimitedMovementBounds == Vector2.down || LimitedMovementBounds == Vector2.up)
+        try
         {
-            _movement.x *= 0;
+            stateManager.item.Interact(stateManager);   // pushes one unit if the cell ahead is clear
+            _pushAnimation.Play(stateManager);           // push pose; a non-moving block reads as straining
+            await Awaitable.WaitForSecondsAsync(PushHoldSeconds);
         }
-        else if (LimitedMovementBounds == Vector2.right || LimitedMovementBounds == Vector2.left)
+        catch (System.Exception ex)
         {
-            _movement.y *= 0;
+            Debug.LogError($"MoveItemState.Action failed: {ex}");
         }
-        if ( (_movement *-1) == LookDirection && _moveableItem.CannotMove())
+        finally
         {
-            animationPushAndPull.Play(stateManager);
-            return;
+            stateManager.SwitchState(stateManager.defaultState);
         }
-
-        if(_movement  == LookDirection)
-        {
-            animationPushAndPull.Play(stateManager);
-            return;
-        }
-        
-        // stateManager.item.rb.MovePosition(stateManager.item.rb.position + _movement * Speed * Time.deltaTime);
-        stateManager.rb.MovePosition(stateManager.rb.position + _movement * Speed * Time.deltaTime);
-        animationPushAndPull.Play(stateManager);
-    }
-
-    public override void Action(PlayerStateMachineManager stateManager)
-    {
-        _moveableItem = null;
-        animationPushAndPull.LeavePushAnimation();
-        stateManager.item.Release(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
-        
     }
 }

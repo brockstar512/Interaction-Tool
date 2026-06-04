@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using Player.ItemOverlap;
 
@@ -6,11 +7,17 @@ public class Moveable : InteractableBase
     public override InteractionKind Kind => InteractionKind.Move;
 
     [SerializeField] private Utilities.KeyTypes key;
-    private OverlapMoveCheck moverCheck;
-    public bool CannotMove()=> moverCheck.DoesOverlap(this.transform.position);
-    private OverlapTargetCheck _targetCheck;
+    [SerializeField] private float pushDistance = 1f;   // one grid unit
+    [SerializeField] private float speed = 8f;          // units per second
 
-   //have drag with overlapping. change layer if dragging to ingor that layer and player
+    private OverlapMoveCheck moverCheck;
+    private OverlapTargetCheck _targetCheck;
+    private Tweener _pushTween;
+    private bool _isMoving;
+    private Vector3 _origin;
+
+    public bool CannotMove() => moverCheck.DoesOverlap(transform.position);
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,28 +26,47 @@ public class Moveable : InteractableBase
         _targetCheck = GetComponentInChildren<OverlapTargetCheck>();
     }
 
-
     public override bool Interact(IInteractionContext context)
     {
-        return false;
-        //todo rework moving like pokemon using strength later
-        //tweens to one unit over at a speed.
+        if (_isMoving) return false;                       // mid-push, ignore
+
         moverCheck.SetDirectionOfOverlap(context.LookDirection);
-        Utilities.PutObjectOnLayer(Utilities.InteractingLayer, this.gameObject);
-        this.transform.SetParent(context.Transform);
-        rb.isKinematic = false;
+        if (CannotMove()) return false;                    // obstruction ahead → don't move
+
+        Push(context.LookDirection);
         return true;
     }
-    
-    public override void Release(IInteractionContext context)
+
+    private void Push(Vector2 direction)
     {
-        rb.isKinematic = true;
-        rb.velocity = Vector2.zero;
-        this.transform.SetParent(null);
-        Utilities.PutObjectOnLayer(Utilities.InteractableLayer, this.gameObject);
+        _isMoving = true;
+        _origin = transform.position;
+        Vector3 destination = _origin + (Vector3)(direction * pushDistance);
+
+        _pushTween = transform.DOMove(destination, pushDistance / speed)
+            .SetLink(gameObject)              // tween dies with the object
+            .OnUpdate(AbortIfPathBlocked)     // bail if something steps into the path
+            .OnComplete(OnPushComplete);
+    }
+
+    private void AbortIfPathBlocked()
+    {
+        if (!_isMoving) return;
+        if (!CannotMove()) return;            // path still clear → keep going
+
+        _pushTween.Kill();
+        transform.position = _origin;         // snap back to the starting cell
+        _isMoving = false;                    // free to try again
+    }
+
+    private void OnPushComplete()
+    {
+        _isMoving = false;
         CleanUp();
     }
-    
+
+    public override void Release(IInteractionContext context) { }   // one-shot push, nothing to release
+
     async void CleanUp()
     {
         try
@@ -58,7 +84,4 @@ public class Moveable : InteractableBase
             Debug.LogError($"Moveable.CleanUp failed: {ex}");
         }
     }
-
-
-
 }
