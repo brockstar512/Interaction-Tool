@@ -12,14 +12,10 @@ public class MoveItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        _pushAnimation.EnterPushAnimation(stateManager);   // locks the pose to the facing axis
         Action(stateManager);
     }
 
-    public override void UpdateState(PlayerStateMachineManager stateManager)
-    {
-        base.UpdateLookDirection(stateManager.movement);
-    }
+    public override void UpdateState(PlayerStateMachineManager stateManager) { }
 
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
 
@@ -32,19 +28,10 @@ public class MoveItemState : PlayerBaseState
 
     public override async void Action(PlayerStateMachineManager stateManager)
     {
-        try
-        {
-            stateManager.item.Interact(stateManager);   // pushes one unit if the cell ahead is clear
-            _pushAnimation.Play(stateManager);           // push pose; a non-moving block reads as straining
-            await Awaitable.WaitForSecondsAsync(PushHoldSeconds);
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"MoveItemState.Action failed: {ex}");
-        }
-        finally
-        {
-            stateManager.SwitchState(stateManager.defaultState);
-        }
+        _pushAnimation.EnterPushAnimation(stateManager);
+        stateManager.item.Interact(stateManager);   // the single push, on the press
+        _pushAnimation.Play(stateManager);
+        stateManager.SwitchState(stateManager.defaultState);
+
     }
 }

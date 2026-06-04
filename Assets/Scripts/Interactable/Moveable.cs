@@ -8,55 +8,70 @@ public class Moveable : InteractableBase
 
     [SerializeField] private Utilities.KeyTypes key;
     [SerializeField] private float pushDistance = 1f;   // one grid unit
-    [SerializeField] private float speed = 8f;          // units per second
+    [SerializeField] private float moveTime = .05f;     // units per second
 
-    private OverlapMoveCheck moverCheck;
     private OverlapTargetCheck _targetCheck;
+    private Collider2D _col;
+    private LayerMask _obstructionMask;
     private Tweener _pushTween;
     private bool _isMoving;
     private Vector3 _origin;
-
-    public bool CannotMove() => moverCheck.DoesOverlap(transform.position);
+    private Vector3 _destination;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _col = GetComponent<Collider2D>();
         UpdateLayerName();
-        moverCheck = GetComponentInChildren<OverlapMoveCheck>();
         _targetCheck = GetComponentInChildren<OverlapTargetCheck>();
+
+        _obstructionMask = 0;
+        _obstructionMask |= 1 << Layers.SlidableObstruction;   // walls/boundaries (same place Slidable expects them)
+        _obstructionMask |= 1 << Layers.Interactable;          // other blocks, doors
+        _obstructionMask |= 1 << Layers.Locked;
+        // _obstructionMask |= 1 << Layers.Enemy;              // add your actual enemy layer here
     }
 
     public override bool Interact(IInteractionContext context)
     {
-        if (_isMoving) return false;                       // mid-push, ignore
+        if (_isMoving) return false;
 
-        moverCheck.SetDirectionOfOverlap(context.LookDirection);
-        if (CannotMove()) return false;                    // obstruction ahead → don't move
+        Vector3 destination = transform.position + (Vector3)(context.LookDirection * pushDistance);
+        if (IsBlocked(destination)) return false;     // target cell already occupied
 
-        Push(context.LookDirection);
+        Push(destination);
         return true;
     }
 
-    private void Push(Vector2 direction)
+    private void Push(Vector3 destination)
     {
         _isMoving = true;
         _origin = transform.position;
-        Vector3 destination = _origin + (Vector3)(direction * pushDistance);
+        _destination = destination;
 
-        _pushTween = transform.DOMove(destination, pushDistance / speed)
-            .SetLink(gameObject)              // tween dies with the object
-            .OnUpdate(AbortIfPathBlocked)     // bail if something steps into the path
+        _pushTween = transform.DOMove(destination, moveTime).SetEase(Ease.OutSine)
+            .SetLink(gameObject)
+            .OnUpdate(AbortIfPathBlocked)
             .OnComplete(OnPushComplete);
     }
 
     private void AbortIfPathBlocked()
     {
         if (!_isMoving) return;
-        if (!CannotMove()) return;            // path still clear → keep going
+        if (!IsBlocked(_destination)) return;         // still clear → keep going
 
         _pushTween.Kill();
-        transform.position = _origin;         // snap back to the starting cell
-        _isMoving = false;                    // free to try again
+        transform.position = _origin;                 // snap back to the starting cell
+        _isMoving = false;
+    }
+
+    private bool IsBlocked(Vector3 cell)
+    {
+        Vector2 size = _col.bounds.size * 0.8f;       // inset so edge-touching doesn't count
+        Collider2D[] hits = Physics2D.OverlapBoxAll(cell, size, 0f, _obstructionMask);
+        foreach (Collider2D hit in hits)
+            if (hit != _col) return true;             // anything but ourselves blocks it
+        return false;
     }
 
     private void OnPushComplete()
@@ -65,7 +80,7 @@ public class Moveable : InteractableBase
         CleanUp();
     }
 
-    public override void Release(IInteractionContext context) { }   // one-shot push, nothing to release
+    public override void Release(IInteractionContext context) { }
 
     async void CleanUp()
     {
@@ -75,7 +90,6 @@ public class Moveable : InteractableBase
             if (isPlaced)
             {
                 _targetCheck.CleanUp();
-                moverCheck.CleanUp();
                 Destroy(this);
             }
         }
