@@ -1,3 +1,5 @@
+using Items;
+using Items.Scriptable_object_scripts_for_items;
 using UnityEngine;
 
 public abstract class Openable : InteractableBase
@@ -16,15 +18,25 @@ public abstract class Openable : InteractableBase
         return true;
     }
 
+    public override void Release(IInteractionContext context) { }
+
     private void Open(IInteractionContext context)
     {
         _isOpen = true;
         OpenAnimation();
-        _effects ??= GetComponents<IOpenEffect>();   // every effect on this object
+        _effects ??= GetComponents<IOpenEffect>();
         foreach (var effect in _effects)
             effect.OnOpen(context);
     }
 
+    private bool TryUseKey(IInteractionContext context)
+    {
+        if (!CorrectKey(context.Items.GetItem())) return false;
+        context.Items.DisposeOfCurrentItem();   // right key → consume it
+        return true;
+    }
+
+    private bool CorrectKey(IItem item) => item is Key keyItem && keyItem.keyType == key;
+
     protected virtual void OpenAnimation() { }
-    // CorrectKey / TryUseKey as you already have them
 }

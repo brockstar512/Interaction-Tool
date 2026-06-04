@@ -9,10 +9,12 @@ public class ItemManager : MonoBehaviour, IItemManager
     private List<IItem> inventory;
     private const int inventoryLimit = 2;
     public event Action<Sprite> ItemSwitch;
+    private ItemDropper _itemDropper;
 
     public void Awake()
     {
        _currentIndex = 0;
+       _itemDropper = GetComponent<ItemDropper>();
        inventory = new List<IItem>();
     }
 
@@ -46,7 +48,7 @@ public class ItemManager : MonoBehaviour, IItemManager
         _currentIndex = inventory.IndexOf(pickup);
         holder.PickedUp();
     }
-
+    
     public void SwitchItem()
     {
         if (inventory.Count <= 0)
@@ -76,6 +78,23 @@ public class ItemManager : MonoBehaviour, IItemManager
             _currentIndex--;
         Sprite newSprite = inventory.Count == 0 ? null : inventory[_currentIndex].Sprite;
         ItemSwitch?.Invoke(newSprite);
+    }
+    
+    public void PickUpItem(IItem item)
+    {
+        item.TakeChild(transform);
+        ItemSwitch?.Invoke(item.Sprite);
+
+        if (inventory.Count >= inventoryLimit)
+        {
+            Item displaced = inventory[_currentIndex] as Item;
+            inventory[_currentIndex] = item;
+            _itemDropper?.Drop(displaced, transform.position);
+            return;
+        }
+
+        inventory.Add(item);
+        _currentIndex = inventory.IndexOf(item);
     }
     
 }

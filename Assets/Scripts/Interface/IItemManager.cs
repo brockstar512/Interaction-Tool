@@ -8,7 +8,8 @@ public interface IItemManager
     public IItem GetItem();
 
     public void PickUpItem(IItemPickUp holder);
-
+    public void PickUpItem(IItem item);
+    
     public void SwitchItem();
 
     public void DisposeOfCurrentItem();

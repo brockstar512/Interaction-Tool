@@ -2,23 +2,19 @@ using UnityEngine;
 
 namespace Doors
 {
-    public class DoorLocked : Locked
+    public class OpenableDoor : Openable
     {
         private SingleDoorAnimation _singleDoorAnimation;
 
         private void Awake()
         {
-            UpdateLayerName();
-            Animator anim = GetComponent<Animator>();
-            _singleDoorAnimation = new SingleDoorAnimation(anim);
+            UpdateLayerName();   // now puts it on the Interactable layer
+            _singleDoorAnimation = new SingleDoorAnimation(GetComponent<Animator>());
         }
 
         protected override void OpenAnimation()
         {
-            base.OpenAnimation();
             _singleDoorAnimation.Play();
         }
-
-
     }
 }

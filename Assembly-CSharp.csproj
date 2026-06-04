@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
-    <Compile Include="Assets/Scripts/Interactable/Openable/OpenableDoor.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pullable.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
@@ -60,8 +59,8 @@
     <Compile Include="Assets/Scripts/Animation/DoorAnimation/DoubleDoorAnimation.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/SwordItem.cs" />
-    <Compile Include="Assets/Scripts/OverlapScripts/OverlapDoorCheck.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
+    <Compile Include="Assets/Scripts/Doors/OpenableDoubleDoor.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetAllOverlap.cs" />
@@ -85,16 +84,16 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
     <Compile Include="Assets/Scripts/Player/InputManager/InputManager.cs" />
+    <Compile Include="Assets/Scripts/Player/ItemManager/ItemDropper.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/OpenableChest.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapAreaChecker.cs" />
     <Compile Include="Assets/Scripts/Interactable/ChestPickable.cs" />
-    <Compile Include="Assets/Scripts/Interface/ILocked.cs" />
+    <Compile Include="Assets/Scripts/Doors/OpenableDoor.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
     <Compile Include="Assets/Scripts/Interactable/BombThrowable.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
-    <Compile Include="Assets/Scripts/Doors/MasterLockDoubleLocked.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/Openable.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
@@ -130,7 +129,6 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationKick.cs" />
     <Compile Include="Assets/Scripts/Flashing/ObjectFlash.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
-    <Compile Include="Assets/Scripts/Doors/Locked.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
     <Compile Include="Assets/Scripts/SpritePivotValidator.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
@@ -141,7 +139,6 @@
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookConnector.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/GrapplingHookItem.cs" />
     <Compile Include="Assets/Scripts/Flashing/CharacterFlash.cs" />
-    <Compile Include="Assets/Scripts/Doors/DoorLocked.cs" />
     <Compile Include="Assets/Scripts/Animation/ChestAnimation/ChestOpenAnimation.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
