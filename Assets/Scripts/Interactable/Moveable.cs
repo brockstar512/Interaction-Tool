@@ -7,13 +7,15 @@ public class Moveable : InteractableBase
     public override InteractionKind Kind => InteractionKind.Move;
 
     [SerializeField] private Utilities.KeyTypes key;
-    [SerializeField] private float pushDistance = 1f;   // one grid unit
-    [SerializeField] private float moveTime = .05f;
+    private const float pushDistance = 1f;                   // one grid unit
+    private const float pushSpeed = .75f;          // units/sec — lower = slower
+    private const float wiggleStrength = 0.05f;  // keep it small
+    private const float wiggleTime = 0.1f;
 
     private OverlapTargetCheck _targetCheck;
     private Collider2D _col;
     private LayerMask _obstructionMask;
-    private Tweener _pushTween;
+    private Tween _pushTween;
     private bool _isMoving;
     private Vector3 _origin;
     private Vector3 _destination;
@@ -49,9 +51,12 @@ public class Moveable : InteractableBase
         _origin = transform.position;
         _destination = destination;
 
-        _pushTween = transform.DOMove(destination, moveTime).SetEase(Ease.OutSine)
+        float duration = pushDistance / pushSpeed;
+
+        _pushTween = DOTween.Sequence()
+            .Append(transform.DOShakePosition(wiggleTime, wiggleStrength, 8, 90, false, true))      // wind-up wiggle
+            .Append(transform.DOMove(destination, duration).SetEase(Ease.OutSine).OnUpdate(AbortIfPathBlocked))
             .SetLink(gameObject)
-            .OnUpdate(AbortIfPathBlocked)
             .OnComplete(OnPushComplete);
     }
 
@@ -74,13 +79,20 @@ public class Moveable : InteractableBase
         return false;
     }
 
+    public override void Release(IInteractionContext context) { }
+
     private void OnPushComplete()
     {
-        _isMoving = false;
         CleanUp();
+        Wiggle();
     }
 
-    public override void Release(IInteractionContext context) { }
+    private void Wiggle()
+    {
+        transform.DOShakePosition(wiggleTime, wiggleStrength, vibrato: 8, randomness: 90, snapping: false, fadeOut: true)
+            .SetLink(gameObject)
+            .OnComplete(() => _isMoving = false);   // settled — free to push again
+    }
 
     async void CleanUp()
     {
