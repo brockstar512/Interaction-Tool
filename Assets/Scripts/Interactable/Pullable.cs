@@ -7,21 +7,18 @@ public class Pullable : InteractableBase
     public override InteractionKind Kind => InteractionKind.Pull;
 
     [SerializeField] private Transform handle;
-    [SerializeField] private Vector2 pullDirection = Vector2.down;
     [SerializeField] private float maxDistance = 1.5f;
     [SerializeField] private float retractTime = 0.25f;
     [SerializeField] private bool locksAtFullPull = true;
-    [SerializeField] private MonoBehaviour dependent;        // implements IPullDependent
+    [SerializeField] private MonoBehaviour dependent;     // implements IPullDependent
     [SerializeField] private LineRenderer line;
     [SerializeField] private OverlapMoveCheck handleCheck;
 
     private Vector3 _origin;
-    private Vector2 _grabPlayerPos;
+    private Vector2 _pullDir;
     private IPullDependent _dependent;
     private float _distance;
     private bool _locked;
-
-    private Vector2 PullDir => pullDirection.normalized;
 
     private void Awake()
     {
@@ -32,38 +29,34 @@ public class Pullable : InteractableBase
         DrawLine();
     }
 
-    public override bool Interact(IInteractionContext context) => !_locked;
-    public override void Release(IInteractionContext context) { }
-
-    public void BeginPull(Vector2 playerPos) => _grabPlayerPos = playerPos;
-
-    // returns the player's allowed position — leashed to how far the lever can actually travel
-    public Vector2 Drag(Vector2 playerPos)
+    public override bool Interact(IInteractionContext context)
     {
-        if (_locked) return playerPos;
-
-        Vector2 dir = PullDir;
-        float raw = Vector2.Dot(playerPos - _grabPlayerPos, dir);   // how far they've dragged along the axis
-        float desired = Mathf.Clamp(raw, 0f, maxDistance);
-
-        // don't drag the handle into an obstruction (only matters when extending)
-        if (desired > _distance && IsObstructed(_origin + (Vector3)(dir * desired)))
-            desired = _distance;
-
-        SetDistance(desired);
-
-        // leash: can't move past what the lever was allowed to do
-        float excess = raw - desired;
-        if (excess > 0f) playerPos -= dir * excess;
-        return playerPos;
+        if (_locked) return false;
+        _pullDir = -context.LookDirection;   // the handle follows the player as they back away
+        return true;
     }
 
-    public void EndPull()
+    // advance the handle up to 'requested'; returns how far it actually moved so the player can match it
+    public float Pull(float requested)
+    {
+        if (_locked) return 0f;
+
+        float applied = Mathf.Min(requested, maxDistance - _distance);
+        if (applied <= 0f) return 0f;                                    // at full → player can't go further
+
+        Vector3 nextHandle = _origin + (Vector3)(_pullDir * (_distance + applied));
+        if (IsObstructed(nextHandle)) return 0f;                         // blocked → frozen, player stops too
+
+        SetDistance(_distance + applied);
+        return applied;
+    }
+
+    public override void Release(IInteractionContext context)
     {
         if (_locked) return;
 
         bool atFull = _distance >= maxDistance - 0.001f;
-        if (locksAtFullPull && atFull) { _locked = true; return; }   // only locks if it was pulled all the way
+        if (locksAtFullPull && atFull) { _locked = true; return; }       // only locks if pulled all the way
         Retract();
     }
 
@@ -76,13 +69,10 @@ public class Pullable : InteractableBase
 
     private void SetDistance(float distance)
     {
-        float clamped = Mathf.Clamp(distance, 0f, maxDistance);
-        if (Mathf.Approximately(clamped, _distance)) return;
-
-        _distance = clamped;
-        handle.position = _origin + (Vector3)(PullDir * _distance);
+        _distance = Mathf.Clamp(distance, 0f, maxDistance);
+        handle.position = _origin + (Vector3)(_pullDir * _distance);
         DrawLine();
-        _dependent?.OnPullChanged(_distance / maxDistance);   // item moves by the amount pulled
+        _dependent?.OnPullChanged(_distance / maxDistance);
     }
 
     private void Retract()
