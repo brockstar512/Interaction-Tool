@@ -9328,22 +9328,6 @@ namespace Player.ItemOverlap
 }
 
 ========================================
-FILE: ./Assets/Scripts/OverlapScripts/OverlapDoorCheck.cs
-========================================
-using UnityEngine;
-using Player.ItemOverlap;
-
-namespace Doors
-{
-    public class OverlapDoorCheck : OverlapMostObjectChecker<ILocked>
-    {
-        protected override void AddDetectionLayers()
-        {
-            detectionLayer |= 0x1 << Layers.Locked;
-        }
-    }
-}
-========================================
 FILE: ./Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs
 ========================================
 using System;
@@ -10156,16 +10140,6 @@ public interface IHurt
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interface/ILocked.cs
-========================================
-using System.Threading.Tasks;
-
-public interface ILocked
-{
-    public bool CanOpen(Utilities.KeyTypes keyType);
-}
-
-========================================
 FILE: ./Assets/Scripts/Interface/IItemManager.cs
 ========================================
 
@@ -10178,7 +10152,8 @@ public interface IItemManager
     public IItem GetItem();
 
     public void PickUpItem(IItemPickUp holder);
-
+    public void PickUpItem(IItem item);
+    
     public void SwitchItem();
 
     public void DisposeOfCurrentItem();
@@ -11079,6 +11054,28 @@ public interface IPlayerState
 
     public void SwitchState(PlayerBaseState state);
 
+}
+
+========================================
+FILE: ./Assets/Scripts/StateMachine/Player State Machine/Player/PlayerWrapper.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerWrapper : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }
 
 ========================================
@@ -12591,51 +12588,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
 }
 
 ========================================
-FILE: ./Assets/Scripts/Doors/Locked.cs
-========================================
-using System.Threading.Tasks;
-using UnityEngine;
-
-namespace Doors
-{
-    public abstract class Locked : MonoBehaviour, ILocked
-    {
-        [SerializeField] private Utilities.KeyTypes keyType;
-        protected bool IsOpen = false;
-
-        protected void UpdateLayerName()
-        {
-            this.gameObject.layer = Layers.Locked;
-        }
-
-        protected virtual void OpenAnimation()
-        {
-            IsOpen = true;
-        }
-
-        protected bool CorrectKey(Utilities.KeyTypes key)
-        {
-            return keyType == key;
-        }
-
-        public bool CanOpen(Utilities.KeyTypes key)
-        {
-            if (IsOpen) return false;
-
-            if (CorrectKey(key))
-            {
-                OpenAnimation();
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-}
-
-========================================
-FILE: ./Assets/Scripts/Doors/DoorLocked.cs
+FILE: ./Assets/Scripts/Doors/OpenableDoor.cs
 ========================================
 using UnityEngine;
 
@@ -12658,7 +12611,7 @@ namespace Doors
     }
 }
 ========================================
-FILE: ./Assets/Scripts/Doors/MasterLockDoubleLocked.cs
+FILE: ./Assets/Scripts/Doors/OpenableDoubleDoor.cs
 ========================================
 using UnityEngine;
 
@@ -13480,28 +13433,6 @@ public class Throwable : InteractableBase, IInteractWithHookProjectile
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interactable/Openable/OpenableDoor.cs
-========================================
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class OpenableDoor : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
-
-========================================
 FILE: ./Assets/Scripts/Interactable/Openable/OpenableChest.cs
 ========================================
 using System.Collections;
@@ -13585,7 +13516,7 @@ public class GiveItemEffect : MonoBehaviour, IOpenEffect
     [SerializeField] private Item item;          // what this chest holds
     public void OnOpen(IInteractionContext context)
     {
-        context.Items.PickUp(item);              // the one capability tweak below
+        context.Items.PickUpItem(item);              
     }
 }
 ========================================
@@ -13598,7 +13529,6 @@ using UnityEngine;
 public class ChestPickable : Pickupable
 {
     [SerializeField] private Pickupable _droppedItemHolderPrefab;
-    [SerializeField] private float _dropForce = 3f;
 
     private ChestOpenAnimation _chestOpenAnimation;
     public override Sprite Sprite => item?.Sprite;
@@ -14552,50 +14482,26 @@ namespace Items.Scriptable_object_scripts_for_items
 FILE: ./Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs
 ========================================
 using UnityEngine;
-using System;
-
 
 namespace Items
 {
-   public class Key : Item
-   {
-      Action _disposeOfItem = null;
-      public Utilities.KeyTypes keyType;
-      private IGetMostOverlap<ILocked> overlapObjectCheck { get; set; }
+    public class Key : Item
+    {
+        public Utilities.KeyTypes keyType;
 
-      private void Awake()
-      {
-         overlapObjectCheck = GetComponentInChildren<IGetMostOverlap<ILocked>>();
-      }
+        public override void Use(IInteractionContext context)
+        {
+            // A key does nothing on its own — an Openable consumes it on interact.
+            ItemFinishedCallback = context.EndInteraction;
+            PutAway();
+        }
 
-      public override void Use(IInteractionContext context)
-      {
-         ItemFinishedCallback = context.EndInteraction;
-         _disposeOfItem = context.Items.DisposeOfCurrentItem;
-         TryOpen(context.Transform.position, context.LookDirection, context.Items.GetItem());
-      }
-
-      void TryOpen(Vector3 characterPos, Vector3 lookDirection, IItem item)
-      {
-         if (item is Key key)
-         {
-            ILocked door = overlapObjectCheck.GetOverlapObject(characterPos, lookDirection);
-            if (door != null && door.CanOpen(key.keyType))
-            {
-               _disposeOfItem?.Invoke();
-            }
-         }
-         PutAway();
-      }
-
-      public override void PutAway()
-      {
-         _disposeOfItem = null;
-         ItemFinishedCallback?.Invoke(null);
-      }
-   }
+        public override void PutAway()
+        {
+            ItemFinishedCallback?.Invoke(null);
+        }
+    }
 }
-
 ========================================
 FILE: ./Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs
 ========================================
@@ -14843,6 +14749,25 @@ namespace Player.InputManager
 }
 
 ========================================
+FILE: ./Assets/Scripts/Player/ItemManager/ItemDropper.cs
+========================================
+using UnityEngine;
+using Items;
+
+public class ItemDropper : MonoBehaviour
+{
+    [SerializeField] private Pickupable emptyItemHolder;
+    [SerializeField] private float dropForce = 3f;
+
+    public void Drop(Item item, Vector3 position)
+    {
+        if (item == null || emptyItemHolder == null) return;
+        Pickupable holder = Instantiate(emptyItemHolder, position, Quaternion.identity);
+        holder.InitAsDropHolder(item);
+        holder.rb.AddForce(Random.insideUnitCircle.normalized * dropForce, ForceMode2D.Impulse);
+    }
+}
+========================================
 FILE: ./Assets/Scripts/Player/ItemManager/ItemManager.cs
 ========================================
 using System;
@@ -14856,10 +14781,12 @@ public class ItemManager : MonoBehaviour, IItemManager
     private List<IItem> inventory;
     private const int inventoryLimit = 2;
     public event Action<Sprite> ItemSwitch;
+    private ItemDropper _itemDropper;
 
     public void Awake()
     {
        _currentIndex = 0;
+       _itemDropper = GetComponent<ItemDropper>();
        inventory = new List<IItem>();
     }
 
@@ -14893,7 +14820,7 @@ public class ItemManager : MonoBehaviour, IItemManager
         _currentIndex = inventory.IndexOf(pickup);
         holder.PickedUp();
     }
-
+    
     public void SwitchItem()
     {
         if (inventory.Count <= 0)
@@ -14923,6 +14850,23 @@ public class ItemManager : MonoBehaviour, IItemManager
             _currentIndex--;
         Sprite newSprite = inventory.Count == 0 ? null : inventory[_currentIndex].Sprite;
         ItemSwitch?.Invoke(newSprite);
+    }
+    
+    public void PickUpItem(IItem item)
+    {
+        item.TakeChild(transform);
+        ItemSwitch?.Invoke(item.Sprite);
+
+        if (inventory.Count >= inventoryLimit)
+        {
+            Item displaced = inventory[_currentIndex] as Item;
+            inventory[_currentIndex] = item;
+            _itemDropper?.Drop(displaced, transform.position);
+            return;
+        }
+
+        inventory.Add(item);
+        _currentIndex = inventory.IndexOf(item);
     }
     
 }

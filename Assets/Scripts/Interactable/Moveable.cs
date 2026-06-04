@@ -17,8 +17,6 @@ public class Moveable : InteractableBase
         UpdateLayerName();
         moverCheck = GetComponentInChildren<OverlapMoveCheck>();
         _targetCheck = GetComponentInChildren<OverlapTargetCheck>();
-
-
     }
 
 
@@ -26,6 +24,7 @@ public class Moveable : InteractableBase
     {
         return false;
         //todo rework moving like pokemon using strength later
+        //tweens to one unit over at a speed.
         moverCheck.SetDirectionOfOverlap(context.LookDirection);
         Utilities.PutObjectOnLayer(Utilities.InteractingLayer, this.gameObject);
         this.transform.SetParent(context.Transform);

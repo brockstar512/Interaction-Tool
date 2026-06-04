@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2104765361093274261}
   - component: {fileID: 5523630457140577405}
-  - component: {fileID: 1506043033041509475}
+  - component: {fileID: 7869511100349533112}
+  - component: {fileID: 6015035248064718493}
   - component: {fileID: 3725979021003094858}
   - component: {fileID: 1433570500906451421}
   m_Layer: 9
@@ -79,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7894964145814599815, guid: 734b91c3918094401ab67e0a683e7c9e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7860411, b: 0.033018887, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -89,7 +90,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1506043033041509475
+--- !u!114 &7869511100349533112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,11 +99,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 4695495740642770589}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3ad84e9379a24d0c98b79e0df2fef3b, type: 3}
+  m_Script: {fileID: 11500000, guid: 656b968e6e03e481eaabe1710b08e1e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _droppedItemHolderPrefab: {fileID: 7534149793979415145, guid: 13437e88d730d4ecfb1257e40a6bf430, type: 3}
-  _dropForce: 3
+  key: 2
+--- !u!114 &6015035248064718493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4695495740642770589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 156647c1d086f4bc19c882e8876ddbeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1990129117217912118, guid: 6e943b6a853564df9983181096881678, type: 3}
 --- !u!95 &3725979021003094858
 Animator:
   serializedVersion: 7

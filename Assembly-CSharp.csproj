@@ -88,7 +88,6 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/OpenableChest.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapAreaChecker.cs" />
-    <Compile Include="Assets/Scripts/Interactable/ChestPickable.cs" />
     <Compile Include="Assets/Scripts/Doors/OpenableDoor.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
@@ -96,6 +95,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/Openable.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
+    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerWrapper.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookProjectile.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/EquipItemState.cs" />

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Pullable : InteractableBase
 {
+    //pull direction.
+    //origin. 
+    //distance
+    //time
     public override InteractionKind Kind => InteractionKind.Pull;
     public override bool Interact(IInteractionContext context)
     {
