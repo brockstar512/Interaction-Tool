@@ -1,6 +1,6 @@
 using UnityEngine;
 using Interactable;
-
+//tetris japanese game show type minigame where you have to pull or hold an item to fit a mold and let go to get it to fit
 public class PullItemState : PlayerBaseState, IButtonUp
 {
     protected override float Speed => 2f;

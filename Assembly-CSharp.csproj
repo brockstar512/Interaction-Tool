@@ -53,6 +53,7 @@
     <Compile Include="Assets/Scripts/Interactable/Moveable.cs" />
     <Compile Include="Assets/Scripts/Utils/YDepthSort.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
+    <Compile Include="Assets/Scripts/Conditions/ICondition.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookSocketCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Doors/OpenableDoubleDoor.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/KeyItem.cs" />
+    <Compile Include="Assets/Scripts/Conditions/MoveConditionResponse.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookRopeBridge.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetAllOverlap.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
@@ -72,7 +74,9 @@
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
+    <Compile Include="Assets/Scripts/Conditions/ConditionMode.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/CandleSubItems/CandleLight.cs" />
+    <Compile Include="Assets/Scripts/Conditions/OccupancyCondition.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationBell.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
@@ -80,6 +84,7 @@
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
+    <Compile Include="Assets/Scripts/Conditions/IConditionResponse.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -88,6 +93,7 @@
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerStateMachineManager.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/OpenableChest.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapAreaChecker.cs" />
+    <Compile Include="Assets/Scripts/Conditions/ConditionDependent.cs" />
     <Compile Include="Assets/Scripts/Doors/OpenableDoor.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
@@ -107,6 +113,7 @@
     <Compile Include="Assets/Scripts/Utils/Utilities.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/BellItem.cs" />
+    <Compile Include="Assets/Scripts/Conditions/TimedCondition.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IPullDependent.cs" />
     <Compile Include="Assets/Scripts/Interface/InteractionKit.cs" />
@@ -114,6 +121,7 @@
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/PlankItem.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapRopeObstructionCheck.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/BaseState.cs" />
+    <Compile Include="Assets/Scripts/Conditions/BoolCondition.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/StateManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleGrowState.cs" />
     <Compile Include="Assets/Scripts/Interface/IOpenEffect.cs" />
