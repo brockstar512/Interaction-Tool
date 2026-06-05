@@ -4,13 +4,11 @@ using Interactable;
 
 namespace Player.InputManager
 {
-    
     [RequireComponent(typeof(PlayerStateMachineManager))]
     public class InputManager : MonoBehaviour
     {
         PlayerStateMachineManager _stateManager;
         PlayerController _playerInputActions;
-        //Action<IPlayerState.PlayerBaseState> ChangeState;
 
         void Awake()
         {
@@ -23,8 +21,6 @@ namespace Player.InputManager
             _playerInputActions.Player.UseItem.canceled += ButtonUp;
             _playerInputActions.Player.SwitchItem.performed += SwitchItem;
             _playerInputActions.Player.Interact.canceled += ReleaseInteraction;
-
-
         }
 
         private void FixedUpdate()
@@ -37,20 +33,18 @@ namespace Player.InputManager
             _stateManager.Interact();
         }
 
-        //todo make this run only when there is a interacle where you hold down the button such as pulling
         private void ReleaseInteraction(InputAction.CallbackContext context)
         {
             PlayerBaseState current = _stateManager.getState;
-            // if (current is IButtonUp usingItem)
-            // {
-            //     usingItem.ButtonUp();
-            //     return;
-            // }
+            if (current is IButtonUp buttonUp)   // hold-to-interact states (pull) release here
+            {
+                buttonUp.ButtonUp();
+                return;
+            }
             if (current is not MoveItemState)
             {
                 return;
             }
-
             _stateManager.Release();
         }
 
@@ -58,34 +52,25 @@ namespace Player.InputManager
         {
             _stateManager.itemManager.SwitchItem();
         }
-        //When am i releasing it... i should be able to clean this up
 
         private void UseItem(InputAction.CallbackContext context)
         {
             PlayerBaseState current = _stateManager.getState;
             if (current is IButtonUp usingItem)
             {
-                //usingItem.ButtonUp();
-                Debug.Log("Item up 1");
-            
                 return;
             }
-            //Debug.Log("Use item");
             _stateManager.UseItem();
         }
 
         private void ButtonUp(InputAction.CallbackContext context)
         {
-            //Debug.Log("Item up 2");
-
             PlayerBaseState current = _stateManager.getState;
             if (current is IButtonUp usingItem)
             {
-                //Debug.Log("Stop item");
                 usingItem.ButtonUp();
             }
         }
-
 
         private void OnDestroy()
         {
@@ -94,8 +79,6 @@ namespace Player.InputManager
             _playerInputActions.Player.UseItem.canceled -= ButtonUp;
             _playerInputActions.Player.SwitchItem.performed -= SwitchItem;
             _playerInputActions.Player.Interact.canceled -= ReleaseInteraction;
-
         }
-
     }
 }

@@ -1,10 +1,12 @@
 using UnityEngine;
+using Interactable;
 
-public class PullItemState : PlayerBaseState
+public class PullItemState : PlayerBaseState, IButtonUp
 {
-    protected override float Speed => 2f;          // drag speed, like the old Move
+    protected override float Speed => 2f;
     private Vector2 _axis;
     private Pullable _pullable;
+    private PlayerStateMachineManager _stateManager;
     private AnimationPushAndPull _animation;
 
     public PullItemState()
@@ -14,6 +16,7 @@ public class PullItemState : PlayerBaseState
 
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
+        _stateManager = stateManager;
         _pullable = stateManager.item as Pullable;
         if (_pullable == null || !_pullable.Interact(stateManager))
         {
@@ -28,30 +31,24 @@ public class PullItemState : PlayerBaseState
     public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
     public override void ExitState(PlayerStateMachineManager stateManager) { }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
-        Move(stateManager);
-    }
+    public override void FixedUpdateState(PlayerStateMachineManager stateManager) => Move(stateManager);
 
     protected override void Move(PlayerStateMachineManager stateManager)
     {
         if (_pullable == null) return;
 
         Vector2 movement = stateManager.movement;
-
-        // lock to the facing axis
         if (_axis == Vector2.up || _axis == Vector2.down) movement.x = 0;
         else movement.y = 0;
 
-        // pull only: back away from the lever, never toward it (no forward, no idle move)
-        if (movement != -LookDirection)
+        if (movement != -LookDirection)          // pull only — back away, never forward
         {
             _animation.Play(stateManager);
             return;
         }
 
-        float applied = _pullable.Pull(Speed * Time.fixedDeltaTime);   // advance the handle as far as allowed
-        if (applied <= 0f)                                             // maxed or blocked → nobody moves
+        float applied = _pullable.Pull(Speed * Time.fixedDeltaTime);
+        if (applied <= 0f)                       // maxed or blocked → nobody moves
         {
             _animation.Play(stateManager);
             return;
@@ -61,11 +58,15 @@ public class PullItemState : PlayerBaseState
         _animation.Play(stateManager);
     }
 
-    public override void Action(PlayerStateMachineManager stateManager)
+    // pull is entered through DefaultState's dispatch, not via Action, so this stays empty
+    public override void Action(PlayerStateMachineManager stateManager) { }
+
+    // interact button-up routes here through ReleaseInteraction → IButtonUp
+    public void ButtonUp()
     {
         _pullable = null;
         _animation.LeavePushAnimation();
-        stateManager.item.Release(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        _stateManager.item.Release(_stateManager);
+        _stateManager.SwitchState(_stateManager.defaultState);
     }
 }
