@@ -97,8 +97,8 @@
     <Compile Include="Assets/Scripts/Interactable/Openable/Openable.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependant.cs" />
     <Compile Include="Assets/Scripts/AI/EnemyPlaceholder.cs" />
-    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerWrapper.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pullable/Pullable.cs" />
+    <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/PlayerWrapper.cs" />
     <Compile Include="Assets/Scripts/Animation/DoorAnimation/PullableDoorAnimation.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/CandleItem.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/GrapplingHookSubitems/HookProjectile.cs" />
