@@ -109,6 +109,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapTargetCheck.cs" />
     <Compile Include="Assets/Scripts/Utils/Utilities.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Pullable/PullableLatch.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/BellItem.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IPullDependent.cs" />
@@ -143,7 +144,6 @@
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/PullItemState.cs" />
     <Compile Include="Assets/Scripts/Interface/IItemManager.cs" />
-    <Compile Include="Assets/Scripts/Interactable/Pullable/PullableFixed.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/MoveItemState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationState.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatusManager.cs" />
