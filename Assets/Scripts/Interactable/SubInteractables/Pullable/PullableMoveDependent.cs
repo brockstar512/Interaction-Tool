@@ -1,7 +1,7 @@
 using UnityEngine;
 //this should only be attached to one pullable so it does not conflict with others. it should subscrie and pullable not
 //know about it so multiple dependants can subscribe to pullable.
-public class PullableMoveDependant : MonoBehaviour, IPullDependent
+public class PullableMoveDependent : MonoBehaviour, IPullDependent
 {
     private enum Axis { Horizontal, Vertical }
 

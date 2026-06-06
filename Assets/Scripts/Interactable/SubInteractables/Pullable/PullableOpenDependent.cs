@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //retactable... fixed... they shoudl be seperate scripts. with fixed having a dependecny 
-public class PullableOpenDependant : MonoBehaviour, IPullDependent
+public class PullableOpenDependent : MonoBehaviour, IPullDependent
 {
     private PullableDoorAnimation _doubleDoorAnimation;
 

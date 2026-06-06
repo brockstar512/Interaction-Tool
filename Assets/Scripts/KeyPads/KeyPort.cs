@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
 
 namespace KeySystem
 {
 
-
+//should be abstract? then slideable time bomb, slideable symbol, slideable plain, moveable? moveable is not a key port its just 
+//a landing area so this name should prbably cahneg
     public class KeyPort : MonoBehaviour
     {
         [SerializeField] private Utilities.KeyTypes keyPort;

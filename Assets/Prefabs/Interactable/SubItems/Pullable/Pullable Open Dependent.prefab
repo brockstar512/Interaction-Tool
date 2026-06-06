@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4706746246275629058}
   - component: {fileID: 5646896179958624362}
   m_Layer: 0
-  m_Name: Pullable Open Dependant
+  m_Name: Pullable Open Dependent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

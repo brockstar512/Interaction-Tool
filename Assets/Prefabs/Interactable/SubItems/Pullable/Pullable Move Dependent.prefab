@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7585856067837864216}
   - component: {fileID: 6486765433230186120}
   m_Layer: 0
-  m_Name: Pullable Move Dependant
+  m_Name: Pullable Move Dependent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
