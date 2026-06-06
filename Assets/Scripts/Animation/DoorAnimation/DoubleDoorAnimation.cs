@@ -8,6 +8,7 @@ public class DoubleDoorAnimation : AnimationState
     readonly int _doubleDoorOpen = Animator.StringToHash("DoubleDoorsOpening");
     readonly Dictionary<int, float> TimeSheet;
     private Animator animator { get; set; }
+
     public DoubleDoorAnimation(Animator animator)
     {
         this.animator = animator;
@@ -17,8 +18,12 @@ public class DoubleDoorAnimation : AnimationState
             { _doubleDoorOpen, 0.292f },
         };
     }
+
+    // full-speed open, start to finish
     public void Play()
     {
+        animator.speed = 1f;
         animator.Play(_doubleDoorOpen);
     }
+    
 }
