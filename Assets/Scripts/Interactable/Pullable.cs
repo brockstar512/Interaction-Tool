@@ -19,6 +19,9 @@ public class Pullable : InteractableBase
     private IPullDependent _dependent;
     private float _distance;
     private bool _locked;
+    
+    [SerializeField] private InterfaceReference<IPullDependent> target;
+
 
     private void Awake()
     {

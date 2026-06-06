@@ -57,6 +57,7 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookSocketCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/ThrowItemState.cs" />
+    <Compile Include="Assets/Scripts/Interface/InterfaceReferenceDrawer.cs" />
     <Compile Include="Assets/Scripts/Animation/DoorAnimation/DoubleDoorAnimation.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveDamageCheck.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/SwordItem.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Assets/Scripts/Flashing/ObjectFlash.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerController.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHook.cs" />
+    <Compile Include="Assets/Scripts/Interface/InterfaceReference.cs" />
     <Compile Include="Assets/Scripts/SpritePivotValidator.cs" />
     <Compile Include="Assets/Scripts/SnapToGrid/LockToGrid.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/PullItemState.cs" />

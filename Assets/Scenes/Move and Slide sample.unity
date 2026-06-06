@@ -2302,8 +2302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34cf75c3362074d86b8c90aa48660894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1744141136}
-  openStateName: Open
 --- !u!61 &1744141135
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3293,6 +3291,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3350919459674010563, guid: 3bfc93481630b4343b64a7a6623f6c04, type: 3}
       propertyPath: dependent
+      value: 
+      objectReference: {fileID: 858016628}
+    - target: {fileID: 3350919459674010563, guid: 3bfc93481630b4343b64a7a6623f6c04, type: 3}
+      propertyPath: target.target
       value: 
       objectReference: {fileID: 858016628}
     - target: {fileID: 3350919459674010563, guid: 3bfc93481630b4343b64a7a6623f6c04, type: 3}
