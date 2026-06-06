@@ -46,21 +46,7 @@ public class Pullable : InteractableBase
         SetDistance(_distance + applied);
         return applied;
     }
-
-    private bool IsFullyPulled()
-    {
-        bool atFull = _distance >= maxDistance - 0.001f;
-        if (atFull)
-        {
-            // only locks if pulled all the way
-            _locked = true; 
-            return true;
-        }       
-
-        return false;
-    }
     
-
     public override void Release(IInteractionContext context)
     {
         Retract();
