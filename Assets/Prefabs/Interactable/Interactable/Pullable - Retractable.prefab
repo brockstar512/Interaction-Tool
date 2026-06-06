@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 2234908578438964761}
   - component: {fileID: 1878699762491321036}
   m_Layer: 0
-  m_Name: Pullable - fixed
+  m_Name: Pullable - Retractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,14 +326,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 022fc16855a2e4c0f9d578a88d405469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dependent:
+    target: {fileID: 0}
   handle: {fileID: 4254882509357413154}
-  pullDirection: {x: 0, y: -1}
   maxDistance: 1.5
-  pullSpeed: 2
   retractTime: 0.25
-  locksAtFullPull: 1
-  dependentObject: {fileID: 0}
-  line: {fileID: 8892690048693458174}
   handleCheck: {fileID: 6963303435862511369}
 --- !u!120 &8892690048693458174
 LineRenderer:
