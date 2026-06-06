@@ -109,7 +109,6 @@
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapTargetCheck.cs" />
     <Compile Include="Assets/Scripts/Utils/Utilities.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
-    <Compile Include="Assets/Scripts/Interactable/Pullable/PullableLatch.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/BellItem.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
     <Compile Include="Assets/Scripts/Interface/IPullDependent.cs" />
@@ -130,6 +129,7 @@
     <Compile Include="Assets/Scripts/Interactable/Pullable/PullableRetractable.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractionKind.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable/Pickupable.cs" />
+    <Compile Include="Assets/Scripts/Interactable/Pullable/PullableLatched.cs" />
     <Compile Include="Assets/Scripts/Interface/IBellSound.cs" />
     <Compile Include="Assets/Scripts/Interface/IPushDirection.cs" />
     <Compile Include="Assets/Scripts/Interface/IExplosionDamage.cs" />

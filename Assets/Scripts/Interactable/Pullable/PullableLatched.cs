@@ -1,5 +1,5 @@
 
-public class PullableLatch : Pullable
+public class PullableLatched : Pullable
 {
     private bool _locked = false;
     private bool IsFullyPulled() => _distance >= maxDistance - 0.001f;
