@@ -16,11 +16,6 @@ public static class Utilities
     public const string LockedLayer = "Locked";
     public const string ObstructionLayer = "Obstruction";
     public const string DepthLayer = "Depth";
-
-
-
-
-    
     
     public enum KeyTypes
     {
@@ -29,6 +24,7 @@ public static class Utilities
         MasterKey,
         SlidingBlock,
         MovingBlock,
+        SymbolSlidingBlock
     }
     
     public static void PutObjectOnLayer(string objectsNewLayer,GameObject gameObject)

@@ -12,7 +12,7 @@ using Vector3 = UnityEngine.Vector3;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
-    [SerializeField] private Utilities.KeyTypes key;
+    protected virtual Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
     public LayerMask obstructionLayer;
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;

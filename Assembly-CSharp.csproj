@@ -71,6 +71,7 @@
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
+    <Compile Include="Assets/Scripts/Interactable/SubInteractables/Slideable/SlideableOpenDependent.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/CandleSubItems/CandleLight.cs" />
