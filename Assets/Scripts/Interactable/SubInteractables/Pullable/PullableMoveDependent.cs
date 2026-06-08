@@ -1,7 +1,7 @@
 using UnityEngine;
 //this should only be attached to one pullable so it does not conflict with others. it should subscrie and pullable not
 //know about it so multiple dependants can subscribe to pullable.
-public class PullableMoveDependent : MonoBehaviour, IPullDependent
+public class PullableMoveDependent : MonoBehaviour, IDependent<float>
 {
     private enum Axis { Horizontal, Vertical }
 
@@ -12,7 +12,7 @@ public class PullableMoveDependent : MonoBehaviour, IPullDependent
 
     private void Awake() => _origin = transform.position;
 
-    public void OnPullChanged(float amount)
+    public void UpdateDependentValue(float amount)
     {
         Vector3 dir = axis == Axis.Horizontal ? Vector3.right : Vector3.up;
         transform.position = _origin + dir * (distance * amount);

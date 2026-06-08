@@ -7,6 +7,7 @@ namespace KeySystem
 //a landing area so this name should prbably cahneg
     public class KeyPort : MonoBehaviour
     {
+        [SerializeField] protected InterfaceReference<IDependent<float>> dependent;
         [SerializeField] private Utilities.KeyTypes keyPort;
         
         public bool Lock(Utilities.KeyTypes keyType)

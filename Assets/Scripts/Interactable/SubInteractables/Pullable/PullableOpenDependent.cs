@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PullableOpenDependent : MonoBehaviour, IPullDependent
+public class PullableOpenDependent : MonoBehaviour, IDependent<float>
 {
     private PullableDoorAnimation _doubleDoorAnimation;
 
@@ -10,7 +10,7 @@ public class PullableOpenDependent : MonoBehaviour, IPullDependent
         _doubleDoorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
     }
 
-    public void OnPullChanged(float amount) => _doubleDoorAnimation.Step(amount);
+    public void UpdateDependentValue(float amount) => _doubleDoorAnimation.Step(amount);
     
 
 

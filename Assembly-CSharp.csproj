@@ -71,7 +71,6 @@
     <Compile Include="Assets/Scripts/Player/OriginPoint.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapHookCheck.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDReader.cs" />
-    <Compile Include="Assets/Scripts/Interactable/SubInteractables/Slideable/SlideableOpenDependent.cs" />
     <Compile Include="Assets/Scripts/SlideableObstruction/Obstruction.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/CandleSubItems/CandleLight.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
+    <Compile Include="Assets/Scripts/Interface/IDependent.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -94,6 +94,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationMove.cs" />
     <Compile Include="Assets/Scripts/Interactable/Throwable/BombThrowable.cs" />
     <Compile Include="Assets/Scripts/Interface/IButtonUp.cs" />
+    <Compile Include="Assets/Scripts/Doors/MultipleDependentDoubleDoor.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPickUp.cs" />
     <Compile Include="Assets/Scripts/Conditions/DependentEvent.cs" />
     <Compile Include="Assets/Scripts/Interactable/Openable/Openable.cs" />
@@ -112,7 +113,6 @@
     <Compile Include="Assets/Scripts/Player/PlayerStatus/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/BellItem.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapObjectCheck.cs" />
-    <Compile Include="Assets/Scripts/Interface/IPullDependent.cs" />
     <Compile Include="Assets/Scripts/Interface/InteractionKit.cs" />
     <Compile Include="Assets/Scripts/Interface/IDamage.cs" />
     <Compile Include="Assets/Scripts/Items/Scriptable object scripts for items/PlankItem.cs" />

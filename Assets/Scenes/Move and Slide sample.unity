@@ -3140,18 +3140,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.4814298, y: 0.36609995}
   m_EdgeRadius: 0
---- !u!114 &2434133949387654814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5473164341404633870}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34cf75c3362074d86b8c90aa48660894, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &2454668260385323978
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3311,11 +3299,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4500374005944267349}
-  - component: {fileID: 2434133949387654814}
   - component: {fileID: 288823954157556265}
   - component: {fileID: 796694258877162049}
   m_Layer: 0
-  m_Name: Sildeable Open Dependant
+  m_Name: Multiple Dependent Double Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
