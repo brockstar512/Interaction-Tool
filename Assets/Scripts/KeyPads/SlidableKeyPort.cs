@@ -5,3 +5,5 @@ namespace KeyPortSystem
         protected override Utilities.KeyTypes keyType => Utilities.KeyTypes.SlidingBlock;
     }
 }
+
+//HoleKeyPort

@@ -1,9 +1,17 @@
 // Assets/Scripts/Doors/MultipleDependentDoubleDoor.cs
+
+using System;
 using UnityEngine;
 
 public class MultipleDependentDoubleDoor : MultiDependent<bool>
 {
     private bool _opened;
+    private DoubleDoorAnimation _doubleDoorAnimation;
+
+    private void Awake()
+    {
+        _doubleDoorAnimation = new DoubleDoorAnimation(GetComponent<Animator>());
+    }
 
     protected override void Reevaluate()
     {
@@ -22,6 +30,7 @@ public class MultipleDependentDoubleDoor : MultiDependent<bool>
     private void Open()
     {
         _opened = true;
-        // play animation, unlock, etc.
+        _doubleDoorAnimation.Play();
+        Destroy(this);
     }
 }

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6162687623656133406}
   - component: {fileID: 2155155355040971023}
   - component: {fileID: 1946503495929355840}
-  - component: {fileID: 932167175842533000}
   - component: {fileID: 768390162958061315}
+  - component: {fileID: 5732753803464302329}
   m_Layer: 10
   m_Name: SlideKeyPort
   m_TagString: Untagged
@@ -103,19 +103,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   tileOffset: {x: 0, y: 0, z: 0}
---- !u!114 &932167175842533000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3325869832949299944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d05da65af5878464cbbb2f6ef22924ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyPort: 3
 --- !u!61 &768390162958061315
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -162,3 +149,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5732753803464302329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325869832949299944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8ef1874c3ca2407fbd9a8a1b36c3993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
