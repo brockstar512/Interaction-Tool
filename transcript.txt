@@ -10166,16 +10166,6 @@ public interface IItemManager
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interface/IDependency.cs
-========================================
-using System.Collections.Generic;
-
-public interface IDependency<T>
-{
-    void Apply(T dependentValue);
-}
-
-========================================
 FILE: ./Assets/Scripts/Interface/IExplosionDamage.cs
 ========================================
 using System.Collections;
@@ -10324,15 +10314,6 @@ namespace Interface
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interface/IPollableDependency.cs
-========================================
-using System.Collections.Generic;
-
-public interface IPollableDependency<T> : IDependency<T>
-{
-    List<T> Value { get; }
-}
-========================================
 FILE: ./Assets/Scripts/Interface/IPushDirection.cs
 ========================================
 using System.Collections;
@@ -10364,6 +10345,16 @@ public interface IDamage
 }
 
 ========================================
+FILE: ./Assets/Scripts/Interface/IDependencySource.cs
+========================================
+using System;
+
+public interface IDependencySource<T>
+{
+    T Value { get; }
+    event Action<T> Changed;
+}
+========================================
 FILE: ./Assets/Scripts/SlideableObstruction/Obstruction.cs
 ========================================
 using System;
@@ -10380,6 +10371,155 @@ public class Obstruction : MonoBehaviour
    {
       this.gameObject.layer = Layers.SlidableObstruction;
    }
+}
+
+========================================
+FILE: ./Assets/Scripts/DependenyWorkFlow/Observable.cs
+========================================
+// Plain C# observable value. Use directly, or compose into classes
+// that can't extend DependencySource<T> (e.g. they already have a base).
+using System;
+using System.Collections.Generic;
+
+public class Observable<T> : IDependencySource<T>
+{
+    private T _value;
+
+    public Observable(T initial = default) => _value = initial;
+
+    public T Value
+    {
+        get => _value;
+        set
+        {
+            if (EqualityComparer<T>.Default.Equals(_value, value)) return;
+            _value = value;
+            Changed?.Invoke(_value);
+        }
+    }
+
+    public event Action<T> Changed;
+}
+========================================
+FILE: ./Assets/Scripts/DependenyWorkFlow/MultiDependent.cs
+========================================
+// MonoBehaviour base for "I depend on a list of sources." Subscribes to
+// every source, calls Reevaluate on any change and once on enable.
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class MultiDependent<T> : MonoBehaviour
+{
+    [SerializeField]
+    private List<InterfaceReference<IDependencySource<T>>> sources = new();
+
+    protected virtual void OnEnable()
+    {
+        foreach (var source in sources)
+            if (source?.Value != null) source.Value.Changed += OnAnyChanged;
+        Reevaluate();
+    }
+
+    protected virtual void OnDisable()
+    {
+        foreach (var source in sources)
+            if (source?.Value != null) source.Value.Changed -= OnAnyChanged;
+    }
+
+    private void OnAnyChanged(T _) => Reevaluate();
+
+    protected abstract void Reevaluate();
+
+    // Convenience accessors for subclasses.
+    protected IEnumerable<T> Values()
+    {
+        foreach (var s in sources)
+            if (s?.Value != null) yield return s.Value.Value;
+    }
+
+    protected int SourceCount
+    {
+        get
+        {
+            int n = 0;
+            foreach (var source in sources) if (source?.Value != null) n++;
+            return n;
+        }
+    }
+}
+========================================
+FILE: ./Assets/Scripts/DependenyWorkFlow/Dependent.cs
+========================================
+// MonoBehaviour base for "I depend on one source." Handles subscribe,
+// initial sync, and unsubscribe. Subclass overrides OnSourceChanged.
+using UnityEngine;
+
+public abstract class Dependent<T> : MonoBehaviour
+{
+    [SerializeField] private InterfaceReference<IDependencySource<T>> source;
+
+    protected IDependencySource<T> Source => source?.Value;
+
+    protected virtual void OnEnable()
+    {
+        if (Source == null) return;
+        Source.Changed += OnSourceChanged;
+        OnSourceChanged(Source.Value);
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (Source == null) return;
+        Source.Changed -= OnSourceChanged;
+    }
+
+    protected abstract void OnSourceChanged(T value);
+}
+========================================
+FILE: ./Assets/Scripts/DependenyWorkFlow/DependencySource.cs
+========================================
+// MonoBehaviour base for sources that don't already inherit from something else.
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class DependencySource<T> : MonoBehaviour, IDependencySource<T>
+{
+    private T _value;
+
+    public T Value
+    {
+        get => _value;
+        protected set
+        {
+            if (EqualityComparer<T>.Default.Equals(_value, value)) return;
+            _value = value;
+            Changed?.Invoke(_value);
+        }
+    }
+
+    public event Action<T> Changed;
+}
+========================================
+FILE: ./Assets/Scripts/DependenyWorkFlow/IDependencySource.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class IDependencySource : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }
 
 ========================================
@@ -12751,20 +12891,33 @@ namespace Doors
 ========================================
 FILE: ./Assets/Scripts/Doors/MultipleDependentDoubleDoor.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
+// Assets/Scripts/Doors/MultipleDependentDoubleDoor.cs
 using UnityEngine;
 
-public class MultipleDependentDoubleDoor : MonoBehaviour, IPollableDependency<List<bool>>
+public class MultipleDependentDoubleDoor : MultiDependent<bool>
 {
-    public void Apply(List<bool> dependentValue)
+    private bool _opened;
+
+    protected override void Reevaluate()
     {
-        throw new System.NotImplementedException();
+        if (_opened) return;
+
+        bool any = false;
+        foreach (bool v in Values())
+        {
+            any = true;
+            if (!v) return;          // one false → bail
+        }
+
+        if (any) Open();             // all assigned sources were true
     }
 
-    public List<List<bool>> Value { get; }
+    private void Open()
+    {
+        _opened = true;
+        // play animation, unlock, etc.
+    }
 }
-
 ========================================
 FILE: ./Assets/Scripts/Doors/OpenableDoubleDoor.cs
 ========================================
@@ -12814,66 +12967,6 @@ public class EnemyPlaceholder : MonoBehaviour, IHurt, IInteractWithHookProjectil
     }
 }
 
-========================================
-FILE: ./Assets/Scripts/Conditions/DependencyEvent.cs
-========================================
-using System;
-using System.Collections.Generic;
-
-namespace Dependencies
-{
-    // The tracked thing. Holds a value, raises Changed when it actually changes.
-    // Knows nothing about who depends on it.
-    public class DependencyEvent<T>
-    {
-        private T _value;
-
-        public DependencyEvent(T value = default) => _value = value;
-
-        public T Value
-        {
-            get => _value;
-            set
-            {
-                if (EqualityComparer<T>.Default.Equals(_value, value)) return;
-                _value = value;
-                Changed?.Invoke(_value);
-            }
-        }
-
-        public event Action<T> Changed;
-    }
-}
-========================================
-FILE: ./Assets/Scripts/Conditions/DependentEvent.cs
-========================================
-using System;
-
-namespace Dependencies
-{
-    // Watches one DependencyEvent. When the value satisfies the condition, runs the action.
-    public class DependentEvent<T>
-    {
-        private readonly DependencyEvent<T> _dependency;
-        private readonly Func<T, bool> _condition;
-        private readonly Action<T> _action;
-
-        public DependentEvent(DependencyEvent<T> dependency, Func<T, bool> condition, Action<T> action)
-        {
-            _dependency = dependency;
-            _condition = condition;
-            _action = action;
-            _dependency.Changed += Evaluate;
-        }
-
-        private void Evaluate(T value)
-        {
-            if (_condition(value)) _action(value);
-        }
-
-        public void Stop() => _dependency.Changed -= Evaluate;
-    }
-}
 ========================================
 FILE: ./Assets/Scripts/Interactable/Throwable/Throwable.cs
 ========================================
@@ -13549,46 +13642,38 @@ public class Slidable : InteractableBase
 ========================================
 FILE: ./Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependent.cs
 ========================================
+// Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependent.cs
 using UnityEngine;
 
-public class PullableOpenDependent : MonoBehaviour, IDependency<float>
+public class PullableOpenDependent : Dependent<float>
 {
-    private PullableDoorAnimation _doubleDoorAnimation;
+    private PullableDoorAnimation _doorAnimation;
 
-   
-    private void Awake()
-    {
-        _doubleDoorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
-    }
+    private void Awake() => _doorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
 
-    public void Apply(float amount) => _doubleDoorAnimation.Step(amount);
-    
-
-
+    protected override void OnSourceChanged(float t) => _doorAnimation.Step(t);
 }
-
 ========================================
 FILE: ./Assets/Scripts/Interactable/SubInteractables/Pullable/PullableMoveDependent.cs
 ========================================
-using System;
+// Assets/Scripts/Interactable/SubInteractables/Pullable/PullableMoveDependent.cs
 using UnityEngine;
-//this should only be attached to one pullable so it does not conflict with others. it should subscrie and pullable not
-//know about it so multiple dependants can subscribe to pullable.
-public class PullableMoveDependent : MonoBehaviour, IDependency<float>
+
+public class PullableMoveDependent : Dependent<float>
 {
     private enum Axis { Horizontal, Vertical }
 
     [SerializeField] private Axis axis = Axis.Vertical;
-    [SerializeField] private float distance = 3f;   // travel at full pull; negative flips the direction
+    [SerializeField] private float distance = 3f;
 
     private Vector3 _origin;
 
     private void Awake() => _origin = transform.position;
 
-    public void Apply(float updateDependentValue)
+    protected override void OnSourceChanged(float t)
     {
         Vector3 dir = axis == Axis.Horizontal ? Vector3.right : Vector3.up;
-        transform.position = _origin + dir * (distance * updateDependentValue);
+        transform.position = _origin + dir * (distance * t);
     }
 }
 ========================================
@@ -13916,14 +14001,16 @@ public class PullableLatched : Pullable
 ========================================
 FILE: ./Assets/Scripts/Interactable/Pullable/Pullable.cs
 ========================================
+// Source. Composes Observable<float> because it already extends InteractableBase.
+using System;
 using UnityEngine;
 using DG.Tweening;
 using Player.ItemOverlap;
 
-public class Pullable : InteractableBase
+public class Pullable : InteractableBase, IDependencySource<float>
 {
     public override InteractionKind Kind => InteractionKind.Pull;
-    [SerializeField] protected InterfaceReference<IDependency<float>> objectEffectedByPullItem;
+
     [SerializeField] protected Transform handle;
     [SerializeField] protected float maxDistance = 1.5f;
     [SerializeField] protected float retractTime = 0.25f;
@@ -13933,8 +14020,15 @@ public class Pullable : InteractableBase
     protected Vector2 _pullDir;
     protected float _distance;
     protected LineRenderer _line;
-    
 
+    // IDependencySource<float> via composition.
+    private readonly Observable<float> _state = new();
+    public float Value => _state.Value;
+    public event Action<float> Changed
+    {
+        add    => _state.Changed += value;
+        remove => _state.Changed -= value;
+    }
 
     protected void Awake()
     {
@@ -13947,37 +14041,31 @@ public class Pullable : InteractableBase
 
     public override bool Interact(IInteractionContext context)
     {
-        _pullDir = -context.LookDirection;   // the handle follows the player as they back away
+        _pullDir = -context.LookDirection;
         return true;
     }
 
-    // advance the handle up to 'requested'; returns how far it actually moved so the player can match it
     public virtual float Pull(float requested)
     {
-
         float applied = Mathf.Min(requested, maxDistance - _distance);
-        if (applied <= 0f) return 0f;                                    // at full → player can't go further
+        if (applied <= 0f) return 0f;
 
         Vector3 nextHandle = _origin + (Vector3)(_pullDir * (_distance + applied));
-        if (IsObstructed(nextHandle)) return 0f;                         // blocked → frozen, player stops too
+        if (IsObstructed(nextHandle)) return 0f;
 
         SetDistance(_distance + applied);
         return applied;
     }
-    
-    public override void Release(IInteractionContext context)
-    {
-        Retract();
-    }
+
+    public override void Release(IInteractionContext context) => Retract();
 
     private bool IsObstructed(Vector3 pos)
     {
         if (handleCheck == null)
         {
-            Debug.LogError($"handle check not serialized");
+            Debug.LogError("handle check not serialized");
             return false;
         }
-        
         handleCheck.transform.position = pos;
         return handleCheck.DoesOverlap(pos);
     }
@@ -13987,7 +14075,7 @@ public class Pullable : InteractableBase
         _distance = Mathf.Clamp(distance, 0f, maxDistance);
         handle.position = _origin + (Vector3)(_pullDir * _distance);
         DrawLine();
-        objectEffectedByPullItem.Value?.Apply(_distance / maxDistance);
+        _state.Value = _distance / maxDistance;   // publishes only on change
     }
 
     protected void Retract()
@@ -14004,7 +14092,6 @@ public class Pullable : InteractableBase
         _line.SetPosition(0, _origin);
         _line.SetPosition(1, handle.position);
     }
-    
 }
 ========================================
 FILE: ./Assets/Scripts/Interactable/Pullable/PullableRetractable.cs
@@ -15101,31 +15188,24 @@ namespace Items
 ========================================
 FILE: ./Assets/Scripts/KeyPads/KeyPort.cs
 ========================================
+// Assets/Scripts/KeyPads/KeyPort.cs
+// Source. Free to extend DependencySource<bool> because it had no other base.
 using UnityEngine;
 
 namespace KeySystem
 {
-
-//should be abstract? then slideable time bomb, slideable symbol, slideable plain, moveable? moveable is not a key port its just 
-//a landing area so this name should prbably cahneg
-    public class KeyPort : MonoBehaviour
+    public class KeyPort : DependencySource<bool>
     {
-        [SerializeField] protected InterfaceReference<IPollableDependency<bool>> dependent;
         [SerializeField] private Utilities.KeyTypes keyPort;
-        
+
         public bool Lock(Utilities.KeyTypes keyType)
         {
-            bool result = keyType == keyPort ? true : false ;
-            Debug.Log(result);
-
-            //make this so no other keys can check it.
-            //animate it
-            return result;
+            bool matched = keyType == keyPort;
+            if (matched) Value = true;   // protected setter on the base
+            return matched;
         }
-        
     }
 }
-
 ========================================
 FILE: ./Assets/Scripts/Player/OriginPoint.cs
 ========================================

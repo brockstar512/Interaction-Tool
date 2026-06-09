@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3608246917049341812}
-  - component: {fileID: 7585856067837864216}
   - component: {fileID: 6486765433230186120}
+  - component: {fileID: 7585856067837864216}
   m_Layer: 0
   m_Name: Pullable Move Dependent
   m_TagString: Untagged
@@ -33,6 +33,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6486765433230186120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661283977241734101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018e54a6d05194a1cb05fe5bd94503b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source:
+    target: {fileID: 0}
+  axis: 1
+  distance: 3
 --- !u!212 &7585856067837864216
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -87,17 +103,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6486765433230186120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4661283977241734101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 018e54a6d05194a1cb05fe5bd94503b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axis: 1
-  distance: 3

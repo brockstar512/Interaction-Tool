@@ -1,4 +1,3 @@
-// Assets/Scripts/Dependencies/Dependent.cs
 // MonoBehaviour base for "I depend on one source." Handles subscribe,
 // initial sync, and unsubscribe. Subclass overrides OnSourceChanged.
 using UnityEngine;

@@ -168,7 +168,6 @@
     <Compile Include="Assets/Scripts/Interface/IDependencySource.cs" />
     <Compile Include="Assets/Scripts/DependenyWorkFlow/MultiDependent.cs" />
     <Compile Include="Assets/Scripts/Animation/ExplosionAnimation/ExplosionAnimation.cs" />
-    <Compile Include="Assets/Scripts/DependenyWorkFlow/IDependencySource.cs" />
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />

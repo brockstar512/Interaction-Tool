@@ -1,4 +1,3 @@
-// Assets/Scripts/Dependencies/Observable.cs
 // Plain C# observable value. Use directly, or compose into classes
 // that can't extend DependencySource<T> (e.g. they already have a base).
 using System;

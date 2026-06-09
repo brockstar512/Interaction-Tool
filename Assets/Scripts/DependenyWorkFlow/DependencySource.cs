@@ -1,4 +1,3 @@
-// Assets/Scripts/Dependencies/DependencySource.cs
 // MonoBehaviour base for sources that don't already inherit from something else.
 using System;
 using System.Collections.Generic;

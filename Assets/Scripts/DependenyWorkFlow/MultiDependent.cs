@@ -1,4 +1,3 @@
-// Assets/Scripts/Dependencies/MultiDependent.cs
 // MonoBehaviour base for "I depend on a list of sources." Subscribes to
 // every source, calls Reevaluate on any change and once on enable.
 using System.Collections.Generic;

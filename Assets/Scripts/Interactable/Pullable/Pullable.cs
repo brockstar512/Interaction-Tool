@@ -1,4 +1,3 @@
-// Assets/Scripts/Interactable/Pullable/Pullable.cs
 // Source. Composes Observable<float> because it already extends InteractableBase.
 using System;
 using UnityEngine;
