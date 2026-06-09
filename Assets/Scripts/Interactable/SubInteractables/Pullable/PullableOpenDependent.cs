@@ -1,21 +1,11 @@
-using System;
+// Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependent.cs
 using UnityEngine;
 
-public class PullableOpenDependent : MonoBehaviour, IDependencySource<float>
+public class PullableOpenDependent : Dependent<float>
 {
-    private PullableDoorAnimation _doubleDoorAnimation;
-    public float Value { get; private set; }
-    public event Action<float> Apply;
-   
-    private void Awake()
-    {
-        _doubleDoorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
-        Apply = OpenAmountValuePulled;
-    }
+    private PullableDoorAnimation _doorAnimation;
 
-    private void OpenAmountValuePulled(float amount)
-    {
-        Value = amount;
-        _doubleDoorAnimation.Step(amount);
-    }
+    private void Awake() => _doorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
+
+    protected override void OnSourceChanged(float t) => _doorAnimation.Step(t);
 }
