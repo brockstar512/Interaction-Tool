@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7317155042657932471}
   - component: {fileID: 4584001313565389957}
-  - component: {fileID: 8617182811198937470}
+  - component: {fileID: 8434231152090859043}
   - component: {fileID: 7317155042657932457}
   - component: {fileID: 7317155042657932470}
   - component: {fileID: 7317155042657932468}
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   tileOffset: {x: 0, y: 0, z: 0}
---- !u!114 &8617182811198937470
+--- !u!114 &8434231152090859043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,15 +59,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7317155042657932469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d51d4c9907edf4aa09f257eb8e13e3a6, type: 3}
+  m_Script: {fileID: 11500000, guid: fd5fdb1e53b224037a6b0bfc9702f8e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 2
+  moverCheckPrefab: {fileID: 1146870953546055049, guid: 2ae3d4ae6fc8b4e2dab55ee62b4746a9, type: 3}
+  targetCheckPrefab: {fileID: 5317643693889752134, guid: f6e3a55ab81cd47f08e9b21e4f70d1d4, type: 3}
   obstructionLayer:
     serializedVersion: 2
     m_Bits: 0
-  moverCheckPrefab: {fileID: 1146870953546055049, guid: 2ae3d4ae6fc8b4e2dab55ee62b4746a9, type: 3}
-  targetCheckPrefab: {fileID: 5317643693889752134, guid: f6e3a55ab81cd47f08e9b21e4f70d1d4, type: 3}
 --- !u!50 &7317155042657932457
 Rigidbody2D:
   serializedVersion: 4

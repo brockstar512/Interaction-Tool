@@ -1,10 +1,10 @@
-// Source. Composes Observable<float> because it already extends InteractableBase.
+// Assets/Scripts/Interactable/Pullable/Pullable.cs
 using System;
 using UnityEngine;
 using DG.Tweening;
 using Player.ItemOverlap;
 
-public class Pullable : InteractableBase, IDependencySource<float>
+public abstract class Pullable : InteractableBase, IDependencySource<float>
 {
     public override InteractionKind Kind => InteractionKind.Pull;
 
@@ -27,7 +27,7 @@ public class Pullable : InteractableBase, IDependencySource<float>
         remove => _state.Changed -= value;
     }
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         UpdateLayerName();
         _origin = handle.position;
@@ -54,7 +54,14 @@ public class Pullable : InteractableBase, IDependencySource<float>
         return applied;
     }
 
-    public override void Release(IInteractionContext context) => Retract();
+    public abstract override void Release(IInteractionContext context);
+
+    protected void Retract()
+    {
+        DOTween.To(() => _distance, x => SetDistance(x), 0f, retractTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(gameObject);
+    }
 
     private bool IsObstructed(Vector3 pos)
     {
@@ -67,19 +74,12 @@ public class Pullable : InteractableBase, IDependencySource<float>
         return handleCheck.DoesOverlap(pos);
     }
 
-    private void SetDistance(float distance)
+    protected void SetDistance(float distance)
     {
         _distance = Mathf.Clamp(distance, 0f, maxDistance);
         handle.position = _origin + (Vector3)(_pullDir * _distance);
         DrawLine();
-        _state.Value = _distance / maxDistance;   // publishes only on change
-    }
-
-    protected void Retract()
-    {
-        DOTween.To(() => _distance, x => SetDistance(x), 0f, retractTime)
-            .SetEase(Ease.OutQuad)
-            .SetLink(gameObject);
+        _state.Value = _distance / maxDistance;
     }
 
     private void DrawLine()

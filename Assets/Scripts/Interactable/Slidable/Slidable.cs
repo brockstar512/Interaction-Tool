@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
+using KeyPortSystem;
 using Player.ItemOverlap;
 using UnityEngine;
-// slidable
-// Time
-// Symbol
+
 [RequireComponent(typeof(SpriteRenderer))]
-public class Slidable : InteractableBase, IDependencySource<bool>
+public abstract class Slidable : InteractableBase, IDependencySource<bool>
 {
-    protected virtual Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
+    protected abstract Utilities.KeyTypes key { get; }
+    protected virtual bool AcceptsPort(KeyPort port) => port.Matches(key);
 
     [SerializeField] private OverlapMoveDamageCheck moverCheckPrefab;
     [SerializeField] private OverlapTargetCheck     targetCheckPrefab;
@@ -29,7 +29,6 @@ public class Slidable : InteractableBase, IDependencySource<bool>
 
     public override InteractionKind Kind => InteractionKind.Slide;
 
-    // IDependencySource<bool> via composition.
     private readonly Observable<bool> _locked = new();
     public bool Value => _locked.Value;
     public event Action<bool> Changed
@@ -38,7 +37,7 @@ public class Slidable : InteractableBase, IDependencySource<bool>
         remove => _locked.Changed -= value;
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         obstructionLayer |= (1 << Layers.SlidableObstruction)
                           | (1 << Layers.Interactable)
@@ -129,7 +128,7 @@ public class Slidable : InteractableBase, IDependencySource<bool>
         else
         {
             float buffer = (selfExtents.y + otherExtents.y) * -direction.y;
-            if (direction == Vector2.down) buffer -= selfExtents.x / 2f;   // preserved quirk from original
+            if (direction == Vector2.down) buffer -= selfExtents.x / 2f;   // preserved quirk
             return new Vector3(pos.x, pos.y + hit.Distance * direction.y + buffer, pos.z);
         }
     }
@@ -142,14 +141,14 @@ public class Slidable : InteractableBase, IDependencySource<bool>
 
     private async void CleanUp()
     {
-        bool isPlaced = false;
-        try { isPlaced = await _targetCheck.IsOnKeyPort(key); }
+        KeyPort port = null;
+        try { port = await _targetCheck.FindKeyPort(); }
         catch (Exception ex) { Debug.LogError($"Slidable.CleanUp failed: {ex}"); }
 
         _moverCheck.CleanUp();
         _targetCheck.CleanUp();
 
-        if (isPlaced) _locked.Value = true;   // publishes to subscribers
+        if (port != null && AcceptsPort(port)) _locked.Value = true;
     }
 
     // ---------- contact helper ----------
@@ -172,8 +171,6 @@ public class Slidable : InteractableBase, IDependencySource<bool>
             Distance          = Mathf.Infinity;
         }
 
-        // Spreads contact points perpendicular to motion: spread along Y when moving
-        // horizontally, along X when moving vertically. Index 1 stays centered.
         public void SetOrigin(Collider2D self, int index, bool horizontal)
         {
             _originPoint = self.bounds.center;

@@ -1,6 +1,7 @@
-using UnityEngine;
+// Assets/Scripts/OverlapScripts/OverlapTargetCheck.cs
 using System.Threading.Tasks;
 using KeyPortSystem;
+using UnityEngine;
 
 namespace Player.ItemOverlap
 {
@@ -25,44 +26,36 @@ namespace Player.ItemOverlap
             var minB = targetSpriteRenderer.min;
             var maxB = targetSpriteRenderer.max;
 
-            var lowerMax = Vector3.Min(maxA, maxB);
+            var lowerMax  = Vector3.Min(maxA, maxB);
             var higherMin = Vector3.Max(minA, minB);
 
             Vector2 overlappingSquare = lowerMax - higherMin;
             float overlappingArea = overlappingSquare.x * overlappingSquare.y;
-            Debug.Log($"percentage of overlap? {overlappingArea}");
-
-            return overlappingArea / (overlapping.extents.x * 2 * targetSpriteRenderer.extents.y * 2) * 100.0f;
+            return overlappingArea / (overlapping.extents.x * 2 * targetSpriteRenderer.extents.y * 2) * 100f;
         }
 
-        public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
+        // Returns the port the slidable is seated on, or null. Pure geometry — caller decides if it matches.
+        public Task<KeyPort> FindKeyPort()
         {
-            Debug.Log("running key is on port");
             SetMovingOverlappingArea(transform.position);
             Collider2D col = GetMostOverlappedCol();
-            if (col == null)
-                return await Task.FromResult(false);
-            
-            Debug.Log("found a collider");
+            if (col == null) return Task.FromResult<KeyPort>(null);
+
             SpriteRenderer overlapField = GetComponent<SpriteRenderer>();
             KeyPort port = col.GetComponent<KeyPort>();
-            Debug.Log($"did I find a port? {port != null}");
-            Debug.Log($"does percentage works? {GetPercentOfOverlap(col.bounds, overlapField.bounds) > 60.0f}");
-            Debug.Log($"does lock works? {port.Matches(key)}");
+            if (port == null) return Task.FromResult<KeyPort>(null);
+            if (GetPercentOfOverlap(col.bounds, overlapField.bounds) <= 60f) return Task.FromResult<KeyPort>(null);
 
-            if (port != null &&
-                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 60.0f &&
-                port.Matches(key))
-            {
-                return await Task.FromResult(true);
-            }
-
-            return await Task.FromResult(false);
+            return Task.FromResult(port);
         }
 
-        public void CleanUp()
+        // Kept for Moveable.CleanUp which still uses the bool form.
+        public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
         {
-            Destroy(gameObject);
+            KeyPort port = await FindKeyPort();
+            return port != null && port.Matches(key);
         }
+
+        public void CleanUp() => Destroy(gameObject);
     }
 }

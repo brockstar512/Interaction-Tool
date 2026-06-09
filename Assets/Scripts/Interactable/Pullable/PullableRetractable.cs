@@ -1,18 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PullableRetractable : MonoBehaviour
+// Assets/Scripts/Interactable/Pullable/PullableRetractable.cs
+public class PullableRetractable : Pullable
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public override void Release(IInteractionContext context) => Retract();
 }

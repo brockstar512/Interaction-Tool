@@ -77,11 +77,13 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationBell.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationCarry.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
+    <Compile Include="Assets/Scripts/KeyPads/SlidableTimed.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/DeathState.cs" />
     <Compile Include="Assets/Scripts/DependenyWorkFlow/Dependent.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
+    <Compile Include="Assets/Scripts/KeyPads/SymbolKeyPort.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="Assets/Scripts/Utils/Layers.cs" />
     <Compile Include="Assets/Scripts/Items/SubItems/BellSubItems/OverlapCircleCollider.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs" />
+    <Compile Include="Assets/Scripts/KeyPads/SlidableBasic.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pullable/PullableRetractable.cs" />
     <Compile Include="Assets/Scripts/Interactable/InteractionKind.cs" />
     <Compile Include="Assets/Scripts/Interactable/Pickupable/Pickupable.cs" />
@@ -171,6 +174,7 @@
     <Compile Include="Assets/Scripts/Animation/ExplosionAnimation/ExplosionAnimation.cs" />
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />
+    <Compile Include="Assets/Scripts/KeyPads/SlidableSymbol.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/PlayerAnimationController.cs" />
     <Compile Include="Assets/Scripts/Player/ItemManager/ItemManager.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/States/OpenItemState.cs" />
