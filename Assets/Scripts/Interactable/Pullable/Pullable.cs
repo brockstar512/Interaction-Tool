@@ -5,7 +5,7 @@ using Player.ItemOverlap;
 public class Pullable : InteractableBase
 {
     public override InteractionKind Kind => InteractionKind.Pull;
-    [SerializeField] protected InterfaceReference<IDependent<float>> dependent;
+    [SerializeField] protected InterfaceReference<IDependencySource<float>> objectEffectedByPullItem;
     [SerializeField] protected Transform handle;
     [SerializeField] protected float maxDistance = 1.5f;
     [SerializeField] protected float retractTime = 0.25f;
@@ -69,7 +69,8 @@ public class Pullable : InteractableBase
         _distance = Mathf.Clamp(distance, 0f, maxDistance);
         handle.position = _origin + (Vector3)(_pullDir * _distance);
         DrawLine();
-        dependent.Value?.UpdateDependentValue(_distance / maxDistance);
+        objectEffectedByPullItem.Value?.Apply
+            //(_distance / maxDistance);
     }
 
     protected void Retract()

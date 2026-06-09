@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Animation/AnimationBaseScripts/AnimationClip.cs" />
     <Compile Include="Assets/Scripts/Items/Item.cs" />
+    <Compile Include="Assets/Scripts/Interface/IPollableDependencySource.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerMovementManager/PlayerMovementManager.cs" />
     <Compile Include="Assets/Scripts/Utils/YDepthSort.cs" />
     <Compile Include="Assets/Scripts/Utils/Singleton.cs" />
@@ -81,7 +82,6 @@
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/ExplosionDamage.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMoveCheck.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationPushAndPull.cs" />
-    <Compile Include="Assets/Scripts/Interface/IDependent.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationGrapplingHookSetUp.cs" />
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationEquipItem.cs" />
     <Compile Include="Assets/Scripts/Interface/IInteractWithHookProjecile.cs" />
@@ -165,6 +165,7 @@
     <Compile Include="Assets/Scripts/Animation/PlayerAnimation/AnimationStates/AnimationThrow.cs" />
     <Compile Include="Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/Explosion.cs" />
     <Compile Include="Assets/Scripts/Items/IItemPickUp.cs" />
+    <Compile Include="Assets/Scripts/Interface/IDependencySource.cs" />
     <Compile Include="Assets/Scripts/Animation/ExplosionAnimation/ExplosionAnimation.cs" />
     <Compile Include="Assets/Scripts/KeyPads/KeyPort.cs" />
     <Compile Include="Assets/Scripts/StateMachine/State Machine/AppleWholeState.cs" />

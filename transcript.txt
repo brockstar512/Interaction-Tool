@@ -9200,22 +9200,26 @@ namespace Player.ItemOverlap
 
             Vector2 overlappingSquare = lowerMax - higherMin;
             float overlappingArea = overlappingSquare.x * overlappingSquare.y;
+            Debug.Log($"percentage of overlap? {overlappingArea}");
 
             return overlappingArea / (overlapping.extents.x * 2 * targetSpriteRenderer.extents.y * 2) * 100.0f;
         }
 
         public async Task<bool> IsOnKeyPort(Utilities.KeyTypes key)
         {
+            Debug.Log("running key is on port");
             SetMovingOverlappingArea(transform.position);
             Collider2D col = GetMostOverlappedCol();
             if (col == null)
                 return await Task.FromResult(false);
-
+            
+            Debug.Log("found a collider");
             SpriteRenderer overlapField = GetComponent<SpriteRenderer>();
             KeyPort port = col.GetComponent<KeyPort>();
+            Debug.Log($"did I find a port? {port != null}");
 
             if (port != null &&
-                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 90.0f &&
+                GetPercentOfOverlap(col.bounds, overlapField.bounds) > 60.0f &&
                 port.Lock(key))
             {
                 return await Task.FromResult(true);
@@ -10162,6 +10166,16 @@ public interface IItemManager
 }
 
 ========================================
+FILE: ./Assets/Scripts/Interface/IDependency.cs
+========================================
+using System.Collections.Generic;
+
+public interface IDependency<T>
+{
+    void Apply(T dependentValue);
+}
+
+========================================
 FILE: ./Assets/Scripts/Interface/IExplosionDamage.cs
 ========================================
 using System.Collections;
@@ -10187,6 +10201,71 @@ public interface IGetAllOverlap<T> where T : Component
     T[] GetAllOverlapObject(Bounds areaChecker);
 }
 
+========================================
+FILE: ./Assets/Scripts/Interface/InterfaceReference.cs
+========================================
+using System;
+using UnityEngine;
+
+[Serializable]
+public class InterfaceReference<TInterface> where TInterface : class
+{
+    [SerializeField] private UnityEngine.Object target;
+
+    public TInterface Value
+    {
+        get => target as TInterface;
+        set => target = value as UnityEngine.Object;
+    }
+
+    public UnityEngine.Object UnderlyingObject => target;
+}
+========================================
+FILE: ./Assets/Scripts/Interface/InterfaceReferenceDrawer.cs
+========================================
+using System;
+using UnityEngine;
+using UnityEditor;
+
+[CustomPropertyDrawer(typeof(InterfaceReference<>))]
+public class InterfaceReferenceDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        SerializedProperty target = property.FindPropertyRelative("target");
+        Type interfaceType = fieldInfo.FieldType.GetGenericArguments()[0];
+
+        EditorGUI.BeginProperty(position, label, property);
+
+        UnityEngine.Object current = target.objectReferenceValue;
+        UnityEngine.Object assigned = EditorGUI.ObjectField(
+            position, label, current, typeof(UnityEngine.Object), true);
+
+        if (assigned != current)
+            target.objectReferenceValue = Validate(assigned, interfaceType);
+
+        EditorGUI.EndProperty();
+    }
+
+    private UnityEngine.Object Validate(UnityEngine.Object obj, Type interfaceType)
+    {
+        if (obj == null) return null;
+
+        // ScriptableObject or Component that implements the interface
+        if (interfaceType.IsInstanceOfType(obj)) return obj;
+
+        // Dragged a GameObject -> grab the first matching component
+        if (obj is GameObject go)
+        {
+            foreach (var c in go.GetComponents<Component>())
+                if (interfaceType.IsInstanceOfType(c))
+                    return c;
+        }
+
+        Debug.LogWarning($"Assigned object does not implement {interfaceType.Name}");
+        return null;
+    }
+}
 ========================================
 FILE: ./Assets/Scripts/Interface/IGetMostOverlap.cs
 ========================================
@@ -10244,6 +10323,15 @@ namespace Interface
     }
 }
 
+========================================
+FILE: ./Assets/Scripts/Interface/IPollableDependency.cs
+========================================
+using System.Collections.Generic;
+
+public interface IPollableDependency<T> : IDependency<T>
+{
+    List<T> Value { get; }
+}
 ========================================
 FILE: ./Assets/Scripts/Interface/IPushDirection.cs
 ========================================
@@ -10397,44 +10485,78 @@ public class EquipItemState : PlayerBaseState
 ========================================
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/PullItemState.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class PullItemState : PlayerBaseState
+using Interactable;
+//tetris japanese game show type minigame where you have to pull or hold an item to fit a mold and let go to get it to fit
+public class PullItemState : PlayerBaseState, IButtonUp
 {
-    
+    protected override float Speed => 2f;
+    private Vector2 _axis;
+    private Pullable _pullable;
+    private PlayerStateMachineManager _stateManager;
+    private AnimationPushAndPull _animation;
+
+    public PullItemState()
+    {
+        _animation = new AnimationPushAndPull();
+    }
+
     public override void EnterState(PlayerStateMachineManager stateManager)
     {
-        throw new System.NotImplementedException();
+        _stateManager = stateManager;
+        _pullable = stateManager.item as Pullable;
+        if (_pullable == null || !_pullable.Interact(stateManager))
+        {
+            stateManager.SwitchState(stateManager.defaultState);
+            return;
+        }
+        _axis = LookDirection;
+        _animation.EnterPushAnimation(stateManager);
     }
 
-    public override void UpdateState(PlayerStateMachineManager stateManager)
+    public override void UpdateState(PlayerStateMachineManager stateManager) { }
+    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
+    public override void ExitState(PlayerStateMachineManager stateManager) { }
+
+    public override void FixedUpdateState(PlayerStateMachineManager stateManager) => Move(stateManager);
+
+    protected override void Move(PlayerStateMachineManager stateManager)
     {
-        throw new System.NotImplementedException();
+        if (_pullable == null) return;
+
+        Vector2 movement = stateManager.movement;
+        if (_axis == Vector2.up || _axis == Vector2.down) movement.x = 0;
+        else movement.y = 0;
+
+        if (movement != -LookDirection)          // pull only — back away, never forward
+        {
+            _animation.Play(stateManager);
+            return;
+        }
+
+        float applied = _pullable.Pull(Speed * Time.fixedDeltaTime);
+        if (applied <= 0f)                       // maxed or blocked → nobody moves
+        {
+            _animation.Play(stateManager);
+            return;
+        }
+
+        stateManager.rb.MovePosition(stateManager.rb.position + (-LookDirection * applied));
+        _animation.Play(stateManager);
     }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
-        throw new System.NotImplementedException();
-    }
+    // pull is entered through DefaultState's dispatch, not via Action, so this stays empty
+    public override void Action(PlayerStateMachineManager stateManager) { }
 
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
+    // interact button-up routes here through ReleaseInteraction → IButtonUp
+    public void ButtonUp()
     {
-        throw new System.NotImplementedException();
-    }
-
-    public override void ExitState(PlayerStateMachineManager stateManager)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Action(PlayerStateMachineManager stateManager)
-    {
-        throw new System.NotImplementedException();
+        _pullable = null;
+        _animation.LeavePushAnimation();
+        _stateManager.item.Release(_stateManager);
+        _stateManager.SwitchState(_stateManager.defaultState);
     }
 }
-
 ========================================
 FILE: ./Assets/Scripts/StateMachine/Player State Machine/States/DefaultState.cs
 ========================================
@@ -10501,6 +10623,9 @@ public class DefaultState : PlayerBaseState
                 break;
             case InteractionKind.Open:
                 stateManager.SwitchState(stateManager.OpenItemState);
+                break;
+            case InteractionKind.Pull:
+                stateManager.SwitchState(stateManager.pullItemState);
                 break;
             default:
                 Debug.Log("is default");
@@ -10701,9 +10826,6 @@ public class UseItemState : PlayerBaseState, IButtonUp
         _buttonUp?.Invoke();
         _buttonUp = null;
     }
-
-
-
     
 }
 
@@ -10893,6 +11015,8 @@ public class PlayerStateMachineManager : MonoBehaviour, IStateMachine, IInteract
     public readonly UseItemState useItemState = new UseItemState();
     public readonly EquipItemState equipItemState = new EquipItemState();
     public readonly OpenItemState OpenItemState = new OpenItemState();
+    public readonly PullItemState pullItemState = new PullItemState();
+
     public readonly DeathState deathState = new DeathState();
 
     public PlayerBaseState getState => currentState; 
@@ -11425,6 +11549,7 @@ public class DoubleDoorAnimation : AnimationState
     readonly int _doubleDoorOpen = Animator.StringToHash("DoubleDoorsOpening");
     readonly Dictionary<int, float> TimeSheet;
     private Animator animator { get; set; }
+
     public DoubleDoorAnimation(Animator animator)
     {
         this.animator = animator;
@@ -11434,12 +11559,15 @@ public class DoubleDoorAnimation : AnimationState
             { _doubleDoorOpen, 0.292f },
         };
     }
+
+    // full-speed open, start to finish
     public void Play()
     {
+        animator.speed = 1f;
         animator.Play(_doubleDoorOpen);
     }
+    
 }
-
 ========================================
 FILE: ./Assets/Scripts/Animation/DoorAnimation/SingleDoorAnimation.cs
 ========================================
@@ -11466,6 +11594,30 @@ public class SingleDoorAnimation : AnimationState
     {
         animator.Play(_singleDoorOpen);
     }
+}
+
+========================================
+FILE: ./Assets/Scripts/Animation/DoorAnimation/PullableDoorAnimation.cs
+========================================
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PullableDoorAnimation
+{
+    
+        readonly Animator _animator;
+        readonly int _doubleDoorOpen = Animator.StringToHash("DoubleDoorsOpening");
+        // readonly Dictionary<int, float> TimeSheet;
+
+        public PullableDoorAnimation(Animator animator) { _animator = animator; _animator.speed = 0f; }
+        public void SetProgress(float t) { _animator.Play(_doubleDoorOpen, 0, Mathf.Clamp01(t)); _animator.Update(0f); }
+        // scrub the open clip to a 0..1 position and hold there — call as the lever moves
+        public void Step(float normalized)
+        {
+                _animator.speed = 0f;
+                _animator.Play(_doubleDoorOpen, 0, Mathf.Clamp01(normalized));
+                _animator.Update(0f);
+        }
 }
 
 ========================================
@@ -12484,11 +12636,6 @@ public static class Utilities
     public const string LockedLayer = "Locked";
     public const string ObstructionLayer = "Obstruction";
     public const string DepthLayer = "Depth";
-
-
-
-
-    
     
     public enum KeyTypes
     {
@@ -12497,6 +12644,7 @@ public static class Utilities
         MasterKey,
         SlidingBlock,
         MovingBlock,
+        SymbolSlidingBlock
     }
     
     public static void PutObjectOnLayer(string objectsNewLayer,GameObject gameObject)
@@ -12601,6 +12749,23 @@ namespace Doors
     }
 }
 ========================================
+FILE: ./Assets/Scripts/Doors/MultipleDependentDoubleDoor.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MultipleDependentDoubleDoor : MonoBehaviour, IPollableDependency<List<bool>>
+{
+    public void Apply(List<bool> dependentValue)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public List<List<bool>> Value { get; }
+}
+
+========================================
 FILE: ./Assets/Scripts/Doors/OpenableDoubleDoor.cs
 ========================================
 using UnityEngine;
@@ -12650,6 +12815,250 @@ public class EnemyPlaceholder : MonoBehaviour, IHurt, IInteractWithHookProjectil
 }
 
 ========================================
+FILE: ./Assets/Scripts/Conditions/DependencyEvent.cs
+========================================
+using System;
+using System.Collections.Generic;
+
+namespace Dependencies
+{
+    // The tracked thing. Holds a value, raises Changed when it actually changes.
+    // Knows nothing about who depends on it.
+    public class DependencyEvent<T>
+    {
+        private T _value;
+
+        public DependencyEvent(T value = default) => _value = value;
+
+        public T Value
+        {
+            get => _value;
+            set
+            {
+                if (EqualityComparer<T>.Default.Equals(_value, value)) return;
+                _value = value;
+                Changed?.Invoke(_value);
+            }
+        }
+
+        public event Action<T> Changed;
+    }
+}
+========================================
+FILE: ./Assets/Scripts/Conditions/DependentEvent.cs
+========================================
+using System;
+
+namespace Dependencies
+{
+    // Watches one DependencyEvent. When the value satisfies the condition, runs the action.
+    public class DependentEvent<T>
+    {
+        private readonly DependencyEvent<T> _dependency;
+        private readonly Func<T, bool> _condition;
+        private readonly Action<T> _action;
+
+        public DependentEvent(DependencyEvent<T> dependency, Func<T, bool> condition, Action<T> action)
+        {
+            _dependency = dependency;
+            _condition = condition;
+            _action = action;
+            _dependency.Changed += Evaluate;
+        }
+
+        private void Evaluate(T value)
+        {
+            if (_condition(value)) _action(value);
+        }
+
+        public void Stop() => _dependency.Changed -= Evaluate;
+    }
+}
+========================================
+FILE: ./Assets/Scripts/Interactable/Throwable/Throwable.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using Interface;
+using Items.SubItems;
+using UnityEngine;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class Throwable : InteractableBase, IInteractWithHookProjectile
+{
+    public override InteractionKind Kind => InteractionKind.Throw;
+
+    //if it needs to bounces add to the list
+    [SerializeField] protected List<AnimationCurve> bounceSequence;
+    //keep track of the index of the arches in the animation curve
+    protected int currentBounceIndex = 0;
+    //how fast it will be thrown
+    protected float Speed = 12f;
+    //how far it will go...this is set by the last key in the animation set key frames
+    protected float DistanceLimit;
+    //cached starting point so the distance
+    protected Vector3 _startingPoint;
+    //so we can keep track of how far it is going
+    protected bool _isThrown;
+    //which direction to make it thrown
+    protected Vector2 _throwDirection;
+    //what we are throwing
+    [SerializeField] protected Transform throwable;
+    //the shadow to give it the illusion of height
+    [SerializeField] protected Transform shadow;
+    //we throw before we animation, so we should be able to calculate the correct distance to the ground...I don't know if it would or wouldnt work in the animation cycle
+    protected Bounds PlayerSpriteBounds;
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        //update the layer so we can interact with it
+        UpdateLayerName();
+    }
+
+
+    public override bool Interact(IInteractionContext context)
+    {
+        PickUp(context.Transform);
+        PlayerSpriteBounds = context.Transform.gameObject.GetComponent<SpriteRenderer>().bounds;
+        return true;
+    }
+
+    public override void Release(IInteractionContext context)
+    {
+        this.transform.position = GetGroundPosition();
+        Vector3 direction = context.LookDirection;
+        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
+        Toss(direction);
+    }
+
+    private void FixedUpdate()
+    {
+        //if it's thrown run the in air logic
+        if (_isThrown)
+        {
+            InAir();
+        }
+        
+        if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
+        {
+            _isThrown = false;
+            //wait for the break animation to play
+            Destroy(this.gameObject);
+            //if it does not have more distance to go
+
+        }
+    }
+
+    protected Throwable PickUp(Transform parent)
+    {
+        //when we pick it up set the trigger to true so it doesn't interact with anything else
+        //todo consider updating the layer as well if there is a problem with anyone else picking it
+        //up while it's picked up
+        this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
+        //set the parent as the player
+        //this.transform.SetParent(parent);
+        //move it so it looks good...
+        this.transform.localPosition = new Vector3(0, 0, 0);
+        
+        return this;
+    }
+
+    protected void Toss(Vector3 direction)
+    {
+        //turn on the shadow when it is thrown
+        shadow.gameObject.SetActive(true);
+        //move the shadow
+        shadow.position = new Vector3(shadow.position.x, shadow.position.y , shadow.position.z);//- .25f
+        //remove it as the child of player
+        this.transform.SetParent(null);
+        //cache where it starts so we can keep track of the distance...and where the ground is so it doesn't start where the origin point is when its over it's head
+        _startingPoint = transform.position;
+        //cache the direction
+        _throwDirection = direction;
+        //set the boolean to true that it is thrown
+        _isThrown = true;
+        
+    }
+
+    protected void InAir()
+    {
+        Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        //x is height
+        float yPos = bounceSequence[currentBounceIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
+  
+        throwable.localPosition = new Vector3(0, yPos, 0);
+        rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
+        // Debug.Break();
+    }
+    
+    public void InteractWithHookProjectile(HookProjectile projectile)
+    {
+        //todo if this is a bomb set the item to null for when it explodes...or in the switch statement check if the bomb has exploded
+        //se the parent to the grappling hook
+        this.transform.parent = projectile.transform;
+        //set it as a trigger so it can be retracted without any interuption on the way back
+        this.GetComponent<Collider2D>().isTrigger = true;
+    }
+    
+    Vector2 GetGroundPosition()
+    {
+        //distance from the ground so the animation curve starts at the correct height and not the height + overhead origin point
+        return new Vector2(transform.position.x,(this.transform.position - PlayerSpriteBounds.size).y);
+    }
+}
+
+========================================
+FILE: ./Assets/Scripts/Interactable/Throwable/BombThrowable.cs
+========================================
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using DG.Tweening;
+
+//https://yal.cc/top-down-bouncing-loot-effects/
+class BombThrowable : Throwable
+{
+    
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        //update the layer so we can interact with it
+        UpdateLayerName();
+    }
+    
+    protected void FixedUpdate()
+    {
+        //if it's thrown run the in air logic
+        if (_isThrown)
+        {
+            InAir();
+        }
+        
+        //determine if it needs to go to the next bounce
+        if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
+        {
+            _isThrown = false;
+            //if it does not have more distance to go
+            if ( currentBounceIndex < bounceSequence.Count-1)
+            {
+                //increase tp the next curve
+                currentBounceIndex++;
+                Speed *= .75f;
+                //when we leave the state release will be called and it will be thrown and we immediately go to 
+                DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
+                //throw the item 
+                Toss(_throwDirection);            
+            }
+            
+        }
+    }
+    
+}
+
+========================================
 FILE: ./Assets/Scripts/Interactable/InteractableBase.cs
 ========================================
 using UnityEngine;
@@ -12670,7 +13079,7 @@ public abstract class InteractableBase : MonoBehaviour
     }
 }
 ========================================
-FILE: ./Assets/Scripts/Interactable/Moveable.cs
+FILE: ./Assets/Scripts/Interactable/Moveable/Moveable.cs
 ========================================
 using DG.Tweening;
 using UnityEngine;
@@ -12681,13 +13090,15 @@ public class Moveable : InteractableBase
     public override InteractionKind Kind => InteractionKind.Move;
 
     [SerializeField] private Utilities.KeyTypes key;
-    [SerializeField] private float pushDistance = 1f;   // one grid unit
-    [SerializeField] private float moveTime = .05f;     // units per second
+    private const float pushDistance = 1f;                   // one grid unit
+    private const float pushSpeed = .75f;          // units/sec — lower = slower
+    private const float wiggleStrength = 0.05f;  // keep it small
+    private const float wiggleTime = 0.1f;
 
     private OverlapTargetCheck _targetCheck;
     private Collider2D _col;
     private LayerMask _obstructionMask;
-    private Tweener _pushTween;
+    private Tween _pushTween;
     private bool _isMoving;
     private Vector3 _origin;
     private Vector3 _destination;
@@ -12723,9 +13134,12 @@ public class Moveable : InteractableBase
         _origin = transform.position;
         _destination = destination;
 
-        _pushTween = transform.DOMove(destination, moveTime).SetEase(Ease.OutSine)
+        float duration = pushDistance / pushSpeed;
+
+        _pushTween = DOTween.Sequence()
+            .Append(transform.DOShakePosition(wiggleTime, wiggleStrength, 8, 90, false, true))      // wind-up wiggle
+            .Append(transform.DOMove(destination, duration).SetEase(Ease.OutSine).OnUpdate(AbortIfPathBlocked))
             .SetLink(gameObject)
-            .OnUpdate(AbortIfPathBlocked)
             .OnComplete(OnPushComplete);
     }
 
@@ -12748,13 +13162,20 @@ public class Moveable : InteractableBase
         return false;
     }
 
+    public override void Release(IInteractionContext context) { }
+
     private void OnPushComplete()
     {
-        _isMoving = false;
         CleanUp();
+        Wiggle();
     }
 
-    public override void Release(IInteractionContext context) { }
+    private void Wiggle()
+    {
+        transform.DOShakePosition(wiggleTime, wiggleStrength, vibrato: 8, randomness: 90, snapping: false, fadeOut: true)
+            .SetLink(gameObject)
+            .OnComplete(() => _isMoving = false);   // settled — free to push again
+    }
 
     async void CleanUp()
     {
@@ -12774,7 +13195,7 @@ public class Moveable : InteractableBase
     }
 }
 ========================================
-FILE: ./Assets/Scripts/Interactable/Pickupable.cs
+FILE: ./Assets/Scripts/Interactable/Pickupable/Pickupable.cs
 ========================================
 using System.Collections;
 using System.Collections.Generic;
@@ -12845,7 +13266,7 @@ public class Pickupable : InteractableBase, IItemPickUp
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interactable/Slidable.cs
+FILE: ./Assets/Scripts/Interactable/Slidable/Slidable.cs
 ========================================
 using System.Collections.Generic;
 using System.Linq;
@@ -12861,7 +13282,7 @@ using Vector3 = UnityEngine.Vector3;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Slidable : InteractableBase
 {
-    [SerializeField] private Utilities.KeyTypes key;
+    protected virtual Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
     public LayerMask obstructionLayer;
     const int animationDelay = 250;
     [SerializeField] OverlapMoveDamageCheck moverCheckPrefab;
@@ -13126,34 +13547,50 @@ public class Slidable : InteractableBase
        
  */
 ========================================
-FILE: ./Assets/Scripts/Interactable/Pullable.cs
+FILE: ./Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependent.cs
 ========================================
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Pullable : InteractableBase
+public class PullableOpenDependent : MonoBehaviour, IDependency<float>
 {
-    Vector3 origin;
-    [SerializeField] private Transform handle;
+    private PullableDoorAnimation _doubleDoorAnimation;
 
-    //pull direction.
-    //origin. 
-    //distance
-    //time
-    public override InteractionKind Kind => InteractionKind.Pull;
-    public override bool Interact(IInteractionContext context)
+   
+    private void Awake()
     {
-        throw new System.NotImplementedException();
+        _doubleDoorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
     }
 
-    public override void Release(IInteractionContext context)
-    {
-        throw new System.NotImplementedException();
-    }
+    public void Apply(float amount) => _doubleDoorAnimation.Step(amount);
+    
+
+
 }
 
+========================================
+FILE: ./Assets/Scripts/Interactable/SubInteractables/Pullable/PullableMoveDependent.cs
+========================================
+using System;
+using UnityEngine;
+//this should only be attached to one pullable so it does not conflict with others. it should subscrie and pullable not
+//know about it so multiple dependants can subscribe to pullable.
+public class PullableMoveDependent : MonoBehaviour, IDependency<float>
+{
+    private enum Axis { Horizontal, Vertical }
+
+    [SerializeField] private Axis axis = Axis.Vertical;
+    [SerializeField] private float distance = 3f;   // travel at full pull; negative flips the direction
+
+    private Vector3 _origin;
+
+    private void Awake() => _origin = transform.position;
+
+    public void Apply(float updateDependentValue)
+    {
+        Vector3 dir = axis == Axis.Horizontal ? Vector3.right : Vector3.up;
+        transform.position = _origin + dir * (distance * updateDependentValue);
+    }
+}
 ========================================
 FILE: ./Assets/Scripts/Interactable/SubInteractables/BombThrowableSubitems/BombExplode.cs
 ========================================
@@ -13332,136 +13769,262 @@ namespace Explode
 }
 
 ========================================
-FILE: ./Assets/Scripts/Interactable/Throwable.cs
+FILE: ./Assets/Scripts/Interactable/Pullable/PullableLatched.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
-using Interface;
-using Items.SubItems;
-using UnityEngine;
-using UnityEngine.UI;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class Throwable : InteractableBase, IInteractWithHookProjectile
+public class PullableLatched : Pullable
 {
-    public override InteractionKind Kind => InteractionKind.Throw;
+    private bool _locked = false;
+    private bool IsFullyPulled() => _distance >= maxDistance - 0.001f;
 
-    //if it needs to bounces add to the list
-    [SerializeField] protected List<AnimationCurve> bounceSequence;
-    //keep track of the index of the arches in the animation curve
-    protected int currentBounceIndex = 0;
-    //how fast it will be thrown
-    protected float Speed = 12f;
-    //how far it will go...this is set by the last key in the animation set key frames
-    protected float DistanceLimit;
-    //cached starting point so the distance
-    protected Vector3 _startingPoint;
-    //so we can keep track of how far it is going
-    protected bool _isThrown;
-    //which direction to make it thrown
-    protected Vector2 _throwDirection;
-    //what we are throwing
-    [SerializeField] protected Transform throwable;
-    //the shadow to give it the illusion of height
-    [SerializeField] protected Transform shadow;
-    //we throw before we animation, so we should be able to calculate the correct distance to the ground...I don't know if it would or wouldnt work in the animation cycle
-    protected Bounds PlayerSpriteBounds;
-    private void Awake()
+    
+    public override bool Interact(IInteractionContext context)
     {
-        rb = GetComponent<Rigidbody2D>();
-        //update the layer so we can interact with it
-        UpdateLayerName();
+        if (_locked) return false;
+        
+        return base.Interact(context);
     }
+    
+    public override float Pull(float requested)
+    {
+        if (_locked) return 0f;
+        return base.Pull(requested);
+    }
+    
+    public override void Release(IInteractionContext context)
+    {
+         if (_locked) return;
+         if (IsFullyPulled())
+         {
+             // only locks if pulled all the way
+             _locked = true;
+             return;
+         }
 
+         base.Release(context);
+    }
+}
+/*
+ * using UnityEngine;
+   using DG.Tweening;
+   using Player.ItemOverlap;
+   
+   public class Pullable : InteractableBase
+   {
+       public override InteractionKind Kind => InteractionKind.Pull;
+   
+       [SerializeField] private Transform handle;
+       [SerializeField] private float maxDistance = 1.5f;
+       [SerializeField] private float retractTime = 0.25f;
+       [SerializeField] private bool locksAtFullPull = true;
+       [SerializeField] private MonoBehaviour dependent;     // implements IPullDependent
+       [SerializeField] private LineRenderer line;
+       [SerializeField] private OverlapMoveCheck handleCheck;
+   
+       private Vector3 _origin;
+       private Vector2 _pullDir;
+       private IPullDependent _dependent;
+       private float _distance;
+       private bool _locked;
+       
+       [SerializeField] private InterfaceReference<IPullDependent> target;
+   
+   
+       private void Awake()
+       {
+           UpdateLayerName();
+           _origin = handle.position;
+           _dependent = dependent as IPullDependent;
+           if (handleCheck == null) handleCheck = GetComponentInChildren<OverlapMoveCheck>();
+           DrawLine();
+       }
+   
+       public override bool Interact(IInteractionContext context)
+       {
+           if (_locked) return false;
+           _pullDir = -context.LookDirection;   // the handle follows the player as they back away
+           return true;
+       }
+   
+       // advance the handle up to 'requested'; returns how far it actually moved so the player can match it
+       public float Pull(float requested)
+       {
+           if (_locked) return 0f;
+   
+           float applied = Mathf.Min(requested, maxDistance - _distance);
+           if (applied <= 0f) return 0f;                                    // at full → player can't go further
+   
+           Vector3 nextHandle = _origin + (Vector3)(_pullDir * (_distance + applied));
+           if (IsObstructed(nextHandle)) return 0f;                         // blocked → frozen, player stops too
+   
+           SetDistance(_distance + applied);
+           return applied;
+       }
+   
+       public override void Release(IInteractionContext context)
+       {
+           if (_locked) return;
+   
+           bool atFull = _distance >= maxDistance - 0.001f;
+           if (locksAtFullPull && atFull) { _locked = true; return; }       // only locks if pulled all the way
+           Retract();
+       }
+   
+       private bool IsObstructed(Vector3 pos)
+       {
+           if (handleCheck == null) return false;
+           handleCheck.transform.position = pos;
+           return handleCheck.DoesOverlap(pos);
+       }
+   
+       private void SetDistance(float distance)
+       {
+           _distance = Mathf.Clamp(distance, 0f, maxDistance);
+           handle.position = _origin + (Vector3)(_pullDir * _distance);
+           DrawLine();
+           _dependent?.OnPullChanged(_distance / maxDistance);
+       }
+   
+       private void Retract()
+       {
+           DOTween.To(() => _distance, x => SetDistance(x), 0f, retractTime)
+               .SetEase(Ease.OutQuad)
+               .SetLink(gameObject);
+       }
+   
+       private void DrawLine()
+       {
+           if (line == null) return;
+           line.positionCount = 2;
+           line.SetPosition(0, _origin);
+           line.SetPosition(1, handle.position);
+       }
+   
+   #if UNITY_EDITOR
+       private void OnValidate()
+       {
+           if (dependent != null && dependent is not IPullDependent)
+           {
+               Debug.LogWarning($"{name}: '{dependent.GetType().Name}' doesn't implement IPullDependent.", this);
+               dependent = null;
+           }
+       }
+   #endif
+   }
+ */
+
+========================================
+FILE: ./Assets/Scripts/Interactable/Pullable/Pullable.cs
+========================================
+using UnityEngine;
+using DG.Tweening;
+using Player.ItemOverlap;
+
+public class Pullable : InteractableBase
+{
+    public override InteractionKind Kind => InteractionKind.Pull;
+    [SerializeField] protected InterfaceReference<IDependency<float>> objectEffectedByPullItem;
+    [SerializeField] protected Transform handle;
+    [SerializeField] protected float maxDistance = 1.5f;
+    [SerializeField] protected float retractTime = 0.25f;
+    [SerializeField] protected OverlapMoveCheck handleCheck;
+
+    protected Vector3 _origin;
+    protected Vector2 _pullDir;
+    protected float _distance;
+    protected LineRenderer _line;
+    
+
+
+    protected void Awake()
+    {
+        UpdateLayerName();
+        _origin = handle.position;
+        _line = GetComponent<LineRenderer>();
+        if (handleCheck == null) handleCheck = GetComponentInChildren<OverlapMoveCheck>();
+        DrawLine();
+    }
 
     public override bool Interact(IInteractionContext context)
     {
-        PickUp(context.Transform);
-        PlayerSpriteBounds = context.Transform.gameObject.GetComponent<SpriteRenderer>().bounds;
+        _pullDir = -context.LookDirection;   // the handle follows the player as they back away
         return true;
     }
 
+    // advance the handle up to 'requested'; returns how far it actually moved so the player can match it
+    public virtual float Pull(float requested)
+    {
+
+        float applied = Mathf.Min(requested, maxDistance - _distance);
+        if (applied <= 0f) return 0f;                                    // at full → player can't go further
+
+        Vector3 nextHandle = _origin + (Vector3)(_pullDir * (_distance + applied));
+        if (IsObstructed(nextHandle)) return 0f;                         // blocked → frozen, player stops too
+
+        SetDistance(_distance + applied);
+        return applied;
+    }
+    
     public override void Release(IInteractionContext context)
     {
-        this.transform.position = GetGroundPosition();
-        Vector3 direction = context.LookDirection;
-        DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-        Toss(direction);
+        Retract();
     }
 
-    private void FixedUpdate()
+    private bool IsObstructed(Vector3 pos)
     {
-        //if it's thrown run the in air logic
-        if (_isThrown)
+        if (handleCheck == null)
         {
-            InAir();
+            Debug.LogError($"handle check not serialized");
+            return false;
         }
         
-        if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
-        {
-            _isThrown = false;
-            //wait for the break animation to play
-            Destroy(this.gameObject);
-            //if it does not have more distance to go
-
-        }
+        handleCheck.transform.position = pos;
+        return handleCheck.DoesOverlap(pos);
     }
 
-    protected Throwable PickUp(Transform parent)
+    private void SetDistance(float distance)
     {
-        //when we pick it up set the trigger to true so it doesn't interact with anything else
-        //todo consider updating the layer as well if there is a problem with anyone else picking it
-        //up while it's picked up
-        this.transform.GetComponent<BoxCollider2D>().isTrigger = true;
-        //set the parent as the player
-        //this.transform.SetParent(parent);
-        //move it so it looks good...
-        this.transform.localPosition = new Vector3(0, 0, 0);
-        
-        return this;
+        _distance = Mathf.Clamp(distance, 0f, maxDistance);
+        handle.position = _origin + (Vector3)(_pullDir * _distance);
+        DrawLine();
+        objectEffectedByPullItem.Value?.Apply(_distance / maxDistance);
     }
 
-    protected void Toss(Vector3 direction)
+    protected void Retract()
     {
-        //turn on the shadow when it is thrown
-        shadow.gameObject.SetActive(true);
-        //move the shadow
-        shadow.position = new Vector3(shadow.position.x, shadow.position.y , shadow.position.z);//- .25f
-        //remove it as the child of player
-        this.transform.SetParent(null);
-        //cache where it starts so we can keep track of the distance...and where the ground is so it doesn't start where the origin point is when its over it's head
-        _startingPoint = transform.position;
-        //cache the direction
-        _throwDirection = direction;
-        //set the boolean to true that it is thrown
-        _isThrown = true;
-        
+        DOTween.To(() => _distance, x => SetDistance(x), 0f, retractTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(gameObject);
     }
 
-    protected void InAir()
+    private void DrawLine()
     {
-        Vector3 travelPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        //x is height
-        float yPos = bounceSequence[currentBounceIndex].Evaluate(Vector2.Distance(_startingPoint, travelPos));
-  
-        throwable.localPosition = new Vector3(0, yPos, 0);
-        rb.MovePosition(rb.position + _throwDirection * Speed * Time.deltaTime);
-        // Debug.Break();
+        if (_line == null) return;
+        _line.positionCount = 2;
+        _line.SetPosition(0, _origin);
+        _line.SetPosition(1, handle.position);
     }
     
-    public void InteractWithHookProjectile(HookProjectile projectile)
+}
+========================================
+FILE: ./Assets/Scripts/Interactable/Pullable/PullableRetractable.cs
+========================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PullableRetractable : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
     {
-        //todo if this is a bomb set the item to null for when it explodes...or in the switch statement check if the bomb has exploded
-        //se the parent to the grappling hook
-        this.transform.parent = projectile.transform;
-        //set it as a trigger so it can be retracted without any interuption on the way back
-        this.GetComponent<Collider2D>().isTrigger = true;
+        
     }
-    
-    Vector2 GetGroundPosition()
+
+    // Update is called once per frame
+    void Update()
     {
-        //distance from the ground so the animation curve starts at the correct height and not the height + overhead origin point
-        return new Vector2(transform.position.x,(this.transform.position - PlayerSpriteBounds.size).y);
+        
     }
 }
 
@@ -13555,56 +14118,6 @@ public class GiveItemEffect : MonoBehaviour, IOpenEffect
         context.Items.PickUpItem(item);          // ItemManager parents it to the player / drops the displaced one
     }
 }
-========================================
-FILE: ./Assets/Scripts/Interactable/BombThrowable.cs
-========================================
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using DG.Tweening;
-
-//https://yal.cc/top-down-bouncing-loot-effects/
-class BombThrowable : Throwable
-{
-    
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        //update the layer so we can interact with it
-        UpdateLayerName();
-    }
-    
-    protected void FixedUpdate()
-    {
-        //if it's thrown run the in air logic
-        if (_isThrown)
-        {
-            InAir();
-        }
-        
-        //determine if it needs to go to the next bounce
-        if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
-        {
-            _isThrown = false;
-            //if it does not have more distance to go
-            if ( currentBounceIndex < bounceSequence.Count-1)
-            {
-                //increase tp the next curve
-                currentBounceIndex++;
-                Speed *= .75f;
-                //when we leave the state release will be called and it will be thrown and we immediately go to 
-                DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
-                //throw the item 
-                Toss(_throwDirection);            
-            }
-            
-        }
-    }
-    
-}
-
 ========================================
 FILE: ./Assets/Scripts/Interactable/InteractionKind.cs
 ========================================
@@ -14588,17 +15101,16 @@ namespace Items
 ========================================
 FILE: ./Assets/Scripts/KeyPads/KeyPort.cs
 ========================================
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
 
 namespace KeySystem
 {
 
-
+//should be abstract? then slideable time bomb, slideable symbol, slideable plain, moveable? moveable is not a key port its just 
+//a landing area so this name should prbably cahneg
     public class KeyPort : MonoBehaviour
     {
+        [SerializeField] protected InterfaceReference<IPollableDependency<bool>> dependent;
         [SerializeField] private Utilities.KeyTypes keyPort;
         
         public bool Lock(Utilities.KeyTypes keyType)
@@ -14642,13 +15154,11 @@ using Interactable;
 
 namespace Player.InputManager
 {
-    
     [RequireComponent(typeof(PlayerStateMachineManager))]
     public class InputManager : MonoBehaviour
     {
         PlayerStateMachineManager _stateManager;
         PlayerController _playerInputActions;
-        //Action<IPlayerState.PlayerBaseState> ChangeState;
 
         void Awake()
         {
@@ -14661,8 +15171,6 @@ namespace Player.InputManager
             _playerInputActions.Player.UseItem.canceled += ButtonUp;
             _playerInputActions.Player.SwitchItem.performed += SwitchItem;
             _playerInputActions.Player.Interact.canceled += ReleaseInteraction;
-
-
         }
 
         private void FixedUpdate()
@@ -14675,20 +15183,18 @@ namespace Player.InputManager
             _stateManager.Interact();
         }
 
-        //todo make this run only when there is a interacle where you hold down the button such as pulling
         private void ReleaseInteraction(InputAction.CallbackContext context)
         {
             PlayerBaseState current = _stateManager.getState;
-            // if (current is IButtonUp usingItem)
-            // {
-            //     usingItem.ButtonUp();
-            //     return;
-            // }
+            if (current is IButtonUp buttonUp)   // hold-to-interact states (pull) release here
+            {
+                buttonUp.ButtonUp();
+                return;
+            }
             if (current is not MoveItemState)
             {
                 return;
             }
-
             _stateManager.Release();
         }
 
@@ -14696,34 +15202,25 @@ namespace Player.InputManager
         {
             _stateManager.itemManager.SwitchItem();
         }
-        //When am i releasing it... i should be able to clean this up
 
         private void UseItem(InputAction.CallbackContext context)
         {
             PlayerBaseState current = _stateManager.getState;
             if (current is IButtonUp usingItem)
             {
-                //usingItem.ButtonUp();
-                Debug.Log("Item up 1");
-            
                 return;
             }
-            //Debug.Log("Use item");
             _stateManager.UseItem();
         }
 
         private void ButtonUp(InputAction.CallbackContext context)
         {
-            //Debug.Log("Item up 2");
-
             PlayerBaseState current = _stateManager.getState;
             if (current is IButtonUp usingItem)
             {
-                //Debug.Log("Stop item");
                 usingItem.ButtonUp();
             }
         }
-
 
         private void OnDestroy()
         {
@@ -14732,12 +15229,9 @@ namespace Player.InputManager
             _playerInputActions.Player.UseItem.canceled -= ButtonUp;
             _playerInputActions.Player.SwitchItem.performed -= SwitchItem;
             _playerInputActions.Player.Interact.canceled -= ReleaseInteraction;
-
         }
-
     }
 }
-
 ========================================
 FILE: ./Assets/Scripts/Player/ItemManager/ItemDropper.cs
 ========================================
