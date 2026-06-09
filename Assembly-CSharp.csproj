@@ -156,6 +156,7 @@
     <Compile Include="Assets/Scripts/Animation/ChestAnimation/ChestOpenAnimation.cs" />
     <Compile Include="Assets/Scripts/Interface/IGetMostOverlap.cs" />
     <Compile Include="Assets/Scripts/StateMachine/Player State Machine/Player/IPlayerState.cs" />
+    <Compile Include="Assets/Scripts/KeyPads/SlidableKeyPort.cs" />
     <Compile Include="Assets/Scripts/OverlapScripts/OverlapMostObjectChecker.cs" />
     <Compile Include="Assets/Scripts/Interactable/Throwable/Throwable.cs" />
     <Compile Include="Assets/Scripts/Flashing/BombFlash.cs" />

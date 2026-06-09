@@ -1,6 +1,6 @@
 using UnityEngine;
-using KeySystem;
 using System.Threading.Tasks;
+using KeyPortSystem;
 
 namespace Player.ItemOverlap
 {
@@ -47,10 +47,12 @@ namespace Player.ItemOverlap
             SpriteRenderer overlapField = GetComponent<SpriteRenderer>();
             KeyPort port = col.GetComponent<KeyPort>();
             Debug.Log($"did I find a port? {port != null}");
+            Debug.Log($"does percentage works? {GetPercentOfOverlap(col.bounds, overlapField.bounds) > 60.0f}");
+            Debug.Log($"does lock works? {port.Matches(key)}");
 
             if (port != null &&
                 GetPercentOfOverlap(col.bounds, overlapField.bounds) > 60.0f &&
-                port.Lock(key))
+                port.Matches(key))
             {
                 return await Task.FromResult(true);
             }
