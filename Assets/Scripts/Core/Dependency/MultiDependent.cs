@@ -8,7 +8,7 @@ namespace IT.Core.Dependency
     public abstract class MultiDependent<T> : MonoBehaviour
     {
         [SerializeField]
-        private List<InterfaceReference<IDependencySource<T>>> sources = new();
+        private List<InterfaceRef<IDependencySource<T>>> sources = new();
 
         protected virtual void OnEnable()
         {

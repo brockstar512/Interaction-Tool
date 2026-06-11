@@ -1,0 +1,69 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace IT.Animation.Player.States
+{
+    using IT.Player.StateMachine;
+
+    public class MoveAnimState : AnimStateBase
+    {
+        const string WalkRight = "WalkRight";
+        const string WalkUp = "WalkUp";
+        const string WalkDown = "WalkDown";
+        const string WalkLeft = "WalkLeft";
+
+        const string StandRight = "StandRight";
+        const string StandLeft = "StandLeft";
+        const string StandUp = "StandUp";
+        const string StandDown = "StandDown";
+
+        public void Play(PlayerStateMachine state)
+        {
+            if (state.movement.x != 0 || state.movement.y != 0)
+            {
+                //Debug.Log("walking");
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(WalkDown);
+                }
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(WalkUp);
+                }
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(WalkRight);
+
+                }
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(WalkLeft);
+                }
+
+            }
+            else
+            {
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(StandDown);
+                }
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(StandUp);
+                }
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(StandRight);
+
+                }
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(StandLeft);
+                }
+            }
+
+        }
+
+    }
+}

@@ -8,14 +8,14 @@ namespace IT.Player.StateMachine
 
     public interface IPlayerState
     {
-        class DefaultState { }
-        class MoveItemState { }
-        class SlideItemState { }
-        class ThrowItemState { }
-        class UseItemState { }
-        class PlayerBaseState { }
+        class PlayerIdleState { }
+        class PlayerMoveItemState { }
+        class PlayerSlideState { }
+        class PlayerThrowState { }
+        class PlayerUseState { }
+        class PlayerStateBase { }
 
-        public void SwitchState(PlayerBaseState state);
+        public void SwitchState(PlayerStateBase state);
 
     }
 }

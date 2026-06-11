@@ -5,7 +5,7 @@ namespace IT.Items
 {
     using IT.Interactables;
 
-    public class PlankItem : Item
+    public class PlankItem : ItemBase
     {
         Action _disposeOfItem = null;
 

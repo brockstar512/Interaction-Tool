@@ -6,13 +6,13 @@ namespace IT.Prototype
 {
     using IT.Core.StateMachine;
 
-    public class AppleGrowState : BaseState
+    public class AppleGrowState : StateBase
     {
-        public override void EnterState(StateManager stateManager)
+        public override void EnterState(AppleStateManager stateManager)
         {
 
         }
-        public override void UpdateState(StateManager stateManager)
+        public override void UpdateState(AppleStateManager stateManager)
         {
             //some condition switch state
             if (true)
@@ -21,7 +21,7 @@ namespace IT.Prototype
                 stateManager.SwitchState(stateManager.WholeState);//this could be cached... manager should have the logice
             }
         }
-        public override void OnCollisionEnter(StateManager stateManager, Collision collision)
+        public override void OnCollisionEnter(AppleStateManager stateManager, Collision collision)
         {
 
         }

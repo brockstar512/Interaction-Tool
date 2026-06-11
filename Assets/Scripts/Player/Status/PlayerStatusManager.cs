@@ -17,9 +17,9 @@ namespace IT.Player.Status
             healthBox = GetComponentInChildren<Collider2D>();
         }
 
-        public void Init(PlayerStateMachineManager playerStateMachineManager)
+        public void Init(PlayerStateMachine playerStateMachineManager)
         {
-            playerHUD = HUDReader.instance.InitializePlayerHUD(playerStateMachineManager);
+            playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager);
 
         }
     }

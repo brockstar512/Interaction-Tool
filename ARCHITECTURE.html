@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interacting Tool — Architecture</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root{
+    --ink:#1e293b;
+    --ink-soft:#475569;
+    --accent:#0e7490;       /* teal-700 */
+    --accent-soft:#ecfeff;  /* cyan-50 */
+    --accent2:#7c3aed;      /* violet-600 */
+    --accent2-soft:#f5f3ff;
+    --line:#e2e8f0;
+    --bg-card:#f8fafc;
+    --warn:#b45309;
+    --warn-soft:#fffbeb;
+  }
+  *{box-sizing:border-box;}
+  @page{size:A4;margin:13mm 12mm;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    color:var(--ink);font-size:10.5pt;line-height:1.55;
+  }
+  h1,h2,h3,h4{font-weight:700;line-height:1.25;}
+  h2{
+    font-size:17pt;color:var(--accent);
+    border-bottom:2.5px solid var(--accent);
+    padding-bottom:4px;margin:0 0 14px 0;
+  }
+  h2 .secnum{
+    display:inline-block;background:var(--accent);color:#fff;
+    border-radius:6px;padding:1px 9px;margin-right:8px;font-size:13pt;
+    vertical-align:2px;
+  }
+  h3{font-size:12.5pt;color:var(--ink);margin:18px 0 6px 0;}
+  h3::before{content:"▸ ";color:var(--accent2);}
+  p{margin:6px 0;}
+  code{
+    font-family:"SF Mono",Menlo,Consolas,monospace;font-size:9pt;
+    background:var(--accent-soft);color:#155e75;
+    border-radius:4px;padding:0.5px 4px;
+  }
+  .section{break-inside:auto;}
+  .pagebreak{break-before:page;}
+  .keep{break-inside:avoid;}
+
+  /* ---------- cover ---------- */
+  .cover{
+    height:262mm;display:flex;flex-direction:column;justify-content:center;
+    break-after:page;position:relative;
+  }
+  .cover .kicker{
+    color:var(--accent2);font-weight:700;letter-spacing:3px;
+    text-transform:uppercase;font-size:11pt;margin-bottom:6px;
+  }
+  .cover h1{font-size:34pt;margin:0 0 4px 0;}
+  .cover .subtitle{font-size:13pt;color:var(--ink-soft);margin-bottom:26px;}
+  .cover .meta{
+    display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px;
+  }
+  .cover .meta span{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:20px;padding:4px 14px;font-size:9.5pt;color:var(--ink-soft);
+  }
+  .pillars{display:flex;flex-direction:column;gap:8px;}
+  .pillar{
+    display:flex;gap:12px;align-items:flex-start;
+    background:var(--bg-card);border:1px solid var(--line);
+    border-left:4px solid var(--accent);border-radius:8px;padding:9px 14px;
+  }
+  .pillar:nth-child(even){border-left-color:var(--accent2);}
+  .pillar .n{
+    font-size:15pt;font-weight:800;color:var(--accent);min-width:24px;line-height:1.3;
+  }
+  .pillar:nth-child(even) .n{color:var(--accent2);}
+  .pillar b{display:block;margin-bottom:1px;}
+  .pillar p{margin:0;font-size:9.5pt;color:var(--ink-soft);}
+
+  /* ---------- diagrams ---------- */
+  .diagram{
+    break-inside:avoid;text-align:center;
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:12px 8px 4px 8px;margin:12px 0;
+  }
+  .diagram .caption{
+    font-size:8.5pt;color:var(--ink-soft);font-style:italic;
+    margin:4px 0 6px 0;
+  }
+  .mermaid{display:flex;justify-content:center;}
+  .mermaid svg{max-width:100% !important;height:auto !important;}
+
+  /* ---------- tables ---------- */
+  table{
+    width:100%;border-collapse:collapse;margin:10px 0;font-size:9.3pt;
+    break-inside:avoid;
+  }
+  th{
+    background:var(--accent);color:#fff;text-align:left;
+    padding:6px 9px;font-size:9pt;letter-spacing:.4px;
+  }
+  td{border-bottom:1px solid var(--line);padding:5px 9px;vertical-align:top;}
+  tr:nth-child(even) td{background:var(--bg-card);}
+  table.violet th{background:var(--accent2);}
+
+  /* ---------- cards ---------- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:10px;
+    padding:10px 13px;break-inside:avoid;
+  }
+  .card h4{
+    margin:0 0 4px 0;font-size:10.5pt;color:var(--accent);
+  }
+  .card p{font-size:9.3pt;color:var(--ink-soft);margin:3px 0;}
+  .card.v h4{color:var(--accent2);}
+
+  .callout{
+    background:var(--accent2-soft);border:1px solid #ddd6fe;
+    border-left:4px solid var(--accent2);border-radius:8px;
+    padding:9px 14px;margin:12px 0;font-size:9.6pt;break-inside:avoid;
+  }
+  .callout b{color:var(--accent2);}
+  .warnbox{
+    background:var(--warn-soft);border:1px solid #fde68a;
+    border-left:4px solid var(--warn);border-radius:8px;
+    padding:9px 14px;margin:10px 0;font-size:9.6pt;break-inside:avoid;
+  }
+  .warnbox b{color:var(--warn);}
+
+  ol.walk{counter-reset:step;list-style:none;padding-left:0;margin:8px 0;}
+  ol.walk li{
+    counter-increment:step;position:relative;padding-left:34px;
+    margin-bottom:7px;font-size:9.7pt;
+  }
+  ol.walk li::before{
+    content:counter(step);position:absolute;left:0;top:0;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--accent);color:#fff;font-weight:700;font-size:10pt;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .footer-note{
+    margin-top:18px;font-size:8.5pt;color:var(--ink-soft);
+    border-top:1px solid var(--line);padding-top:6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div class="cover">
+  <div class="kicker">Design &amp; Architecture Document</div>
+  <h1>Interacting Tool</h1>
+  <div class="subtitle">A top-down 2D interaction sandbox — how the systems fit together and who talks to whom</div>
+  <div class="meta">
+    <span>Unity 2D · URP</span><span>New Input System</span><span>DOTween</span>
+    <span>C# async / await</span><span>~125 scripts · 6.7k lines</span><span>namespace <b>IT.*</b></span>
+  </div>
+
+  <h3 style="margin-bottom:10px;">Five design pillars (you'll see these everywhere)</h3>
+  <div class="pillars">
+    <div class="pillar"><div class="n">1</div><div><b>State pattern</b>
+      <p>The player is always in exactly one <code>PlayerStateBase</code>. Each state owns its input handling and animations.</p></div></div>
+    <div class="pillar"><div class="n">2</div><div><b>Interactable polymorphism</b>
+      <p>Every world object answers <code>Kind</code>, <code>Interact()</code>, <code>Release()</code>. The state machine never knows concrete types.</p></div></div>
+    <div class="pillar"><div class="n">3</div><div><b>IInteractionContext façade</b>
+      <p>Objects never see the player class — only a narrow interface: transform, look direction, inventory, animator, and an “I'm done” callback.</p></div></div>
+    <div class="pillar"><div class="n">4</div><div><b>Observer / dependency system</b>
+      <p>Puzzle outputs (lever pulled, block seated) publish via <code>IDependencySource&lt;T&gt;</code>; doors and platforms subscribe. Pieces never reference each other.</p></div></div>
+    <div class="pillar"><div class="n">5</div><div><b>Physics layers as game state</b>
+      <p>An object's layer (<code>Interactable</code>, <code>Locked</code>, <code>HookSocketUsed</code>…) encodes what can currently be done to it.</p></div></div>
+  </div>
+</div>
+
+<!-- ================= 1. BIG PICTURE ================= -->
+<div class="section">
+<h2><span class="secnum">1</span>The Big Picture</h2>
+<p>Everything flows through the <b>player state machine</b>. Input drives it, it dispatches to
+<b>Interactables</b> (objects in the world) or <b>Items</b> (objects in the inventory), and those
+objects report back through callbacks and events when they finish.</p>
+
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  classDef hub fill:#0e7490,stroke:#0e7490,color:#fff,font-weight:bold
+  classDef world fill:#ecfeff,stroke:#0e7490,color:#155e75
+  classDef obs fill:#f5f3ff,stroke:#7c3aed,color:#5b21b6
+  IN["🎮 PlayerInputHandler<br/><i>New Input System</i>"]:::obs
+  SM["PlayerStateMachine<br/><i>9 states · IInteractionContext</i>"]:::hub
+  OV["Overlap system<br/><i>what am I facing?</i>"]:::obs
+  IA["Interactables<br/><i>doors · blocks · levers · throwables</i>"]:::world
+  IT["Items<br/><i>bell · candle · grapple · key…</i>"]:::world
+  INV["PlayerInventory<br/><i>2 slots</i>"]:::world
+  DEP["Dependents<br/><i>puzzle doors · movers</i>"]:::obs
+  HUD["HUD"]:::obs
+  AN["Code-driven animation<br/><i>AnimStateBase classes</i>"]:::obs
+  IN -->|"buttons + movement"| SM
+  OV -->|"best Interactable"| SM
+  SM -->|"Interact / Release"| IA
+  SM -->|"Use / ButtonUp"| IT
+  SM --- INV
+  IA -->|"IDependencySource events"| DEP
+  INV -->|"ItemSwitch event"| HUD
+  SM -->|"Play(hash) + await"| AN
+</pre>
+<div class="caption">Fig. 1 — System overview: the state machine is the hub; objects answer through interfaces and callbacks.</div>
+</div>
+
+<table>
+<tr><th style="width:24%">Folder</th><th style="width:22%">Namespace</th><th>Role</th></tr>
+<tr><td><code>Core/</code></td><td><code>IT.Core.*</code></td><td>Dependency system, <code>InterfaceRef</code>, damage interfaces, utilities, layer registry</td></tr>
+<tr><td><code>Player/</code></td><td><code>IT.Player.*</code></td><td>Input, state machine, inventory, status/health, HUD</td></tr>
+<tr><td><code>Interactables/</code></td><td><code>IT.Interactables.*</code></td><td>World objects the <b>Interact</b> button works on</td></tr>
+<tr><td><code>Items/</code></td><td><code>IT.Items.*</code></td><td>Inventory items the <b>Use</b> button works on</td></tr>
+<tr><td><code>Overlap/</code></td><td><code>IT.Overlap</code></td><td>Spatial queries — “what is the player facing / standing on?”</td></tr>
+<tr><td><code>Animation/</code></td><td><code>IT.Animation.*</code></td><td>Code-driven animation (play Animator states by hash, await durations)</td></tr>
+<tr><td><code>Effects/ · Enemies/</code></td><td><code>IT.Effects · IT.Enemies</code></td><td>Sprite flash effects · <code>EnemyDummy</code> test target</td></tr>
+<tr><td><code>Editor/ · Prototype/</code></td><td>—</td><td>Inspector drawers &amp; validators · apple FSM learning prototype</td></tr>
+</table>
+</div>
+
+<!-- ================= 2. PLAYER ================= -->
+<div class="section pagebreak">
+<h2><span class="secnum">2</span>Player System</h2>
+
+<h3>Input routing — <code>PlayerInputHandler</code></h3>
+<table class="violet">
+<tr><th style="width:30%">Input</th><th>Routed to</th></tr>
+<tr><td>Movement <i>(each FixedUpdate)</i></td><td><code>stateMachine.UpdateMove(vector)</code></td></tr>
+<tr><td>Interact <b>pressed</b></td><td><code>stateMachine.Interact()</code> — find target, dispatch by <code>Kind</code></td></tr>
+<tr><td>Interact <b>released</b></td><td>Current state is <code>IButtonUp</code> (pull) → <code>ButtonUp()</code>; move-item state → <code>Release()</code></td></tr>
+<tr><td>UseItem <b>pressed</b></td><td><code>stateMachine.UseItem()</code> (ignored while a hold-style item is active)</td></tr>
+<tr><td>UseItem <b>released</b></td><td><code>IButtonUp.ButtonUp()</code> — candle off, grapple retract</td></tr>
+<tr><td>SwitchItem</td><td><code>inventory.SwitchItem()</code></td></tr>
+</table>
+
+<h3>The state machine</h3>
+<p><code>PlayerStateMachine</code> pre-allocates one instance of every state, holds the shared references
+(<code>rb</code>, <code>movement</code>, <code>animator</code>, inventory, targeted <code>item</code>), and exposes the
+<code>IInteractionContext</code> façade. <code>EndInteraction(next)</code> is how an item hands control back:
+<code>null</code> → idle; an <code>Interactable</code> → straight into the throw state carrying it.</p>
+
+<div class="diagram">
+<pre class="mermaid">
+stateDiagram-v2
+  classDef idle fill:#0e7490,color:#fff,stroke:#0e7490
+  [*] --> Idle
+  Idle:::idle
+  Idle --> Throw : Kind = Throw
+  Idle --> MoveItem : Kind = Move
+  Idle --> Slide : Kind = Slide
+  Idle --> Open : Kind = Open
+  Idle --> Pull : Kind = Pull
+  Idle --> Equip : Kind = Equip
+  Idle --> Use : UseItem button
+  Throw : Throw — pickup ▸ carry ▸ toss
+  MoveItem : MoveItem — one push per press
+  Slide : Slide — kick · block slides itself
+  Open : Open — door/chest opens or rejects key
+  Pull : Pull — hold &amp; walk backwards
+  Equip : Equip — pickup into inventory
+  Use : Use — inventory item .Use()
+  Death : Death (stub)
+  Throw --> Idle
+  MoveItem --> Idle
+  Slide --> Idle
+  Open --> Idle
+  Pull --> Idle : button up
+  Equip --> Idle
+  Use --> Idle : item calls EndInteraction
+  Use --> Throw : grapple retrieved a throwable
+</pre>
+<div class="caption">Fig. 2 — Player states. Idle is the dispatch hub: it reads the targeted Interactable's <code>Kind</code> and enters the matching state.</div>
+</div>
+
+<div class="cards">
+  <div class="card"><h4>PlayerIdleState</h4><p>Default. Moves the rigidbody, tracks 4-way <code>LookDirection</code>, plays walk/stand clips, dispatches on <code>Kind</code>.</p></div>
+  <div class="card"><h4>PlayerThrowState</h4><p>Pick-up anim → <code>Interact()</code> parents the throwable to the player → carry-walk → press again: <code>Release()</code> tosses it, throw anim, idle.</p></div>
+  <div class="card"><h4>PlayerPullState</h4><p>Hold-style. Each FixedUpdate calls <code>Pull(delta)</code> and moves the player backward by what the handle <i>actually</i> moved — rope stays taut. Release latches or retracts the lever.</p></div>
+  <div class="card"><h4>PlayerUseState</h4><p>Calls <code>item.Use(context)</code>; the <b>item</b> ends the interaction via <code>EndInteraction</code>. Stores the item's <code>ButtonUp</code> if it's hold-style. Walking allowed if <code>CanWalk</code>.</p></div>
+  <div class="card"><h4>PlayerSlideState / MoveItemState / OpenState</h4><p>Thin: call <code>Interact()</code>, play success/failure anims (kick vs. hurt-toe), return to idle. The object owns its own motion.</p></div>
+  <div class="card"><h4>Inventory &amp; HUD</h4><p>2-slot <code>PlayerInventory</code>; full pickups swap into the world holder or eject via <code>ItemDropper</code>. <code>ItemSwitch</code> / health / lives events feed <code>PlayerStatusHUD</code> — UI never polls.</p></div>
+</div>
+</div>
+
+<!-- ================= 3. INTERACTABLES ================= -->
+<div class="section pagebreak">
+<h2><span class="secnum">3</span>Interaction System</h2>
+
+<p>Every world object extends <code>Interactable</code> and answers three questions:
+<b>what am I</b> (<code>Kind</code>), <b>try it</b> (<code>Interact → bool</code>), and
+<b>second phase</b> (<code>Release</code>).</p>
+
+<div class="diagram">
+<pre class="mermaid">
+classDiagram
+  direction TB
+  class Interactable{
+    &lt;&lt;abstract&gt;&gt;
+    +InteractionType Kind
+    +Interact(ctx) bool
+    +Release(ctx)
+  }
+  class OpenableBase{
+    key check, open once
+    runs IOpenEffects
+  }
+  class PushBlock{
+    grid push, DOTween
+    obstruction box check
+  }
+  class SlidableBase{
+    raycast path, slide tween
+    Observable bool when seated
+  }
+  class PullableBase{
+    handle + rope, Pull()
+    Observable float progress
+  }
+  class ThrowableBase{
+    pickup, arc curves
+    IGrappleTarget
+  }
+  class PickupHolder{
+    Kind = Equip
+    world wrapper for items
+  }
+  Interactable <|-- OpenableBase
+  Interactable <|-- PushBlock
+  Interactable <|-- SlidableBase
+  Interactable <|-- PullableBase
+  Interactable <|-- ThrowableBase
+  Interactable <|-- PickupHolder
+  OpenableBase <|-- SingleDoor
+  OpenableBase <|-- DoubleDoor
+  OpenableBase <|-- Chest
+  SlidableBase <|-- BasicSlidingBlock
+  SlidableBase <|-- SymbolSlidingBlock
+  SlidableBase <|-- TimedSlidingBlock
+  PullableBase <|-- RetractingLever
+  PullableBase <|-- LatchedLever
+  ThrowableBase <|-- Bomb
+</pre>
+<div class="caption">Fig. 3 — The Interactable family tree. Leaf classes are mostly thin: they pick a key type, a symbol, or an animation.</div>
+</div>
+
+<div class="cards">
+  <div class="card"><h4>Openables — doors &amp; chests</h4><p><code>OpenableBase</code>: optional <code>KeyTypes</code> check against the current inventory item (consumes it), open-once, then runs every <code>IOpenEffect</code> on the GameObject. <code>SpawnItemOnOpen</code> is the chest payload. Effects are composable.</p></div>
+  <div class="card"><h4>PushBlock</h4><p>One grid cell per press: wind-up wiggle → eased move (mid-flight re-check snaps back if blocked) → settle. If seated ≥60% on a matching <code>KeyPort</code>, the script destroys itself — the block becomes scenery.</p></div>
+  <div class="card"><h4>Sliding blocks</h4><p>Kick → 3-point edge raycast finds the nearest obstruction → tween to just short of it. While sliding, spawns a <code>DamageOverlap</code> in front and a <code>KeyPortOverlap</code> underneath. Seated on a matching port → <code>Observable&lt;bool&gt;</code> flips true. Variants: symbol-matched, timed.</p></div>
+  <div class="card"><h4>Throwables &amp; bombs</h4><p>Arc = an <code>AnimationCurve</code> driving a child sprite's local Y while the body moves; distance is the curve's last key. <code>Bomb</code> chains bounce curves with decaying speed; <code>BombTimer</code> runs an async 10s fuse → explosion prefab → splash damage to <code>IDamageable</code>s.</p></div>
+</div>
+
+<h3>Pullables — the dependency system end-to-end</h3>
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  classDef hub fill:#0e7490,color:#fff,stroke:#0e7490
+  classDef obs fill:#f5f3ff,stroke:#7c3aed,color:#5b21b6
+  P["PlayerPullState<br/><i>walks backwards</i>"]:::hub -->|"Pull(distance)"| L["PullableBase<br/><i>handle + rope line</i><br/>RetractingLever / LatchedLever"]
+  L -->|"Observable&lt;float&gt; 0→1"| D1["PullDrivenDoor<br/><i>scrubs door clip to t</i>"]:::obs
+  L -->|"same event"| D2["PullDrivenMover<br/><i>lerps platform along axis</i>"]:::obs
+</pre>
+<div class="caption">Fig. 4 — A lever never knows what it opens. It publishes normalized progress; any number of Dependents follow it, wired in the Inspector via <code>InterfaceRef</code>.</div>
+</div>
+
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  classDef src fill:#ecfeff,stroke:#0e7490,color:#155e75
+  classDef obs fill:#f5f3ff,stroke:#7c3aed,color:#5b21b6
+  B1["SlidingBlock A<br/>seated ✓"]:::src -->|bool| MD["MultiKeyDoubleDoor<br/><i>MultiDependent&lt;bool&gt;</i><br/>opens when ALL true"]:::obs
+  B2["SlidingBlock B<br/>seated ✓"]:::src -->|bool| MD
+  B3["SlidingBlock C<br/>not yet ✗"]:::src -->|bool| MD
+</pre>
+<div class="caption">Fig. 5 — Multi-key puzzle door: a <code>MultiDependent&lt;bool&gt;</code> that re-evaluates on any change and opens once all sources report true.</div>
+</div>
+</div>
+
+<!-- ================= 4. ITEMS ================= -->
+<div class="section pagebreak">
+<h2><span class="secnum">4</span>Items System</h2>
+
+<div class="callout"><b>The one rule:</b> items end their own interactions. On <code>Use()</code> every item stores
+<code>context.EndInteraction</code> as its <code>ItemFinishedCallback</code> and invokes it from <code>PutAway()</code>.
+The state machine waits; the item decides when it's done — and can even hand back a new object to carry.</div>
+
+<div class="diagram">
+<pre class="mermaid">
+classDiagram
+  direction TB
+  class IItem{
+    &lt;&lt;interface&gt;&gt;
+    +Sprite
+    +CanWalk
+    +Use(ctx)
+    +TakeChild(parent)
+  }
+  class ItemBase{
+    &lt;&lt;abstract&gt;&gt;
+    #ItemFinishedCallback
+    +PutAway()
+  }
+  class KeyItem{ inert, doors consume it }
+  class BellItem{ ring radius detector }
+  class CandleItem{ hold-to-burn, 10s fuel }
+  class GrapplingHook{ projectile, sockets, bridge }
+  class PlankItem{ stub }
+  class SwordItem{ stub }
+  class WhipItem{ stub }
+  IItem <|.. ItemBase
+  ItemBase <|-- KeyItem
+  ItemBase <|-- BellItem
+  ItemBase <|-- CandleItem
+  ItemBase <|-- GrapplingHook
+  ItemBase <|-- PlankItem
+  ItemBase <|-- SwordItem
+  ItemBase <|-- WhipItem
+</pre>
+<div class="caption">Fig. 6 — The item family. <code>PickupHolder</code> (an Interactable, Kind = Equip) is the world-side wrapper that gets items into the inventory.</div>
+</div>
+
+<h3>Grappling hook — three outcomes</h3>
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant GH as GrapplingHook (item)
+  participant PR as GrappleProjectile
+  participant SO as GrappleSockets
+  participant RB as RopeBridge
+  GH->>GH: setup anim · origin = ItemAnchorPoint
+  GH->>PR: Init(origin, HitSomething, playerPos)
+  PR->>SO: socket under player? → claim start pin
+  GH->>PR: DOTween to max range · rope line drawn
+  alt hits Throwable / Enemy
+    PR-->>GH: HitSomething(target)
+    GH->>PR: kill tween · retract (drags item back)
+    GH->>GH: PutAway → EndInteraction(item) → player carries it
+  else start + end sockets connected
+    PR->>SO: InteractWithHookProjectile
+    SO->>RB: Connect(start, end) — walkway + side walls
+    GH->>GH: hook is spent → dispose from inventory
+  else nothing hit
+    GH->>GH: auto-retract at max range → PutAway
+  end
+</pre>
+<div class="caption">Fig. 7 — Grapple flow. RopeBridge builds side-wall colliders over Depth-layer pits and uses IgnoreCollision so the player can cross.</div>
+</div>
+</div>
+
+<!-- ================= 5. OVERLAP + CORE ================= -->
+<div class="section pagebreak">
+<h2><span class="secnum">5</span>Overlap, Layers &amp; Core Plumbing</h2>
+
+<h3>Overlap system — “what am I touching?”</h3>
+<p>One shared idea: keep a sprite-sized AABB (repositioned per look direction), run
+<code>Physics2D.OverlapAreaAll</code> with a layer mask, pick the collider with the <b>largest intersection area</b>.
+Several checkers are short-lived prefabs spawned just for one action.</p>
+
+<table>
+<tr><th style="width:26%">Checker</th><th style="width:26%">Used by</th><th>Question it answers</th></tr>
+<tr><td><code>InteractableOverlap</code></td><td>Player</td><td>Which <code>Interactable</code> am I facing? (feeds <code>Interact()</code>)</td></tr>
+<tr><td><code>KeyPortOverlap</code></td><td>PushBlock, SlidableBase</td><td>Am I seated ≥60% on a <code>KeyPort</code>?</td></tr>
+<tr><td><code>MovementOverlap</code></td><td>PullableBase</td><td>Can the lever handle move here? (boolean probe)</td></tr>
+<tr><td><code>DamageOverlap</code></td><td>SlidableBase</td><td>Who's in a sliding block's path? (applies <code>IDamage</code>)</td></tr>
+<tr><td><code>GrappleTargetOverlap</code></td><td>GrappleProjectile</td><td>What is the hook flying over?</td></tr>
+<tr><td><code>GrappleSocketOverlap</code></td><td>GrappleProjectile</td><td>Is there an unused socket under the player / the hook?</td></tr>
+<tr><td><code>RopeObstructionOverlap</code></td><td>RopeBridge</td><td>Which Depth-layer pits does the bridge span?</td></tr>
+</table>
+
+<h3>Physics layers as state</h3>
+<table class="violet">
+<tr><th style="width:34%">Layer</th><th>Meaning</th></tr>
+<tr><td><code>Interactable</code></td><td>Interact button can hit it (every <code>Interactable</code> self-assigns in <code>Awake</code>)</td></tr>
+<tr><td><code>Obstruction</code> / <code>Locked</code></td><td>Blocks slides &amp; pushes / seated blocks now permanent</td></tr>
+<tr><td><code>KeyPort</code></td><td>Pressure-plate sockets — only port queries look here</td></tr>
+<tr><td><code>HookSocketUnused → Used</code></td><td>Grapple socket claim state (flipped at runtime)</td></tr>
+<tr><td><code>Depth</code></td><td>Pits/water the rope bridge spans</td></tr>
+<tr><td><code>TargetOverlap</code></td><td>The checker objects themselves — excluded from masks to avoid self-hits</td></tr>
+</table>
+<p style="font-size:9.3pt;color:var(--ink-soft);">Names live in <code>GameUtilities</code> (plus the <code>KeyTypes</code> enum pairing keys to locks); indices are cached once in <code>LayerIndex</code>.</p>
+
+<h3>Dependency plumbing &amp; utilities</h3>
+<div class="cards">
+  <div class="card v"><h4>IDependencySource&lt;T&gt; family</h4><p><code>DependencySource&lt;T&gt;</code> (MonoBehaviour base), <code>Observable&lt;T&gt;</code> (plain C#, composed into classes that already extend <code>Interactable</code>), <code>Dependent&lt;T&gt;</code> (one source) and <code>MultiDependent&lt;T&gt;</code> (many) handle subscribe / initial-sync / unsubscribe.</p></div>
+  <div class="card v"><h4>InterfaceRef&lt;T&gt; + drawer</h4><p>Serializable interface reference with an Inspector drawer that validates the dragged object. This makes puzzle wiring <b>designer-facing</b>, not code-facing.</p></div>
+  <div class="card v"><h4>Damage (minimal)</h4><p><code>IDamage</code> markers (<code>DamageOverlap</code>, <code>ExplosionDamageArea</code>, <code>GrappleProjectile</code>) → <code>IDamageable.ApplyDamage()</code> — currently only <code>EnemyDummy</code>. Player health not yet wired.</p></div>
+  <div class="card v"><h4>Utilities</h4><p><code>DepthSorter</code> (y-sorting each LateUpdate), <code>GridSnapper</code> (edit-mode tile snap), <code>Singleton&lt;T&gt;</code>, <code>DebugDraw</code> gizmos, <code>SpritePivotValidator</code> (pivots feed depth sorting).</p></div>
+</div>
+
+<h3>Animation: code-driven, awaitable</h3>
+<div class="callout"><b>No transition graphs.</b> C# “anim state” classes call <code>Animator.Play(hash)</code> directly.
+One-shots keep a <b>TimeSheet</b> (<code>Dictionary&lt;hash, seconds&gt;</code>) and
+<code>await Awaitable.WaitForSecondsAsync(...)</code> so gameplay sequences on animation completion.
+Directional clips are picked from <code>LookDirection</code>. World wrappers (<code>ChestOpenAnim</code>, door anims) are constructed by their owners;
+<code>PullDoorAnim</code> is the standout — animator speed pinned to 0 and the clip <b>scrubbed</b> to the lever's normalized progress.</div>
+</div>
+
+<!-- ================= 6. WALKTHROUGHS ================= -->
+<div class="section pagebreak">
+<h2><span class="secnum">6</span>End-to-End Walkthroughs</h2>
+
+<h3>🗝️ Opening a locked chest</h3>
+<ol class="walk">
+  <li>Interact pressed → <code>InteractableOverlap</code> returns the <code>Chest</code> → idle dispatches on <code>Kind = Open</code>.</li>
+  <li><code>OpenableBase.Interact</code>: current item is a matching <code>KeyItem</code> → consumed (<code>DisposeOfCurrentItem</code>, HUD updates).</li>
+  <li>Open animation plays; <code>SpawnItemOnOpen</code> instantiates the prize → <code>PickUpItem</code>; if full, <code>ItemDropper</code> ejects the displaced item in a <code>PickupHolder</code>.</li>
+  <li>Back to idle.</li>
+</ol>
+
+<h3>🧊 Sliding-block puzzle opens a door</h3>
+<ol class="walk">
+  <li>Kick a <code>BasicSlidingBlock</code> → path raycast; blocked → hurt-toe anim; clear → block tweens away, spawning its mover/target checkers.</li>
+  <li>Block stops at the obstruction; <code>KeyPortOverlap.FindKeyPort</code> finds it seated ≥60% on a <code>SlidingKeyPort</code> → its <code>Observable&lt;bool&gt;</code> flips true and it moves to the <code>Locked</code> layer.</li>
+  <li><code>MultiKeyDoubleDoor</code> re-evaluates; when <b>all</b> wired blocks report true, the door animation plays (Fig. 5).</li>
+</ol>
+
+<h3>🪝 Grappling a bomb across a gap</h3>
+<ol class="walk">
+  <li>Use with <code>GrapplingHook</code> selected → setup anim → projectile flies from the <code>ItemAnchorPoint</code>, rope drawn behind it.</li>
+  <li>It overlaps a <code>Bomb</code> (a <code>ThrowableBase</code>) → callback to the gun → tween killed → retract drags the bomb back.</li>
+  <li><code>PutAway</code> calls <code>EndInteraction(bomb)</code> → the player lands directly in <code>PlayerThrowState</code>, carrying a live bomb.</li>
+</ol>
+
+<h2 style="margin-top:26px;"><span class="secnum">7</span>Known Rough Edges</h2>
+<p style="font-size:9.6pt;color:var(--ink-soft);">Tracked in <code>REFACTOR_PLAN.md</code> — useful context when reading the code, not hidden bugs.</p>
+
+<div class="warnbox"><b>Vestigial files.</b> <code>PlayerContext</code>, <code>PlayerAnimator</code>, <code>PlayerMover</code> (movement actually lives in <code>PlayerStateBase.Move</code>), empty <code>AnimClipBase</code>/<code>AnimStateBase</code>, the odd <code>IPlayerState</code> sketch, and the <code>Prototype/Apple*</code> learning FSM.</div>
+<div class="warnbox"><b><code>async void</code> event-style methods</b> in states and interactables (<code>SlideItem</code>, <code>CleanUp</code>, <code>Action</code>) — exceptions caught locally, but the pattern is slated for cleanup.</div>
+<div class="warnbox"><b>Overlap duplication.</b> <code>DamageOverlap</code>/<code>MovementOverlap</code> re-implement the AABB + direction-helper logic that <code>OverlapCheckerBase</code> centralizes; offsets are hard-coded per prefab.</div>
+<div class="warnbox"><b>Stubs &amp; gaps.</b> <code>PlayerDeathState</code>, <code>TimedSlidingBlock.Timeout</code>, sword/whip/plank items, empty HUD methods, enemy AI. Damage never routes into <code>PlayerStatus</code>; <code>ExplosionDamageArea</code> computes a falloff it never uses.</div>
+
+<div class="footer-note">Interacting Tool · Architecture &amp; Design Document · generated from a full read of <code>Assets/Scripts</code> (~125 files). Companion file: <code>ARCHITECTURE.md</code>.</div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    securityLevel: 'loose',
+    theme: 'base',
+    themeVariables: {
+      fontFamily: '-apple-system, Helvetica Neue, Arial, sans-serif',
+      fontSize: '14px',
+      primaryColor: '#ecfeff',
+      primaryBorderColor: '#0e7490',
+      primaryTextColor: '#155e75',
+      lineColor: '#64748b',
+      secondaryColor: '#f5f3ff',
+      tertiaryColor: '#f8fafc',
+      actorBkg: '#0e7490',
+      actorTextColor: '#ffffff',
+      actorLineColor: '#94a3b8',
+      signalColor: '#334155',
+      signalTextColor: '#334155',
+      labelBoxBkgColor: '#f5f3ff',
+      labelBoxBorderColor: '#7c3aed',
+      labelTextColor: '#5b21b6',
+      loopTextColor: '#5b21b6',
+      noteBkgColor: '#fffbeb',
+      noteBorderColor: '#f59e0b',
+      altBackground: '#f8fafc',
+      classText: '#1e293b',
+      nodeTextColor: '#155e75',
+      mainBkg: '#ecfeff',
+      titleColor: '#1e293b',
+      edgeLabelBackground: '#ffffff',
+      clusterBkg: '#f8fafc'
+    },
+    flowchart: { curve: 'basis', htmlLabels: true },
+    sequence: { mirrorActors: false, actorMargin: 36, messageMargin: 28 },
+    class: { useMaxWidth: true }
+  });
+</script>
+</body>
+</html>

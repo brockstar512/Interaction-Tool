@@ -1,0 +1,30 @@
+using System;
+using UnityEngine;
+
+namespace IT.Items
+{
+    using IT.Interactables;
+
+    public abstract class ItemBase : MonoBehaviour, IItem
+    {
+        //determines if player can walk when using the item
+        [SerializeField] bool canWalk;
+        //serializes the item for the pickup holder and HUD
+        [SerializeField] Sprite sprite;
+        //helps switch states after items is used
+        protected Action<Interactable> ItemFinishedCallback;
+
+        public bool CanWalk =>canWalk;
+        public Sprite Sprite => sprite;
+        public abstract void Use(IInteractionContext context);
+
+        public abstract void PutAway();
+ 
+        public void TakeChild(Transform parentTransform)
+        {
+            gameObject.transform.SetParent(parentTransform);
+            gameObject.transform.localPosition = Vector3.zero;
+        }
+    }
+}
+

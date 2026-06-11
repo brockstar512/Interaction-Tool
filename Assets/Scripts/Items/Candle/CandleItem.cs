@@ -7,9 +7,9 @@ namespace IT.Items.Candle
 {
     using IT.Interactables;
 
-    public class CandleItem : Item, IButtonUp
+    public class CandleItem : ItemBase, IButtonUp
     {
-         public CandleLight candleLightPrefab;
+         public CandleLightController candleLightPrefab;
         private ICandleLight _candleLight;
         private float _lightTime = 10f;
         private CancellationTokenSource _cancellationTokenSource;

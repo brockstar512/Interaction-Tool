@@ -6,17 +6,17 @@ namespace IT.Prototype
 {
     using IT.Core.StateMachine;
 
-    public class AppleWholeState : BaseState
+    public class AppleWholeState : StateBase
     {
-        public override void EnterState(StateManager stateManager)
+        public override void EnterState(AppleStateManager stateManager)
         {
 
         }
-        public override void UpdateState(StateManager stateManager)
+        public override void UpdateState(AppleStateManager stateManager)
         {
 
         }
-        public override void OnCollisionEnter(StateManager stateManager, Collision collision)
+        public override void OnCollisionEnter(AppleStateManager stateManager, Collision collision)
         {
 
         }

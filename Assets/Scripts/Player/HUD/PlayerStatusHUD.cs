@@ -32,7 +32,7 @@ namespace IT.Player.HUD
             Health.fillAmount = health;
         }
 
-        public void BuildHUD(PlayerStateMachineManager player)
+        public void BuildHUD(PlayerStateMachine player)
         {
             player.itemManager.ItemSwitch += UpdateItemUI;
             player.playerStatusManager.playerStatus.HealthChange += UpdateHealth;

@@ -4,9 +4,9 @@ namespace IT.Interactables.Locks
 {
     using IT.Core.Utilities;
 
-    public class SymbolKeyPort : KeyPort
+    public class SymbolKeyPort : KeyPortBase
     {
-        protected override Utilities.KeyTypes keyType => Utilities.KeyTypes.SymbolSlidingBlock;
+        protected override GameUtilities.KeyTypes keyType => GameUtilities.KeyTypes.SymbolSlidingBlock;
 
         [SerializeField] private string symbol;
         public string Symbol => symbol;

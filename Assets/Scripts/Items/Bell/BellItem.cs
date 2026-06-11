@@ -8,13 +8,13 @@ namespace IT.Items.Bell
     using IT.Animation.Player.States;
     using IT.Interactables;
 
-    public class BellItem : Item
+    public class BellItem : ItemBase
     {
-        public OverlapCircleCollider bellSoundAreaPrefab;
-        private IBellSound currentBellSound;
+        public BellRingDetector bellSoundAreaPrefab;
+        private IBellRinger currentBellSound;
 
         //animations should be here
-        private readonly AnimationBell _animationBell = new AnimationBell();
+        private readonly BellAnimState _animationBell = new BellAnimState();
         public override void Use(IInteractionContext context)
         {
             ItemFinishedCallback = context.EndInteraction;

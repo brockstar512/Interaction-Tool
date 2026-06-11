@@ -5,13 +5,13 @@ namespace IT.Items
     using IT.Core.Utilities;
     using IT.Interactables;
 
-    public class Key : Item
+    public class KeyItem : ItemBase
     {
-        public Utilities.KeyTypes keyType;
+        public GameUtilities.KeyTypes keyType;
 
         public override void Use(IInteractionContext context)
         {
-            // A key does nothing on its own — an Openable consumes it on interact.
+            // A key does nothing on its own — an OpenableBase consumes it on interact.
             ItemFinishedCallback = context.EndInteraction;
             PutAway();
         }

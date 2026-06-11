@@ -5,7 +5,7 @@ namespace IT.Items.Weapons
 {
     using IT.Interactables;
 
-    public class WhipItem : Item
+    public class WhipItem : ItemBase
     {
         public override void Use(IInteractionContext context)
         {

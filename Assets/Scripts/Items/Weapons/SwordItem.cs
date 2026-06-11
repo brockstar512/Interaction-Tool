@@ -7,7 +7,7 @@ namespace IT.Items.Weapons
 {
     using IT.Interactables;
 
-    public class SwordItem : Item
+    public class SwordItem : ItemBase
     {
         //hold the button and tsushima minigame pops up
         //otherwise its a swipe

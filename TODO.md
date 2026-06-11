@@ -4,8 +4,7 @@
 ### Custom Collision
 - [ ] **Make Custom Collision**
 
-### State
-- [ ] **movable and pullable**
+
 
 ### Health
 - [ ] **make health and life cycle system**
@@ -37,14 +36,6 @@
 - [ ] Wire up `ApplyDamage` to a proper health/death flow matching `PlayerStatus` pattern
 - [ ] Handle grappling hook hit on enemy properly (`InteractWithHookProjectile` is logged but not implemented beyond calling `ApplyDamage`)
 - [ ] Implement enemy animations using the mob sprite sheets (Coyote, Coffin, Cactus)
-
----
-
-## Push & Pull
-- [ ] `MoveItemState` — implement push and pull input handling for `Moveable` objects
-- [ ] Wire up `AnimationPushAndPull` — animation class exists but is not triggered by any state
-- [ ] Decide directional logic: push = player moves toward object, pull = player moves away
-- [ ] Add movement constraint so the object only slides along the valid push/pull axis
 
 ---
 

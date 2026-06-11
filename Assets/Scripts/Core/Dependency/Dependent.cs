@@ -6,7 +6,7 @@ namespace IT.Core.Dependency
 {
     public abstract class Dependent<T> : MonoBehaviour
     {
-        [SerializeField] private InterfaceReference<IDependencySource<T>> source;
+        [SerializeField] private InterfaceRef<IDependencySource<T>> source;
 
         protected IDependencySource<T> Source => source?.Value;
 

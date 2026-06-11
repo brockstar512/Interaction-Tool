@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace IT.Effects.Flash
 {
-    public class CharacterFlash : ObjectFlash, IFlash
+    public class CharacterFlash : FlashBase, IFlashable
     {
         public override void Awake()
         {

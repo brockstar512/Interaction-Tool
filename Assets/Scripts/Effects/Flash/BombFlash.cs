@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace IT.Effects.Flash
 {
-    public class BombFlash : ObjectFlash, IFlash
+    public class BombFlash : FlashBase, IFlashable
     {
         public override void Awake()
         {
