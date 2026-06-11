@@ -49,8 +49,8 @@
     <Compile Include="Assets/Scripts/Interactables/Throwable/ExplosionEffect.cs" />
     <Compile Include="Assets/Scripts/Player/Movement/ItemAnchorPoint.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/GrappleAnimState.cs" />
-    <Compile Include="Assets/Scripts/Core/Utilities/Singleton.cs" />
     <Compile Include="Assets/Scripts/Enemies/EnemyDummy.cs" />
+    <Compile Include="Assets/Scripts/Core/Utilities/Singleton.cs" />
     <Compile Include="Assets/Scripts/Effects/Flash/CharacterFlash.cs" />
     <Compile Include="Assets/Scripts/Animation/World/PullDoorAnim.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerMoveItemState.cs" />
@@ -167,8 +167,8 @@
     <Compile Include="Assets/Scripts/Core/IDamageable.cs" />
     <Compile Include="Assets/Scripts/Prototype/AppleRottenState.cs" />
     <Compile Include="Assets/Scripts/Core/Dependency/Observable.cs" />
-    <Compile Include="Assets/Scripts/Items/GrapplingHook/GrappleProjectile.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerSlideState.cs" />
+    <Compile Include="Assets/Scripts/Items/GrapplingHook/GrappleProjectile.cs" />
     <Compile Include="Assets/Scripts/Overlap/KeyPortOverlap.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/PlayerStateMachine.cs" />
     <Compile Include="Assets/Scripts/Items/GrapplingHook/IGrappleTarget.cs" />
