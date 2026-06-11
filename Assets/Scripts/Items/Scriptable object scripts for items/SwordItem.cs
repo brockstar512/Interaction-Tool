@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace IT.Items.Weapons
 {
+    using IT.Interactables;
+
     public class SwordItem : Item
     {
         //hold the button and tsushima minigame pops up

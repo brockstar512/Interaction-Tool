@@ -4,7 +4,7 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Flashing
+namespace IT.Effects.Flash
 {
     public class BombFlash : ObjectFlash, IFlash
     {

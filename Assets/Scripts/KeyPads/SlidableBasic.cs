@@ -1,4 +1,9 @@
-public class SlidableBasic : Slidable
+namespace IT.Interactables.Slidable
 {
-    protected override Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
+    using IT.Core.Utilities;
+
+    public class SlidableBasic : Slidable
+    {
+        protected override Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
+    }
 }

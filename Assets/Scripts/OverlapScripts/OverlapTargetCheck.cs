@@ -1,10 +1,12 @@
 // Assets/Scripts/OverlapScripts/OverlapTargetCheck.cs
 using System.Threading.Tasks;
-using KeyPortSystem;
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+    using IT.Interactables.Locks;
+
     [RequireComponent(typeof(SpriteRenderer))]
     public class OverlapTargetCheck : OverlapAreaChecker
     {

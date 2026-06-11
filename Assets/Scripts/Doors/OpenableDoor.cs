@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Doors
+namespace IT.Interactables.Doors
 {
+    using IT.Animation.World;
+
     public class OpenableDoor : Openable
     {
         private SingleDoorAnimation _singleDoorAnimation;

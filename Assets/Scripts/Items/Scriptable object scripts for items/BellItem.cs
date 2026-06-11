@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace IT.Items.Bell
 {
+    using IT.Animation.Player.States;
+    using IT.Interactables;
+
     public class BellItem : Item
     {
         public OverlapCircleCollider bellSoundAreaPrefab;

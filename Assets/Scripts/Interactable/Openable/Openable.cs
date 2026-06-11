@@ -1,42 +1,46 @@
-using Items;
-using Items.Scriptable_object_scripts_for_items;
 using UnityEngine;
 
-public abstract class Openable : InteractableBase
+namespace IT.Interactables.Doors
 {
-    [SerializeField] private Utilities.KeyTypes key;
-    private bool _isOpen;
-    private IOpenEffect[] _effects;
+    using IT.Core.Utilities;
+    using IT.Items;
 
-    public override InteractionKind Kind => InteractionKind.Open;
-
-    public override bool Interact(IInteractionContext context)
+    public abstract class Openable : InteractableBase
     {
-        if (_isOpen) return false;
-        if (key != Utilities.KeyTypes.None && !TryUseKey(context)) return false;
-        Open(context);
-        return true;
+        [SerializeField] private Utilities.KeyTypes key;
+        private bool _isOpen;
+        private IOpenEffect[] _effects;
+
+        public override InteractionKind Kind => InteractionKind.Open;
+
+        public override bool Interact(IInteractionContext context)
+        {
+            if (_isOpen) return false;
+            if (key != Utilities.KeyTypes.None && !TryUseKey(context)) return false;
+            Open(context);
+            return true;
+        }
+
+        public override void Release(IInteractionContext context) { }
+
+        private void Open(IInteractionContext context)
+        {
+            _isOpen = true;
+            OpenAnimation();
+            _effects ??= GetComponents<IOpenEffect>();
+            foreach (var effect in _effects)
+                effect.OnOpen(context);
+        }
+
+        private bool TryUseKey(IInteractionContext context)
+        {
+            if (!CorrectKey(context.Items.GetItem())) return false;
+            context.Items.DisposeOfCurrentItem();   // right key → consume it
+            return true;
+        }
+
+        private bool CorrectKey(IItem item) => item is Key keyItem && keyItem.keyType == key;
+
+        protected virtual void OpenAnimation() { }
     }
-
-    public override void Release(IInteractionContext context) { }
-
-    private void Open(IInteractionContext context)
-    {
-        _isOpen = true;
-        OpenAnimation();
-        _effects ??= GetComponents<IOpenEffect>();
-        foreach (var effect in _effects)
-            effect.OnOpen(context);
-    }
-
-    private bool TryUseKey(IInteractionContext context)
-    {
-        if (!CorrectKey(context.Items.GetItem())) return false;
-        context.Items.DisposeOfCurrentItem();   // right key → consume it
-        return true;
-    }
-
-    private bool CorrectKey(IItem item) => item is Key keyItem && keyItem.keyType == key;
-
-    protected virtual void OpenAnimation() { }
 }

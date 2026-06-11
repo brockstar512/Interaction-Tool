@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AnimationStates
+namespace IT.Animation.Player.States
 {
+    using IT.Player.StateMachine;
 
 
     public class AnimationCarry : AnimationState

@@ -1,6 +1,6 @@
 
 
-namespace Interactable
+namespace IT.Interactables
 {
    public interface IButtonUp
    {

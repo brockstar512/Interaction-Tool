@@ -2,24 +2,27 @@
 // initial sync, and unsubscribe. Subclass overrides OnSourceChanged.
 using UnityEngine;
 
-public abstract class Dependent<T> : MonoBehaviour
+namespace IT.Core.Dependency
 {
-    [SerializeField] private InterfaceReference<IDependencySource<T>> source;
-
-    protected IDependencySource<T> Source => source?.Value;
-
-    protected virtual void OnEnable()
+    public abstract class Dependent<T> : MonoBehaviour
     {
-        if (Source == null) return;
-        Source.Changed += OnSourceChanged;
-        OnSourceChanged(Source.Value);
-    }
+        [SerializeField] private InterfaceReference<IDependencySource<T>> source;
 
-    protected virtual void OnDisable()
-    {
-        if (Source == null) return;
-        Source.Changed -= OnSourceChanged;
-    }
+        protected IDependencySource<T> Source => source?.Value;
 
-    protected abstract void OnSourceChanged(T value);
+        protected virtual void OnEnable()
+        {
+            if (Source == null) return;
+            Source.Changed += OnSourceChanged;
+            OnSourceChanged(Source.Value);
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (Source == null) return;
+            Source.Changed -= OnSourceChanged;
+        }
+
+        protected abstract void OnSourceChanged(T value);
+    }
 }

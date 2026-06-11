@@ -1,37 +1,42 @@
 using UnityEngine;
 
-public class MoveItemState : PlayerBaseState
+namespace IT.Player.StateMachine.States
 {
-    const float PushHoldSeconds = 0.2f;          // keep the push pose on screen; tune to your clip
-    private readonly AnimationPushAndPull _pushAnimation;
+    using IT.Animation.Player.States;
 
-    public MoveItemState()
+    public class MoveItemState : PlayerBaseState
     {
-        _pushAnimation = new AnimationPushAndPull();
-    }
+        const float PushHoldSeconds = 0.2f;          // keep the push pose on screen; tune to your clip
+        private readonly AnimationPushAndPull _pushAnimation;
 
-    public override void EnterState(PlayerStateMachineManager stateManager)
-    {
-        Action(stateManager);
-    }
+        public MoveItemState()
+        {
+            _pushAnimation = new AnimationPushAndPull();
+        }
 
-    public override void UpdateState(PlayerStateMachineManager stateManager) { }
+        public override void EnterState(PlayerStateMachineManager stateManager)
+        {
+            Action(stateManager);
+        }
 
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
+        public override void UpdateState(PlayerStateMachineManager stateManager) { }
 
-    public override void ExitState(PlayerStateMachineManager stateManager)
-    {
-        _pushAnimation.LeavePushAnimation();
-    }
+        public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision) { }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager) { }
+        public override void ExitState(PlayerStateMachineManager stateManager)
+        {
+            _pushAnimation.LeavePushAnimation();
+        }
 
-    public override async void Action(PlayerStateMachineManager stateManager)
-    {
-        _pushAnimation.EnterPushAnimation(stateManager);
-        stateManager.item.Interact(stateManager);   // the single push, on the press
-        _pushAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
+        public override void FixedUpdateState(PlayerStateMachineManager stateManager) { }
 
+        public override async void Action(PlayerStateMachineManager stateManager)
+        {
+            _pushAnimation.EnterPushAnimation(stateManager);
+            stateManager.item.Interact(stateManager);   // the single push, on the press
+            _pushAnimation.Play(stateManager);
+            stateManager.SwitchState(stateManager.defaultState);
+
+        }
     }
 }

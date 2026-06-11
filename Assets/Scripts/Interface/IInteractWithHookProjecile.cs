@@ -1,6 +1,5 @@
-using Items.SubItems;
 
-namespace Interface
+namespace IT.Items.GrapplingHook
 {
     public interface IInteractWithHookProjectile
     {

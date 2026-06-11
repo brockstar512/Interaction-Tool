@@ -1,11 +1,17 @@
 // Assets/Scripts/Interactable/SubInteractables/Pullable/PullableOpenDependent.cs
 using UnityEngine;
 
-public class PullableOpenDependent : Dependent<float>
+namespace IT.Interactables.Pullable
 {
-    private PullableDoorAnimation _doorAnimation;
+    using IT.Animation.World;
+    using IT.Core.Dependency;
 
-    private void Awake() => _doorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
+    public class PullableOpenDependent : Dependent<float>
+    {
+        private PullableDoorAnimation _doorAnimation;
 
-    protected override void OnSourceChanged(float t) => _doorAnimation.Step(t);
+        private void Awake() => _doorAnimation = new PullableDoorAnimation(GetComponent<Animator>());
+
+        protected override void OnSourceChanged(float t) => _doorAnimation.Step(t);
+    }
 }

@@ -1,8 +1,10 @@
 using UnityEngine;
 using System;
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace IT.Items.Weapons
 {
+    using IT.Interactables;
+
     public class WhipItem : Item
     {
         public override void Use(IInteractionContext context)

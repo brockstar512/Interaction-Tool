@@ -1,6 +1,9 @@
-public interface ICandleLight
+namespace IT.Items.Candle
 {
-    public void On();
-    public void Off();
+    public interface ICandleLight
+    {
+        public void On();
+        public void Off();
 
+    }
 }

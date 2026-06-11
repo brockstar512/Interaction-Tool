@@ -1,7 +1,10 @@
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+    using IT.Interactables;
+
     public class OverlapObjectCheck : OverlapMostObjectChecker<InteractableBase>
     {
         protected override void AddDetectionLayers()

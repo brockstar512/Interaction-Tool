@@ -2,37 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OpenItemState : PlayerBaseState
+namespace IT.Player.StateMachine.States
 {
-
-
-    public override void EnterState(PlayerStateMachineManager stateManager)
+    public class OpenItemState : PlayerBaseState
     {
-        Debug.Log("Player state");
-        stateManager.item.Interact(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
-    }
 
-    public override void UpdateState(PlayerStateMachineManager stateManager)
-    {
-    }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
-    }
+        public override void EnterState(PlayerStateMachineManager stateManager)
+        {
+            Debug.Log("Player state");
+            stateManager.item.Interact(stateManager);
+            stateManager.SwitchState(stateManager.defaultState);
+        }
 
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
-    {
-    }
+        public override void UpdateState(PlayerStateMachineManager stateManager)
+        {
+        }
 
-    public override void ExitState(PlayerStateMachineManager stateManager)
-    {
+        public override void FixedUpdateState(PlayerStateMachineManager stateManager)
+        {
+        }
+
+        public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
+        {
+        }
+
+        public override void ExitState(PlayerStateMachineManager stateManager)
+        {
         
-    }
+        }
 
-    public override void Action(PlayerStateMachineManager stateManager)
-    {
-        stateManager.item.Release(stateManager);
+        public override void Action(PlayerStateMachineManager stateManager)
+        {
+            stateManager.item.Release(stateManager);
 
+        }
     }
 }

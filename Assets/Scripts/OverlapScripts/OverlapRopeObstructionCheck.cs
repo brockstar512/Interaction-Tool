@@ -2,8 +2,10 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+
     public class OverlapRopeObstructionCheck : MonoBehaviour, IGetAllOverlap<Collider2D>
     {
         public Vector2 _areaTopRightCornerAABB, _areaBottomLeftCornerAABB = Vector2.zero;

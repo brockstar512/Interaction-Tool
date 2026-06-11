@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Flashing{
+namespace IT.Effects.Flash {
 [RequireComponent(typeof(SpriteRenderer))]
     public abstract class ObjectFlash : MonoBehaviour
     {

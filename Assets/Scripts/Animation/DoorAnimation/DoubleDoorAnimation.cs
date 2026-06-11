@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoubleDoorAnimation : AnimationState
+namespace IT.Animation.World
 {
-    readonly int _doubleDoorDefault = Animator.StringToHash("DoubleDoorClosed");
-    readonly int _doubleDoorOpen = Animator.StringToHash("DoubleDoorsOpening");
-    readonly Dictionary<int, float> TimeSheet;
-    private Animator animator { get; set; }
-
-    public DoubleDoorAnimation(Animator animator)
+    public class DoubleDoorAnimation : AnimationState
     {
-        this.animator = animator;
-        TimeSheet = new()
+        readonly int _doubleDoorDefault = Animator.StringToHash("DoubleDoorClosed");
+        readonly int _doubleDoorOpen = Animator.StringToHash("DoubleDoorsOpening");
+        readonly Dictionary<int, float> TimeSheet;
+        private Animator animator { get; set; }
+
+        public DoubleDoorAnimation(Animator animator)
         {
-            { _doubleDoorDefault, 1f },
-            { _doubleDoorOpen, 0.292f },
-        };
-    }
+            this.animator = animator;
+            TimeSheet = new()
+            {
+                { _doubleDoorDefault, 1f },
+                { _doubleDoorOpen, 0.292f },
+            };
+        }
 
-    // full-speed open, start to finish
-    public void Play()
-    {
-        animator.speed = 1f;
-        animator.Play(_doubleDoorOpen);
-    }
+        // full-speed open, start to finish
+        public void Play()
+        {
+            animator.speed = 1f;
+            animator.Play(_doubleDoorOpen);
+        }
     
+    }
 }

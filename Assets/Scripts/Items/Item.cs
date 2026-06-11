@@ -1,8 +1,10 @@
 using System;
 using UnityEngine;
 
-namespace Items
+namespace IT.Items
 {
+    using IT.Interactables;
+
     public abstract class Item : MonoBehaviour, IItem
     {
         //determines if player can walk when using the item

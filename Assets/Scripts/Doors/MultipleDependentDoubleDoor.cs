@@ -3,34 +3,40 @@
 using System;
 using UnityEngine;
 
-public class MultipleDependentDoubleDoor : MultiDependent<bool>
+namespace IT.Interactables.Doors
 {
-    private bool _opened;
-    private DoubleDoorAnimation _doubleDoorAnimation;
+    using IT.Animation.World;
+    using IT.Core.Dependency;
 
-    private void Awake()
+    public class MultipleDependentDoubleDoor : MultiDependent<bool>
     {
-        _doubleDoorAnimation = new DoubleDoorAnimation(GetComponent<Animator>());
-    }
+        private bool _opened;
+        private DoubleDoorAnimation _doubleDoorAnimation;
 
-    protected override void Reevaluate()
-    {
-        if (_opened) return;
-
-        bool any = false;
-        foreach (bool v in Values())
+        private void Awake()
         {
-            any = true;
-            if (!v) return;          // one false → bail
+            _doubleDoorAnimation = new DoubleDoorAnimation(GetComponent<Animator>());
         }
 
-        if (any) Open();             // all assigned sources were true
-    }
+        protected override void Reevaluate()
+        {
+            if (_opened) return;
 
-    private void Open()
-    {
-        _opened = true;
-        _doubleDoorAnimation.Play();
-        Destroy(this);
+            bool any = false;
+            foreach (bool v in Values())
+            {
+                any = true;
+                if (!v) return;          // one false → bail
+            }
+
+            if (any) Open();             // all assigned sources were true
+        }
+
+        private void Open()
+        {
+            _opened = true;
+            _doubleDoorAnimation.Play();
+            Destroy(this);
+        }
     }
 }

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AnimationClip 
+namespace IT.Animation
 {
+    public abstract class AnimationClip 
+    {
    
+    }
 }

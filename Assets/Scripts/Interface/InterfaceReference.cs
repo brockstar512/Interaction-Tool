@@ -1,16 +1,19 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class InterfaceReference<TInterface> where TInterface : class
+namespace IT.Core
 {
-    [SerializeField] private UnityEngine.Object target;
-
-    public TInterface Value
+    [Serializable]
+    public class InterfaceReference<TInterface> where TInterface : class
     {
-        get => target as TInterface;
-        set => target = value as UnityEngine.Object;
-    }
+        [SerializeField] private UnityEngine.Object target;
 
-    public UnityEngine.Object UnderlyingObject => target;
+        public TInterface Value
+        {
+            get => target as TInterface;
+            set => target = value as UnityEngine.Object;
+        }
+
+        public UnityEngine.Object UnderlyingObject => target;
+    }
 }

@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SingleDoorAnimation : AnimationState
+namespace IT.Animation.World
 {
-    readonly int _singleDoorDefault = Animator.StringToHash("DoorClosed");
-    readonly int _singleDoorOpen = Animator.StringToHash("DoorOpening");
-    readonly Dictionary<int, float> TimeSheet;
-    private Animator animator { get; set; }
-    public SingleDoorAnimation(Animator animator)
+    public class SingleDoorAnimation : AnimationState
     {
-        this.animator = animator;
-        TimeSheet = new()
+        readonly int _singleDoorDefault = Animator.StringToHash("DoorClosed");
+        readonly int _singleDoorOpen = Animator.StringToHash("DoorOpening");
+        readonly Dictionary<int, float> TimeSheet;
+        private Animator animator { get; set; }
+        public SingleDoorAnimation(Animator animator)
         {
-            { _singleDoorDefault, 1f },
-            { _singleDoorOpen, 0.333f },
-        };
-    }
-    public void Play()
-    {
-        animator.Play(_singleDoorOpen);
+            this.animator = animator;
+            TimeSheet = new()
+            {
+                { _singleDoorDefault, 1f },
+                { _singleDoorOpen, 0.333f },
+            };
+        }
+        public void Play()
+        {
+            animator.Play(_singleDoorOpen);
+        }
     }
 }

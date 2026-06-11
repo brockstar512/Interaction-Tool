@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core;
+    using IT.Core.Utilities;
+    using IT.Interactables.Locks;
+
     public class OverlapMoveDamageCheck : MonoBehaviour, IDamage
     {
         public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;

@@ -1,7 +1,10 @@
 using System;
 
-public interface IDependencySource<T>
+namespace IT.Core.Dependency
 {
-    T Value { get; }
-    event Action<T> Changed;
+    public interface IDependencySource<T>
+    {
+        T Value { get; }
+        event Action<T> Changed;
+    }
 }

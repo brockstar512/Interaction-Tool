@@ -1,29 +1,32 @@
 // Assets/Scripts/Interactable/Pullable/PullableLatched.cs
-public class PullableLatched : Pullable
+namespace IT.Interactables.Pullable
 {
-    private bool _locked = false;
-    private bool IsFullyPulled() => _distance >= maxDistance - 0.001f;
-
-    public override bool Interact(IInteractionContext context)
+    public class PullableLatched : Pullable
     {
-        if (_locked) return false;
-        return base.Interact(context);
-    }
+        private bool _locked = false;
+        private bool IsFullyPulled() => _distance >= maxDistance - 0.001f;
 
-    public override float Pull(float requested)
-    {
-        if (_locked) return 0f;
-        return base.Pull(requested);
-    }
-
-    public override void Release(IInteractionContext context)
-    {
-        if (_locked) return;
-        if (IsFullyPulled())
+        public override bool Interact(IInteractionContext context)
         {
-            _locked = true;
-            return;
+            if (_locked) return false;
+            return base.Interact(context);
         }
-        Retract();
+
+        public override float Pull(float requested)
+        {
+            if (_locked) return 0f;
+            return base.Pull(requested);
+        }
+
+        public override void Release(IInteractionContext context)
+        {
+            if (_locked) return;
+            if (IsFullyPulled())
+            {
+                _locked = true;
+                return;
+            }
+            Retract();
+        }
     }
 }

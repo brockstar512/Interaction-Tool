@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Explode
+namespace IT.Interactables.Throwable
 {
+    using IT.Core;
+
     public class ExplosionDamage : MonoBehaviour, IDamage
     {
         

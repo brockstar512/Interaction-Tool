@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using KeyPortSystem;
 using UnityEngine;
 
-public class SlidableSymbol : Slidable
+namespace IT.Interactables.Slidable
 {
-    protected override Utilities.KeyTypes key => Utilities.KeyTypes.SymbolSlidingBlock;
+    using IT.Core.Utilities;
+    using IT.Interactables.Locks;
 
-    [SerializeField] private string symbol;
-
-    protected override bool AcceptsPort(KeyPort port)
+    public class SlidableSymbol : Slidable
     {
-        if (!base.AcceptsPort(port)) return false;             // must be the right key type
-        return port is SymbolKeyPort sp && sp.Symbol == symbol; // and the symbol must match
+        protected override Utilities.KeyTypes key => Utilities.KeyTypes.SymbolSlidingBlock;
+
+        [SerializeField] private string symbol;
+
+        protected override bool AcceptsPort(KeyPort port)
+        {
+            if (!base.AcceptsPort(port)) return false;             // must be the right key type
+            return port is SymbolKeyPort sp && sp.Symbol == symbol; // and the symbol must match
+        }
     }
 }

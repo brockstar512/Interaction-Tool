@@ -2,53 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipItemState : PlayerBaseState
+namespace IT.Player.StateMachine.States
 {
-    AnimationEquipItem EquipItemAnimation;
+    using IT.Animation.Player.States;
 
-    public EquipItemState()
+    public class EquipItemState : PlayerBaseState
     {
-        EquipItemAnimation = new AnimationEquipItem();
-    }
+        AnimationEquipItem EquipItemAnimation;
 
-
-    public override void Action(PlayerStateMachineManager stateManager)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async override void EnterState(PlayerStateMachineManager stateManager)
-    {
-        if (!stateManager.item.Interact(stateManager))
+        public EquipItemState()
         {
-            stateManager.SwitchState(stateManager.defaultState);
-            return;
+            EquipItemAnimation = new AnimationEquipItem();
         }
-        await EquipItemAnimation.Play(stateManager);
-        stateManager.SwitchState(stateManager.defaultState);
-    }
 
-    public override void ExitState(PlayerStateMachineManager stateManager)
-    {
 
-    }
+        public override void Action(PlayerStateMachineManager stateManager)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public override void FixedUpdateState(PlayerStateMachineManager stateManager)
-    {
+        public async override void EnterState(PlayerStateMachineManager stateManager)
+        {
+            if (!stateManager.item.Interact(stateManager))
+            {
+                stateManager.SwitchState(stateManager.defaultState);
+                return;
+            }
+            await EquipItemAnimation.Play(stateManager);
+            stateManager.SwitchState(stateManager.defaultState);
+        }
 
-    }
+        public override void ExitState(PlayerStateMachineManager stateManager)
+        {
 
-    public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
-    {
+        }
 
-    }
+        public override void FixedUpdateState(PlayerStateMachineManager stateManager)
+        {
 
-    public override void UpdateState(PlayerStateMachineManager stateManager)
-    {
-        UpdateLookDirection(stateManager.movement);
-    }
+        }
+
+        public override void OnCollisionEnter(PlayerStateMachineManager stateManager, Collision collision)
+        {
+
+        }
+
+        public override void UpdateState(PlayerStateMachineManager stateManager)
+        {
+            UpdateLookDirection(stateManager.movement);
+        }
 
 
 
     
+    }
 }

@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace KeyPortSystem
+namespace IT.Interactables.Locks
 {
+    using IT.Core.Utilities;
+
     public abstract class KeyPort : MonoBehaviour
     {
         protected virtual Utilities.KeyTypes keyType => Utilities.KeyTypes.None;

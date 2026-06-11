@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Animation.PlayerAnimation.AnimationStates;
 using UnityEngine;
 
-namespace Explode
+namespace IT.Interactables.Throwable
 {
+    using IT.Animation.World;
+
     public class Explosion : MonoBehaviour, IExplosionDamage
     {
         private ExplosionAnimation _explosionAnimation;

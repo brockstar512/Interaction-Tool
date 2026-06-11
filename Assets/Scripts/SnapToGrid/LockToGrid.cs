@@ -2,27 +2,30 @@ using UnityEditor;
 using UnityEngine;
 
 
-[ExecuteInEditMode]
-public class LockToGrid : MonoBehaviour
+namespace IT.Core.Utilities
 {
-    public int tileSize = 1;
-    public Vector3 tileOffset = Vector3.zero;
-
-
-    void Update()
+    [ExecuteInEditMode]
+    public class LockToGrid : MonoBehaviour
     {
-        if(!EditorApplication.isPlaying)
+        public int tileSize = 1;
+        public Vector3 tileOffset = Vector3.zero;
+
+
+        void Update()
         {
-            Vector3 currentPosition = transform.position;
+            if(!EditorApplication.isPlaying)
+            {
+                Vector3 currentPosition = transform.position;
 
-            float snappedX = Mathf.Round(currentPosition.x / tileSize) * tileSize + tileOffset.x;
-            //float snappedZ = Mathf.Round(currentPosition.z / tileSize) * tileSize + tileOffset.z;
-            //float snappedY = tileOffset.y; // Preserve the original y-coordinate
-            float snappedY = Mathf.Round(currentPosition.y / tileSize) * tileSize + tileOffset.y;
-            float snappedZ = tileOffset.z; // Preserve the original y-coordinate
+                float snappedX = Mathf.Round(currentPosition.x / tileSize) * tileSize + tileOffset.x;
+                //float snappedZ = Mathf.Round(currentPosition.z / tileSize) * tileSize + tileOffset.z;
+                //float snappedY = tileOffset.y; // Preserve the original y-coordinate
+                float snappedY = Mathf.Round(currentPosition.y / tileSize) * tileSize + tileOffset.y;
+                float snappedZ = tileOffset.z; // Preserve the original y-coordinate
 
-            Vector3 snappedPosition = new Vector3(snappedX, snappedY, snappedZ);
-            transform.position = snappedPosition;
+                Vector3 snappedPosition = new Vector3(snappedX, snappedY, snappedZ);
+                transform.position = snappedPosition;
+            }
         }
     }
 }

@@ -3,42 +3,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MultiDependent<T> : MonoBehaviour
+namespace IT.Core.Dependency
 {
-    [SerializeField]
-    private List<InterfaceReference<IDependencySource<T>>> sources = new();
-
-    protected virtual void OnEnable()
+    public abstract class MultiDependent<T> : MonoBehaviour
     {
-        foreach (var source in sources)
-            if (source?.Value != null) source.Value.Changed += OnAnyChanged;
-        Reevaluate();
-    }
+        [SerializeField]
+        private List<InterfaceReference<IDependencySource<T>>> sources = new();
 
-    protected virtual void OnDisable()
-    {
-        foreach (var source in sources)
-            if (source?.Value != null) source.Value.Changed -= OnAnyChanged;
-    }
-
-    private void OnAnyChanged(T _) => Reevaluate();
-
-    protected abstract void Reevaluate();
-
-    // Convenience accessors for subclasses.
-    protected IEnumerable<T> Values()
-    {
-        foreach (var s in sources)
-            if (s?.Value != null) yield return s.Value.Value;
-    }
-
-    protected int SourceCount
-    {
-        get
+        protected virtual void OnEnable()
         {
-            int n = 0;
-            foreach (var source in sources) if (source?.Value != null) n++;
-            return n;
+            foreach (var source in sources)
+                if (source?.Value != null) source.Value.Changed += OnAnyChanged;
+            Reevaluate();
+        }
+
+        protected virtual void OnDisable()
+        {
+            foreach (var source in sources)
+                if (source?.Value != null) source.Value.Changed -= OnAnyChanged;
+        }
+
+        private void OnAnyChanged(T _) => Reevaluate();
+
+        protected abstract void Reevaluate();
+
+        // Convenience accessors for subclasses.
+        protected IEnumerable<T> Values()
+        {
+            foreach (var s in sources)
+                if (s?.Value != null) yield return s.Value.Value;
+        }
+
+        protected int SourceCount
+        {
+            get
+            {
+                int n = 0;
+                foreach (var source in sources) if (source?.Value != null) n++;
+                return n;
+            }
         }
     }
 }

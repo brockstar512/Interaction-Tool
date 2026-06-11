@@ -2,10 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using Interactable;
 
-namespace Items
+namespace IT.Items.Candle
 {
+    using IT.Interactables;
+
     public class CandleItem : Item, IButtonUp
     {
          public CandleLight candleLightPrefab;

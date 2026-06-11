@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace KeyPortSystem
+namespace IT.Interactables.Locks
 {
+    using IT.Core.Utilities;
+
     public class SymbolKeyPort : KeyPort
     {
         protected override Utilities.KeyTypes keyType => Utilities.KeyTypes.SymbolSlidingBlock;

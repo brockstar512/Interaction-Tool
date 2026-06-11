@@ -1,6 +1,9 @@
 
-public interface IOpenEffect
+namespace IT.Interactables
 {
-    void OnOpen(IInteractionContext context);
+    public interface IOpenEffect
+    {
+        void OnOpen(IInteractionContext context);
 
+    }
 }

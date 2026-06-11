@@ -1,21 +1,24 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
-public class YDepthSort : MonoBehaviour
+namespace IT.Core.Utilities
 {
-    // Positive offset moves the anchor point up, negative moves it down.
-    // Set this to roughly half the sprite's world-height to anchor at the feet.
-    [SerializeField] private float yOffset = 0f;
-
-    private SpriteRenderer _renderer;
-
-    void Awake()
+    [RequireComponent(typeof(SpriteRenderer))]
+    public class YDepthSort : MonoBehaviour
     {
-        _renderer = GetComponent<SpriteRenderer>();
-    }
+        // Positive offset moves the anchor point up, negative moves it down.
+        // Set this to roughly half the sprite's world-height to anchor at the feet.
+        [SerializeField] private float yOffset = 0f;
 
-    void LateUpdate()
-    {
-        _renderer.sortingOrder = Mathf.RoundToInt(-(transform.position.y + yOffset) * 100);
+        private SpriteRenderer _renderer;
+
+        void Awake()
+        {
+            _renderer = GetComponent<SpriteRenderer>();
+        }
+
+        void LateUpdate()
+        {
+            _renderer.sortingOrder = Mathf.RoundToInt(-(transform.position.y + yOffset) * 100);
+        }
     }
 }

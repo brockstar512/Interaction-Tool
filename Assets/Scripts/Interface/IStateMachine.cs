@@ -1,7 +1,10 @@
 using UnityEngine;
 
-namespace Interface
+namespace IT.Core.StateMachine
 {
+    using IT.Items;
+    using IT.Player.StateMachine;
+
     public interface IStateMachine
     {
         //consider passing these into the player states instead of the class

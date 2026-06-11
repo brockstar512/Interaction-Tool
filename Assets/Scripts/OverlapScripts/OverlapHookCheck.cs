@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+
     public class OverlapHookCheck : OverlapAreaChecker
     {
         protected override void AddDetectionLayers()

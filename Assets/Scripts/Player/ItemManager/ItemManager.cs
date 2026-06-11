@@ -1,100 +1,104 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Items;
 
-public class ItemManager : MonoBehaviour, IItemManager
+namespace IT.Player.Inventory
 {
-    private int _currentIndex = 0;
-    private List<IItem> inventory;
-    private const int inventoryLimit = 2;
-    public event Action<Sprite> ItemSwitch;
-    private ItemDropper _itemDropper;
+    using IT.Items;
 
-    public void Awake()
+    public class ItemManager : MonoBehaviour, IItemManager
     {
-       _currentIndex = 0;
-       _itemDropper = GetComponent<ItemDropper>();
-       inventory = new List<IItem>();
-    }
+        private int _currentIndex = 0;
+        private List<IItem> inventory;
+        private const int inventoryLimit = 2;
+        public event Action<Sprite> ItemSwitch;
+        private ItemDropper _itemDropper;
+
+        public void Awake()
+        {
+           _currentIndex = 0;
+           _itemDropper = GetComponent<ItemDropper>();
+           inventory = new List<IItem>();
+        }
 
 
-    public IItem GetItem()
-    {
-        if (inventory.Count == 0) return null;
-        _currentIndex = Mathf.Clamp(_currentIndex, 0, inventory.Count - 1);
-        return inventory[_currentIndex];
-    }
+        public IItem GetItem()
+        {
+            if (inventory.Count == 0) return null;
+            _currentIndex = Mathf.Clamp(_currentIndex, 0, inventory.Count - 1);
+            return inventory[_currentIndex];
+        }
    
-    public void PickUpItem(IItemPickUp holder)
-    {
-        //pickable calls this when the state manager interacts with it
-        //item switch updates the sprite in the HUD
-        ItemSwitch?.Invoke(holder.Sprite);
-        //this gets a reference to the item
-        var pickup = holder.item;
-        //make this a parent of the item object now
-        pickup.TakeChild(transform);
-        if (inventory.Count >= inventoryLimit)
+        public void PickUpItem(IItemPickUp holder)
         {
-            var displaced = inventory[_currentIndex] as Item;
+            //pickable calls this when the state manager interacts with it
+            //item switch updates the sprite in the HUD
+            ItemSwitch?.Invoke(holder.Sprite);
+            //this gets a reference to the item
+            var pickup = holder.item;
+            //make this a parent of the item object now
+            pickup.TakeChild(transform);
+            if (inventory.Count >= inventoryLimit)
+            {
+                var displaced = inventory[_currentIndex] as Item;
+                inventory.RemoveAt(_currentIndex);
+                holder.Swap(displaced);
+                inventory.Insert(_currentIndex, pickup);
+                return;
+            }
+
+            inventory.Add(pickup);
+            _currentIndex = inventory.IndexOf(pickup);
+            holder.PickedUp();
+        }
+    
+        public void SwitchItem()
+        {
+            if (inventory.Count <= 0)
+                return;
+            if(_currentIndex + 1 >= inventory.Count)
+            {
+                _currentIndex = 0;
+            }
+            else
+            {
+                _currentIndex++;
+            }
+
+            ItemSwitch?.Invoke(inventory[_currentIndex].Sprite);
+
+        }
+
+        public Sprite GetCurrentSprite()
+        {
+            if (inventory.Count == 0) return null;
+            return inventory[_currentIndex].Sprite;
+        }
+        public void DisposeOfCurrentItem()
+        {
             inventory.RemoveAt(_currentIndex);
-            holder.Swap(displaced);
-            inventory.Insert(_currentIndex, pickup);
-            return;
+            if (_currentIndex >= inventory.Count && _currentIndex > 0)
+                _currentIndex--;
+            Sprite newSprite = inventory.Count == 0 ? null : inventory[_currentIndex].Sprite;
+            ItemSwitch?.Invoke(newSprite);
         }
-
-        inventory.Add(pickup);
-        _currentIndex = inventory.IndexOf(pickup);
-        holder.PickedUp();
-    }
     
-    public void SwitchItem()
-    {
-        if (inventory.Count <= 0)
-            return;
-        if(_currentIndex + 1 >= inventory.Count)
+        public void PickUpItem(IItem item)
         {
-            _currentIndex = 0;
+            item.TakeChild(transform);
+            ItemSwitch?.Invoke(item.Sprite);
+
+            if (inventory.Count >= inventoryLimit)
+            {
+                Item displaced = inventory[_currentIndex] as Item;
+                inventory[_currentIndex] = item;
+                _itemDropper?.Drop(displaced, transform.position);
+                return;
+            }
+
+            inventory.Add(item);
+            _currentIndex = inventory.IndexOf(item);
         }
-        else
-        {
-            _currentIndex++;
-        }
-
-        ItemSwitch?.Invoke(inventory[_currentIndex].Sprite);
-
-    }
-
-    public Sprite GetCurrentSprite()
-    {
-        if (inventory.Count == 0) return null;
-        return inventory[_currentIndex].Sprite;
-    }
-    public void DisposeOfCurrentItem()
-    {
-        inventory.RemoveAt(_currentIndex);
-        if (_currentIndex >= inventory.Count && _currentIndex > 0)
-            _currentIndex--;
-        Sprite newSprite = inventory.Count == 0 ? null : inventory[_currentIndex].Sprite;
-        ItemSwitch?.Invoke(newSprite);
-    }
     
-    public void PickUpItem(IItem item)
-    {
-        item.TakeChild(transform);
-        ItemSwitch?.Invoke(item.Sprite);
-
-        if (inventory.Count >= inventoryLimit)
-        {
-            Item displaced = inventory[_currentIndex] as Item;
-            inventory[_currentIndex] = item;
-            _itemDropper?.Drop(displaced, transform.position);
-            return;
-        }
-
-        inventory.Add(item);
-        _currentIndex = inventory.IndexOf(item);
     }
-    
 }

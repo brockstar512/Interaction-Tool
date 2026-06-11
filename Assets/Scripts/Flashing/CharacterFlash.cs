@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Flashing
+namespace IT.Effects.Flash
 {
     public class CharacterFlash : ObjectFlash, IFlash
     {

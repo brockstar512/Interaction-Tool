@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BaseState
+namespace IT.Core.StateMachine
 {
-   public abstract void EnterState(StateManager stateManager);
-   public abstract void UpdateState(StateManager stateManager);
-   public abstract void OnCollisionEnter(StateManager stateManager, Collision collision);
+    using IT.Prototype;
+
+    public abstract class BaseState
+    {
+       public abstract void EnterState(StateManager stateManager);
+       public abstract void UpdateState(StateManager stateManager);
+       public abstract void OnCollisionEnter(StateManager stateManager, Collision collision);
 
 
 
+    }
 }

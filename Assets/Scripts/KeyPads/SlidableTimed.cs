@@ -2,33 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlidableTimed : Slidable
+namespace IT.Interactables.Slidable
 {
-    protected override Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
+    using IT.Core.Utilities;
 
-    [SerializeField] private float countdownSeconds = 10f;
-
-    private float _remaining;
-    private bool  _running;
-
-    protected override void Awake()
+    public class SlidableTimed : Slidable
     {
-        base.Awake();
-        _remaining = countdownSeconds;
-        _running   = true;
+        protected override Utilities.KeyTypes key => Utilities.KeyTypes.SlidingBlock;
+
+        [SerializeField] private float countdownSeconds = 10f;
+
+        private float _remaining;
+        private bool  _running;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _remaining = countdownSeconds;
+            _running   = true;
+        }
+
+        private void Update()
+        {
+            if (!_running) return;
+
+            _remaining -= Time.deltaTime;
+            if (_remaining > 0f) return;
+
+            _running = false;
+            Timeout();
+        }
+
+        // Empty hook — override in a subclass or add behavior here later.
+        protected virtual void Timeout() { }
     }
-
-    private void Update()
-    {
-        if (!_running) return;
-
-        _remaining -= Time.deltaTime;
-        if (_remaining > 0f) return;
-
-        _running = false;
-        Timeout();
-    }
-
-    // Empty hook — override in a subclass or add behavior here later.
-    protected virtual void Timeout() { }
 }

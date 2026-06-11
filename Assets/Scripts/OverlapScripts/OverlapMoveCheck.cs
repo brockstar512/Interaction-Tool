@@ -1,8 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+    using IT.Interactables.Locks;
+
     public class OverlapMoveCheck : MonoBehaviour
     {
 

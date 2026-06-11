@@ -3,38 +3,44 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AnimationEquipItem : AnimationState
+namespace IT.Animation.Player.States
 {
+    using IT.Player.Movement;
+    using IT.Player.StateMachine;
 
-    readonly int HoldStillDown = Animator.StringToHash("HoldStillDown");
-    readonly Dictionary<int, float> TimeSheet;
-    AnimationPickUp PickUpAnimation;
-
-    public AnimationEquipItem()
+    public class AnimationEquipItem : AnimationState
     {
-        PickUpAnimation = new AnimationPickUp();
-        TimeSheet = new()
+
+        readonly int HoldStillDown = Animator.StringToHash("HoldStillDown");
+        readonly Dictionary<int, float> TimeSheet;
+        AnimationPickUp PickUpAnimation;
+
+        public AnimationEquipItem()
         {
-            { HoldStillDown, 0.250f },
-            //{ PickUpUp,0.250f  },
-            //{ PickUpDown, 0.250f },
-            //{ PickUpLeft, 0.250f }
-        };
-    }
+            PickUpAnimation = new AnimationPickUp();
+            TimeSheet = new()
+            {
+                { HoldStillDown, 0.250f },
+                //{ PickUpUp,0.250f  },
+                //{ PickUpDown, 0.250f },
+                //{ PickUpLeft, 0.250f }
+            };
+        }
 
 
     
-    //show animation?
+        //show animation?
 
-    public async Task Play(PlayerStateMachineManager playerstate)
-    {
-            await PickUpAnimation.Play(playerstate);
-            SpriteRenderer itemOriginSpriteRenderer = playerstate.GetComponentInChildren<OriginPoint>().getSpriteRenderer;
-            itemOriginSpriteRenderer.sprite = playerstate.itemManager.GetCurrentSprite();
-            playerstate.animator.Play(HoldStillDown);
-            await Awaitable.WaitForSecondsAsync(TimeSheet[HoldStillDown]);
-            await Task.Delay(250);
-            itemOriginSpriteRenderer.sprite = null;
+        public async Task Play(PlayerStateMachineManager playerstate)
+        {
+                await PickUpAnimation.Play(playerstate);
+                SpriteRenderer itemOriginSpriteRenderer = playerstate.GetComponentInChildren<OriginPoint>().getSpriteRenderer;
+                itemOriginSpriteRenderer.sprite = playerstate.itemManager.GetCurrentSprite();
+                playerstate.animator.Play(HoldStillDown);
+                await Awaitable.WaitForSecondsAsync(TimeSheet[HoldStillDown]);
+                await Task.Delay(250);
+                itemOriginSpriteRenderer.sprite = null;
 
+        }
     }
 }

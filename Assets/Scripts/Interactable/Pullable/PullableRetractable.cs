@@ -1,5 +1,8 @@
 // Assets/Scripts/Interactable/Pullable/PullableRetractable.cs
-public class PullableRetractable : Pullable
+namespace IT.Interactables.Pullable
 {
-    public override void Release(IInteractionContext context) => Retract();
+    public class PullableRetractable : Pullable
+    {
+        public override void Release(IInteractionContext context) => Retract();
+    }
 }

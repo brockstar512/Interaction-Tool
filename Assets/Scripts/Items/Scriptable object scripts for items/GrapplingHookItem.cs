@@ -1,14 +1,16 @@
 using UnityEngine;
-using Items.SubItems;
 using System;
-using Interactable;
 using DG.Tweening;
-using Animation.PlayerAnimation.AnimationStates;
-using Interface;
 
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace IT.Items.GrapplingHook
 {
+    using IT.Animation.Player.States;
+    using IT.Enemies;
+    using IT.Interactables;
+    using IT.Interactables.Throwable;
+    using IT.Player.Movement;
+
     public class GrapplingHookItem : Item, IButtonUp
     {
         //prefab for projectile

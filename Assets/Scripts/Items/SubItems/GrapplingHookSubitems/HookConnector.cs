@@ -1,7 +1,6 @@
 using UnityEngine;
-using Interface;
 
-namespace Items.SubItems
+namespace IT.Items.GrapplingHook
 {
     [RequireComponent(typeof(Collider2D))]
     public class HookConnector : MonoBehaviour, IInteractWithHookProjectile

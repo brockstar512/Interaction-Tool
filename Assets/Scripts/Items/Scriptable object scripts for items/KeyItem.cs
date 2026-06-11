@@ -1,7 +1,10 @@
 using UnityEngine;
 
-namespace Items
+namespace IT.Items
 {
+    using IT.Core.Utilities;
+    using IT.Interactables;
+
     public class Key : Item
     {
         public Utilities.KeyTypes keyType;

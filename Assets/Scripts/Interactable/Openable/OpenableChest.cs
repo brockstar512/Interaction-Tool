@@ -2,23 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OpenableChest : Openable
+namespace IT.Interactables.Chests
 {
-    private ChestOpenAnimation _chestOpenAnimation;
-    
-    private void Awake()
+    using IT.Animation.World;
+    using IT.Interactables.Doors;
+
+    public class OpenableChest : Openable
     {
-        UpdateLayerName();
-        Animator anim = GetComponent<Animator>();
-        _chestOpenAnimation = new ChestOpenAnimation(anim);
-    }
+        private ChestOpenAnimation _chestOpenAnimation;
+    
+        private void Awake()
+        {
+            UpdateLayerName();
+            Animator anim = GetComponent<Animator>();
+            _chestOpenAnimation = new ChestOpenAnimation(anim);
+        }
     
 
-    protected override void OpenAnimation()
-    {
-        _chestOpenAnimation.Play();
+        protected override void OpenAnimation()
+        {
+            _chestOpenAnimation.Play();
+
+        }
+
 
     }
-
-
 }

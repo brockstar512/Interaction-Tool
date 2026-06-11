@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using UnityEditor.Animations;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour
+namespace IT.Animation.Player
 {
-    public Animator anim { get; private set; }
-
-
-    //list of animation controllers
-
-    void Awake()
+    public class PlayerAnimationController : MonoBehaviour
     {
-        anim = GetComponent<Animator>();
-    }
+        public Animator anim { get; private set; }
+
+
+        //list of animation controllers
+
+        void Awake()
+        {
+            anim = GetComponent<Animator>();
+        }
 
 
    
 
+    }
 }

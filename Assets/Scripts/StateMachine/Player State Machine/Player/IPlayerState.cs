@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerState
+namespace IT.Player.StateMachine
 {
-    class DefaultState { }
-    class MoveItemState { }
-    class SlideItemState { }
-    class ThrowItemState { }
-    class UseItemState { }
-    class PlayerBaseState { }
+    using IT.Player.StateMachine.States;
 
-    public void SwitchState(PlayerBaseState state);
+    public interface IPlayerState
+    {
+        class DefaultState { }
+        class MoveItemState { }
+        class SlideItemState { }
+        class ThrowItemState { }
+        class UseItemState { }
+        class PlayerBaseState { }
 
+        public void SwitchState(PlayerBaseState state);
+
+    }
 }

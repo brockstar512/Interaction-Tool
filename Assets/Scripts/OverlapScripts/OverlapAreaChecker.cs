@@ -1,7 +1,9 @@
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+
     // Shared "aim a box in a direction and find the collider with the most area overlap".
     public abstract class OverlapAreaChecker : MonoBehaviour
     {

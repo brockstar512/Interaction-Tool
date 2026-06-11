@@ -1,8 +1,10 @@
 using System;
 
 
-namespace Items.Scriptable_object_scripts_for_items
+namespace IT.Items
 {
+    using IT.Interactables;
+
     public class PlankItem : Item
     {
         Action _disposeOfItem = null;

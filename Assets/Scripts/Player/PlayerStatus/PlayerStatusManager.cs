@@ -1,20 +1,26 @@
 using UnityEngine;
 
-public class PlayerStatusManager : MonoBehaviour
+namespace IT.Player.Status
 {
-    public PlayerStatus playerStatus { get; private set; }
-    public PlayerStatusHUD playerHUD { get; private set; }
-    public Collider2D healthBox { get; private set; }
+    using IT.Player.HUD;
+    using IT.Player.StateMachine;
 
-    private void Awake()
+    public class PlayerStatusManager : MonoBehaviour
     {
-        playerStatus = new PlayerStatus();
-        healthBox = GetComponentInChildren<Collider2D>();
-    }
+        public PlayerStatus playerStatus { get; private set; }
+        public PlayerStatusHUD playerHUD { get; private set; }
+        public Collider2D healthBox { get; private set; }
 
-    public void Init(PlayerStateMachineManager playerStateMachineManager)
-    {
-        playerHUD = HUDReader.instance.InitializePlayerHUD(playerStateMachineManager);
+        private void Awake()
+        {
+            playerStatus = new PlayerStatus();
+            healthBox = GetComponentInChildren<Collider2D>();
+        }
 
+        public void Init(PlayerStateMachineManager playerStateMachineManager)
+        {
+            playerHUD = HUDReader.instance.InitializePlayerHUD(playerStateMachineManager);
+
+        }
     }
 }

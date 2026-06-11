@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-namespace Animation.PlayerAnimation.AnimationStates
+namespace IT.Animation.Player.States
 {
+    using IT.Interactables;
+
     public class AnimationGrapplingHook : AnimationState
     {
         readonly int _shootRight = Animator.StringToHash("GrapplingHookShootRight");

@@ -2,63 +2,68 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationMove : AnimationState
+namespace IT.Animation.Player.States
 {
-    const string WalkRight = "WalkRight";
-    const string WalkUp = "WalkUp";
-    const string WalkDown = "WalkDown";
-    const string WalkLeft = "WalkLeft";
+    using IT.Player.StateMachine;
 
-    const string StandRight = "StandRight";
-    const string StandLeft = "StandLeft";
-    const string StandUp = "StandUp";
-    const string StandDown = "StandDown";
-
-    public void Play(PlayerStateMachineManager state)
+    public class AnimationMove : AnimationState
     {
-        if (state.movement.x != 0 || state.movement.y != 0)
+        const string WalkRight = "WalkRight";
+        const string WalkUp = "WalkUp";
+        const string WalkDown = "WalkDown";
+        const string WalkLeft = "WalkLeft";
+
+        const string StandRight = "StandRight";
+        const string StandLeft = "StandLeft";
+        const string StandUp = "StandUp";
+        const string StandDown = "StandDown";
+
+        public void Play(PlayerStateMachineManager state)
         {
-            //Debug.Log("walking");
-            if (state.currentState.LookDirection == Vector2.down)
+            if (state.movement.x != 0 || state.movement.y != 0)
             {
-                state.animator.Play(WalkDown);
-            }
-            if (state.currentState.LookDirection == Vector2.up)
-            {
-                state.animator.Play(WalkUp);
-            }
-            if (state.currentState.LookDirection == Vector2.right)
-            {
-                state.animator.Play(WalkRight);
+                //Debug.Log("walking");
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(WalkDown);
+                }
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(WalkUp);
+                }
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(WalkRight);
+
+                }
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(WalkLeft);
+                }
 
             }
-            if (state.currentState.LookDirection == Vector2.left)
+            else
             {
-                state.animator.Play(WalkLeft);
+                if (state.currentState.LookDirection == Vector2.down)
+                {
+                    state.animator.Play(StandDown);
+                }
+                if (state.currentState.LookDirection == Vector2.up)
+                {
+                    state.animator.Play(StandUp);
+                }
+                if (state.currentState.LookDirection == Vector2.right)
+                {
+                    state.animator.Play(StandRight);
+
+                }
+                if (state.currentState.LookDirection == Vector2.left)
+                {
+                    state.animator.Play(StandLeft);
+                }
             }
 
-        }
-        else
-        {
-            if (state.currentState.LookDirection == Vector2.down)
-            {
-                state.animator.Play(StandDown);
-            }
-            if (state.currentState.LookDirection == Vector2.up)
-            {
-                state.animator.Play(StandUp);
-            }
-            if (state.currentState.LookDirection == Vector2.right)
-            {
-                state.animator.Play(StandRight);
-
-            }
-            if (state.currentState.LookDirection == Vector2.left)
-            {
-                state.animator.Play(StandLeft);
-            }
         }
 
     }
-
 }

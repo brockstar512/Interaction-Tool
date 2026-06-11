@@ -3,31 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStatus
+namespace IT.Player.Status
 {
-    public PlayerStatus()
+    public class PlayerStatus
     {
-        Health = 10;
-        Lives = 3;
+        public PlayerStatus()
+        {
+            Health = 10;
+            Lives = 3;
+        }
+
+        int Health;
+        int Lives;
+
+        public event Action<int> HealthChange;
+        public event Action<int> LivesChange;
+
+
+        public void UpdateHealth(int HP)
+        {
+            Health += HP;
+            HealthChange.Invoke(HP);
+        }
+
+        public void UpdateLives(int Life)
+        {
+            Lives += Life;
+            LivesChange.Invoke(Life);
+        }
+
     }
-
-    int Health;
-    int Lives;
-
-    public event Action<int> HealthChange;
-    public event Action<int> LivesChange;
-
-
-    public void UpdateHealth(int HP)
-    {
-        Health += HP;
-        HealthChange.Invoke(HP);
-    }
-
-    public void UpdateLives(int Life)
-    {
-        Lives += Life;
-        LivesChange.Invoke(Life);
-    }
-
 }

@@ -1,9 +1,10 @@
 using UnityEngine;
-using Player.ItemOverlap;
 using System;
-using Interface;
 
-namespace Items.SubItems{
+namespace IT.Items.GrapplingHook {
+    using IT.Core;
+    using IT.Core.Utilities;
+    using IT.Overlap;
     
     public class HookProjectile : MonoBehaviour, IDamage
     {

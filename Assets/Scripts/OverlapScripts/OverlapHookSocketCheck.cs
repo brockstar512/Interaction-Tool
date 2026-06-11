@@ -1,9 +1,11 @@
 using UnityEngine;
-using Items.SubItems;
 using System.Threading.Tasks;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
+    using IT.Core.Utilities;
+    using IT.Items.GrapplingHook;
+
     public class OverlapHookSocketCheck : MonoBehaviour
     {
         [SerializeField] Vector2 areaTopRightCornerAABB, areaBottomLeftCornerAABB = Vector2.zero;

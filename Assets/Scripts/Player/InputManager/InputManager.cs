@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Interactable;
 
-namespace Player.InputManager
+namespace IT.Player.Input
 {
+    using IT.Interactables;
+    using IT.Player.StateMachine;
+    using IT.Player.StateMachine.States;
+
     [RequireComponent(typeof(PlayerStateMachineManager))]
     public class InputManager : MonoBehaviour
     {

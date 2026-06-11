@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public abstract class AnimationState
+namespace IT.Animation
 {
-    //public abstract void Play(PlayerStateMachineManager playerstate);
+    public abstract class AnimationState
+    {
+        //public abstract void Play(PlayerStateMachineManager playerstate);
+    }
 }

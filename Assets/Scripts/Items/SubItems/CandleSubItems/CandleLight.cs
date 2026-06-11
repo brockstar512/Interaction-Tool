@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CandleLight : MonoBehaviour, ICandleLight
+namespace IT.Items.Candle
 {
-    public void On()
+    public class CandleLight : MonoBehaviour, ICandleLight
     {
-        this.gameObject.SetActive(true);
-    }
+        public void On()
+        {
+            this.gameObject.SetActive(true);
+        }
 
-    public void Off()
-    {
-        this.gameObject.SetActive(false);
+        public void Off()
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 }

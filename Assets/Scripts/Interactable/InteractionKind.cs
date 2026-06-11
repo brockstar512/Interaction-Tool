@@ -1,10 +1,13 @@
-public enum InteractionKind
+namespace IT.Interactables
 {
-    None,
-    Throw,
-    Move,
-    Pull,
-    Slide,
-    Equip,
-    Open
+    public enum InteractionKind
+    {
+        None,
+        Throw,
+        Move,
+        Pull,
+        Slide,
+        Equip,
+        Open
+    }
 }

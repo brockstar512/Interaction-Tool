@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player.ItemOverlap
+namespace IT.Overlap
 {
     // For checkers that return the single most-overlapped component of type T.
     public abstract class OverlapMostObjectChecker<T> : OverlapAreaChecker, IGetMostOverlap<T> where T : class

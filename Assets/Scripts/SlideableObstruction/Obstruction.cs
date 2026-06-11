@@ -1,15 +1,20 @@
 using System;
 using UnityEngine;
 
-public class Obstruction : MonoBehaviour
+namespace IT.Interactables.Slidable
 {
-   private void Awake()
-   {
-      UpdateLayerName();
-   }
+    using IT.Core.Utilities;
+
+    public class Obstruction : MonoBehaviour
+    {
+       private void Awake()
+       {
+          UpdateLayerName();
+       }
    
-   protected void UpdateLayerName()
-   {
-      this.gameObject.layer = Layers.SlidableObstruction;
-   }
+       protected void UpdateLayerName()
+       {
+          this.gameObject.layer = Layers.SlidableObstruction;
+       }
+    }
 }

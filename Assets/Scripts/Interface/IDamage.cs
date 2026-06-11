@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamage
+namespace IT.Core
 {
-   ///the damamges
+    public interface IDamage
+    {
+       ///the damamges
+    }
 }

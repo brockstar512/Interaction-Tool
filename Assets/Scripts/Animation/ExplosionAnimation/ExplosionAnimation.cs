@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Animation.PlayerAnimation.AnimationStates
+namespace IT.Animation.World
 {
     public class ExplosionAnimation : AnimationState
     {

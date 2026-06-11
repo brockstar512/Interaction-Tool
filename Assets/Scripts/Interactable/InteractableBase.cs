@@ -1,17 +1,22 @@
 using UnityEngine;
 
-public abstract class InteractableBase : MonoBehaviour
+namespace IT.Interactables
 {
-    public Rigidbody2D rb { get; set; }
+    using IT.Core.Utilities;
 
-    public abstract InteractionKind Kind { get; }
-
-    public abstract bool Interact(IInteractionContext context);
-
-    public abstract void Release(IInteractionContext context);
-
-    protected void UpdateLayerName()
+    public abstract class InteractableBase : MonoBehaviour
     {
-        this.gameObject.layer = Layers.Interactable;
+        public Rigidbody2D rb { get; set; }
+
+        public abstract InteractionKind Kind { get; }
+
+        public abstract bool Interact(IInteractionContext context);
+
+        public abstract void Release(IInteractionContext context);
+
+        protected void UpdateLayerName()
+        {
+            this.gameObject.layer = Layers.Interactable;
+        }
     }
 }

@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ChestOpenAnimation : AnimationState
+namespace IT.Animation.World
 {
-    readonly int ChestDefault = Animator.StringToHash("ChestDefault");
-    readonly int ChestOpen = Animator.StringToHash("ChestOpen");
-    readonly Dictionary<int, float> TimeSheet;
-    private Animator animator { get; set; }
-    public ChestOpenAnimation(Animator Animator)
+    public class ChestOpenAnimation : AnimationState
     {
-        animator = Animator;
-        TimeSheet = new()
+        readonly int ChestDefault = Animator.StringToHash("ChestDefault");
+        readonly int ChestOpen = Animator.StringToHash("ChestOpen");
+        readonly Dictionary<int, float> TimeSheet;
+        private Animator animator { get; set; }
+        public ChestOpenAnimation(Animator Animator)
         {
-            { ChestDefault, 1f },
-            { ChestOpen, 0.125f },
-        };
-    }
-    public void Play()
-    {
-        animator.Play(ChestOpen);
+            animator = Animator;
+            TimeSheet = new()
+            {
+                { ChestDefault, 1f },
+                { ChestOpen, 0.125f },
+            };
+        }
+        public void Play()
+        {
+            animator.Play(ChestOpen);
+        }
     }
 }

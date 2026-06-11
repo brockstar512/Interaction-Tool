@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBellSound
+namespace IT.Items.Bell
 {
-  public IBellSound Init();
-  public void Stop();
+    public interface IBellSound
+    {
+      public IBellSound Init();
+      public void Stop();
+    }
 }

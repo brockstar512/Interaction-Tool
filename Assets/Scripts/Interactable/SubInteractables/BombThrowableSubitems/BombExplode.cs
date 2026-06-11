@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Explode
+namespace IT.Interactables.Throwable
 {
     public class BombExplode : MonoBehaviour
     {
