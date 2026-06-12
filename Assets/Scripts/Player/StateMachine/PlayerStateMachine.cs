@@ -79,11 +79,6 @@ namespace IT.Player.StateMachine
 
         }
 
-        void OnCollisionEnter(Collision collision)
-        {
-            currentState.OnCollisionEnter(this, collision);
-        }
-
         public void SwitchState(PlayerStateBase newState)
         {
             newState.LookDirection= currentState.LookDirection;

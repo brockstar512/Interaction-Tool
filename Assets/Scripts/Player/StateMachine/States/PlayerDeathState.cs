@@ -23,11 +23,6 @@ namespace IT.Player.StateMachine.States
             throw new System.NotImplementedException();
         }
 
-        public override void OnCollisionEnter(PlayerStateMachine stateManager, Collision collision)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void ExitState(PlayerStateMachine stateManager)
         {
             throw new System.NotImplementedException();

@@ -41,10 +41,6 @@ namespace IT.Player.StateMachine.States
         {
             UpdateLookDirection(stateManager.movement);
         }
-        public override void OnCollisionEnter(PlayerStateMachine stateManager, Collision collision)
-        {
-
-        }
 
         public override void ExitState(PlayerStateMachine stateManager)
         {

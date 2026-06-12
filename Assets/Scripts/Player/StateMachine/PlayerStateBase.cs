@@ -11,7 +11,6 @@ namespace IT.Player.StateMachine
         public abstract void EnterState(PlayerStateMachine stateManager);
         public abstract void UpdateState(PlayerStateMachine stateManager);
         public abstract void FixedUpdateState(PlayerStateMachine stateManager);
-        public abstract void OnCollisionEnter(PlayerStateMachine stateManager, Collision collision);
         public abstract void ExitState(PlayerStateMachine stateManager);
         public abstract void Action(PlayerStateMachine stateManager);
     

@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 
@@ -13,7 +12,7 @@ namespace IT.Core.Utilities
 
         void Update()
         {
-            if(!EditorApplication.isPlaying)
+            if(!Application.isPlaying)
             {
                 Vector3 currentPosition = transform.position;
 

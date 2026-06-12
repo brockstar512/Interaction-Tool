@@ -23,10 +23,6 @@ namespace IT.Player.StateMachine.States
         {
         }
 
-        public override void OnCollisionEnter(PlayerStateMachine stateManager, Collision collision)
-        {
-        }
-
         public override void ExitState(PlayerStateMachine stateManager)
         {
         

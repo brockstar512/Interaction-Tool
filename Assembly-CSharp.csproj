@@ -65,7 +65,6 @@
     <Compile Include="Assets/Scripts/Items/KeyItem.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/ThrowAnimState.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/PushPullAnimState.cs" />
-    <Compile Include="Assets/Scripts/Animation/Player/PlayerAnimator.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/PickUpAnimState.cs" />
     <Compile Include="Assets/Scripts/Interactables/Interactable.cs" />
     <Compile Include="Assets/Scripts/Items/IItem.cs" />

@@ -189,7 +189,8 @@ namespace IT.Interactables.Slidable
 
             public void SetColliderHit()
             {
-                Physics2D.queriesStartInColliders = false;
+                // "Queries Start In Colliders" is set once in Project Settings → Physics 2D (off),
+                // replacing a former per-call global runtime write here (refactor WS1.5 / Story 1.1).
                 RaycastHit2D hit = Physics2D.Raycast(_originPoint, _direction, int.MaxValue, _obstructionLayer);
                 Debug.DrawRay(_originPoint, _direction, Color.blue);
 

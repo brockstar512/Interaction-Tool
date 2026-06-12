@@ -33,7 +33,6 @@ namespace IT.Player.StateMachine.States
         }
 
         public override void UpdateState(PlayerStateMachine stateManager) { }
-        public override void OnCollisionEnter(PlayerStateMachine stateManager, Collision collision) { }
         public override void ExitState(PlayerStateMachine stateManager) { }
 
         public override void FixedUpdateState(PlayerStateMachine stateManager) => Move(stateManager);
