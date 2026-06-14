@@ -189,9 +189,14 @@ namespace IT.Interactables.Slidable
 
             public void SetColliderHit()
             {
-                // "Queries Start In Colliders" is set once in Project Settings → Physics 2D (off),
-                // replacing a former per-call global runtime write here (refactor WS1.5 / Story 1.1).
+                // This raycast must NOT detect a collider it starts inside. Other queries
+                // (e.g. grapple OverlapArea checks) rely on the project default, so we toggle
+                // locally and restore — avoiding the former PERMANENT global mutation that
+                // leaked false to every later query (Story 1.1 / refactor WS1.5).
+                bool prevQueriesStartInColliders = Physics2D.queriesStartInColliders;
+                Physics2D.queriesStartInColliders = false;
                 RaycastHit2D hit = Physics2D.Raycast(_originPoint, _direction, int.MaxValue, _obstructionLayer);
+                Physics2D.queriesStartInColliders = prevQueriesStartInColliders;
                 Debug.DrawRay(_originPoint, _direction, Color.blue);
 
                 if (hit.collider == null) return;
