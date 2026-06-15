@@ -23,13 +23,16 @@ namespace IT.Player.Status
         public void UpdateHealth(int HP)
         {
             Health += HP;
-            HealthChange.Invoke(HP);
+            // NOTE: totals/normalization fix lands in Health (Story 4.1) — HP here is the delta,
+            // and PlayerStatusHUD.UpdateHealth writes it straight into Image.fillAmount (expects 0-1).
+            // Story 1.2 scope is null-safety only; do NOT change the payload here.
+            HealthChange?.Invoke(HP);
         }
 
         public void UpdateLives(int Life)
         {
             Lives += Life;
-            LivesChange.Invoke(Life);
+            LivesChange?.Invoke(Life);
         }
 
     }
