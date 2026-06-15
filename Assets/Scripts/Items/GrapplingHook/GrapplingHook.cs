@@ -37,6 +37,7 @@ namespace IT.Items.GrapplingHook
         //this is the callback for when we can dispose
         //of the item if we hit a hook connector
         Action _disposeOfItem;
+        private GrappleHookRetractableTarget _retractable;
 
         public override void Use(IInteractionContext context)
         {
@@ -124,8 +125,10 @@ namespace IT.Items.GrapplingHook
                     break;
                 //hit something we can pull back on the rope (throwable, bomb, maybe an enemy later)
                 case GrappleHookRetractableTarget retractable:
-                    //cache the interactable (if any) so we can hand it off when retraction finishes
+                    //cache the interactable so we can hand it to the state machine when retraction finishes
                     item = retractable.CarriedInteractable;
+                    //cache the retractable so we can detach it from the projectile in PutAway
+                    _retractable = retractable;
                     //stop the outgoing animation right now and start retracting
                     _projectileAnimation.Kill();
                     RetractGrapplingHook();
@@ -176,6 +179,16 @@ namespace IT.Items.GrapplingHook
         {
             //if there is remnants of an animation kill it
             _projectileAnimation.Kill();
+
+            //CRITICAL: unparent the throwable BEFORE destroying the projectile,
+            //otherwise Unity destroys our throwable as a child of the projectile
+            //and the state machine ends up holding a corpse.
+            if (_retractable != null)
+            {
+                _retractable.Release();
+                _retractable = null;
+            }
+
             //destroy the projectile
             if (_projectile != null)
             {

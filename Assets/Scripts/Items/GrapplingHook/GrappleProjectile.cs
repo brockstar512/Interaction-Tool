@@ -120,9 +120,9 @@ namespace IT.Items.GrapplingHook
             //as the hook is moving check if we have an overlap of a collider that we can interact with
             Collider2D col = _overlapHookCheck.GetMostOverlappedCol();
 
-            //if there is not any colliders we hit or if we hit something on the way back
-            //don't run any logic
-            if (col is null && _hitSomethingCallback is not null)
+            //bail if there's nothing to hit, or if we already hit something on the way out
+            //(callback is nulled after the first hit, so further overlaps during retract are ignored)
+            if (col is null || _hitSomethingCallback is null)
                 return;
 
             //see if what we hit was something we can interact with
@@ -152,7 +152,7 @@ namespace IT.Items.GrapplingHook
 
             //notify the gun we hit something
             _hitSomethingCallback?.Invoke(somethingHit);
-            //i think i added this cause I was nervous it would be called twice, see if I can delete it later 
+            //null the callback so we don't reprocess on subsequent FixedUpdates while retracting
             _hitSomethingCallback = null;
         }
 

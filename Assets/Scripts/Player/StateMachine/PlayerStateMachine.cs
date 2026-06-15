@@ -89,6 +89,8 @@ namespace IT.Player.StateMachine
             {
                 item = null;
             }
+            Debug.Log($"Updateing state {newState}");
+
         }
 
         //button controlled

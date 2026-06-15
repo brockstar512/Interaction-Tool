@@ -16,7 +16,6 @@ namespace IT.Interactables.Throwable
 
         //the Interactable on this GameObject (the throwable/bomb/etc.) so the gun
         //can hand it back to the state machine when retraction finishes.
-        //null is fine — means "retract me but I'm not something the player picks up"
         public Interactable CarriedInteractable { get; private set; }
 
         GrappleProjectile _carrier;
@@ -36,6 +35,15 @@ namespace IT.Interactables.Throwable
             //parent to the projectile so it rides the rope back
             transform.SetParent(projectile.transform);
             Grappled?.Invoke();
+        }
+
+        //called by the gun when retraction is done, BEFORE the projectile is destroyed.
+        //we need to unparent so Unity doesn't destroy us as a child of the projectile.
+        public void Release()
+        {
+            if (_carrier == null) return;
+            transform.SetParent(null);
+            _carrier = null;
         }
 
         void OnDestroy()
