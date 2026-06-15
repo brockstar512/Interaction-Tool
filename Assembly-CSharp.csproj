@@ -70,6 +70,7 @@
     <Compile Include="Assets/Scripts/Items/IItem.cs" />
     <Compile Include="Assets/Scripts/Prototype/AppleChewedState.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerDeathState.cs" />
+    <Compile Include="Assets/Scripts/Interactables/IDestructible.cs" />
     <Compile Include="Assets/Scripts/Items/Candle/ICandleLight.cs" />
     <Compile Include="Assets/Scripts/Core/Dependency/IDependencySource.cs" />
     <Compile Include="Assets/Scripts/Interactables/Pullable/PullDrivenDoor.cs" />

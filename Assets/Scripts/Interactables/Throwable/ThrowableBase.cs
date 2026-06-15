@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,14 @@ using UnityEngine;
 namespace IT.Interactables.Throwable
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class ThrowableBase : Interactable
+    public class ThrowableBase : Interactable, IDestructible
     {
         public override InteractionType Kind => InteractionType.Throw;
+
+        //fired when this throwable's GameObject is destroyed for any reason
+        //(bomb explosion, scene unload, thrown-and-broken, etc.)
+        //subscribers should clean up any references they hold to this object.
+        public event Action Destroyed;
 
         //if it needs to bounces add to the list
         [SerializeField] protected List<AnimationCurve> bounceSequence;
@@ -37,6 +43,12 @@ namespace IT.Interactables.Throwable
             UpdateLayerName();
         }
 
+        protected virtual void OnDestroy()
+        {
+            //let anyone holding a reference know we're gone,
+            //so they don't try to use us
+            Destroyed?.Invoke();
+        }
 
         public override bool Interact(IInteractionContext context)
         {
