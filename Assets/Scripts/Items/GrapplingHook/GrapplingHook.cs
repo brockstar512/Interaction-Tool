@@ -122,13 +122,12 @@ namespace IT.Items.GrapplingHook
                     //dispose of the item from your inventory
                     _disposeOfItem?.Invoke();
                     break;
-                //you hit a throwable item
-                case ThrowableBase throwable:
-                    //cache the item that you hit
-                    item = throwable;
-                    //stop the current animation
+                //hit something we can pull back on the rope (throwable, bomb, maybe an enemy later)
+                case GrappleHookRetractableTarget retractable:
+                    //cache the interactable (if any) so we can hand it off when retraction finishes
+                    item = retractable.CarriedInteractable;
+                    //stop the outgoing animation right now and start retracting
                     _projectileAnimation.Kill();
-                    //retract the grappling hook
                     RetractGrapplingHook();
                     break;
                 case EnemyDummy:

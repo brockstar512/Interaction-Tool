@@ -14,10 +14,19 @@ namespace IT.Interactables.Throwable
         //fired when grapple attaches; useful for things like pausing a bomb fuse
         public event Action Grappled;
 
+        //the Interactable on this GameObject (the throwable/bomb/etc.) so the gun
+        //can hand it back to the state machine when retraction finishes.
+        //null is fine — means "retract me but I'm not something the player picks up"
+        public Interactable CarriedInteractable { get; private set; }
+
         GrappleProjectile _carrier;
         Collider2D _col;
 
-        void Awake() => _col = GetComponent<Collider2D>();
+        void Awake()
+        {
+            _col = GetComponent<Collider2D>();
+            CarriedInteractable = GetComponent<Interactable>();
+        }
 
         public void InteractWithHookProjectile(GrappleProjectile projectile)
         {
