@@ -12,15 +12,15 @@ namespace IT.Interactables.Throwable
     {
         [SerializeField] private Transform parentBody;
         private readonly float _timer = 10f;
-        private CancellationTokenSource _cancellationTokenSource;
         [SerializeField] private ExplosionEffect explosion;
         async void Start()
         {
             try
             {
-                _cancellationTokenSource = new CancellationTokenSource();
-                _ = LogRemaining(_cancellationTokenSource.Token);   // fire-and-forget logger
-                await StartTimer(_timer, _cancellationTokenSource.Token);
+                // destroyCancellationToken fires automatically on destroy (Async convention §11) —
+                // no hand-rolled CancellationTokenSource needed.
+                _ = LogRemaining(destroyCancellationToken);   // fire-and-forget logger
+                await StartTimer(_timer, destroyCancellationToken);
             }
             catch (System.OperationCanceledException) { }
             catch (System.Exception ex)
@@ -33,16 +33,15 @@ namespace IT.Interactables.Throwable
         {
             try
             {
-                // Wait for the specified time or until cancellation
-                await Task.Delay((int)(waitTime * 1000), cancellationToken);
+                // Wait for the specified time or until cancellation (lifetime-bound)
+                await Awaitable.WaitForSecondsAsync(waitTime, cancellationToken);
 
-                // If the task completes, execute the explosion
+                // If the wait completes, execute the explosion
                 Explode();
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
-                // If the task was cancelled, log this
-                Debug.Log("Task was cancelled!");
+                // Cancelled (object destroyed before the fuse finished) — silent stop.
             }
 
             Debug.Log($"Waited for {waitTime} seconds!");
@@ -54,28 +53,14 @@ namespace IT.Interactables.Throwable
             while (remaining > 0 && !token.IsCancellationRequested)
             {
                 Debug.Log($"Bomb fuse: {remaining:F1}s remaining");
-                await Task.Delay(500, token);
+                await Awaitable.WaitForSecondsAsync(0.5f, token);
                 remaining -= 0.5f;
-            }
-        }
-
-        private void CancelTask()
-        {
-            // Only cancel if the CancellationTokenSource exists
-            if (_cancellationTokenSource != null)
-            {
-                _cancellationTokenSource.Cancel();
             }
         }
 
         private void OnDestroy()
         {
-            // Make sure that cancellation is requested when the object is destroyed
-            if (_cancellationTokenSource != null)
-            {
-                CancelTask();
-                _cancellationTokenSource.Dispose();
-            }
+            // destroyCancellationToken already cancels the fuse/logger on destroy; just tidy up the body.
             Destroy(parentBody.gameObject);
         }
 

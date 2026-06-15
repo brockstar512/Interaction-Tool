@@ -33,9 +33,11 @@ namespace IT.Items.Candle
         {
             _candleLight.On();
 
-            _cancellationTokenSource?.Cancel();      // cancel + dispose any previous token
+            _cancellationTokenSource?.Cancel();      // cancel + dispose any previous burn
             _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource();
+            // Linked to destroyCancellationToken so BOTH ButtonUp (mid-burn) and object-destroy
+            // stop the timer (Async convention §11).
+            _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
 
             await StartTimer(_cancellationTokenSource.Token);
         }
@@ -60,7 +62,7 @@ namespace IT.Items.Candle
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     _lightTime--;
-                    await Task.Delay(1000, cancellationToken);
+                    await Awaitable.WaitForSecondsAsync(1f, cancellationToken);
                 }
             }
             catch (OperationCanceledException) { }   // catches both cancel paths

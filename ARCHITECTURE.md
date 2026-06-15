@@ -354,3 +354,17 @@ These are tracked in `REFACTOR_PLAN.md` / TODO and worth knowing when reading th
 - **Overlap duplication:** `DamageOverlap`/`MovementOverlap` re-implement the AABB + direction-helper logic that `OverlapCheckerBase` centralizes; their direction offsets/scales are hard-coded per prefab.
 - **Stubs:** `PlayerDeathState`, `TimedSlidingBlock.Timeout`, sword/whip/plank items, `HUDManager`'s empty UI methods, enemy AI (`EnemyDummy` only).
 - **Damage loop incomplete:** nothing routes damage into `PlayerStatus`; `ExplosionDamageArea` computes a falloff percentage it never uses.
+
+---
+
+## 11. Async Convention
+
+The one rule for asynchronous code in `IT.*`:
+
+1. **Only Unity lifecycle/event entry points may be `async void`** — e.g. `Start`, an input callback, an item's `Action`/`Use` entry. Everything they call returns `Awaitable` (preferred) or `Task` and **is awaited**. Never write a non-entry-point `async void`.
+2. **Every awaited delay is tied to object lifetime.** Use `await Awaitable.WaitForSecondsAsync(seconds, cancellationToken)` — never raw `Task.Delay`. The token is `this.destroyCancellationToken` (every `MonoBehaviour` has one; it fires automatically on destroy), so a continuation can't run after the object is gone.
+3. **No fake-async.** A method that does no real awaiting must be **synchronous** — do not wrap a value in `Task.FromResult` to fake an `async`/`Task` signature.
+4. **Cancellation beyond destroy:** when something must cancel *before* the object is destroyed (e.g. `CandleItem` stops burning on button-release while the item stays in inventory), create a linked source — `CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken)` — so both the manual cancel and object-destroy stop the work. Don't hand-roll a bare `CancellationTokenSource` that ignores destroy.
+5. **Catch `OperationCanceledException`** (which `WaitForSecondsAsync` throws on cancel) at the entry point and treat it as a normal, silent stop.
+
+_Reference for `Awaitable`: Unity 6 `UnityEngine.Awaitable`. This convention is the standard adopted in refactor WS2 (Story 1.3). The remaining `async void` event-style methods in player states are scheduled for the state-machine runner in Story 1.4._

@@ -1,5 +1,3 @@
-// Assets/Scripts/OverlapScripts/KeyPortOverlap.cs
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace IT.Overlap
@@ -37,24 +35,25 @@ namespace IT.Overlap
         }
 
         // Returns the port the slidable is seated on, or null. Pure geometry — caller decides if it matches.
-        public Task<KeyPortBase> FindKeyPort()
+        // Synchronous: this does no real awaiting (Async convention §11 — no fake async).
+        public KeyPortBase FindKeyPort()
         {
             SetMovingOverlappingArea(transform.position);
             Collider2D col = GetMostOverlappedCol();
-            if (col == null) return Task.FromResult<KeyPortBase>(null);
+            if (col == null) return null;
 
             SpriteRenderer overlapField = GetComponent<SpriteRenderer>();
             KeyPortBase port = col.GetComponent<KeyPortBase>();
-            if (port == null) return Task.FromResult<KeyPortBase>(null);
-            if (GetPercentOfOverlap(col.bounds, overlapField.bounds) <= 60f) return Task.FromResult<KeyPortBase>(null);
+            if (port == null) return null;
+            if (GetPercentOfOverlap(col.bounds, overlapField.bounds) <= 60f) return null;
 
-            return Task.FromResult(port);
+            return port;
         }
 
         // Kept for PushBlock.CleanUp which still uses the bool form.
-        public async Task<bool> IsOnKeyPort(GameUtilities.KeyTypes key)
+        public bool IsOnKeyPort(GameUtilities.KeyTypes key)
         {
-            KeyPortBase port = await FindKeyPort();
+            KeyPortBase port = FindKeyPort();
             return port != null && port.Matches(key);
         }
 

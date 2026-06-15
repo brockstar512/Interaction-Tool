@@ -98,7 +98,7 @@ namespace IT.Interactables.Slidable
                 Vector3 destination = ComputeDestination(direction, hit);
                 float duration = hit.Distance / SlideSpeed;
 
-                await Task.Delay(AnimationDelayMs);
+                await Awaitable.WaitForSecondsAsync(AnimationDelayMs / 1000f, destroyCancellationToken);
 
                 _moverCheck = Instantiate(moverCheckPrefab,
                     moverCheckPrefab.transform.position, Quaternion.identity, transform);
@@ -144,10 +144,10 @@ namespace IT.Interactables.Slidable
             CleanUp();
         }
 
-        private async void CleanUp()
+        private void CleanUp()
         {
             KeyPortBase port = null;
-            try { port = await _targetCheck.FindKeyPort(); }
+            try { port = _targetCheck.FindKeyPort(); }
             catch (Exception ex) { Debug.LogError($"Slidable.CleanUp failed: {ex}"); }
 
             _moverCheck.CleanUp();

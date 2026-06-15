@@ -98,11 +98,11 @@ namespace IT.Interactables.Moveable
                 .OnComplete(() => _isMoving = false);   // settled — free to push again
         }
 
-        async void CleanUp()
+        void CleanUp()
         {
             try
             {
-                bool isPlaced = await _targetCheck.IsOnKeyPort(key);
+                bool isPlaced = _targetCheck.IsOnKeyPort(key);
                 if (isPlaced)
                 {
                     _targetCheck.CleanUp();
