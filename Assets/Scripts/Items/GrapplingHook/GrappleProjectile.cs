@@ -1,11 +1,13 @@
 using UnityEngine;
 using System;
 
-namespace IT.Items.GrapplingHook {
+namespace IT.Items.GrapplingHook
+{
     using IT.Core;
     using IT.Core.Utilities;
     using IT.Overlap;
-    
+    using IT.Interactables.Throwable;
+
     public class GrappleProjectile : MonoBehaviour, IDamage
     {
         //render for the rope bridge
@@ -35,14 +37,20 @@ namespace IT.Items.GrapplingHook {
         public GrappleSocket hookConnectorEndPin { get; private set; }
         //delegate to tell the gun that we hit something
         Action<IGrappleTarget> _hitSomethingCallback;
-        
+        //delegate to tell the gun that a carried target died mid-flight (e.g. bomb exploded)
+        Action _carriedTargetLostCallback;
+
         private void Awake()
         {
             //get the overlap check for the start
             _overlapHookCheck = GetComponentInChildren<GrappleTargetOverlap>();
         }
 
-        public GrappleProjectile Init(Vector3 gunBarrel, Action<IGrappleTarget> hitSomethingCallback,Vector3 playerLocation)
+        public GrappleProjectile Init(
+            Vector3 gunBarrel,
+            Action<IGrappleTarget> hitSomethingCallback,
+            Action carriedTargetLostCallback,
+            Vector3 playerLocation)
         {
             //get the location of the player.
             this.playerPos = playerLocation;
@@ -50,6 +58,8 @@ namespace IT.Items.GrapplingHook {
             this.origin = gunBarrel;
             //get a callback so we can tell the gun we hit something
             _hitSomethingCallback = hitSomethingCallback;
+            //get a callback so we can tell the gun the carried thing died (bomb exploded, etc.)
+            _carriedTargetLostCallback = carriedTargetLostCallback;
             //instantiate the overlap to see if we have a beginning pin to connect to if we have an end
             _hookStartOverlap = Instantiate(hookOverlapPrefab, playerLocation, Quaternion.identity);
             //instantiate the overlap check to see if we have an end connector
@@ -61,7 +71,7 @@ namespace IT.Items.GrapplingHook {
         }
 
         public void SetHookSprite(Vector3 spriteDirection)
-        {   
+        {
             //this set the direction of the sprite of the grappling hook
             SpriteRenderer sr = GetComponent<SpriteRenderer>();
             if (spriteDirection == Vector3.right)
@@ -79,10 +89,9 @@ namespace IT.Items.GrapplingHook {
             if (spriteDirection == Vector3.down)
             {
                 sr.sprite = downSprite;
-
             }
         }
-       
+
         async void CheckForStartPin()
         {
             try
@@ -99,7 +108,7 @@ namespace IT.Items.GrapplingHook {
             }
         }
 
-        
+
         private void FixedUpdate()
         {
             //if we have a start pin continually check for an end pin
@@ -107,10 +116,10 @@ namespace IT.Items.GrapplingHook {
             {
                 CheckForEndPin();
             }
-            
+
             //as the hook is moving check if we have an overlap of a collider that we can interact with
             Collider2D col = _overlapHookCheck.GetMostOverlappedCol();
-            
+
             //if there is not any colliders we hit or if we hit something on the way back
             //don't run any logic
             if (col is null && _hitSomethingCallback is not null)
@@ -122,21 +131,37 @@ namespace IT.Items.GrapplingHook {
             //if we what we hit is not soemthing we can interact with ignore it.
             if (somethingHit is null || somethingHit is GrappleSocket)
                 return;
-            //probably should tell the thing I hit that this interacted with it
-            //somethingHit.InteractWithHookProjectile(this);
-            
+
+            //if it's a retractable target, subscribe to its Detached event BEFORE attaching
+            //so we can't miss a same-frame destruction (e.g. bomb explodes the instant it's hooked)
+            if (somethingHit is GrappleHookRetractableTarget retractable)
+            {
+                Action onDetach = null;
+                onDetach = () =>
+                {
+                    //Unity fake-null guard: this projectile may already be destroyed
+                    if (this == null) return;
+                    retractable.Detached -= onDetach;
+                    _carriedTargetLostCallback?.Invoke();
+                };
+                retractable.Detached += onDetach;
+            }
+
+            //tell the target it's been hooked so it can attach itself, set trigger, etc.
+            somethingHit.InteractWithHookProjectile(this);
+
             //notify the gun we hit something
             _hitSomethingCallback?.Invoke(somethingHit);
             //i think i added this cause I was nervous it would be called twice, see if I can delete it later 
             _hitSomethingCallback = null;
         }
-        
+
         private void Update()
         {
             //draw the rope as the projectile moves
             DrawLineConnector();
         }
-        
+
         void CheckForEndPin()
         {
             //check if we are over a hook connector
@@ -146,25 +171,23 @@ namespace IT.Items.GrapplingHook {
             if (hookConnectorEndPin != null)
             {
                 //put it on the layer that says its being used so other overlap checkers dont deal withit
-                GameUtilities.PutObjectOnLayer(GameUtilities.SocketUsedLayer,hookConnectorStartPin.gameObject);
+                GameUtilities.PutObjectOnLayer(GameUtilities.SocketUsedLayer, hookConnectorStartPin.gameObject);
                 //connect the pins
                 ConnectPin();
-
             }
         }
-        
+
         void ConnectPin()
         {
             //if we have the script for both connecting pins
             if (hookConnectorEndPin != null && hookConnectorStartPin != null)
             {
                 //put the end connector on the layer so no other grappling hook messes with it
-                GameUtilities.PutObjectOnLayer(GameUtilities.SocketUsedLayer,hookConnectorEndPin.gameObject);
+                GameUtilities.PutObjectOnLayer(GameUtilities.SocketUsedLayer, hookConnectorEndPin.gameObject);
                 //use the start pin to hand the interaction logic to create the bridge
                 hookConnectorStartPin.InteractWithHookProjectile(this);
                 //tell the gun we hit something
                 _hitSomethingCallback?.Invoke(hookConnectorEndPin);
-
             }
         }
 
@@ -183,9 +206,8 @@ namespace IT.Items.GrapplingHook {
             //destroy the overlaps that we created 
             Destroy(_hookStartOverlap.gameObject);
             Destroy(_hookEndOverlap.gameObject);
-
         }
-        
+
         private void DrawLineConnector()
         {
             //this continually draws the rope.
@@ -193,6 +215,5 @@ namespace IT.Items.GrapplingHook {
             line.SetPosition(0, origin);
             line.SetPosition(1, this.transform.position);
         }
-        
     }
 }

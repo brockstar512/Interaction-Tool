@@ -10,14 +10,13 @@ namespace IT.Interactables.Throwable
 {
     class Bomb : ThrowableBase
     {
-    
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             //update the layer so we can interact with it
             UpdateLayerName();
         }
-    
+
         protected void FixedUpdate()
         {
             //if it's thrown run the in air logic
@@ -25,13 +24,13 @@ namespace IT.Interactables.Throwable
             {
                 InAir();
             }
-        
+
             //determine if it needs to go to the next bounce
             if (_isThrown && Vector2.Distance(_startingPoint, transform.position) >= DistanceLimit)
             {
                 _isThrown = false;
                 //if it does not have more distance to go
-                if ( currentBounceIndex < bounceSequence.Count-1)
+                if (currentBounceIndex < bounceSequence.Count - 1)
                 {
                     //increase tp the next curve
                     currentBounceIndex++;
@@ -39,11 +38,9 @@ namespace IT.Interactables.Throwable
                     //when we leave the state release will be called and it will be thrown and we immediately go to 
                     DistanceLimit = bounceSequence[currentBounceIndex].keys[1].time;
                     //throw the item 
-                    Toss(_throwDirection);            
+                    Toss(_throwDirection);
                 }
-            
             }
         }
-    
     }
 }

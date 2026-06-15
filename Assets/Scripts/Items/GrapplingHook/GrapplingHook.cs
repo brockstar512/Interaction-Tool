@@ -37,7 +37,7 @@ namespace IT.Items.GrapplingHook
         //this is the callback for when we can dispose
         //of the item if we hit a hook connector
         Action _disposeOfItem;
-        
+
         public override void Use(IInteractionContext context)
         {
             if (_projectile != null)
@@ -58,7 +58,8 @@ namespace IT.Items.GrapplingHook
                 _originPoint = context.Transform.GetComponentInChildren<ItemAnchorPoint>().transform.position;
                 _currentLocation = _originPoint;
                 _maxLocation = (context.LookDirection * MaxDistance) + (Vector2)_originPoint;
-                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity).Init(_originPoint, HitSomething, context.Transform.position);
+                _projectile = Instantiate(projectilePrefab, _originPoint, Quaternion.identity)
+                    .Init(_originPoint, HitSomething, OnCarriedTargetLost, context.Transform.position);
                 _projectile.SetHookSprite(context.LookDirection);
                 SendGrapplingHook();
                 await _animationGrapplingHookFire.Play(context);
@@ -69,18 +70,19 @@ namespace IT.Items.GrapplingHook
                 PutAway();
             }
         }
+
         void SendGrapplingHook()
         {
             //get the location of the grappling hook so we can gage the time
             _currentLocation = _projectile.transform.position;
             //get the time for a consistent speed
-            float time = MeasureTime(GetDistance(_currentLocation,_maxLocation));
+            float time = MeasureTime(GetDistance(_currentLocation, _maxLocation));
             //animation it
             _projectileAnimation = _projectile.transform.DOMove(_maxLocation, time).SetEase(Ease.Linear);
             //when the animation is done retract the grappling hook.
             _projectileAnimation.onComplete = RetractGrapplingHook;
         }
-        
+
         void RetractGrapplingHook()
         {
             //if there is no grappling hook reset so you are not stuck in this state...
@@ -95,7 +97,7 @@ namespace IT.Items.GrapplingHook
             //the send grappling hook because if you press the button up the distance is not constant
             _currentLocation = _projectile.transform.position;
             //calcuate the time
-            float time = MeasureTime(GetDistance(_currentLocation,_originPoint));
+            float time = MeasureTime(GetDistance(_currentLocation, _originPoint));
             //animate the grappling hook
             _projectileAnimation = _projectile.transform.DOMove(_originPoint, time).SetEase(Ease.Linear);
             //when the animation is done. go to default state
@@ -104,7 +106,6 @@ namespace IT.Items.GrapplingHook
 
         void HitSomething(IGrappleTarget somethingHit)
         {
-
             //the projectile tells the gun you hit something with the interface IGrappleTarget
             switch (somethingHit)
             {
@@ -120,7 +121,7 @@ namespace IT.Items.GrapplingHook
                     Destroy(_projectile.gameObject);
                     //dispose of the item from your inventory
                     _disposeOfItem?.Invoke();
-                break;
+                    break;
                 //you hit a throwable item
                 case ThrowableBase throwable:
                     //cache the item that you hit
@@ -136,9 +137,17 @@ namespace IT.Items.GrapplingHook
                     RetractGrapplingHook();
                     break;
             }
-            
         }
-        
+
+        //called by the projectile when the thing we were carrying died mid-flight
+        //(e.g. a bomb whose fuse expired while on the rope).
+        //the projectile keeps retracting; we just clear our reference so PutAway
+        //doesn't hand a dead object back to the state machine.
+        void OnCarriedTargetLost()
+        {
+            item = null;
+        }
+
         float GetDistance(Vector3 start, Vector3 finish)
         {
             //this will always be 0 in one coord
@@ -146,7 +155,7 @@ namespace IT.Items.GrapplingHook
             Vector3 dist = finish - start;
             return dist.x + dist.y;
         }
-        
+
         float MeasureTime(float distance)
         {
             //this is the constant speed
@@ -154,7 +163,7 @@ namespace IT.Items.GrapplingHook
             //time should always be positive
             return Mathf.Abs(distance / speed);
         }
-        
+
         public void ButtonUp()
         {
             //when you the button goes up
@@ -174,12 +183,15 @@ namespace IT.Items.GrapplingHook
                 Destroy(_projectile.gameObject);
             }
 
+            //Unity fake-null check: if the carried throwable was destroyed mid-rope
+            //(bomb explosion etc.), pass real null to the state machine instead of
+            //a "destroyed" UnityEngine.Object reference.
+            Interactable handoff = (item != null) ? item : null;
 
             //if this is null it will go to default...
             //if we switched item to throwable
             //we will switched to that state
-            ItemFinishedCallback?.Invoke(item);
-            
+            ItemFinishedCallback?.Invoke(handoff);
         }
     }
 }
