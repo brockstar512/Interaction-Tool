@@ -103,13 +103,13 @@
     <Compile Include="Assets/Scripts/Core/StateMachine/IStateMachine.cs" />
     <Compile Include="Assets/Scripts/Interactables/Chests/Chest.cs" />
     <Compile Include="Assets/Scripts/Player/Status/PlayerStatusManager.cs" />
+    <Compile Include="Assets/Scripts/Items/GrapplingHook/GrappleHookRetractableTarget.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/PlayerContext.cs" />
     <Compile Include="Assets/Scripts/Player/Status/PlayerStatus.cs" />
     <Compile Include="Assets/Scripts/Items/GrapplingHook/GrappleSocket.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerThrowState.cs" />
     <Compile Include="Assets/Scripts/Items/Weapons/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Overlap/InteractableOverlap.cs" />
-    <Compile Include="Assets/Scripts/Items/GrapplingHook/GrappleHookTarget.cs" />
     <Compile Include="Assets/Scripts/Animation/World/DoubleDoorAnim.cs" />
     <Compile Include="Assets/Scripts/Core/Utilities/LayerIndex.cs" />
     <Compile Include="Assets/Scripts/Interactables/IOpenEffect.cs" />
@@ -200,6 +200,7 @@
     <None Include="/Applications/Unity/Hub/Editor/6000.1.12f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.assetbundle/package.json" />
     <None Include="Library/PackageCache/com.unity.render-pipelines.core@47a0d8baabbd/Shaders/CoreCopy.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
+    <None Include="Assets/works.txt" />
     <None Include="/Applications/Unity/Hub/Editor/6000.1.12f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.imgui/package.json" />
     <None Include="Library/PackageCache/com.unity.sysroot.linux-x86_64@1998d1c7730e/package.json" />
     <None Include="/Applications/Unity/Hub/Editor/6000.1.12f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.tilemap/package.json" />
@@ -270,6 +271,7 @@
     <None Include="Library/PackageCache/com.unity.ugui@57cef44123c7/Editor Resources/Shaders/TMP_SDF Internal Editor.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" />
     <None Include="/Applications/Unity/Hub/Editor/6000.1.12f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.director/package.json" />
+    <None Include="Assets/not working.txt" />
     <None Include="Library/PackageCache/com.unity.2d.aseprite@fa26c8d7c7e6/package.json" />
     <None Include="Library/PackageCache/com.unity.visualscripting@6279e2b7c485/ValidationConfig.json" />
     <None Include="/Applications/Unity/Hub/Editor/6000.1.12f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.terrain/package.json" />
