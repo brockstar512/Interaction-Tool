@@ -14,13 +14,12 @@ namespace IT.Interactables.Throwable
         private readonly float _timer = 10f;
         private CancellationTokenSource _cancellationTokenSource;
         [SerializeField] private ExplosionEffect explosion;
-
-        // This will be called when the game starts
         async void Start()
         {
             try
             {
                 _cancellationTokenSource = new CancellationTokenSource();
+                _ = LogRemaining(_cancellationTokenSource.Token);   // fire-and-forget logger
                 await StartTimer(_timer, _cancellationTokenSource.Token);
             }
             catch (System.OperationCanceledException) { }
@@ -29,7 +28,6 @@ namespace IT.Interactables.Throwable
                 Debug.LogError($"BombExplode.Start failed: {ex}");
             }
         }
-
 
         private async Task StartTimer(float waitTime, CancellationToken cancellationToken)
         {
@@ -48,6 +46,17 @@ namespace IT.Interactables.Throwable
             }
 
             Debug.Log($"Waited for {waitTime} seconds!");
+        }
+        
+        private async Task LogRemaining(CancellationToken token)
+        {
+            float remaining = _timer;
+            while (remaining > 0 && !token.IsCancellationRequested)
+            {
+                Debug.Log($"Bomb fuse: {remaining:F1}s remaining");
+                await Task.Delay(500, token);
+                remaining -= 0.5f;
+            }
         }
 
         private void CancelTask()
