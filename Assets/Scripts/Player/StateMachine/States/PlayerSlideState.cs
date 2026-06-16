@@ -41,6 +41,7 @@ namespace IT.Player.StateMachine.States
 
         public override async void Action(PlayerStateMachine stateManager)
         {
+            int token = stateManager.TransitionCount;
             try
             {
                 if (stateManager.item.Interact(stateManager))
@@ -57,10 +58,11 @@ namespace IT.Player.StateMachine.States
             {
                 Debug.LogError($"SlideItemState.Action failed: {ex}");
             }
-            finally
-            {
-                stateManager.SwitchState(stateManager.defaultState);
-            }
+
+            //stale-guard (Story 1.4): NOT in a finally — a SwitchState during the kick/hurt
+            //await must not be re-overwritten by this continuation.
+            if (stateManager.IsStale(token)) return;
+            stateManager.SwitchState(stateManager.defaultState);
         }
     }
 }

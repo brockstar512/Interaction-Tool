@@ -5,32 +5,23 @@ using UnityEngine;
 //the hud will manage the screens
 namespace IT.Player.StateMachine.States
 {
+    // Minimal safe death state (Story 1.4 / refactor WS3.5): stops the player and throws nowhere.
+    // Full death presentation (animation, HUD, respawn) is later feature work; 0-HP entry is Story 4.2.
     public class PlayerDeathState : PlayerStateBase
     {
-        //death animation
         public override void EnterState(PlayerStateMachine stateManager)
         {
-            throw new System.NotImplementedException();
+            // Stop residual motion; input is already gated (UseItem/Interact only fire from idle).
+            if (stateManager.rb != null) stateManager.rb.velocity = Vector2.zero;
+            Debug.Log("Player died");
         }
 
-        public override void UpdateState(PlayerStateMachine stateManager)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void UpdateState(PlayerStateMachine stateManager) { }
 
-        public override void FixedUpdateState(PlayerStateMachine stateManager)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void FixedUpdateState(PlayerStateMachine stateManager) { }   // no Move → player stays put
 
-        public override void ExitState(PlayerStateMachine stateManager)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void ExitState(PlayerStateMachine stateManager) { }
 
-        public override void Action(PlayerStateMachine stateManager)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Action(PlayerStateMachine stateManager) { }
     }
 }

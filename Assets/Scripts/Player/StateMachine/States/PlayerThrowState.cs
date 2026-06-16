@@ -29,10 +29,14 @@ namespace IT.Player.StateMachine.States
 
         public override async void EnterState(PlayerStateMachine stateManager)
         {
+            int token = stateManager.TransitionCount;
             try
             {
                 _currentAnimation = _pickUpAnimation;
                 await _pickUpAnimation.Play(stateManager);
+
+                //stale-guard (Story 1.4): a SwitchState happened during the pickup await — abort silently.
+                if (stateManager.IsStale(token)) return;
 
                 //the held item might have been destroyed during the pickup animation await
                 //(e.g. bomb fuse expired). bail to default instead of crashing on Interact.
@@ -96,6 +100,7 @@ namespace IT.Player.StateMachine.States
                 return;
             }
 
+            int token = stateManager.TransitionCount;
             try
             {
                 _currentAnimation = _throwAnimation;
@@ -106,11 +111,14 @@ namespace IT.Player.StateMachine.States
             {
                 Debug.LogError($"ThrowItemState.Action failed: {ex}");
             }
-            finally
-            {
-                _currentAnimation = null;
-                stateManager.SwitchState(stateManager.defaultState);
-            }
+
+            //stale-guard (Story 1.4): NOT in a finally — a SwitchState during the throw await
+            //must not be re-overwritten by this continuation. (A genuine exception above still
+            //falls through to the recovery SwitchState below.)
+            if (stateManager.IsStale(token)) return;
+
+            _currentAnimation = null;
+            stateManager.SwitchState(stateManager.defaultState);
         }
 
         //fires when a destructible we were holding gets destroyed (bomb explosion in hand, etc.)
@@ -126,6 +134,7 @@ namespace IT.Player.StateMachine.States
             var sm = _heldStateManager;
             if (sm == null) return;
 
+            int token = sm.TransitionCount;
             try
             {
                 // ════════════════════════════════════════════════════════════
@@ -133,16 +142,18 @@ namespace IT.Player.StateMachine.States
                 //  e.g.  await _hurtAnimation.Play(sm);
                 //  create a new AnimStateBase subclass following the pattern
                 //  of HurtToeAnimState, instantiate it in the constructor.
+                //  NOTE: the stale-guard below already covers any await added here.
                 // ════════════════════════════════════════════════════════════
             }
             catch (System.Exception ex)
             {
                 Debug.LogError($"ThrowItemState.OnHeldItemDestroyed failed: {ex}");
             }
-            finally
-            {
-                sm.SwitchState(sm.defaultState);
-            }
+
+            //stale-guard (Story 1.4): not in a finally — if a future hurt-anim await lets the
+            //state change, don't re-switch over it.
+            if (sm.IsStale(token)) return;
+            sm.SwitchState(sm.defaultState);
         }
     }
 }

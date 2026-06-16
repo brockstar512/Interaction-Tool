@@ -18,7 +18,9 @@ namespace IT.Player.StateMachine.States
 
         public override void Action(PlayerStateMachine stateManager)
         {
-            throw new System.NotImplementedException();
+            // No second-press action while equipping; ignore Interact pressed mid-equip-animation.
+            // (PlayerStateMachine.Interact calls currentState.Action unconditionally, so a throw here
+            //  would crash on input spam during equip — Story 1.4 AC-3 spam safety.)
         }
 
         public async override void EnterState(PlayerStateMachine stateManager)
@@ -28,7 +30,9 @@ namespace IT.Player.StateMachine.States
                 stateManager.SwitchState(stateManager.defaultState);
                 return;
             }
+            int token = stateManager.TransitionCount;
             await EquipItemAnimation.Play(stateManager);
+            if (stateManager.IsStale(token)) return;   //stale-guard (Story 1.4)
             stateManager.SwitchState(stateManager.defaultState);
         }
 

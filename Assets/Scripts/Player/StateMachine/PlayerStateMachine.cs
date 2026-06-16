@@ -27,8 +27,13 @@ namespace IT.Player.StateMachine
 
         public readonly PlayerDeathState deathState = new PlayerDeathState();
 
-        public PlayerStateBase getState => currentState; 
-    
+        public PlayerStateBase getState => currentState;
+
+        // Stale-continuation guard (Story 1.4): bumped on every SwitchState. An async state
+        // action captures this token before awaiting and checks IsStale(token) after each await.
+        public int TransitionCount { get; private set; }
+        public bool IsStale(int token) => token != TransitionCount;
+
         //should this be interface variables... should I put them in a payer controller? or state machine components
         public Vector2 movement { get; private set; }
         public Rigidbody2D rb { get; private set; }
@@ -68,7 +73,6 @@ namespace IT.Player.StateMachine
 
         void Update()
         {
-
             currentState.UpdateState(this);
         }
 
@@ -81,6 +85,7 @@ namespace IT.Player.StateMachine
 
         public void SwitchState(PlayerStateBase newState)
         {
+            TransitionCount++;   // bump first so any in-flight continuation that captured the old token sees it as stale
             newState.LookDirection= currentState.LookDirection;
             currentState.ExitState(this);
             currentState = newState;
@@ -148,9 +153,11 @@ namespace IT.Player.StateMachine
         }
 
 
-        public void PlayerDeath()
+        // Safe entry point into the death state. Real 0-HP→death wiring is Story 4.2;
+        // for now this is invoked by a DEBUG key in PlayerStatusManager (Story 1.4 test hook).
+        public void EnterDeath()
         {
-            //
+            SwitchState(deathState);
         }
 
     }
