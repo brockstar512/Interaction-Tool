@@ -1,0 +1,9 @@
+{
+  "gameType": "Topdown",
+  "maxPlayers": 4,
+  "backpackEnabled": false,
+  "itemsUpgradable": false,
+  "saveEnabled": false,
+  "craftingEnabled": false,
+  "dialogueEnabled": false
+}
