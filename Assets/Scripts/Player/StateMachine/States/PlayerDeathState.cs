@@ -12,7 +12,7 @@ namespace IT.Player.StateMachine.States
         public override void EnterState(PlayerStateMachine stateManager)
         {
             // Stop residual motion; input is already gated (UseItem/Interact only fire from idle).
-            if (stateManager.rb != null) stateManager.rb.velocity = Vector2.zero;
+            if (stateManager.rb != null) stateManager.rb.linearVelocity = Vector2.zero;
             Debug.Log("Player died");
         }
 
