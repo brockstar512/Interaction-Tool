@@ -368,3 +368,31 @@ The one rule for asynchronous code in `IT.*`:
 5. **Catch `OperationCanceledException`** (which `WaitForSecondsAsync` throws on cancel) at the entry point and treat it as a normal, silent stop.
 
 _Reference for `Awaitable`: Unity 6 `UnityEngine.Awaitable`. This convention is the standard adopted in refactor WS2 (Story 1.3). The remaining `async void` event-style methods in player states are scheduled for the state-machine runner in Story 1.4._
+
+---
+
+## 12. Config Placement Rule (C-B)
+
+The rule for where a new tunable or identifier belongs — applied to every new field from v1 onward:
+
+| What | Where | Why |
+|---|---|---|
+| Global / game-type setting (`gameType`, `maxPlayers`, feature flags, future PPU) | `StreamingAssets/Config/game-settings.json` → `GameConfig` | Editable without recompile; one source of truth for the whole session |
+| Per-segment / per-prefab tuning (camera mode, edge behavior, push-block mass) | Serialized field on the component that owns the value | Lives next to the object it configures; visible in the Inspector |
+| Identity (key ID, lock ID, item type ID, segment ID, WorldState flag ID) | Plain `string` constant or literal in code | No asset overhead; survives rename without GUID breakage |
+| **NOT** new ScriptableObject assets | — | C-B prohibits new SOs for config or identity (8 existing assets are grandfathered — see below) |
+
+### Grandfathered SO assets (v1)
+
+These 8 ScriptableObject assets predate C-B and are **not migrated in a standalone pass**. Migrate each only when its owning workstream is already touching that system:
+
+- `Assets/ScriptableObjects/In Game Items/Item Objects/BellItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/CandleItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/GrapplingHookItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/KeyItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/KeyMasterItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/PlankItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/SwordItemObject.asset`
+- `Assets/ScriptableObjects/In Game Items/Item Objects/WhipItemObject.asset`
+
+_Source: PRD C-B / FR-7 / Epic 2 Story 2.4._
