@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace IT.Player.StateMachine
 {
+    using IT.Core.Utilities;
+
     public abstract class PlayerStateBase
     {
         public Vector2 LookDirection { get; set; }
@@ -20,24 +22,11 @@ namespace IT.Player.StateMachine
         }
         protected void UpdateLookDirection(Vector2 movement)
         {
-            if (movement == Vector2.up)
-            {
-                LookDirection = movement;
-            }
-            if (movement == Vector2.down)
-            {
-                LookDirection = movement;
-            }
-            if (movement == Vector2.right)
-            {
-                LookDirection = movement;
-            }
-            if (movement == Vector2.left)
-            {
-                LookDirection = movement;
-            }
-           //Debug.Log(LookDirection);
-
+            // Only EXACT cardinal input changes facing (diagonal/zero → null → unchanged).
+            // No four-way if-chain at the call site — the cardinal mapping lives in Facing (WS5.1 / Story 1.5).
+            Facing? facing = FacingExtensions.FromVector(movement);
+            if (facing.HasValue)
+                LookDirection = facing.Value.ToVector();
         }
     }
 }
