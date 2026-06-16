@@ -10,8 +10,6 @@ namespace IT.Core.Config
     // IGameConfigSource.Load() is synchronous; it cannot block on a web request, so it returns
     // GameConfig.Default with a warning. Call LoadAsync() from a MonoBehaviour async entry point
     // (async void / async Awaitable) and pass destroyCancellationToken per §11.
-    //
-    // TODO (Story 2.3): per-field validation that logs the offending field by name.
     public class AsyncJsonGameConfigSource : IGameConfigSource
     {
         const string RelativePath = "Config/game-settings.json";

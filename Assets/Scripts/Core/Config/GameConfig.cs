@@ -1,7 +1,8 @@
+using UnityEngine;
+
 namespace IT.Core.Config
 {
     // Immutable runtime accessor over the parsed settings (C-B: plain C#, not a ScriptableObject).
-    // Story 2.1 holds the minimal v1 schema; Story 2.2 extends; Story 2.3 adds field-level validation.
     public class GameConfig
     {
         public GameType GameType { get; }
@@ -15,7 +16,17 @@ namespace IT.Core.Config
         public GameConfig(GameSettings s)
         {
             GameType        = ParseGameType(s.gameType);
-            MaxPlayers      = s.maxPlayers;
+
+            if (s.maxPlayers <= 0)
+            {
+                Debug.LogWarning($"[GameConfig] Field 'maxPlayers': value {s.maxPlayers} is invalid (must be > 0) — defaulting to 4.");
+                MaxPlayers = 4;
+            }
+            else
+            {
+                MaxPlayers = s.maxPlayers;
+            }
+
             BackpackEnabled = s.backpackEnabled;
             ItemsUpgradable = s.itemsUpgradable;
             SaveEnabled     = s.saveEnabled;
@@ -28,8 +39,9 @@ namespace IT.Core.Config
 
         static GameType ParseGameType(string raw)
         {
-            // v1: only Topdown ships. Unknown/blank → Topdown (proper field validation is Story 2.3).
-            return System.Enum.TryParse(raw, ignoreCase: true, out GameType g) ? g : GameType.Topdown;
+            if (System.Enum.TryParse(raw, ignoreCase: true, out GameType g)) return g;
+            Debug.LogWarning($"[GameConfig] Field 'gameType': unrecognised value '{raw}' — defaulting to Topdown.");
+            return GameType.Topdown;
         }
     }
 }

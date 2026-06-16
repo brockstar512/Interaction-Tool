@@ -6,7 +6,6 @@ namespace IT.Core.Config
     // Reads the minimal JSON config from StreamingAssets, falling back to defaults on ANY failure.
     // Desktop/Editor only: File.ReadAllText requires a real filesystem path (not available on
     // Android/WebGL). AsyncJsonGameConfigSource handles those platforms via UnityWebRequest.
-    // TODO (Story 2.3): per-field validation that logs the offending field by name (one clear error).
     public class JsonGameConfigSource : IGameConfigSource
     {
         const string RelativePath = "Config/game-settings.json";
