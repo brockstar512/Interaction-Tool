@@ -1,3 +1,4 @@
+using IT.Core.WorldState;
 using UnityEngine;
 
 namespace IT.Boot
@@ -12,6 +13,7 @@ namespace IT.Boot
         public static SystemsRoot Instance { get; private set; }
 
         public GameConfig Config { get; private set; }
+        public WorldState WorldState { get; private set; }
 
         // Created only by BootInit.EnsureSystems() — not placed in a scene by hand.
         public static SystemsRoot Create(GameConfig config)
@@ -22,6 +24,7 @@ namespace IT.Boot
             DontDestroyOnLoad(go);
             var root = go.AddComponent<SystemsRoot>();   // Awake sets Instance
             root.Config = config;
+            root.WorldState = new WorldState();
             return root;
         }
 
