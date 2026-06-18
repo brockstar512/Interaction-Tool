@@ -79,6 +79,7 @@
     <Compile Include="Assets/Scripts/Interactables/Doors/MultiKeyDoubleDoor.cs" />
     <Compile Include="Assets/Scripts/Animation/World/SingleDoorAnim.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/MoveAnimState.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/OnFootController.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/HUDManager.cs" />
     <Compile Include="Assets/Scripts/Player/HUD/PlayerStatusHUD.cs" />
     <Compile Include="Assets/Scripts/Items/PlankItem.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerThrowState.cs" />
     <Compile Include="Assets/Scripts/Items/Weapons/WhipItem.cs" />
     <Compile Include="Assets/Scripts/Overlap/InteractableOverlap.cs" />
+    <Compile Include="Assets/Scripts/Core/Compatibility/IsExternalInit.cs" />
     <Compile Include="Assets/Scripts/Animation/World/DoubleDoorAnim.cs" />
     <Compile Include="Assets/Scripts/Core/Utilities/LayerIndex.cs" />
     <Compile Include="Assets/Scripts/Interactables/IOpenEffect.cs" />
@@ -128,8 +130,10 @@
     <Compile Include="Assets/Scripts/Animation/Player/States/GrappleSetupAnimState.cs" />
     <Compile Include="Assets/Scripts/Player/Input/PlayerInputHandler.cs" />
     <Compile Include="Assets/Scripts/Effects/Flash/IFlashable.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/IHealthSource.cs" />
     <Compile Include="Assets/Scripts/Items/Candle/CandleLightController.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerUseState.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/PlayerInputState.cs" />
     <Compile Include="Assets/Scripts/Interactables/IInteractionContext.cs" />
     <Compile Include="Assets/Scripts/Animation/AnimStateBase.cs" />
     <Compile Include="Assets/Scripts/Interactables/Moveable/IPushInput.cs" />
@@ -137,6 +141,7 @@
     <Compile Include="Assets/Scripts/Boot/GameBootstrap.cs" />
     <Compile Include="Assets/Scripts/Overlap/RopeObstructionOverlap.cs" />
     <Compile Include="Assets/Scripts/Interactables/Throwable/ExplosionDamageArea.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/PlayerWrapper.cs" />
     <Compile Include="Assets/Scripts/Core/InterfaceRef.cs" />
     <Compile Include="Assets/Scripts/Player/Inventory/ItemDropper.cs" />
     <Compile Include="Assets/Scripts/Interactables/Doors/DoubleDoor.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="Assets/Scripts/Player/Movement/PlayerMover.cs" />
     <Compile Include="Assets/Scripts/Overlap/IBestOverlap.cs" />
     <Compile Include="Assets/Scripts/Interactables/Chests/SpawnItemOnOpen.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/IPlayerController.cs" />
     <Compile Include="Assets/Scripts/Core/Config/IGameConfigSource.cs" />
     <Compile Include="Assets/Scripts/Player/StateMachine/States/PlayerOpenState.cs" />
     <Compile Include="Assets/Scripts/Animation/AnimClipBase.cs" />
@@ -163,6 +169,7 @@
     <Compile Include="Assets/Scripts/Core/Utilities/GridSnapper.cs" />
     <Compile Include="Assets/Scripts/Items/IItemHolder.cs" />
     <Compile Include="Assets/Scripts/Interactables/Pullable/PullableBase.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/WrapperState.cs" />
     <Compile Include="Assets/Scripts/Core/Config/GameType.cs" />
     <Compile Include="Assets/Scripts/Items/PickupHolder.cs" />
     <Compile Include="Assets/Scripts/Items/Bell/BellItem.cs" />

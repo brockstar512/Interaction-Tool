@@ -34,6 +34,11 @@ namespace IT.Player.StateMachine
         public int TransitionCount { get; private set; }
         public bool IsStale(int token) => token != TransitionCount;
 
+        // Possession-release hook (Story 3.1): OnFootController.OnRelease() calls this to
+        // trip the stale guard exactly as SwitchState does, so an in-flight async state
+        // action aborts when this state machine stops being driven.
+        public void IncrementTransitionCount() => TransitionCount++;
+
         //should this be interface variables... should I put them in a payer controller? or state machine components
         public Vector2 movement { get; private set; }
         public Rigidbody2D rb { get; private set; }
@@ -71,12 +76,14 @@ namespace IT.Player.StateMachine
             currentState.EnterState(this);
         }
 
-        void Update()
+        // Driven by PlayerWrapper via OnFootController — not called by Unity directly (Story 3.1+).
+        public void UpdateTick()
         {
             currentState.UpdateState(this);
         }
 
-        void FixedUpdate()
+        // Driven by PlayerWrapper via OnFootController — not called by Unity directly (Story 3.1+).
+        public void FixedTick()
         {
             currentState.FixedUpdateState(this);
             // Physics2D.IgnoreCollision(col, col2, true);
