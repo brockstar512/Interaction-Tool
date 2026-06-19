@@ -128,7 +128,6 @@
     <Compile Include="Assets/Scripts/Interactables/Slidable/SlideObstruction.cs" />
     <Compile Include="Assets/Scripts/Interactables/Locks/SlidingKeyPort.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/GrappleSetupAnimState.cs" />
-    <Compile Include="Assets/Scripts/Player/Input/PlayerInputHandler.cs" />
     <Compile Include="Assets/Scripts/Effects/Flash/IFlashable.cs" />
     <Compile Include="Assets/Scripts/Player/Control/IHealthSource.cs" />
     <Compile Include="Assets/Scripts/Items/Candle/CandleLightController.cs" />
