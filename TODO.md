@@ -46,7 +46,16 @@
 
 ---
 
-## Code Cleanup (from REFACTOR_NOTES)
+## Code Cleanup
+
+### From code review 2026-06-19
+
+- [ ] **WorldState.OnSegmentReEntered: `segmentId` parameter is unused.** The method body is `=> ClearScope(FlagScope.SegmentScoped)` — it clears ALL SegmentScoped flags regardless of which segment fired. When Epic 5 wires `SegmentManager → OnSegmentReEntered`, this will incorrectly clear flags from all segments on re-entry to any one. Must change the method to filter by segment before Epic 5 wires it.
+- [ ] **SlidableBase.CleanUp: drop the try/catch around FindKeyPort.** Story 3.1.5 added `try { if (_targetCheck != null) port = _targetCheck.FindKeyPort(); } catch (Exception ex) { Debug.LogError(...); }`. The Unity null-check already prevents the NRE; the broad `catch (Exception)` silently swallows real programming errors. Remove the try/catch and keep only the null guard when next touching `SlidableBase`.
+- [ ] **WorldState.RestorePermanentFlags: surface caller contract in Story 9.2 spec.** The method comment says callers must call `ClearScope(Permanent) + ClearScope(SessionOnly)` before calling `RestorePermanentFlags`. The method doesn't enforce this; silent state corruption results if the save system omits the pre-clear. When drafting Story 9.2, make this an explicit acceptance criterion or enforce it inside the method.
+- [ ] **PROJECT-STATUS.md is a one-shot snapshot that goes stale immediately.** The file was generated 2026-06-17 and was already wrong by 2026-06-18 (Story 3.1 completed). Either delete it and rely on the epic-docs guides + story files as authoritative, or wire it to an auto-regeneration step (e.g., a bmad-sprint-status run before each session). Don't commit manual updates — it'll lose the race with active development.
+
+### From REFACTOR_NOTES
 - [ ] Extract `OverlapCheckerBase` — five overlap classes duplicate ~500 lines of geometry math
 - [ ] Fix `async void EnterState` in `EquipItemState`, `SlideItemState`, `ThrowItemState` — swap to `Awaitable` and add try/catch
 - [ ] Delete dead code:
