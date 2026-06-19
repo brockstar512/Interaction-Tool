@@ -58,6 +58,7 @@
 - [ ] Delete unused interfaces: `IAnimationState`, `ICommand`
 - [ ] Centralize layer lookups — move all `LayerMask.NameToLayer()` calls into a static `Layers` class in `Utilities`
 - [ ] `CandleItem` — dispose `_cancellationTokenSource` properly on repeated `ButtonUp` calls
+- [ ] **Refactor PlayerThrowState spam-guard to not depend on animation class identity.** Story 3.1.5 added `if (_currentAnimation is not CarryAnimState) return;` in `Action()` as a tight defensive fix. Better long-term: explicit `_isCarrying` bool field, or check against an `ItemManager.IsHolding`-style API. Current guard is correct but couples behavior to animation type — fragile if animation states are refactored later.
 
 ---
 
@@ -85,6 +86,8 @@ _Confirmed present BEFORE the 3.1 possession refactor. The refactor must PRESERV
 
 - [ ] **BUG — key consumption shrinks inventory capacity.** Using a key on a lock and consuming it shrinks the inventory so a second item can't be picked up afterward. Likely an `ItemManager` count/index bug (cf. the `ItemManager` fixes under "Already Done"). Reproduce: pick up key → use on lock → try to pick up another item → fails. Out of 3.1 scope.
 - [ ] **MISSING FEATURE — grapple doesn't pull pickup-able items toward player.** Item-holders are not interactable with the grapple hook (only grapple sockets / bridge formation respond). Pulling loose items in is a desired feature, not a regression. Out of 3.1 scope.
+- [x] **BUG — spamming Interact during pickup breaks the carry.** Object "goes all over the place" because `PlayerThrowState.Action` had no guard against being invoked while pickup was still in flight. Pre-existing (confirmed by checking out pre-3.1 baseline). Fixed in Story 3.1.5 with a carry-gate at the top of `Action()`.
+- [x] **BUG — spamming slide produces MissingReferenceException in SlidableBase.CleanUp.** Late DOTween onComplete fires after `KeyPortOverlap` and `DamageOverlap` components are destroyed. Pre-existing (confirmed by checking out pre-3.1 baseline). Fixed in Story 3.1.5 with defensive null-checks in `CleanUp`. Note: the root cause is DOTween callbacks outliving GameObjects; a fuller fix would migrate `SlidableBase` to `Awaitable`+`destroyCancellationToken` (Story 1.3 convention) — that's a separate future story, not 3.1.5's scope.
 
 
 

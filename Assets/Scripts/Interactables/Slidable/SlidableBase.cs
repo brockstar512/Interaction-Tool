@@ -147,11 +147,14 @@ namespace IT.Interactables.Slidable
         private void CleanUp()
         {
             KeyPortBase port = null;
-            try { port = _targetCheck.FindKeyPort(); }
+            // Spam guard (Story 3.1.5): a late DOTween onComplete can fire after these overlap
+            // components are destroyed. Unity's overloaded != null detects the destroyed object,
+            // so guard each access instead of throwing MissingReferenceException.
+            try { if (_targetCheck != null) port = _targetCheck.FindKeyPort(); }
             catch (Exception ex) { Debug.LogError($"Slidable.CleanUp failed: {ex}"); }
 
-            _moverCheck.CleanUp();
-            _targetCheck.CleanUp();
+            if (_moverCheck != null)  _moverCheck.CleanUp();
+            if (_targetCheck != null) _targetCheck.CleanUp();
 
             if (port != null && AcceptsPort(port)) _locked.Value = true;
         }

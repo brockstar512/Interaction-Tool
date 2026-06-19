@@ -93,6 +93,12 @@ namespace IT.Player.StateMachine.States
 
         public override async void Action(PlayerStateMachine stateManager)
         {
+            // Spam guard (Story 3.1.5): only throw once carrying is established. Spamming Interact
+            // during the pickup animation must not re-enter Action and Release an item still being
+            // picked up — ignore the press until _currentAnimation is the carry pose.
+            if (_currentAnimation is not CarryAnimState)
+                return;
+
             //safety net: if the item died between subscribing and the player pressing throw, bail safely
             if (stateManager.item == null)
             {
