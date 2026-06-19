@@ -1,22 +1,5 @@
 # TODO
 
-Before I start the Task 7 parity playtest, add this to Interacting Tool/TODO.md under a "Future Epics" section:
-
-### Player-friendly input wrapper (post-Epic 7)
-
-Goal: hide Unity Input System behind a semantic API so gameplay code subscribes to "Interact pressed/held/released" with one line, never touches InputActionAsset/CallbackContext/PlayerInput components directly.
-
-Design sketch:
-- PlayerInputBindings class (or per-PlayerWrapper instance) owns all PlayerInputActions usage.
-- One InputBinding wrapper per semantic action exposing: Pressed (one-shot on press), Released (one-shot on release), Held (every frame while held), HoldFor(seconds, callback) (long-press detection).
-- Supports gamepad AND keyboard as parallel bindings per action — no consumer code distinguishes.
-- Per-player binding instances live on PlayerWrapper (free multi-player support, no global state).
-- Rebinding (player remaps a button) lives entirely in this layer; gameplay code never sees binding changes.
-
-Why deferred: Story 3.2 establishes the InputUser pairing pattern; this wrapper sits ON TOP of that. Building the wrapper before 3.2/7.3 risks designing for the wrong constraints. Revisit after multiplayer input routing settles.
-
-Touch points when built: replace direct PlayerInputActions.Player.*.performed/.canceled wiring in PlayerWrapper + PlayerInputHandler (the bridge installed in Story 3.1) with PlayerInputBindings subscriptions.
-
 ## In Progress
 ### Custom Collision
 - [ ] **Make Custom Collision**
@@ -75,6 +58,25 @@ Touch points when built: replace direct PlayerInputActions.Player.*.performed/.c
 - [ ] Delete unused interfaces: `IAnimationState`, `ICommand`
 - [ ] Centralize layer lookups — move all `LayerMask.NameToLayer()` calls into a static `Layers` class in `Utilities`
 - [ ] `CandleItem` — dispose `_cancellationTokenSource` properly on repeated `ButtonUp` calls
+
+---
+
+## Future Epics
+
+### Player-friendly input wrapper (post-Epic 7)
+
+Goal: hide Unity Input System behind a semantic API so gameplay code subscribes to "Interact pressed/held/released" with one line, never touches InputActionAsset/CallbackContext/PlayerInput components directly.
+
+Design sketch:
+- PlayerInputBindings class (or per-PlayerWrapper instance) owns all PlayerInputActions usage.
+- One InputBinding wrapper per semantic action exposing: Pressed (one-shot on press), Released (one-shot on release), Held (every frame while held), HoldFor(seconds, callback) (long-press detection).
+- Supports gamepad AND keyboard as parallel bindings per action — no consumer code distinguishes.
+- Per-player binding instances live on PlayerWrapper (free multi-player support, no global state).
+- Rebinding (player remaps a button) lives entirely in this layer; gameplay code never sees binding changes.
+
+Why deferred: Story 3.2 establishes the InputUser pairing pattern; this wrapper sits ON TOP of that. Building the wrapper before 3.2/7.3 risks designing for the wrong constraints. Revisit after multiplayer input routing settles.
+
+Touch points when built: replace direct `PlayerInputActions.Player.*.performed/.canceled` wiring in `PlayerWrapper` + `PlayerInputHandler` (the bridge installed in Story 3.1) with `PlayerInputBindings` subscriptions.
 
 ---
 
