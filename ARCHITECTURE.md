@@ -12,7 +12,7 @@ Everything flows through the **player state machine**. Input drives it, it dispa
 
 ```mermaid
 flowchart LR
-    Input[PlayerInputHandler<br/>New Input System] --> SM[PlayerStateMachine<br/>+ states]
+    Input[PlayerWrapper<br/>InputUser polling] --> SM[PlayerStateMachine<br/>+ states]
     SM -- "Interact / Release" --> I[Interactables<br/>doors, blocks, levers, throwables]
     SM -- "Use / ButtonUp" --> Items[Items<br/>bell, candle, grapple, key...]
     SM --> Inv[PlayerInventory]
@@ -51,20 +51,30 @@ Five design pillars recur everywhere:
 
 ## 3. Player System
 
-### 3.1 Input — `Player/Input/PlayerInputHandler.cs`
+### 3.1 Input — `Player/Control/PlayerWrapper.cs` (manual `InputUser`)
 
-Wraps the generated `PlayerInputActions` (New Input System). It translates raw input into state-machine calls:
+`PlayerWrapper` owns the player's input end-to-end (architecture D2). On `Awake` it constructs a `PlayerInputActions` instance, auto-pairs all currently-present compatible devices (`Keyboard.current`, `Gamepad.current`) via `InputUser.PerformPairingWithDevice`, associates the action set with the user (`AssociateActionsWithUser`), and enables the `Player` map. Associating before enabling restricts the action set to the paired devices, giving per-player input routing (FR-9).
 
-| Input | Routed to |
-|---|---|
-| Movement (read each `FixedUpdate`) | `stateMachine.UpdateMove(vector)` |
-| Interact **pressed** | `stateMachine.Interact()` |
-| Interact **released** | If current state implements `IButtonUp` (e.g. pull): `ButtonUp()`; if in move-item state: `stateMachine.Release()` |
-| UseItem **pressed** | `stateMachine.UseItem()` (ignored while a hold-style item is active) |
-| UseItem **released** | `IButtonUp.ButtonUp()` on the current state (candle off, grapple retract) |
-| SwitchItem | `inventory.SwitchItem()` |
+Each `Update()` it polls the paired actions to build an immutable `PlayerInputState` snapshot, then passes it to the active `IPlayerController.Tick(input)`:
 
-`IButtonUp` (in `Interactables/`) is the tiny "this thing cares about button release" interface, implemented by both player states (`PlayerPullState`, `PlayerUseState`) and items (`CandleItem`, `GrapplingHook`).
+| Action | `PlayerInputState` field | Notes |
+|---|---|---|
+| `Movement.ReadValue<Vector2>()` | `Move` | Analog/digital move vector |
+| `Interact.WasPressedThisFrame()` | `InteractPressed` | Edge: button down this frame |
+| `Interact.WasReleasedThisFrame()` | `InteractReleased` | Edge: button up this frame |
+| `UseItem.WasPressedThisFrame()` | `UsePressed` | |
+| `UseItem.WasReleasedThisFrame()` | `UseReleased` | |
+| `SwitchItem.WasPressedThisFrame()` | `SwitchItemPressed` | |
+| — | `PausePressed` | Always `false`; no Pause action in `PlayerControl.inputactions` |
+| — | `EjectPressed` | Always `false`; wired in Story 3.4 |
+
+`OnFootController.Tick(input)` translates the snapshot into `PlayerStateMachine` calls (same dispatch the deleted `PlayerInputHandler` performed). `FixedUpdate` drives `IPlayerController.FixedTick()` for physics movement only — it does not read input.
+
+On `OnDestroy`: unpair + remove the `InputUser` first, then disable + dispose the `PlayerInputActions`.
+
+**No `PlayerInput` or `PlayerInputManager`** — manual `InputUser` model (C-A). Hot-unplug handling (`InputUser.onChange`, `DeviceRegained`, `Suspended` state) is wired in Story 3.3.
+
+`IButtonUp` (in `Interactables/`) is the "this thing cares about button release" interface, forwarded by `OnFootController` to the current player state or item.
 
 ### 3.2 State machine — `Player/StateMachine/`
 

@@ -90,13 +90,13 @@ namespace IT.Player.Control
 
         void OnDestroy()
         {
+            if (_user.valid)
+                _user.UnpairDevicesAndRemoveUser();
             if (_actions != null)
             {
                 _actions.Player.Disable();
                 _actions.Dispose();
             }
-            if (_user.valid)
-                _user.UnpairDevicesAndRemoveUser();
         }
     }
 }

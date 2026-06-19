@@ -18,7 +18,7 @@ namespace IT.Player.Control
         public bool UsePressed { get; init; }
         public bool UseReleased { get; init; }
         public bool SwitchItemPressed { get; init; }
-        public bool PausePressed { get; init; }   // wired in Story 3.2
+        public bool PausePressed { get; init; }   // no Pause action in PlayerControl.inputactions (OQ-3.2-D)
         public bool EjectPressed { get; init; }    // wired in Story 3.4
     }
 }
