@@ -1,4 +1,5 @@
 using IT.Core.WorldState;
+using IT.Player.Control;
 using UnityEngine;
 
 namespace IT.Boot
@@ -25,6 +26,7 @@ namespace IT.Boot
             var root = go.AddComponent<SystemsRoot>();   // Awake sets Instance
             root.Config = config;
             root.WorldState = new WorldState();
+            go.AddComponent<PlayerRoster>();
             return root;
         }
 

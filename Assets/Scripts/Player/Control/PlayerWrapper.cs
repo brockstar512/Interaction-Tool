@@ -10,10 +10,14 @@ namespace IT.Player.Control
     // and PlayerStatusManager (OQ-3.1-B). Story 3.1 only ever has one controller
     // (OnFootController); possession swaps arrive in Story 3.4.
     //
-    // Story 3.2 (architecture D2): the wrapper now OWNS its own PlayerInputActions
-    // instance, pairs it to its device(s) through the manual InputUser API
-    // (no PlayerInput / PlayerInputManager — C-A), and POLLS those actions each
-    // Update() to build PlayerInputState. The Story 3.1 PlayerInputHandler bridge is gone.
+    // Story 3.2 (architecture D2): the wrapper owns its PlayerInputActions instance,
+    // pairs it to its device(s) via the manual InputUser API (no PlayerInput /
+    // PlayerInputManager — C-A), and polls those actions each Update() to build
+    // PlayerInputState.
+    //
+    // Story 3.3: SetUpInput(InputDevice) pairs exactly one device (the specific device
+    // that triggered a join, or the auto-detected primary device for the scene-placed P1
+    // wrapper). PlayerRoster coordinates join/suspend/re-pair via the internal API below.
     public class PlayerWrapper : MonoBehaviour
     {
         IPlayerController _activeController;
@@ -26,10 +30,14 @@ namespace IT.Player.Control
         public event System.Action ActiveControllerChanged;
 #pragma warning restore 67
 
-        // --- input ownership (Story 3.2, architecture D2) ---
-        // The wrapper owns its actions and the InputUser they are paired to. Single-wrapper
-        // for now; press-any-button join, hot-unplug suspend and re-pair (Story 3.3) hang
-        // off this same _user.
+        // Fires on every WrapperState transition. Story 7.3 (HUD reconnect overlay) subscribes here.
+        public event System.Action<PlayerWrapper> StateChanged;
+
+        public InputUser User => _user;
+        public bool OwnsDevice(InputDevice device)
+            => _user.valid && _user.pairedDevices.ContainsReference(device);
+
+        // --- input ownership (architecture D2) ---
         PlayerInputActions _actions;
         InputUser _user;
 
@@ -39,30 +47,58 @@ namespace IT.Player.Control
             _activeController = _onFoot;
             _onFoot.OnPossess(this);
 
-            SetUpInput();
+            // PendingJoinDevice is set by PlayerRoster.TryJoin() before Instantiate and
+            // cleared here immediately on read. Null means this is the scene-placed P1
+            // wrapper: auto-pair to keyboard, fall back to the first available gamepad.
+            var device = PlayerRoster.PendingJoinDevice;
+            PlayerRoster.PendingJoinDevice = null;
+            device = device ?? (InputDevice)Keyboard.current ?? Gamepad.current;
+            if (device != null)
+                SetUpInput(device);
+
+            PlayerRoster.Instance.Register(this);
         }
 
-        // Auto-pair every currently-present compatible device (OQ-3.2-A): keyboard + any
-        // gamepad. On a keyboard-only machine the gamepad branch is simply skipped (not an
-        // error). AssociateActionsWithUser restricts the action set to the paired devices,
-        // so this wrapper only ever reads its own input (the per-player routing FR-9 needs).
-        void SetUpInput()
+        // Pairs exactly one device (architecture D2 — per-player routing).
+        // Called from Awake with the auto-detected or roster-supplied device.
+        void SetUpInput(InputDevice pairDevice)
         {
             _actions = new PlayerInputActions();
-
-            if (Keyboard.current != null)
-                _user = InputUser.PerformPairingWithDevice(Keyboard.current, _user);
-            if (Gamepad.current != null)
-                _user = InputUser.PerformPairingWithDevice(Gamepad.current, _user);
-
+            _user = InputUser.PerformPairingWithDevice(pairDevice, _user);
             if (_user.valid)
                 _user.AssociateActionsWithUser(_actions);
+            if (_user.valid)            // D-1 fix: only enable when a device is actually paired
+                _actions.Player.Enable();
+        }
 
-            _actions.Player.Enable();
+        internal void Suspend()
+        {
+            State = WrapperState.Suspended;
+            if (_actions != null)
+                _actions.Player.Disable();  // D-3 fix: don't consume edges while frozen
+            StateChanged?.Invoke(this);
+        }
+
+        internal void Resume()
+        {
+            State = WrapperState.Active;
+            if (_user.valid && _actions != null)
+                _actions.Player.Enable();
+            StateChanged?.Invoke(this);
+        }
+
+        internal void RePair(InputDevice newDevice)
+        {
+            _user = InputUser.PerformPairingWithDevice(newDevice, _user);
+            if (_user.valid)
+                _user.AssociateActionsWithUser(_actions);
+            Resume();
         }
 
         void Update()
         {
+            if (_actions == null) return;
+
             // Poll the paired actions directly. WasPressedThisFrame / WasReleasedThisFrame
             // give the same per-frame edges the 3.1 bridge captured via .performed/.canceled.
             var p = _actions.Player;
