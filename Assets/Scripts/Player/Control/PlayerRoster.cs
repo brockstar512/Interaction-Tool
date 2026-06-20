@@ -15,7 +15,11 @@ namespace IT.Player.Control
     //   - Re-pair:       onUnpairedDeviceUsed when a wrapper is Suspended → wrapper.RePair()
     public class PlayerRoster : Singleton<PlayerRoster>
     {
-        [SerializeField] GameObject _playerPrefab;
+        // Set by GameBootstrap (the intended home for Inspector-wired refs, architecture D1).
+        // Null in the BootGuard / direct-play path — TryJoin warns and skips, which is fine
+        // because press-to-join requires a second device (deferred to Story 7.1 verification).
+        public GameObject PlayerPrefab { get; set; }
+
         [SerializeField] Vector2 _joinOffset = new Vector2(1f, 0f); // Story 7.1 replaces this
 
         readonly List<PlayerWrapper> _wrappers = new();
@@ -81,10 +85,10 @@ namespace IT.Player.Control
 
         void TryJoin(InputDevice device)
         {
-            if (_playerPrefab == null)
+            if (PlayerPrefab == null)
             {
-                Debug.LogWarning("[PlayerRoster] _playerPrefab is not set — cannot join P2+. " +
-                                 "Wire the Player prefab in the Inspector.");
+                Debug.LogWarning("[PlayerRoster] PlayerPrefab is not set — cannot join P2+. " +
+                                 "Set PlayerRoster.Instance.PlayerPrefab from GameBootstrap.");
                 return;
             }
 
@@ -95,7 +99,7 @@ namespace IT.Player.Control
             // Thread the joining device into the new wrapper's Awake via the static.
             // Awake fires synchronously during Instantiate and clears PendingJoinDevice on read.
             PendingJoinDevice = device;
-            Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
+            Instantiate(PlayerPrefab, spawnPos, Quaternion.identity);
             // PendingJoinDevice is null by here — wrapper's Awake cleared it.
         }
 
