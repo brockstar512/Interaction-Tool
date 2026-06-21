@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using IT.Player.Input;
+using UnityEngine.InputSystem.Utilities;
 
 namespace IT.Player.Control
 {
@@ -73,6 +74,7 @@ namespace IT.Player.Control
 
         internal void Suspend()
         {
+            if (State == WrapperState.Suspended) return;  // idempotent — no redundant StateChanged
             State = WrapperState.Suspended;
             if (_actions != null)
                 _actions.Player.Disable();  // D-3 fix: don't consume edges while frozen
@@ -81,6 +83,7 @@ namespace IT.Player.Control
 
         internal void Resume()
         {
+            if (State == WrapperState.Active) return;     // idempotent — no redundant StateChanged
             State = WrapperState.Active;
             if (_user.valid && _actions != null)
                 _actions.Player.Enable();
@@ -89,6 +92,11 @@ namespace IT.Player.Control
 
         internal void RePair(InputDevice newDevice)
         {
+            // Drop the stale/lost device(s) before pairing the new one, so the user doesn't
+            // accumulate dead pairings across repeated unplug → rejoin-with-a-different-device
+            // cycles. UnpairDevices() keeps the InputUser (unlike UnpairDevicesAndRemoveUser).
+            if (_user.valid)
+                _user.UnpairDevices();
             _user = InputUser.PerformPairingWithDevice(newDevice, _user);
             if (_user.valid)
                 _user.AssociateActionsWithUser(_actions);

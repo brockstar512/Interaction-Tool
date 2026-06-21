@@ -23,8 +23,15 @@ namespace IT.Boot
         {
             BootInit.EnsureSystems();
 
-            if (playerPrefab != null && PlayerRoster.Instance != null)
-                PlayerRoster.Instance.PlayerPrefab = playerPrefab;
+            // TryGetInstance (not Instance) so we never silently auto-create a throwaway,
+            // non-persistent PlayerRoster if EnsureSystems() failed to add the real one —
+            // that would swallow the prefab and break P2+ join with no obvious cause.
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster == null)
+                Debug.LogError("[GameBootstrap] PlayerRoster missing after EnsureSystems() — " +
+                               "PlayerPrefab not wired; P2+ join will fail.");
+            else if (playerPrefab != null)
+                roster.PlayerPrefab = playerPrefab;
 
             // TODO: wrap in an ITransition fade (Story 5.4) instead of a hard cut.
             SceneManager.LoadScene(firstScene);

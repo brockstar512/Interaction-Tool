@@ -90,6 +90,12 @@ Touch points when built: replace direct `PlayerInputActions.Player.*.performed/.
 
 ---
 
+## Hardware-Gated Backfill
+
+- [ ] Multi-device backfill testing for Stories 3.2/3.3 — see _bmad-output/implementation-artifacts/deferred-work.md (workspace repo). Hardware now available.
+
+---
+
 ## Pre-existing Items (filed during Story 3.1 Task-0 baseline, 2026-06-18)
 _Confirmed present BEFORE the 3.1 possession refactor. The refactor must PRESERVE these behaviors as-is so it isn't blamed for them — they get their own stories later._
 

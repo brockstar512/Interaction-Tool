@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using IT.Boot;
 using IT.Core.Utilities;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace IT.Player.Control
 {
@@ -100,7 +101,10 @@ namespace IT.Player.Control
             // Awake fires synchronously during Instantiate and clears PendingJoinDevice on read.
             PendingJoinDevice = device;
             Instantiate(PlayerPrefab, spawnPos, Quaternion.identity);
-            // PendingJoinDevice is null by here — wrapper's Awake cleared it.
+            // Belt-and-suspenders: in the normal path the wrapper's Awake already cleared this on
+            // read. But if the prefab lacks a PlayerWrapper (or was instantiated inactive), nothing
+            // consumed the static — clear it here so a stale device can't leak into the next join.
+            PendingJoinDevice = null;
         }
 
         void OnDeviceChange(InputDevice device, InputDeviceChange change)
