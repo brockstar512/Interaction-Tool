@@ -63,7 +63,7 @@ namespace IT.Player.StateMachine
         {
             rb = GetComponent<Rigidbody2D>();
             itemManager = GetComponentInChildren<IInventory>();
-            animator = GetComponent<Animator>();
+            animator = GetComponentInChildren<Animator>();
             overlapObjectCheck = GetComponentInChildren<IBestOverlap<Interactable>>();
             playerStatusManager = GetComponent<PlayerStatusManager>();
             currentState = defaultState;

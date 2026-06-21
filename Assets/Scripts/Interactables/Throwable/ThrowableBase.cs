@@ -53,7 +53,7 @@ namespace IT.Interactables.Throwable
         public override bool Interact(IInteractionContext context)
         {
             PickUp(context.Transform);
-            PlayerSpriteBounds = context.Transform.gameObject.GetComponent<SpriteRenderer>().bounds;
+            PlayerSpriteBounds = context.Transform.gameObject.GetComponentInChildren<SpriteRenderer>().bounds;
             return true;
         }
 
