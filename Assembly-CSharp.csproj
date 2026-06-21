@@ -195,6 +195,7 @@
     <Compile Include="Assets/Scripts/Player/StateMachine/PlayerStateMachine.cs" />
     <Compile Include="Assets/Scripts/Items/GrapplingHook/IGrappleTarget.cs" />
     <Compile Include="Assets/Scripts/Overlap/MovementOverlap.cs" />
+    <Compile Include="Assets/Scripts/Player/Control/PlayerRoster.cs" />
     <Compile Include="Assets/Scripts/Core/Config/JsonGameConfigSource.cs" />
     <Compile Include="Assets/Scripts/Core/Dependency/Dependent.cs" />
     <Compile Include="Assets/Scripts/Core/Utilities/DepthSorter.cs" />
