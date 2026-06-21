@@ -58,6 +58,14 @@
 
   Decide approach when triggering threshold hits, not before. Don't disrupt active epic work for this.
 
+- [ ] **Player prefab visual-root refactor.** Currently SpriteRenderer and Animator live on the Player root GameObject; the convention-standard Unity pattern is a dedicated "Visual" child under root that holds all rendering components. Logical components (PlayerWrapper, PlayerStateMachine, PlayerMover, Rigidbody2D, primary collider) stay on root. Functional anchors (HealthBox, Shadow, ItemDetection, ItemOrigin, ItemManager) stay as children.
+
+  Why: cleanly separates "is this player active in the world" (root SetActive) from "is this player visible" (Visual child SetActive). Story 3.4 visual hiding on vehicle possession becomes one line. Future visual effects (sprite flash on damage, scale tweens, hat/cosmetic children) are trivial to add.
+
+  Cost: small refactor (~30-45 min). Move SpriteRenderer + Animator components from Player root to a new Visual child GameObject. Check GetComponent<Animator>/GetComponent<SpriteRenderer> references in code — anything that does `GetComponent` (not `GetComponentInChildren`) needs to update its lookup path. Verify Level 1 Test and Move and Slide sample still render correctly.
+
+  Trigger: ideally before Story 3.4 vehicle possession dev runs (cleaner _visualRoot.SetActive() approach). Acceptable to defer to between epics if 3.4 is in flight.
+
 ### From code review 2026-06-19
 
 - [ ] **WorldState.OnSegmentReEntered: `segmentId` parameter is unused.** The method body is `=> ClearScope(FlagScope.SegmentScoped)` — it clears ALL SegmentScoped flags regardless of which segment fired. When Epic 5 wires `SegmentManager → OnSegmentReEntered`, this will incorrectly clear flags from all segments on re-entry to any one. Must change the method to filter by segment before Epic 5 wires it.
