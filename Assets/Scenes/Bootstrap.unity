@@ -256,6 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstScene: Move and Slide sample
+  playerPrefab: {fileID: 7925771289264289285, guid: 1b59ef4cca99749c29d23734cf9f685a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
