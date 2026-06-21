@@ -64,6 +64,13 @@ namespace IT.Player.StateMachine.States
                 case InteractionType.Pull:
                     stateManager.SwitchState(stateManager.pullItemState);
                     break;
+                case InteractionType.Possess:
+                    // Story 3.4: hand off to the interactable directly — no PlayerPossessState.
+                    // VehicleInteractable.Interact grabs the PlayerWrapper via context.Transform
+                    // and calls PossessVehicle, which defers the controller swap to the next
+                    // PlayerWrapper.Update (avoids re-entrancy NRE since we are inside Tick here).
+                    stateManager.item.Interact(stateManager);
+                    break;
                 default:
                     Debug.Log("is default");
                     break;

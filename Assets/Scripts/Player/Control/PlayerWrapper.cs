@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using IT.Player.Input;
+using IT.Interactables.Vehicle;
 using UnityEngine.InputSystem.Utilities;
 
 namespace IT.Player.Control
@@ -24,12 +25,22 @@ namespace IT.Player.Control
         IPlayerController _activeController;
         OnFootController _onFoot;
 
+        // Story 3.4 — possession. _vehicle is the currently possessed vehicle (null on foot).
+        // _pendingVehicle is a deferred-swap request recorded by PossessVehicle and consumed
+        // at the top of the next Update (see PossessVehicle for the re-entrancy rationale).
+        VehicleController _vehicle;
+        VehicleController _pendingVehicle;
+
+        // Player.prefab's Visual child (SpriteRenderer + Animator), hidden while possessing a
+        // vehicle (OQ-3.4-C). Wired in the Inspector; null-guarded in SetVisualRootActive.
+        [SerializeField] private GameObject _visualRoot;
+
         public IPlayerController ActiveController => _activeController;
         public WrapperState State { get; private set; } = WrapperState.Active;
 
-#pragma warning disable 67 // raised on possession swap starting Story 3.4; declared now for a stable public API
+        // Fires when the active IPlayerController changes (possess / eject). Story 7.3 (HUD
+        // health-source rebind) subscribes here. First live use: Story 3.4 possession swap.
         public event System.Action ActiveControllerChanged;
-#pragma warning restore 67
 
         // Fires on every WrapperState transition. Story 7.3 (HUD reconnect overlay) subscribes here.
         public event System.Action<PlayerWrapper> StateChanged;
@@ -107,29 +118,111 @@ namespace IT.Player.Control
         {
             if (_actions == null) return;
 
+            // Deferred possession swap (Story 3.4). PossessVehicle is requested from inside
+            // OnFootController.Tick; performing the swap there would null the on-foot _sm
+            // mid-Tick and NRE on Tick's trailing _sm.UpdateTick(). So we do the real swap
+            // here, at the top of the next Update, before any input is built or ticked —
+            // the requesting on-foot Tick has already finished on a valid _sm by now.
+            if (_pendingVehicle != null)
+            {
+                var pending = _pendingVehicle;
+                _pendingVehicle = null;
+                PerformPossess(pending);
+            }
+
             // Poll the paired actions directly. WasPressedThisFrame / WasReleasedThisFrame
             // give the same per-frame edges the 3.1 bridge captured via .performed/.canceled.
             var p = _actions.Player;
+            bool interact   = p.Interact.WasPressedThisFrame();
+            bool possessing = _activeController != _onFoot;
             var input = new PlayerInputState
             {
                 Move              = p.Movement.ReadValue<Vector2>(),
-                InteractPressed   = p.Interact.WasPressedThisFrame(),
+                // OQ-3.4-A → (b): Interact doubles as enter (on foot) / eject (possessing).
+                InteractPressed   = !possessing && interact,
                 InteractReleased  = p.Interact.WasReleasedThisFrame(),
                 UsePressed        = p.UseItem.WasPressedThisFrame(),
                 UseReleased       = p.UseItem.WasReleasedThisFrame(),
                 SwitchItemPressed = p.SwitchItem.WasPressedThisFrame(),
                 PausePressed      = false, // no Pause action in PlayerControl.inputactions (OQ-3.2-D)
-                EjectPressed      = false, // wired in Story 3.4
+                EjectPressed      = possessing && interact,
             };
 
-            if (State == WrapperState.Active)
-                _activeController.Tick(input);
+            if (State != WrapperState.Active)
+                return;
+
+            // Eject interception (Story 3.4): handle eject at the wrapper level, before the
+            // vehicle controller is ticked, so it never sees the eject-frame input. Possession
+            // ENTRY can't be intercepted here (it needs the state machine's overlap detection),
+            // which is why entry uses the deferred-swap path above instead.
+            if (possessing && input.EjectPressed)
+            {
+                Eject();
+                return;
+            }
+
+            _activeController.Tick(input);
         }
 
         void FixedUpdate()
         {
             if (State == WrapperState.Active)
                 _activeController.FixedTick();
+        }
+
+        // --- possession (Story 3.4, C-D: swap only via OnRelease → OnPossess) ---
+
+        // Possession ENTRY request. Called from VehicleInteractable.Interact, which runs
+        // synchronously inside OnFootController.Tick (the Interact dispatch). We must NOT swap
+        // controllers here: _onFoot.OnRelease() nulls the on-foot _sm, and Tick continues past
+        // the dispatch to its trailing _sm.UpdateTick() — a re-entrancy NRE on every possession.
+        // Instead we record the request; the actual swap runs from Update via PerformPossess.
+        // Approved deferred-swap pattern — see story spec Change Log 2026-06-22.
+        public void PossessVehicle(VehicleController vehicle)
+        {
+            if (vehicle == null) return;
+            _pendingVehicle = vehicle;
+        }
+
+        // The real controller swap into a vehicle. Only ever called from Update (never from
+        // inside a controller Tick), so nulling the on-foot _sm here is safe.
+        void PerformPossess(VehicleController vehicle)
+        {
+            _activeController.OnRelease();   // on-foot: trips stale token, nulls _sm
+            _vehicle = vehicle;
+            SetVisualRootActive(false);      // player is "inside" the vehicle
+            vehicle.OnPossess(this);
+            _activeController = vehicle;
+            ActiveControllerChanged?.Invoke();
+        }
+
+        // Possession EXIT. Reverses PerformPossess: releases the vehicle, restores the player
+        // at the vehicle's last position, re-possesses on-foot. Called from Update's eject
+        // interception and from VehicleController.OnHealthDepleted (0-HP eject-and-explode).
+        public void Eject()
+        {
+            if (_vehicle == null) return;    // guard: not possessing (also covers null-wrapper case)
+
+            var ejectPos = _vehicle.transform.position;
+            _activeController.OnRelease();   // vehicle: nulls its wrapper ref
+            _vehicle = null;
+            transform.position = ejectPos;   // player reappears where the vehicle was
+            SetVisualRootActive(true);
+            _onFoot.OnPossess(this);         // re-links _sm on OnFootController
+            _activeController = _onFoot;
+            ActiveControllerChanged?.Invoke();
+        }
+
+        // Null-guarded visual toggle (OQ-3.4-C). If the Inspector slot is unwired we log and
+        // skip rather than NRE, so missing wiring surfaces as a warning, not a crash.
+        void SetVisualRootActive(bool active)
+        {
+            if (_visualRoot == null)
+            {
+                Debug.LogWarning("[PlayerWrapper] _visualRoot not assigned in Inspector — visual hiding skipped");
+                return;
+            }
+            _visualRoot.SetActive(active);
         }
 
         void OnDestroy()

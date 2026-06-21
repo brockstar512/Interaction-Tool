@@ -8,6 +8,7 @@ namespace IT.Interactables
         Pull,
         Slide,
         Equip,
-        Open
+        Open,
+        Possess
     }
 }

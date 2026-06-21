@@ -74,6 +74,7 @@
     <Compile Include="Assets/Scripts/Core/Config/GameConfig.cs" />
     <Compile Include="Assets/Scripts/Interactables/IDestructible.cs" />
     <Compile Include="Assets/Scripts/Items/Candle/ICandleLight.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Vehicle/VehicleInteractable.cs" />
     <Compile Include="Assets/Scripts/Core/Dependency/IDependencySource.cs" />
     <Compile Include="Assets/Scripts/Interactables/Pullable/PullDrivenDoor.cs" />
     <Compile Include="Assets/Scripts/Interactables/Doors/MultiKeyDoubleDoor.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Assets/Scripts/Core/Dependency/DependencySource.cs" />
     <Compile Include="Assets/Scripts/Boot/GameBootstrap.cs" />
     <Compile Include="Assets/Scripts/Overlap/RopeObstructionOverlap.cs" />
+    <Compile Include="Assets/Scripts/Interactables/Vehicle/VehicleController.cs" />
     <Compile Include="Assets/Scripts/Interactables/Throwable/ExplosionDamageArea.cs" />
     <Compile Include="Assets/Scripts/Player/Control/PlayerWrapper.cs" />
     <Compile Include="Assets/Scripts/Core/InterfaceRef.cs" />
