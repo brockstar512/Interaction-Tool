@@ -48,6 +48,16 @@
 
 ## Code Cleanup
 
+- [ ] **WorldFlags string-ID safety pass.** `WorldStateFlagSource._flagId` is currently a free-form string Inspector field with no compile-time check or typo protection. Same risk on every `worldState.GetFlag("name")` call site in code. Not a problem at current flag count (~3); becomes one around 15+ flags in real gameplay use, likely mid-Epic 4 or 5.
+
+  Approaches to consider (no decision yet):
+  - **Option A (recommended starting point):** static `WorldFlags` class with `public const string X = "x"` for every flag + custom `[FlagId]` PropertyDrawer that turns the Inspector field into a dropdown reading from `WorldFlags` via reflection. ~60 lines of editor code, one new file. Doesn't change WorldState runtime API. Save-file flag IDs stay as strings (forward-compatible).
+  - **Option B:** strongly-typed `FlagId` enum, no strings. Better compile-time safety; loses data-format robustness across game versions. Violates "data over code" principle for save files.
+  - **Option C:** hashed string IDs at runtime (Animator.StringToHash style). Performance win only; doesn't solve typos.
+  - **Out of scope:** ScriptableObject per flag (violates C-B).
+
+  Decide approach when triggering threshold hits, not before. Don't disrupt active epic work for this.
+
 ### From code review 2026-06-19
 
 - [ ] **WorldState.OnSegmentReEntered: `segmentId` parameter is unused.** The method body is `=> ClearScope(FlagScope.SegmentScoped)` — it clears ALL SegmentScoped flags regardless of which segment fired. When Epic 5 wires `SegmentManager → OnSegmentReEntered`, this will incorrectly clear flags from all segments on re-entry to any one. Must change the method to filter by segment before Epic 5 wires it.
