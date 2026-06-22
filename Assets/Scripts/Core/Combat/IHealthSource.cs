@@ -1,8 +1,8 @@
-namespace IT.Player.Control
+namespace IT.Core.Combat
 {
     // Read-only health view exposed by an IPlayerController (architecture D3).
-    // Story 3.1 ships only a stub (OnFootController.NullHealthSource); the real
-    // implementation arrives with the Health component in Story 4.1.
+    // Moved from IT.Player.Control to IT.Core.Combat in Story 4.1 (OQ-4.1-A)
+    // so Health : IHealthSource doesn't create a Core→Player dependency inversion.
     public interface IHealthSource
     {
         int Current { get; }

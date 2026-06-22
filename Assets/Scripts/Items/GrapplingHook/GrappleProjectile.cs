@@ -8,7 +8,7 @@ namespace IT.Items.GrapplingHook
     using IT.Overlap;
     using IT.Interactables.Throwable;
 
-    public class GrappleProjectile : MonoBehaviour, IDamage
+    public class GrappleProjectile : MonoBehaviour
     {
         //render for the rope bridge
         [SerializeField] private LineRenderer line;

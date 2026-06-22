@@ -1,3 +1,5 @@
+using IT.Core.Combat;
+
 namespace IT.Player.Control
 {
     // The thing a PlayerWrapper drives (architecture D3). Story 3.1 ships one

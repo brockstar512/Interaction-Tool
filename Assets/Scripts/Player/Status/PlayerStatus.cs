@@ -1,39 +1,24 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace IT.Player.Status
 {
+    // Health fields removed in Story 4.1 — Health component owns health data.
+    // Lives fields kept; Lives-component extraction is a future story (OQ-4.1-B locked).
     public class PlayerStatus
     {
         public PlayerStatus()
         {
-            Health = 10;
             Lives = 3;
         }
 
-        int Health;
         int Lives;
 
-        public event Action<int> HealthChange;
         public event Action<int> LivesChange;
 
-
-        public void UpdateHealth(int HP)
+        public void UpdateLives(int life)
         {
-            Health += HP;
-            // NOTE: totals/normalization fix lands in Health (Story 4.1) — HP here is the delta,
-            // and PlayerStatusHUD.UpdateHealth writes it straight into Image.fillAmount (expects 0-1).
-            // Story 1.2 scope is null-safety only; do NOT change the payload here.
-            HealthChange?.Invoke(HP);
+            Lives += life;
+            LivesChange?.Invoke(life);
         }
-
-        public void UpdateLives(int Life)
-        {
-            Lives += Life;
-            LivesChange?.Invoke(Life);
-        }
-
     }
 }

@@ -155,7 +155,6 @@
     <Compile Include="Assets/Scripts/Core/Utilities/Facing.cs" />
     <Compile Include="Assets/Scripts/Animation/Player/States/BellAnimState.cs" />
     <Compile Include="Assets/Scripts/Interactables/Locks/KeyPortBase.cs" />
-    <Compile Include="Assets/Scripts/Core/IDamage.cs" />
     <Compile Include="Assets/Scripts/Player/Movement/PlayerMover.cs" />
     <Compile Include="Assets/Scripts/Overlap/IBestOverlap.cs" />
     <Compile Include="Assets/Scripts/Interactables/Chests/SpawnItemOnOpen.cs" />
@@ -168,6 +167,7 @@
     <Compile Include="Assets/Scripts/Items/GrapplingHook/GrapplingHook.cs" />
     <Compile Include="Assets/Scripts/Overlap/IAllOverlap.cs" />
     <Compile Include="Assets/Scripts/Core/Utilities/GridSnapper.cs" />
+    <Compile Include="Assets/Scripts/Core/Combat/Health.cs" />
     <Compile Include="Assets/Scripts/Items/IItemHolder.cs" />
     <Compile Include="Assets/Scripts/Interactables/Pullable/PullableBase.cs" />
     <Compile Include="Assets/Scripts/Player/Control/WrapperState.cs" />

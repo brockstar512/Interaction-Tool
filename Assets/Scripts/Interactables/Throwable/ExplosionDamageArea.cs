@@ -4,9 +4,8 @@ namespace IT.Interactables.Throwable
 {
     using IT.Core;
 
-    public class ExplosionDamageArea : MonoBehaviour, IDamage
+    public class ExplosionDamageArea : MonoBehaviour
     {
-        
         private void OnTriggerEnter2D(Collider2D other)
         {
             Debug.Log($"Damaging something");
@@ -26,12 +25,12 @@ namespace IT.Interactables.Throwable
                         float distance = Vector3.Distance(closestPoint, transform.position);
 
                         var damagePercent = Mathf.InverseLerp(SplashDamage, 0, distance);
-                        enemy.ApplyDamage(this);
+                        enemy.ApplyDamage(
+                            Mathf.Max(1, Mathf.RoundToInt(SplashDamage * damagePercent)),
+                            transform.position);
                     }
                 }
-
             }
-
         }
     }
 }

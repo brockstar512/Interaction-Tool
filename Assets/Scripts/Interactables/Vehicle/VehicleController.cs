@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using IT.Core.Combat;
 
 namespace IT.Interactables.Vehicle
 {
@@ -7,36 +8,36 @@ namespace IT.Interactables.Vehicle
 
     // Story 3.4 placeholder vehicle: a drivable IPlayerController used to prove the
     // possession-swap mechanics, not to model vehicle physics. A Kinematic Rigidbody2D is
-    // driven via MovePosition (faster than on-foot, no push/pull — OQ-3.4-D). Health is a
-    // minimal stub; the real Health component arrives in Story 4.1.
+    // driven via MovePosition (faster than on-foot, no push/pull — OQ-3.4-D). Real Health
+    // component added in Story 4.1; VehicleHealthSource stub removed.
     [RequireComponent(typeof(Rigidbody2D))]
     public class VehicleController : MonoBehaviour, IPlayerController
     {
-        [SerializeField] private int _maxHealth = 5;
         [SerializeField] private float _speed = 3f;   // tuned above walk speed (OQ-3.4-D)
 
         Rigidbody2D _rb;
         PlayerWrapper _wrapper;
         Vector2 _move;
-        int _currentHealth;
+        Health _health;
 
-        readonly VehicleHealthSource _healthSource = new VehicleHealthSource();
-        public IHealthSource HealthSource => _healthSource;
+        public IHealthSource HealthSource => _health;
 
         void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _health = GetComponent<Health>();
         }
 
         public void OnPossess(PlayerWrapper wrapper)
         {
             _wrapper = wrapper;
-            _currentHealth = _maxHealth;
-            _healthSource.NotifyChanged(_currentHealth, _maxHealth);
+            _health.ResetToMax();
+            _health.HealthDepleted += OnHealthDepleted;
         }
 
         public void OnRelease()
         {
+            if (_health != null) _health.HealthDepleted -= OnHealthDepleted;
             _wrapper = null;
         }
 
@@ -51,21 +52,12 @@ namespace IT.Interactables.Vehicle
             _rb.MovePosition(transform.position + (Vector3)(_move * _speed * Time.fixedDeltaTime));
         }
 
-        // DEBUG — Story 4.1 replaces with real Health.Damage(). Reads the keyboard directly
-        // (a D2 violation) purely as test scaffolding — same precedent as PlayerStatusManager's
-        // H/K debug keys. Do NOT move this into Tick(): controllers must not read input devices.
+        // DEBUG — reads the keyboard directly (a D2 violation) purely as test scaffolding —
+        // same precedent as PlayerStatusManager's H/K debug keys.
         void Update()
         {
             if (Keyboard.current != null && Keyboard.current.vKey.wasPressedThisFrame)
-                TakeDamage(1);
-        }
-
-        void TakeDamage(int amount)
-        {
-            _currentHealth = Mathf.Max(0, _currentHealth - amount);
-            _healthSource.NotifyChanged(_currentHealth, _maxHealth);
-            if (_currentHealth == 0)
-                OnHealthDepleted();
+                _health?.Damage(1); // DEBUG — Story 4.1
         }
 
         // 0-HP v1 default (FR-12): eject the player FIRST so they land safely on foot, then
@@ -75,21 +67,6 @@ namespace IT.Interactables.Vehicle
             _wrapper?.Eject();              // player escapes to the vehicle's last position
             Debug.Log("[Vehicle] Exploded");
             Destroy(gameObject);
-        }
-
-        // Minimal IHealthSource stub. Story 4.1 swaps this for the real Health component.
-        sealed class VehicleHealthSource : IHealthSource
-        {
-            public int Current { get; private set; }
-            public int Max { get; private set; }
-            public event System.Action<int, int> HealthChanged;
-
-            public void NotifyChanged(int current, int max)
-            {
-                Current = current;
-                Max = max;
-                HealthChanged?.Invoke(current, max);
-            }
         }
     }
 }

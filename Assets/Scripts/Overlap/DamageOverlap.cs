@@ -9,7 +9,7 @@ namespace IT.Overlap
     using IT.Core.Utilities;
     using IT.Interactables.Locks;
 
-    public class DamageOverlap : MonoBehaviour, IDamage
+    public class DamageOverlap : MonoBehaviour
     {
         public Vector2 _areaTopRightCornerAABB,_areaBottomLeftCornerAABB = Vector2.zero;
         [SerializeField] protected LayerMask detectionLayer;
@@ -100,7 +100,7 @@ namespace IT.Overlap
             if (collidedSubject is not null)
             {
                 //this should handle when it hits something
-                collidedSubject.ApplyDamage(this);
+                collidedSubject.ApplyDamage(1, transform.position);
                 return;
 
             }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IT.Enemies
@@ -9,8 +7,7 @@ namespace IT.Enemies
 
     public class EnemyDummy : MonoBehaviour, IDamageable, IGrappleTarget
     {
-        //todo i need to handle the logic with how the grappling hook hits the ememy
-        public void ApplyDamage(IDamage damagingThing)
+        public void ApplyDamage(int amount, Vector2 sourcePosition)
         {
             Debug.Log("apply damage");
             Destroy(this.gameObject);
@@ -19,8 +16,7 @@ namespace IT.Enemies
         public void InteractWithHookProjectile(GrappleProjectile projectile)
         {
             Debug.Log("apply grappling hook damage");
-
-            ApplyDamage(projectile);
+            ApplyDamage(1, projectile.transform.position);
         }
     }
 }

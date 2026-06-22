@@ -1,4 +1,5 @@
 using UnityEngine;
+using IT.Core.Combat;
 
 namespace IT.Player.Status
 {
@@ -12,9 +13,13 @@ namespace IT.Player.Status
         public Collider2D healthBox { get; private set; }
         private PlayerStateMachine _playerStateMachine;   // DEBUG: for the Story 1.4 death-entry test key
 
+        private Health _health;
+        public Health health => _health;
+
         private void Awake()
         {
             playerStatus = new PlayerStatus();
+            _health = GetComponent<Health>();
             healthBox = GetComponentInChildren<Collider2D>();
         }
 
@@ -22,7 +27,6 @@ namespace IT.Player.Status
         {
             _playerStateMachine = playerStateMachineManager;
             playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager);
-
         }
 
         void Update()
@@ -32,7 +36,7 @@ namespace IT.Player.Status
             // K is the Story 1.4 death-state test hook.
             if (UnityEngine.InputSystem.Keyboard.current.hKey.wasPressedThisFrame)
             {
-                playerStatus.UpdateHealth(-1);
+                _health.Damage(1);
             }
             if (UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
             {

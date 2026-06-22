@@ -1,6 +1,8 @@
+using IT.Core.Combat;
 using IT.Interactables;
 using IT.Player.StateMachine;
 using IT.Player.StateMachine.States;
+using UnityEngine;
 
 namespace IT.Player.Control
 {
@@ -15,15 +17,17 @@ namespace IT.Player.Control
     {
         PlayerStateMachine _sm;
         PlayerWrapper _wrapper;
+        Health _health;
 
-        // Stateless stub — one shared instance, no per-access allocation.
-        static readonly NullHealthSource s_health = new NullHealthSource();
-        public IHealthSource HealthSource => s_health;
+        public IHealthSource HealthSource => _health;
 
         public void OnPossess(PlayerWrapper wrapper)
         {
             _wrapper = wrapper;
             _sm = wrapper.GetComponent<PlayerStateMachine>();
+            _health = wrapper.GetComponent<Health>();
+            if (_health == null)
+                Debug.LogWarning("[OnFootController] No Health component on Player — HealthSource will be null");
         }
 
         public void OnRelease()
@@ -34,6 +38,7 @@ namespace IT.Player.Control
             _sm?.IncrementTransitionCount();
             _sm = null;
             _wrapper = null;
+            _health = null;
         }
 
         public void Tick(in PlayerInputState input)
@@ -81,14 +86,6 @@ namespace IT.Player.Control
         public void FixedTick()
         {
             _sm.FixedTick(); // was PlayerStateMachine.FixedUpdate()
-        }
-
-        // Stub health source until the real Health component lands in Story 4.1.
-        sealed class NullHealthSource : IHealthSource
-        {
-            public int Current => 10;
-            public int Max => 10;
-            public event System.Action<int, int> HealthChanged { add { } remove { } }
         }
     }
 }
