@@ -20,6 +20,8 @@ namespace IT.Player.Status
         {
             playerStatus = new PlayerStatus();
             _health = GetComponent<Health>();
+            if (_health == null)
+                Debug.LogWarning("[PlayerStatusManager] No Health component on Player — H key will NRE until prefab is wired");
             healthBox = GetComponentInChildren<Collider2D>();
         }
 
