@@ -58,13 +58,13 @@
 
   Decide approach when triggering threshold hits, not before. Don't disrupt active epic work for this.
 
-- [ ] **Player prefab visual-root refactor.** Currently SpriteRenderer and Animator live on the Player root GameObject; the convention-standard Unity pattern is a dedicated "Visual" child under root that holds all rendering components. Logical components (PlayerWrapper, PlayerStateMachine, PlayerMover, Rigidbody2D, primary collider) stay on root. Functional anchors (HealthBox, Shadow, ItemDetection, ItemOrigin, ItemManager) stay as children.
+- [x] **Player prefab visual-root refactor.** Currently SpriteRenderer and Animator live on the Player root GameObject; the convention-standard Unity pattern is a dedicated "Visual" child under root that holds all rendering components. Logical components (PlayerWrapper, PlayerStateMachine, PlayerMover, Rigidbody2D, primary collider) stay on root. Functional anchors (HealthBox, Shadow, ItemDetection, ItemOrigin, ItemManager) stay as children.
 
   Why: cleanly separates "is this player active in the world" (root SetActive) from "is this player visible" (Visual child SetActive). Story 3.4 visual hiding on vehicle possession becomes one line. Future visual effects (sprite flash on damage, scale tweens, hat/cosmetic children) are trivial to add.
 
   Cost: small refactor (~30-45 min). Move SpriteRenderer + Animator components from Player root to a new Visual child GameObject. Check GetComponent<Animator>/GetComponent<SpriteRenderer> references in code — anything that does `GetComponent` (not `GetComponentInChildren`) needs to update its lookup path. Verify Level 1 Test and Move and Slide sample still render correctly.
 
-  Trigger: ideally before Story 3.4 vehicle possession dev runs (cleaner _visualRoot.SetActive() approach). Acceptable to defer to between epics if 3.4 is in flight.
+  Trigger: ideally before Story 3.4 vehicle possession dev runs (cleaner _visualRoot.SetActive() approach). Acceptable to defer to between epics if 3.4 is in flight. Done in cbf7086 (2026-06-21).
 
 - [ ] **Player prefab pivot adjustments after visual-root refactor.** Moving SpriteRenderer + Animator from Player root onto Visual child shifted some sprite pivots/transforms slightly. Game plays correctly but a few visual offsets are off. Manually fix in Prefab Edit Mode when next touching the Player prefab — adjust Visual child's local position OR sprite pivot points to restore original look. Low priority; not a gameplay bug.
 
