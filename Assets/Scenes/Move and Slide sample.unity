@@ -3173,6 +3173,7 @@ GameObject:
   - component: {fileID: 1993959201}
   - component: {fileID: 1993959200}
   - component: {fileID: 1993959199}
+  - component: {fileID: 1993959205}
   m_Layer: 9
   m_Name: TestVehicle
   m_TagString: Untagged
@@ -3204,7 +3205,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b3fabaea9764da29bdd7fc13dd4d487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 5
   _speed: 3
 --- !u!50 &1993959201
 Rigidbody2D:
@@ -3349,6 +3349,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1993959205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993959198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 204b42e40f3940bdbee937dfea227a0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 10
+  _iFramesDuration: 0.5
 --- !u!1 &2034716026
 GameObject:
   m_ObjectHideFlags: 0

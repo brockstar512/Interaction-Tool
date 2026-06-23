@@ -38,7 +38,7 @@ namespace IT.Player.Status
             // K is the Story 1.4 death-state test hook.
             if (UnityEngine.InputSystem.Keyboard.current.hKey.wasPressedThisFrame)
             {
-                _health.Damage(1);
+                _health?.Damage(1);
             }
             if (UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
             {
