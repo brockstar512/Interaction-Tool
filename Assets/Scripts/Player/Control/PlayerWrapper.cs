@@ -35,6 +35,8 @@ namespace IT.Player.Control
         // vehicle (OQ-3.4-C). Wired in the Inspector; null-guarded in SetVisualRootActive.
         [SerializeField] private GameObject _visualRoot;
 
+        int _debugEjectFrames;
+
         public IPlayerController ActiveController => _activeController;
         public WrapperState State { get; private set; } = WrapperState.Active;
 
@@ -130,6 +132,17 @@ namespace IT.Player.Control
                 PerformPossess(pending);
             }
 
+            if (_debugEjectFrames > 0 && _visualRoot != null)
+            {
+                int frameNum = 16 - _debugEjectFrames;
+                Debug.Log($"[PostEject f{frameNum}] " +
+                    $"rootEuler={transform.eulerAngles}  " +
+                    $"rootLocal={transform.localEulerAngles}  " +
+                    $"visualEuler={_visualRoot.transform.eulerAngles}  " +
+                    $"visualLocal={_visualRoot.transform.localEulerAngles}");
+                _debugEjectFrames--;
+            }
+
             // Poll the paired actions directly. WasPressedThisFrame / WasReleasedThisFrame
             // give the same per-frame edges the 3.1 bridge captured via .performed/.canceled.
             var p = _actions.Player;
@@ -150,6 +163,9 @@ namespace IT.Player.Control
 
             if (State != WrapperState.Active)
                 return;
+
+            if (input.Move.sqrMagnitude > 0.01f && _visualRoot != null)
+                Debug.Log($"[Move] visualEuler={_visualRoot.transform.localEulerAngles}  visualQuat={_visualRoot.transform.localRotation}");
 
             // Eject interception (Story 3.4): handle eject at the wrapper level, before the
             // vehicle controller is ticked, so it never sees the eject-frame input. Possession
@@ -223,6 +239,11 @@ namespace IT.Player.Control
                 return;
             }
             _visualRoot.SetActive(active);
+            if (active)
+            {
+                _visualRoot.transform.localRotation = Quaternion.identity;
+                _debugEjectFrames = 15;
+            }
         }
 
         void OnDestroy()
