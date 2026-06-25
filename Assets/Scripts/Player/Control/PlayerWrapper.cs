@@ -36,6 +36,7 @@ namespace IT.Player.Control
         [SerializeField] private GameObject _visualRoot;
 
         int _debugEjectFrames;
+        Rigidbody2D _rb;
 
         public IPlayerController ActiveController => _activeController;
         public WrapperState State { get; private set; } = WrapperState.Active;
@@ -57,6 +58,7 @@ namespace IT.Player.Control
 
         void Awake()
         {
+            _rb = GetComponent<Rigidbody2D>();
             _onFoot = new OnFootController();
             _activeController = _onFoot;
             _onFoot.OnPossess(this);
@@ -222,7 +224,7 @@ namespace IT.Player.Control
             var ejectPos = _vehicle.transform.position;
             _activeController.OnRelease();   // vehicle: nulls its wrapper ref
             _vehicle = null;
-            transform.position = ejectPos;   // player reappears where the vehicle was
+            _rb.position = ejectPos;          // player reappears where the vehicle was
             SetVisualRootActive(true);
             _onFoot.OnPossess(this);         // re-links _sm on OnFootController
             _activeController = _onFoot;
