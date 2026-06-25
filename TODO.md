@@ -68,6 +68,8 @@
 
 - [ ] **Player prefab pivot adjustments after visual-root refactor.** Moving SpriteRenderer + Animator from Player root onto Visual child shifted some sprite pivots/transforms slightly. Game plays correctly but a few visual offsets are off. Manually fix in Prefab Edit Mode when next touching the Player prefab — adjust Visual child's local position OR sprite pivot points to restore original look. Low priority; not a gameplay bug.
 
+- [ ] **Refactor OverlapCheckerBase and Item Origin / Grappling Hook anchor positions to compute from facing direction + feet collider dimensions instead of hardcoded per-direction vectors.** Currently all four directions use magic numbers (`verticalScale`, `horizontalScale`, `upPos`, `downPos`, `leftPos`, `rightPos`) for detection and per-clip x values for held items. Computed positions would survive sprite swaps without re-tuning. Filed during Day 3 of visual rotation bug investigation.
+
 ### From code review 2026-06-19
 
 - [ ] **WorldState.OnSegmentReEntered: `segmentId` parameter is unused.** The method body is `=> ClearScope(FlagScope.SegmentScoped)` — it clears ALL SegmentScoped flags regardless of which segment fired. When Epic 5 wires `SegmentManager → OnSegmentReEntered`, this will incorrectly clear flags from all segments on re-entry to any one. Must change the method to filter by segment before Epic 5 wires it.
