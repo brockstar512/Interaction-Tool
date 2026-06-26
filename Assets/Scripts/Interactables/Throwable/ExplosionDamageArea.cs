@@ -18,9 +18,13 @@ namespace IT.Interactables.Throwable
 
                 foreach (var hitCollider in hitColliders)
                 {
-                    var enemy = hitCollider.GetComponent<IDamageable>();
+                    // GetComponentInParent, not GetComponent: the player's hurtbox is the
+                    // HealthBox child trigger, but Health (IDamageable) is on the root.
+                    // Same-frame double-hit (root collider + HealthBox child) is deduped by
+                    // Health's i-frames — the second ApplyDamage lands inside the window.
+                    var damageable = hitCollider.GetComponentInParent<IDamageable>();
 
-                    if (enemy != null)
+                    if (damageable != null)
                     {
                         var closestPoint = hitCollider.ClosestPoint(transform.position);
                         float distance = Vector3.Distance(closestPoint, transform.position);
@@ -29,7 +33,7 @@ namespace IT.Interactables.Throwable
                         // (Was InverseLerp(SplashDamage, …) — the damage value was wrongly used
                         //  as the range bound; it only worked because both happened to be 5.)
                         var damagePercent = Mathf.InverseLerp(_splashRange, 0, distance);
-                        enemy.ApplyDamage(
+                        damageable.ApplyDamage(
                             Mathf.Max(1, Mathf.RoundToInt(_splashDamage * damagePercent)),
                             transform.position);
                     }
