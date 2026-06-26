@@ -1,5 +1,6 @@
 using UnityEngine;
 using IT.Core.Combat;
+using IT.Effects.Flash;
 
 namespace IT.Player.Status
 {
@@ -16,6 +17,9 @@ namespace IT.Player.Status
         private Health _health;
         public Health health => _health;
 
+        private IFlashable _flash;        // damage feedback (CharacterFlash on Visual Root)
+        private int _lastKnownHealth;     // tracks deltas so we flash on damage but not heal
+
         private void Awake()
         {
             playerStatus = new PlayerStatus();
@@ -23,6 +27,30 @@ namespace IT.Player.Status
             if (_health == null)
                 Debug.LogWarning("[PlayerStatusManager] No Health component on Player — H key will NRE until prefab is wired");
             healthBox = GetComponentInChildren<Collider2D>();
+
+            _flash = GetComponentInChildren<IFlashable>();
+            if (_flash == null)
+                Debug.LogWarning("[PlayerStatusManager] No IFlashable (CharacterFlash) in children — damage flash disabled");
+
+            if (_health != null)
+            {
+                _lastKnownHealth = _health.Max;
+                _health.HealthChanged += OnHealthChanged;
+            }
+        }
+
+        // HealthChanged also fires on heal / ResetToMax / Start, so flash only on a decrease.
+        private void OnHealthChanged(int current, int max)
+        {
+            if (current < _lastKnownHealth)
+                _flash?.StartFlash(_health.IFramesDuration);
+            _lastKnownHealth = current;
+        }
+
+        private void OnDestroy()
+        {
+            if (_health != null)
+                _health.HealthChanged -= OnHealthChanged;
         }
 
         public void Init(PlayerStateMachine playerStateMachineManager)

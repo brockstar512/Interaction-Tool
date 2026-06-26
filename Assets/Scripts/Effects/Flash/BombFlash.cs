@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace IT.Effects.Flash
@@ -11,25 +7,16 @@ namespace IT.Effects.Flash
         public override void Awake()
         {
             base.Awake();
-            StartFlash();
+            StartFlash(0f);   // unbounded — blinks until the bomb is destroyed
         }
         public override void SetFlashTime()
         {
             flashTime = .25f;
         }
-        public void StartFlash()
-        {
-            FadeOut();
-        }
 
-        public void EmergencyStop()
-        {
-            FadingTweenDriver.Kill();
-        }
-        
-        private void OnDestroy()
-        {
-            EmergencyStop();
-        }
+        public void StartFlash(float duration) => RunFlash(duration);
+
+        // StopFlash() inherited from FlashBase satisfies IFlashable.
+        private void OnDestroy() => StopFlash();
     }
 }

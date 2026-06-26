@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
 namespace IT.Effects.Flash
@@ -14,18 +11,14 @@ namespace IT.Effects.Flash
         }
         public override void SetFlashTime()
         {
-            flashTime = .1f;
-        }
-        public void StartFlash()
-        {
-            FadeOut();
+            flashTime = .1f;   // per-leg oscillation speed (not the total window)
         }
 
-        public void EmergencyStop()
-        {
-            FadingTweenDriver.Kill();
-        }
-        
+        // Total window is supplied by the caller (PlayerStatusManager passes
+        // Health.IFramesDuration) so the flash mirrors the invulnerability window
+        // without owning or duplicating that value. StopFlash() is inherited.
+        public void StartFlash(float duration) => RunFlash(duration);
+
+        private void OnDestroy() => StopFlash();
     }
-
 }

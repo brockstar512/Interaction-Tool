@@ -14,6 +14,7 @@ namespace IT.Core.Combat
 
         public int Current => _currentHealth;
         public int Max => _maxHealth;
+        public float IFramesDuration => _iFramesDuration;   // read-only: damage VFX mirrors the i-frame window
 
         public event Action<int, int> HealthChanged;
         public event Action HealthDepleted;
