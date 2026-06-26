@@ -6,14 +6,15 @@ namespace IT.Interactables.Throwable
 
     public class ExplosionDamageArea : MonoBehaviour
     {
+        [SerializeField] float _splashRange = 5f;   // world units; was a hardcoded local
+        [SerializeField] float _splashDamage = 5f;  // damage at the blast center (full falloff)
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             Debug.Log($"Damaging something");
-            float SplashRange = 5; //this sprite bounds
-            float SplashDamage = 5f;
-            if (SplashDamage > 0)
+            if (_splashDamage > 0)
             {
-                var hitColliders = Physics2D.OverlapCircleAll(transform.position, SplashRange);
+                var hitColliders = Physics2D.OverlapCircleAll(transform.position, _splashRange);
 
                 foreach (var hitCollider in hitColliders)
                 {
@@ -24,9 +25,12 @@ namespace IT.Interactables.Throwable
                         var closestPoint = hitCollider.ClosestPoint(transform.position);
                         float distance = Vector3.Distance(closestPoint, transform.position);
 
-                        var damagePercent = Mathf.InverseLerp(SplashDamage, 0, distance);
+                        // Falloff over DISTANCE vs RANGE: 1.0 at the center, 0.0 at the edge.
+                        // (Was InverseLerp(SplashDamage, …) — the damage value was wrongly used
+                        //  as the range bound; it only worked because both happened to be 5.)
+                        var damagePercent = Mathf.InverseLerp(_splashRange, 0, distance);
                         enemy.ApplyDamage(
-                            Mathf.Max(1, Mathf.RoundToInt(SplashDamage * damagePercent)),
+                            Mathf.Max(1, Mathf.RoundToInt(_splashDamage * damagePercent)),
                             transform.position);
                     }
                 }
