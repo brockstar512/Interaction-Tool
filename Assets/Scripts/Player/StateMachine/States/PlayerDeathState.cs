@@ -13,7 +13,9 @@ namespace IT.Player.StateMachine.States
         {
             // Stop residual motion; input is already gated (UseItem/Interact only fire from idle).
             if (stateManager.rb != null) stateManager.rb.linearVelocity = Vector2.zero;
-            Debug.Log("Player died");
+            // TODO Story 4.x: trigger death animation here
+            //   (currently: minimal safe state — just stops motion and logs)
+            Debug.Log("[PlayerDeathState] entered (death animation pending)");
         }
 
         public override void UpdateState(PlayerStateMachine stateManager) { }

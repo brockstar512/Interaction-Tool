@@ -36,7 +36,19 @@ namespace IT.Player.Status
             {
                 _lastKnownHealth = _health.Max;
                 _health.HealthChanged += OnHealthChanged;
+                _health.HealthDepleted += OnHealthDepleted;
             }
+        }
+
+        // 0 HP → enter the minimal PlayerDeathState (Story 1.4). Fires once per depletion
+        // (Health transition-guards HealthDepleted). _playerStateMachine is set in Init().
+        private void OnHealthDepleted()
+        {
+            _flash?.StopFlash();   // killing blow: cut the "hurt but lived" flash so the death visual takes over
+            if (_playerStateMachine != null)
+                _playerStateMachine.EnterDeath();
+            else
+                Debug.LogWarning("[PlayerStatusManager] HealthDepleted before Init() — no state machine to enter death");
         }
 
         // HealthChanged also fires on heal / ResetToMax / Start, so flash only on a decrease.
@@ -50,7 +62,10 @@ namespace IT.Player.Status
         private void OnDestroy()
         {
             if (_health != null)
+            {
                 _health.HealthChanged -= OnHealthChanged;
+                _health.HealthDepleted -= OnHealthDepleted;
+            }
         }
 
         public void Init(PlayerStateMachine playerStateMachineManager)
