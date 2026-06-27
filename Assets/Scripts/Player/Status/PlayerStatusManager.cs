@@ -114,6 +114,13 @@ namespace IT.Player.Status
                 if (_wrapper.State == WrapperState.Active) _wrapper.Suspend();
                 else                                       _wrapper.Resume();
             }
+            // DEBUG (Story 4.4 Step 1 — AC1 verify; remove before shipping). O (pOison) applies
+            // a PoisonEffect (1 dmg / 1s / 5s) — ticks Health via DamageOverTime (bypasses
+            // i-frames, so no flash and unaffected by a recent H/bomb hit), no controller touch.
+            if (UnityEngine.InputSystem.Keyboard.current.oKey.wasPressedThisFrame)
+            {
+                _status?.Apply(new PoisonEffect(damagePerTick: 1, duration: 5f, tickInterval: 1f));
+            }
         }
     }
 }
