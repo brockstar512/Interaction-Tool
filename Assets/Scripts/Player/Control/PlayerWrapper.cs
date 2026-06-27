@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using IT.Player.Input;
+using IT.Player.Status;
 using IT.Interactables.Vehicle;
 using UnityEngine.InputSystem.Utilities;
 
@@ -37,6 +38,10 @@ namespace IT.Player.Control
 
         Rigidbody2D _rb;
 
+        // Story 4.3 — per-player status effects. Driven from Update (status -> health ->
+        // controller order, FR-10), gated by WrapperState.Active so Suspend pauses ticking.
+        StatusController _status;
+
         public IPlayerController ActiveController => _activeController;
         public WrapperState State { get; private set; } = WrapperState.Active;
 
@@ -58,6 +63,7 @@ namespace IT.Player.Control
         void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _status = GetComponent<StatusController>();
             _onFoot = new OnFootController();
             _activeController = _onFoot;
             _onFoot.OnPossess(this);
@@ -153,6 +159,11 @@ namespace IT.Player.Control
 
             if (State != WrapperState.Active)
                 return;
+
+            // Story 4.3 — advance status effects before the controller ticks (FR-10
+            // status -> health -> controller). Past the Active gate, so Suspend pauses
+            // status timing; before the eject check, so an eject frame still ticks status.
+            _status?.Tick(Time.deltaTime);
 
             // Eject interception (Story 3.4): handle eject at the wrapper level, before the
             // vehicle controller is ticked, so it never sees the eject-frame input. Possession
