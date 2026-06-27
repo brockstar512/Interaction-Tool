@@ -1,6 +1,7 @@
 using UnityEngine;
 using IT.Core.Combat;
 using IT.Effects.Flash;
+using IT.Player.Control;   // DEBUG (Step 4): WrapperState + Suspend/Resume for the P-key pause test
 
 namespace IT.Player.Status
 {
@@ -17,6 +18,10 @@ namespace IT.Player.Status
         private Health _health;
         public Health health => _health;
 
+        // DEBUG (Story 4.3 Step 4 — remove with the J/P keys in Update below)
+        private StatusController _status;
+        private PlayerWrapper _wrapper;
+
         private IFlashable _flash;        // damage feedback (CharacterFlash on Visual Root)
         private int _lastKnownHealth;     // tracks deltas so we flash on damage but not heal
 
@@ -24,6 +29,8 @@ namespace IT.Player.Status
         {
             playerStatus = new PlayerStatus();
             _health = GetComponent<Health>();
+            _status  = GetComponent<StatusController>();   // DEBUG (Step 4)
+            _wrapper = GetComponent<PlayerWrapper>();        // DEBUG (Step 4)
             if (_health == null)
                 Debug.LogWarning("[PlayerStatusManager] No Health component on Player — H key will NRE until prefab is wired");
             healthBox = GetComponentInChildren<Collider2D>();
@@ -86,6 +93,26 @@ namespace IT.Player.Status
             if (UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
             {
                 _playerStateMachine.EnterDeath();
+            }
+            // DEBUG (Story 4.3 Step 4 — AC #5 lifecycle verify; remove before shipping).
+            // J applies TWO differently-labeled effects at once: A (10s/1s) + B (6s/1s).
+            // One press shows apply ×2, paired tick cadence, B expiring (~6s) while A keeps
+            // ticking to ~10s (simultaneous + independent), then A expire. Re-press J before
+            // expiry → OnRefresh on the still-active labels (same key → refresh, not duplicate).
+            if (UnityEngine.InputSystem.Keyboard.current.jKey.wasPressedThisFrame)
+            {
+                _status?.Apply(new DebugLogStatusEffect("A", duration: 10f, tickInterval: 1f));
+                _status?.Apply(new DebugLogStatusEffect("B", duration: 6f,  tickInterval: 1f));
+            }
+            // P toggles wrapper Suspend/Resume. The Active gate in PlayerWrapper.Update sits
+            // BEFORE _status.Tick, so Suspend halts ticking (OnTick logs STOP) and the duration
+            // does NOT advance; Resume continues from where it paused. Proves Suspend pauses
+            // status timing. (These debug keys read Keyboard.current directly, not the wrapper's
+            // input actions, so J/P/H/K still respond while the wrapper is Suspended.)
+            if (UnityEngine.InputSystem.Keyboard.current.pKey.wasPressedThisFrame && _wrapper != null)
+            {
+                if (_wrapper.State == WrapperState.Active) _wrapper.Suspend();
+                else                                       _wrapper.Resume();
             }
         }
     }
