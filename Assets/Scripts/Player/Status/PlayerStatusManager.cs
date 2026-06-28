@@ -121,6 +121,17 @@ namespace IT.Player.Status
             {
                 _status?.Apply(new PoisonEffect(damagePerTick: 1, duration: 5f, tickInterval: 1f));
             }
+            // DEBUG (Story 4.4 Step 3 — remove pre-ship). F swaps to OnFireController (2x run,
+            // no interact/use); G restores the previous controller. Verifies the swap mechanism
+            // in isolation before OnFireEffect (Step 4) drives it.
+            if (UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame && _wrapper != null)
+            {
+                _wrapper.SwapController(new OnFireController());   // default 2.0x multiplier
+            }
+            if (UnityEngine.InputSystem.Keyboard.current.gKey.wasPressedThisFrame && _wrapper != null)
+            {
+                _wrapper.RestoreController();
+            }
         }
     }
 }

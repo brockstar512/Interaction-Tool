@@ -32,6 +32,15 @@ namespace IT.Player.Control
         VehicleController _vehicle;
         VehicleController _pendingVehicle;
 
+        // Story 4.4 — generic controller swap (On-Fire and future mode-statuses). Mirrors the
+        // _pendingVehicle deferred-swap pattern: SwapController records the request here and it
+        // is performed at the top of the next Update, never synchronously (the requesting
+        // OnApply may run inside a controller Tick). _controllerBeforeSwap remembers the
+        // controller to restore to (non-null = currently swapped). Unlike vehicle possession,
+        // a controller swap keeps the visual root VISIBLE — the player stays on screen.
+        IPlayerController _pendingController;
+        IPlayerController _controllerBeforeSwap;
+
         // Player.prefab's Visual child (SpriteRenderer + Animator), hidden while possessing a
         // vehicle (OQ-3.4-C). Wired in the Inspector; null-guarded in SetVisualRootActive.
         [SerializeField] private GameObject _visualRoot;
@@ -139,6 +148,17 @@ namespace IT.Player.Control
                 PerformPossess(pending);
             }
 
+            // Deferred controller swap / restore (Story 4.4 On-Fire). Same top-of-Update timing
+            // as the vehicle swap above, so the swapped-in controller ticks this frame with fresh
+            // input. Mutually exclusive with vehicle possession in practice (controller-swapping
+            // statuses are on-foot-only, Q5).
+            if (_pendingController != null)
+            {
+                var next = _pendingController;
+                _pendingController = null;
+                PerformControllerSwap(next);
+            }
+
             // Poll the paired actions directly. WasPressedThisFrame / WasReleasedThisFrame
             // give the same per-frame edges the 3.1 bridge captured via .performed/.canceled.
             var p = _actions.Player;
@@ -224,6 +244,64 @@ namespace IT.Player.Control
             SetVisualRootActive(true);
             _onFoot.OnPossess(this);         // re-links _sm on OnFootController
             _activeController = _onFoot;
+            ActiveControllerChanged?.Invoke();
+        }
+
+        // --- generic controller swap (Story 4.4, C-D: swap only via OnRelease → OnPossess) ---
+
+        // On-Fire activation (OnFireEffect.OnApply) requests this. Deferred exactly like
+        // PossessVehicle — the caller may be mid-Tick, so we only record the request and perform
+        // it at the top of the next Update. Refused while possessing a vehicle (controller swaps
+        // are on-foot-only in v1, Q5) and refused if a swap is already pending/active (one
+        // mode-swap at a time). Graceful no-op + warning, never a crash.
+        public void SwapController(IPlayerController next)
+        {
+            if (next == null) return;
+            if (_vehicle != null)
+            {
+                Debug.LogWarning("[PlayerWrapper] SwapController ignored — controller swaps " +
+                    "(e.g. On-Fire) are on-foot-only in v1; player is possessing a vehicle.");
+                return;
+            }
+            if (_pendingController != null || _controllerBeforeSwap != null)
+            {
+                Debug.LogWarning("[PlayerWrapper] SwapController ignored — a controller swap is " +
+                    "already pending or active (one mode-swap at a time in v1).");
+                return;
+            }
+            _pendingController = next;
+        }
+
+        // On-Fire expiry (OnFireEffect.OnExpire) requests this — a deferred swap back to the
+        // controller active before the swap. No-op if nothing is swapped.
+        public void RestoreController()
+        {
+            if (_controllerBeforeSwap == null) return;
+            _pendingController = _controllerBeforeSwap;
+        }
+
+        // The real swap. Only ever called from Update (never inside a Tick), so releasing the
+        // current controller here is safe. OnRelease BEFORE OnPossess, never simultaneous — same
+        // ordering as PerformPossess. Does NOT touch the visual root (player stays visible).
+        void PerformControllerSwap(IPlayerController next)
+        {
+            var previous = _activeController;
+            previous.OnRelease();              // release current — trips stale token if it has one (OnFoot does)
+            next.OnPossess(this);              // possess next — OnFoot re-links _sm; OnFire grabs rb/animator/health
+            _activeController = next;
+
+            // Track the base controller to restore to. Given the SwapController guards, only two
+            // paths reach here:
+            //   • first swap away from base (_controllerBeforeSwap == null) → record the base we left
+            //   • restore back to that base (next == _controllerBeforeSwap)  → clear the slot
+            // The implicit third case (swap between two non-base controllers) is unreachable, and
+            // we deliberately leave _controllerBeforeSwap UNTOUCHED there so the true base is
+            // never lost.
+            if (_controllerBeforeSwap == null)
+                _controllerBeforeSwap = previous;     // swapping away from base
+            else if (next == _controllerBeforeSwap)
+                _controllerBeforeSwap = null;         // returning to base
+
             ActiveControllerChanged?.Invoke();
         }
 
