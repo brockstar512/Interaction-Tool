@@ -30,8 +30,14 @@ namespace IT.Player.Control
         Animator _animator;
         Health _health;
 
-        Vector2 _move;                          // cached each Tick, consumed in FixedTick (physics)
-        Vector2 _lookDirection = Vector2.down;   // last cardinal facing; seeds Down like a fresh player
+        // Panic-run (Issue 2): the burning player CANNOT STOP. _lastNonZeroMove holds the last
+        // non-zero steering input and is what FixedTick moves along EVERY frame — releasing all
+        // keys does not halt the player; input only REDIRECTS. Seeded Down so catching fire while
+        // idle immediately panics downward (Option A). _lookDirection is the cardinal facing for
+        // the Walk clip (diverges from _lastNonZeroMove on diagonals) — also seeded Down so the
+        // first frame shows WalkDown rather than freezing on the prior OnFoot pose.
+        Vector2 _lastNonZeroMove = Vector2.down;
+        Vector2 _lookDirection = Vector2.down;
 
         public IHealthSource HealthSource => _health;
 
@@ -55,38 +61,41 @@ namespace IT.Player.Control
 
         public void Tick(in PlayerInputState input)
         {
-            // Run-only: Interact / UseItem / SwitchItem are deliberately NOT handled — a burning
-            // player can only run. Update facing (shared Facing utility — the Day-3 fix) + animate.
-            _move = input.Move;
+            // Run-only AND can't-stop (Issue 2): Interact/UseItem/SwitchItem ignored; releasing
+            // all keys does NOT stop the player. Non-zero input REDIRECTS the run (and updates
+            // facing on a cardinal); zero input leaves the last direction + facing unchanged.
+            if (input.Move != Vector2.zero)
+            {
+                _lastNonZeroMove = input.Move;
 
-            Facing? facing = FacingExtensions.FromVector(input.Move);
-            if (facing.HasValue)
-                _lookDirection = facing.Value.ToVector();
+                Facing? facing = FacingExtensions.FromVector(input.Move);
+                if (facing.HasValue)
+                    _lookDirection = facing.Value.ToVector();
+            }
 
             PlayRunAnim();
         }
 
         public void FixedTick()
         {
-            _rb.MovePosition(_rb.position + _move * (BASE_SPEED * _speedMultiplier) * Time.deltaTime);
+            _rb.MovePosition(_rb.position + _lastNonZeroMove * (BASE_SPEED * _speedMultiplier) * Time.deltaTime);
         }
 
-        // Duplicated facing→clip mapping (see NOTE above): same clip names + same LookDirection
-        // checks as MoveAnimState, so the flipX baked into those clips (Day-3) keeps facing
-        // correct. No dedicated "run" clip exists — v1 reuses the Walk clips; the run reads as
-        // fast via 2x speed + OnFireEffect's red tint (Step 4). Documented v1 art gap.
+        // Always the Walk clip (never Stand) — the panic-runner never stops. Keyed off
+        // _lookDirection (always a cardinal, even when _lastNonZeroMove is diagonal), so the
+        // flipX baked into those clips (Day-3) keeps facing correct. Duplicated clip names from
+        // MoveAnimState (see NOTE above). No dedicated "run" clip — v1 reuses Walk; the run reads
+        // as fast via 2x speed + OnFireEffect's red tint (Step 4). Documented v1 art gap.
         void PlayRunAnim()
         {
-            bool moving = _move.x != 0f || _move.y != 0f;
-
             if (_lookDirection == Vector2.down)
-                _animator.Play(moving ? "WalkDown" : "StandDown");
+                _animator.Play("WalkDown");
             else if (_lookDirection == Vector2.up)
-                _animator.Play(moving ? "WalkUp" : "StandUp");
+                _animator.Play("WalkUp");
             else if (_lookDirection == Vector2.right)
-                _animator.Play(moving ? "WalkRight" : "StandRight");
+                _animator.Play("WalkRight");
             else if (_lookDirection == Vector2.left)
-                _animator.Play(moving ? "WalkLeft" : "StandLeft");
+                _animator.Play("WalkLeft");
         }
     }
 }
