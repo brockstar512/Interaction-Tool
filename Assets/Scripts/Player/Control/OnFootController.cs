@@ -32,10 +32,16 @@ namespace IT.Player.Control
 
         public void OnRelease()
         {
-            // Trip the stale-continuation guard exactly as SwitchState does, so any
-            // in-flight async state action sees IsStale(token) and aborts before
-            // acting on a state machine this controller no longer drives.
-            _sm?.IncrementTransitionCount();
+            // Story 4.4 follow-up (latent Story 3.1 bug): force a CLEAN exit to idle before
+            // dropping our references. SwitchState(defaultState) runs the full battle-tested
+            // cleanup — bumps the transition token (so any in-flight async action sees
+            // IsStale and aborts, FR-3), runs currentState.ExitState (e.g. PlayerThrowState
+            // unsubscribes the held item's Destroyed handler — the leaked-subscription bug),
+            // and clears the held item on entry into PlayerIdleState. Supersedes the old
+            // IncrementTransitionCount() call, which only bumped the token (no ExitState, no
+            // item clear) and so left non-idle states half-exited. Releases from idle (Story
+            // 3.4 vehicle possession) are a near-no-op here — unchanged behavior.
+            _sm?.SwitchState(_sm.defaultState);
             _sm = null;
             _wrapper = null;
             _health = null;
