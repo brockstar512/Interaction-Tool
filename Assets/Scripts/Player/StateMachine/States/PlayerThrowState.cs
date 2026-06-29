@@ -82,6 +82,17 @@ namespace IT.Player.StateMachine.States
             _heldStateManager = null;
         }
 
+        // Story 4.4 Step 3.6: a controller swap interrupted the carry. Throw the held item via the
+        // SAME path as a normal throw (item.Release → Toss → SetParent(null) + force), so the bomb
+        // unparents from the player's ItemAnchorPoint and flies away instead of riding along.
+        // Reuses the existing throw API; the normal Action throw path is untouched. The subsequent
+        // SwitchState → ExitState unsubscribes Destroyed, exactly as after a normal throw.
+        public override void OnInterrupt(PlayerStateMachine stateManager)
+        {
+            if (stateManager.item != null)
+                stateManager.item.Release(stateManager);
+        }
+
         public override void FixedUpdateState(PlayerStateMachine stateManager)
         {
             if (_currentAnimation is not CarryAnimState)

@@ -15,7 +15,14 @@ namespace IT.Player.StateMachine
         public abstract void FixedUpdateState(PlayerStateMachine stateManager);
         public abstract void ExitState(PlayerStateMachine stateManager);
         public abstract void Action(PlayerStateMachine stateManager);
-    
+
+        // Interrupt cleanup (Story 4.4 Step 3.6): called by PlayerStateMachine.ForceExitToIdle
+        // when a controller swap (e.g. On-Fire) yanks the player out of this state from OUTSIDE
+        // the normal input flow. Default no-op; states holding external resources override it
+        // (PlayerThrowState throws the held item so it doesn't stay parented to the player). NOT
+        // called on a normal SwitchState, so existing per-state transition logic is untouched.
+        public virtual void OnInterrupt(PlayerStateMachine stateManager) { }
+
         protected virtual void Move(PlayerStateMachine stateManager)
         {
             stateManager.rb.MovePosition(stateManager.rb.position + stateManager.movement * Speed * Time.deltaTime);

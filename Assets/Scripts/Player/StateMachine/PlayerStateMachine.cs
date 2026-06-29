@@ -105,6 +105,18 @@ namespace IT.Player.StateMachine
 
         }
 
+        // Story 4.4 Step 3.6: clean controller-handoff exit. Runs the current state's interrupt
+        // cleanup (OnInterrupt — e.g. PlayerThrowState throws the held item) THEN the standard
+        // SwitchState(defaultState) clean exit (token bump + ExitState + item clear). Called from
+        // OnFootController.OnRelease when a controller swap (possession / On-Fire) releases the
+        // on-foot controller from outside the input flow. Normal in-state transitions still use
+        // SwitchState directly (no OnInterrupt), so the existing throw/slide/etc. paths are unchanged.
+        public void ForceExitToIdle()
+        {
+            currentState.OnInterrupt(this);   // interrupt cleanup FIRST (throws the held item)
+            SwitchState(defaultState);        // THEN the standard clean exit (ExitState + item clear)
+        }
+
         //button controlled
         public void UseItem()
         {
