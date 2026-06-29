@@ -45,6 +45,18 @@ namespace IT.Player.Status
                 _health.HealthChanged += OnHealthChanged;
                 _health.HealthDepleted += OnHealthDepleted;
             }
+
+            // DEBUG (throwaway — remove pre-ship with the keys). Reference table for playtests.
+            Debug.Log("=== Debug Keys ===\n" +
+                "H — Drain Health (1 dmg)\n" +
+                "K — Direct death (bypasses Health)\n" +
+                "O — Apply Poison (1 dmg/1s, 5s)\n" +
+                "N — Apply OnFire (5s, 2x)\n" +
+                "F — Raw OnFireController swap\n" +
+                "G — Restore OnFoot\n" +
+                "J — Apply DebugLog A+B\n" +
+                "P — Suspend toggle\n" +
+                "==================");
         }
 
         // 0 HP → enter the minimal PlayerDeathState (Story 1.4). Fires once per depletion
@@ -52,6 +64,12 @@ namespace IT.Player.Status
         private void OnHealthDepleted()
         {
             _flash?.StopFlash();   // killing blow: cut the "hurt but lived" flash so the death visual takes over
+            // Story 4.4 Step 4.5: clear active status effects BEFORE entering death. Order matters —
+            // a mode-changing status (On-Fire) fires OnFireEffect.OnExpire -> RestoreController here,
+            // so the controller swap-back is requested before PlayerDeathState owns movement.
+            // Without this, OnFireController keeps panic-running the corpse until On-Fire's natural
+            // expiry (~5s). (K-key debug death bypasses Health/HealthDepleted, so it is NOT covered.)
+            _status?.ClearAll();
             if (_playerStateMachine != null)
                 _playerStateMachine.EnterDeath();
             else

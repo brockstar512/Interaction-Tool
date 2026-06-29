@@ -16,6 +16,10 @@ namespace IT.Player.Status
     {
         readonly List<StatusEffectBase> _active = new();
 
+        // Reusable snapshot buffer for Tick (Step 4.5): lets Tick iterate without the live
+        // _active list being mutated under it. Member field to avoid a per-frame allocation.
+        readonly List<StatusEffectBase> _tickBuffer = new();
+
         // Targets that effects reach through StatusEffectBase.Controller. Cached in Awake;
         // both live on the Player root with this component. (Story 4.4 Poison reads Health;
         // On-Fire reads Wrapper for the possession-path controller swap.)
@@ -69,19 +73,42 @@ namespace IT.Player.Status
         }
 
         // Per-frame advance, called by PlayerWrapper.Update only while the wrapper is Active
-        // (Suspend pauses status timing). Iterates backwards so an effect that expires this
-        // frame can be removed in place before OnExpire runs.
+        // (Suspend pauses status timing). Iterates a SNAPSHOT (not the live list) because an
+        // effect's Advance/OnTick may mutate _active mid-iteration — e.g. a poison tick that
+        // drops HP to 0 -> death -> ClearAll, or an effect applying another effect. An in-place
+        // index loop would then read past the end of a shrunk list. The Contains guard skips
+        // anything removed mid-tick; the Remove return-value gates OnExpire so an effect cleared
+        // during its own Advance is not expired twice.
         public void Tick(float dt)
         {
-            for (int i = _active.Count - 1; i >= 0; i--)
+            _tickBuffer.Clear();
+            _tickBuffer.AddRange(_active);
+            foreach (var effect in _tickBuffer)
             {
-                var effect = _active[i];
-                if (effect.Advance(dt))
-                {
-                    _active.RemoveAt(i);
+                // Contains + Remove are each O(n); with n typically 1-3 in v1 the O(n^2) loop is
+                // negligible. If the active count ever grows, add a HashSet membership sidecar or
+                // a version counter instead.
+                if (!_active.Contains(effect)) continue;            // removed mid-tick — skip
+                if (effect.Advance(dt) && _active.Remove(effect))   // remove-first, then OnExpire
                     effect.OnExpire();
-                }
             }
+        }
+
+        // Force-clear all active effects, firing each one's OnExpire. Called on player death
+        // (PlayerStatusManager.OnHealthDepleted) so a mode-changing status doesn't strand the
+        // player — OnFireEffect.OnExpire -> RestoreController hands movement back to OnFoot so
+        // PlayerDeathState actually stops the player. Remove EVERYTHING first (Clear), THEN fire
+        // OnExpire on a snapshot, so _active is empty during every callback (re-entrancy-safe — a
+        // callback can't observe a half-cleared list). Uses a LOCAL snapshot, not _tickBuffer,
+        // because ClearAll can run from inside Tick (a poison tick that kills the player); reusing
+        // the Tick buffer would corrupt its in-flight iteration. List.ToArray() (not LINQ).
+        public void ClearAll()
+        {
+            if (_active.Count == 0) return;
+            var snapshot = _active.ToArray();
+            _active.Clear();
+            foreach (var effect in snapshot)
+                effect.OnExpire();
         }
 
         StatusEffectBase FindByKey(object key)
