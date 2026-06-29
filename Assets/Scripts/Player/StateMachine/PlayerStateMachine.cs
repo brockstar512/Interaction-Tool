@@ -29,6 +29,11 @@ namespace IT.Player.StateMachine
 
         public PlayerStateBase getState => currentState;
 
+        // Story 4.4 Step 4: public facing accessor. Facing belongs to the state machine; reading
+        // it via the explicit IInteractionContext.LookDirection was a hack for non-interaction
+        // callers. OnFireEffect uses this to seed OnFireController's panic-run direction.
+        public Vector2 LookDirection => currentState.LookDirection;
+
         // Stale-continuation guard (Story 1.4): bumped on every SwitchState. An async state
         // action captures this token before awaiting and checks IsStale(token) after each await.
         public int TransitionCount { get; private set; }

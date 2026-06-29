@@ -52,6 +52,10 @@ namespace IT.Player.Control
         StatusController _status;
 
         public IPlayerController ActiveController => _activeController;
+
+        // Story 4.4 Step 4: true while possessing a vehicle (_vehicle non-null). OnFireEffect
+        // uses this to keep On-Fire on-foot-only (Q5).
+        public bool IsPossessingVehicle => _vehicle != null;
         public WrapperState State { get; private set; } = WrapperState.Active;
 
         // Fires when the active IPlayerController changes (possess / eject). Story 7.3 (HUD

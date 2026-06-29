@@ -32,16 +32,24 @@ namespace IT.Player.Control
 
         // Panic-run (Issue 2): the burning player CANNOT STOP. _lastNonZeroMove holds the last
         // non-zero steering input and is what FixedTick moves along EVERY frame — releasing all
-        // keys does not halt the player; input only REDIRECTS. Seeded Down so catching fire while
-        // idle immediately panics downward (Option A). _lookDirection is the cardinal facing for
-        // the Walk clip (diverges from _lastNonZeroMove on diagonals) — also seeded Down so the
-        // first frame shows WalkDown rather than freezing on the prior OnFoot pose.
-        Vector2 _lastNonZeroMove = Vector2.down;
-        Vector2 _lookDirection = Vector2.down;
+        // keys does not halt the player; input only REDIRECTS. _lookDirection is the cardinal
+        // facing for the Walk clip (diverges from _lastNonZeroMove on diagonals). Both seeded from
+        // the constructor's initialDirection (Step 4): the player's facing when On-Fire starts, or
+        // Down as a fallback (so the first frame is WalkDown, not a frozen prior OnFoot pose).
+        Vector2 _lastNonZeroMove;
+        Vector2 _lookDirection;
 
         public IHealthSource HealthSource => _health;
 
-        public OnFireController(float speedMultiplier = 2.0f) => _speedMultiplier = speedMultiplier;
+        // initialDirection: the seed for the run + facing. OnFireEffect passes the player's actual
+        // facing; the F debug key passes nothing (default Vector2.zero) → fall back to Down so an
+        // idle catch-fire still immediately panics downward.
+        public OnFireController(float speedMultiplier = 2.0f, Vector2 initialDirection = default)
+        {
+            _speedMultiplier = speedMultiplier;
+            _lastNonZeroMove = initialDirection == Vector2.zero ? Vector2.down : initialDirection;
+            _lookDirection = _lastNonZeroMove;
+        }
 
         public void OnPossess(PlayerWrapper wrapper)
         {

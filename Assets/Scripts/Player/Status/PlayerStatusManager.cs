@@ -132,6 +132,13 @@ namespace IT.Player.Status
             {
                 _wrapper.RestoreController();
             }
+            // DEBUG (Story 4.4 Step 4 — AC verify; remove pre-ship). N (oN fire) applies an
+            // OnFireEffect (5s / 2x): swaps to OnFireController panic-run, restores on expiry.
+            // Counterpart to O (poison) for the FR-16 simultaneity check (press O then N).
+            if (UnityEngine.InputSystem.Keyboard.current.nKey.wasPressedThisFrame)
+            {
+                _status?.Apply(new OnFireEffect(duration: 5f, speedMultiplier: 2.0f));
+            }
         }
     }
 }
