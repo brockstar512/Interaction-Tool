@@ -49,7 +49,9 @@ namespace IT.Interactables.Vehicle
         public void FixedTick()
         {
             // Kinematic body — drive position directly, no velocity/forces to reset.
-            _rb.MovePosition(transform.position + (Vector3)(_move * _speed * Time.fixedDeltaTime));
+            // Use rb.position (not transform.position) to match the rest of the codebase — see
+            // the Eject() fix (75d4a6a); transform.position reintroduces an always-left bias.
+            _rb.MovePosition(_rb.position + _move * _speed * Time.fixedDeltaTime);
         }
 
         // DEBUG — reads the keyboard directly (a D2 violation) purely as test scaffolding —
