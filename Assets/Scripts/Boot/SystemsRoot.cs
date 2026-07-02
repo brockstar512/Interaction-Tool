@@ -1,5 +1,6 @@
 using IT.Core.WorldState;
 using IT.Player.Control;
+using IT.Segments;
 using UnityEngine;
 
 namespace IT.Boot
@@ -27,6 +28,9 @@ namespace IT.Boot
             root.Config = config;
             root.WorldState = new WorldState();
             go.AddComponent<PlayerRoster>();
+            // Story 5.1: true-global segment membership (C-C), the SystemsRoot slot reserved above.
+            // AFTER PlayerRoster so SegmentManager.Awake finds a live roster to subscribe PlayerLeft on.
+            go.AddComponent<SegmentManager>();
             return root;
         }
 

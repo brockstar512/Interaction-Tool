@@ -51,6 +51,15 @@ namespace IT.Segments
             }
         }
 
+        // Push registration into the true-global SegmentManager (Story 5.1 Step 5), mirroring
+        // PlayerWrapper→PlayerRoster. OnEnable/OnDisable (not Awake) so a segment toggled at runtime,
+        // or arriving/leaving via a scene load/unload (5.4), self-heals its membership. Instance on
+        // enable force-creates the manager if needed; TryGetInstance on disable avoids resurrecting it
+        // during teardown/quit. These run in play mode only (no [ExecuteAlways]), so edit-mode gizmo
+        // authoring never spawns a manager.
+        void OnEnable()  => SegmentManager.Instance.Register(this);
+        void OnDisable() => SegmentManager.TryGetInstance()?.Unregister(this);
+
         static readonly Color IdleColor     = new Color(0.25f, 0.80f, 1f, 0.9f);
         static readonly Color SelectedColor = new Color(1f, 0.85f, 0.20f, 1f);
 
