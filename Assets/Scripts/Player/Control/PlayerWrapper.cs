@@ -56,6 +56,22 @@ namespace IT.Player.Control
         // Story 4.4 Step 4: true while possessing a vehicle (_vehicle non-null). OnFireEffect
         // uses this to keep On-Fire on-foot-only (Q5).
         public bool IsPossessingVehicle => _vehicle != null;
+
+        // Story 5.1 (spec Design Decision 4 — the EffectivePosition keystone). Possession-aware,
+        // Suspend-agnostic world position: the possessed vehicle's body while possessing, else
+        // the player's own body. SegmentManager reads this per roster wrapper for point-in-rect
+        // membership (RectShape.Contains) — see Story 5.1 spec.
+        //
+        // Why the vehicle branch: while possessing, the player's own _rb is FROZEN — nothing
+        // writes it until Eject() (Eject does _rb.position = _vehicle.Position on exit). Reading
+        // _rb here would report the stale pre-possession spot, so we read the vehicle's live body.
+        //
+        // Why NO WrapperState check (owner ruling R3): membership is "where the body is," not
+        // whether input is live. This must return a correct position even while Suspended, so it
+        // never branches on State (unlike Update/FixedUpdate, which gate on Active).
+        public Vector2 EffectivePosition
+            => IsPossessingVehicle ? _vehicle.Position : _rb.position;
+
         public WrapperState State { get; private set; } = WrapperState.Active;
 
         // Fires when the active IPlayerController changes (possess / eject). Story 7.3 (HUD
@@ -241,7 +257,7 @@ namespace IT.Player.Control
         {
             if (_vehicle == null) return;    // guard: not possessing (also covers null-wrapper case)
 
-            var ejectPos = _vehicle.transform.position;
+            var ejectPos = _vehicle.Position;   // rb.position (codebase convention), not transform.position
             _activeController.OnRelease();   // vehicle: nulls its wrapper ref
             _vehicle = null;
             _rb.position = ejectPos;          // player reappears where the vehicle was

@@ -22,6 +22,12 @@ namespace IT.Interactables.Vehicle
 
         public IHealthSource HealthSource => _health;
 
+        // Story 5.1 — possession-aware world position source. PlayerWrapper.EffectivePosition
+        // reads this while a player possesses the vehicle so segment membership tracks the
+        // vehicle body. Exposes rb.position — the codebase convention (see FixedTick / commit
+        // 4727d01), not transform.position.
+        public Vector2 Position => _rb.position;
+
         void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
