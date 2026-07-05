@@ -31,6 +31,9 @@ namespace IT.Boot
             // Story 5.1: true-global segment membership (C-C), the SystemsRoot slot reserved above.
             // AFTER PlayerRoster so SegmentManager.Awake finds a live roster to subscribe PlayerLeft on.
             go.AddComponent<SegmentManager>();
+            // Story 5.2: routes SegmentManager crossings into behaviour-typed request events (C-G, not a
+            // parallel bus). AFTER SegmentManager so SegmentRouter.Awake finds a live manager to subscribe to.
+            go.AddComponent<SegmentRouter>();
             return root;
         }
 
