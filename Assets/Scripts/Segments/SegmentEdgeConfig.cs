@@ -53,9 +53,10 @@ namespace IT.Segments
         public string targetScenePath;
 
         /// <summary>
-        /// Id of a <c>SpawnPoint</c> on the destination segment's <c>SegmentSpawnPoints</c> (Story 5.4
-        /// consumes). Plain string at Rung 2; a stronger dispatch-time type contract is deferred to
-        /// Rung 4+ per the Gap 3 forward-compat note.
+        /// Spawn point ID as an opaque string. Resolved to target-side <c>SpawnPoint</c> data at
+        /// SegmentRouter dispatch time (Rung 4); Story 5.4 (LocationTransporter) executes the actual
+        /// player positioning. Kept a plain string here (sufficient for authoring); a stronger
+        /// dispatch-time type contract is deferred to Rung 4+ per the Gap 3 forward-compat note.
         /// </summary>
         public string spawnPointId;
     }

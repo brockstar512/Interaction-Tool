@@ -8,6 +8,11 @@ namespace IT.Segments
     /// Fixed set → an enum, not data (C-B). There is deliberately NO <c>None</c> value: an
     /// unconfigured edge — or a segment with no <c>SegmentConfig</c> at all — resolves to
     /// <see cref="Seamless"/>, the do-nothing default (spec Q2).
+    ///
+    /// DEFAULT VALUE: <see cref="Seamless"/> is 0, so it is the C# enum default. Segments without an
+    /// explicit <c>SegmentConfig</c>, or a <c>SegmentConfig</c> with unconfigured edges, default to
+    /// Seamless behaviour for all four edges. This matches spec DD1: a minimum-viable segment
+    /// (<c>SegmentBounds</c> only) has all edges Seamless.
     /// </summary>
     public enum EdgeBehavior
     {
