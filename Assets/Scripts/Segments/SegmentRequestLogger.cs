@@ -4,9 +4,9 @@ using IT.Player.Control;
 namespace IT.Segments
 {
     /// <summary>
-    /// THROWAWAY diagnostic (Story 5.2, Rung 5): subscribes to all four <see cref="SegmentRouter"/> events
-    /// and echoes each to the Console with a distinct <c>[SegmentRouter]</c> prefix, so the Rung 7 manual
-    /// verification sweep can watch requests fire in real time. Mirrors Story 5.1's throwaway <c>[Segment]</c>
+    /// THROWAWAY diagnostic (Story 5.2, Rung 5): subscribes to all five <see cref="SegmentRouter"/> events
+    /// (Story 5.3 added the <c>OnLockRefused</c> refusal echo) and echoes each to the Console with a distinct
+    /// <c>[SegmentRouter]</c> prefix, so the manual verification sweeps can watch requests fire in real time. Mirrors Story 5.1's throwaway <c>[Segment]</c>
     /// enter/exit logs; scheduled for pre-ship removal at Story 5.2 close (delete this file + the one
     /// GameObject it is attached to in SegmentTest).
     ///
@@ -33,6 +33,7 @@ namespace IT.Segments
             r.SlideRequested              += OnSlide;
             r.OnTransportRequested        += OnTransport;
             r.OnScenerRequested           += OnScener;
+            r.OnLockRefused               += OnRefused;
             _subscribed = true;
         }
 
@@ -46,6 +47,7 @@ namespace IT.Segments
                 r.SlideRequested              -= OnSlide;
                 r.OnTransportRequested        -= OnTransport;
                 r.OnScenerRequested           -= OnScener;
+                r.OnLockRefused               -= OnRefused;
             }
             _subscribed = false;
         }
@@ -63,6 +65,9 @@ namespace IT.Segments
         void OnScener(ScenerRequest r)
             => Debug.Log($"{Tag} SCENE — {Id(r.FromSegment)} → \"{r.TargetScenePath}\" ({r.Edge}), " +
                          $"spawn '{r.SpawnPointId}', player {PlayerId(r.Player)}");
+
+        void OnRefused(SegmentBounds from, SegmentEdge edge, PlayerWrapper player, SegmentLock lockComp)
+            => Debug.Log($"{Tag} LOCK REFUSED — {Id(from)} ({edge}), player {PlayerId(player)}");
 
         static string Id(SegmentBounds s) => s != null ? s.SegmentId : "∅";
 
