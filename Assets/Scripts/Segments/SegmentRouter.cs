@@ -90,6 +90,13 @@ namespace IT.Segments
         /// <summary>Crossed a Scene edge — Story 5.4 loads the scene + spawns.</summary>
         public event Action<ScenerRequest> OnScenerRequested;
 
+        /// <summary>
+        /// A closed <see cref="SegmentLock"/> refused a gated edge crossing (Story 5.3, Ruling E):
+        /// (fromSegment, edge, player, lock). Fired INSTEAD of the behaviour's request — never alongside it.
+        /// Only the throwaway logger consumes this in 5.3; game-feel consumers (sound/UI) come later.
+        /// </summary>
+        public event Action<SegmentBounds, SegmentEdge, PlayerWrapper, SegmentLock> OnLockRefused;
+
         // Option A: no mode set on boot. The first configured segment entered fires the initial camera
         // request (delta from "unset"); thereafter only genuine mode changes fire.
         CameraMode? _currentMode;
@@ -127,6 +134,22 @@ namespace IT.Segments
             var maybe = config.GetEdgeConfig(c.Edge);
             if (maybe == null) return;                 // not a real edge (None) — defensive
             var edge = maybe.Value;
+
+            // Story 5.3 lock gate (spec DD3): ONE guard ahead of the dispatch switch, so every
+            // non-Seamless behaviour — including future ones — is gated; Seamless never reaches it
+            // (nothing to gate, Ruling A). Refusal must precede dispatch: an event can't be un-fired.
+            if (edge.behavior != EdgeBehavior.Seamless)
+            {
+                var lockComp = c.Segment.GetComponent<SegmentLock>();
+                if (lockComp != null && lockComp.Gates(c.Edge) && !lockComp.IsOpen)
+                {
+                    Debug.Log(
+                        $"[SegmentLock] {edge.behavior} on '{c.Segment.SegmentId}' {c.Edge} refused — " +
+                        $"locked (source not satisfied). No request dispatched.");
+                    OnLockRefused?.Invoke(c.Segment, c.Edge, c.Player, lockComp);
+                    return;
+                }
+            }
 
             switch (edge.behavior)
             {
