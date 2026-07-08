@@ -61,6 +61,24 @@ namespace IT.Core.Combat
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
+        // Story PB.1 (PlayerStateBuilder restore path). Contract: call AFTER Start() — Start
+        // sets current = max and would silently clobber an earlier restore (spec DD4).
+        // Clamps to [1, Max]: the fail-alive floor (OQ-PB1-B ruling) — a restore must never
+        // materialize a dead player from a bad DTO, so warn and live; above-Max normalizes
+        // silently. Resets the i-frame window — i-frames are transient (C-H) and never cross
+        // a boundary.
+        public void RestoreCurrent(int value)
+        {
+            if (value < 1)
+            {
+                Debug.LogWarning($"[Health] RestoreCurrent clamped {value} → 1 (fail-alive floor)");
+                value = 1;
+            }
+            _currentHealth = Mathf.Min(_maxHealth, value);
+            _iFramesEnd = 0f;
+            HealthChanged?.Invoke(_currentHealth, _maxHealth);
+        }
+
         void IDamageable.ApplyDamage(int amount, Vector2 sourcePosition) => Damage(amount);
     }
 }
