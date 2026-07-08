@@ -7,6 +7,7 @@ namespace IT.Core.Config
     {
         public GameType GameType { get; }
         public int MaxPlayers { get; }
+        public int DefaultLivesCount { get; }
         public bool BackpackEnabled { get; }
         public bool ItemsUpgradable { get; }
         public bool SaveEnabled { get; }
@@ -25,6 +26,16 @@ namespace IT.Core.Config
             else
             {
                 MaxPlayers = s.maxPlayers;
+            }
+
+            if (s.defaultLivesCount <= 0)
+            {
+                Debug.LogWarning($"[GameConfig] Field 'defaultLivesCount': value {s.defaultLivesCount} is invalid (must be > 0) — defaulting to 3.");
+                DefaultLivesCount = 3;
+            }
+            else
+            {
+                DefaultLivesCount = s.defaultLivesCount;
             }
 
             BackpackEnabled = s.backpackEnabled;

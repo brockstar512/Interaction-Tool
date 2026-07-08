@@ -10,6 +10,7 @@ namespace IT.Core.Config
     {
         public string gameType = "Topdown";
         public int maxPlayers = 4;
+        public int defaultLivesCount = 3;   // PB.1: global lives seed; LevelConfig per-scenario override lands in PB.5
         public bool backpackEnabled = false;
         public bool itemsUpgradable = false;
         public bool saveEnabled = false;

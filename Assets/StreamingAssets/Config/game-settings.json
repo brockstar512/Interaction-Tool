@@ -1,6 +1,7 @@
 {
   "gameType": "Topdown",
   "maxPlayers": 4,
+  "defaultLivesCount": 3,
   "backpackEnabled": false,
   "itemsUpgradable": false,
   "saveEnabled": false,

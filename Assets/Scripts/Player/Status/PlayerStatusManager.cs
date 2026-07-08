@@ -1,4 +1,5 @@
 using UnityEngine;
+using IT.Boot;             // Story PB.1: SystemsRoot → GameConfig.DefaultLivesCount lives seed
 using IT.Core.Combat;
 using IT.Effects.Flash;
 using IT.Player.Control;   // DEBUG (Step 4): WrapperState + Suspend/Resume for the P-key pause test
@@ -27,7 +28,9 @@ namespace IT.Player.Status
 
         private void Awake()
         {
-            playerStatus = new PlayerStatus();
+            // Story PB.1: lives seed from the config chain (the ?? covers the BootGuard /
+            // direct-play path, mirroring PlayerRoster's MaxPlayers read).
+            playerStatus = new PlayerStatus(SystemsRoot.Instance?.Config.DefaultLivesCount ?? 3);
             _health = GetComponent<Health>();
             _status  = GetComponent<StatusController>();   // DEBUG (Step 4)
             _wrapper = GetComponent<PlayerWrapper>();        // DEBUG (Step 4)
