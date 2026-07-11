@@ -17,6 +17,10 @@ namespace IT.Core.Combat
         public float IFramesDuration => _iFramesDuration;   // read-only: damage VFX mirrors the i-frame window
 
         public event Action<int, int> HealthChanged;
+        // Review R-10 (sub-step R5.3): fired by RestoreCurrent immediately BEFORE HealthChanged,
+        // so damage-feedback listeners can resync their last-known baseline and not read a
+        // restore as a hit. HUD and other consumers keep listening to HealthChanged only.
+        public event Action<int, int> HealthRestored;
         public event Action HealthDepleted;
 
         void Start()
@@ -76,6 +80,7 @@ namespace IT.Core.Combat
             }
             _currentHealth = Mathf.Min(_maxHealth, value);
             _iFramesEnd = 0f;
+            HealthRestored?.Invoke(_currentHealth, _maxHealth);
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 

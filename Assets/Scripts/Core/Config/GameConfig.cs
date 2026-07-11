@@ -14,6 +14,13 @@ namespace IT.Core.Config
         public bool CraftingEnabled { get; }
         public bool DialogueEnabled { get; }
 
+        // Single source for the lives fallback (review R-13): the GameSettings field default,
+        // the invalid-value fallback below, and PlayerStatusManager's defensive seed all read
+        // this — the three literals can no longer diverge. (MaxPlayers' 4 has the same two-site
+        // shape — left as-is per the R-13 lives-only scope; quality-audit #15 covers the config
+        // bounds audit.)
+        public const int FallbackDefaultLives = 3;
+
         public GameConfig(GameSettings s)
         {
             GameType        = ParseGameType(s.gameType);
@@ -30,8 +37,8 @@ namespace IT.Core.Config
 
             if (s.defaultLivesCount <= 0)
             {
-                Debug.LogWarning($"[GameConfig] Field 'defaultLivesCount': value {s.defaultLivesCount} is invalid (must be > 0) — defaulting to 3.");
-                DefaultLivesCount = 3;
+                Debug.LogWarning($"[GameConfig] Field 'defaultLivesCount': value {s.defaultLivesCount} is invalid (must be > 0) — defaulting to {FallbackDefaultLives}.");
+                DefaultLivesCount = FallbackDefaultLives;
             }
             else
             {
