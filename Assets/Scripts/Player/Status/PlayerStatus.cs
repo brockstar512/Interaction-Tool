@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace IT.Player.Status
 {
@@ -16,21 +17,29 @@ namespace IT.Player.Status
 
         public int CurrentLives => Lives;
 
+        // Carries the TOTAL (Story PB.1 sub-step R5.1, review R-02 ruling — was the delta;
+        // the delta shape made the HUD render "X0"/"X-2" on restore).
         public event Action<int> LivesChange;
 
         public void UpdateLives(int life)
         {
             Lives += life;
-            LivesChange?.Invoke(life);
+            LivesChange?.Invoke(Lives);
         }
 
-        // Story PB.1 (PlayerStateBuilder restore path). LivesChange carries the DELTA — the
-        // event's existing semantics, deliberately unchanged; HUD listeners hear the same shape.
+        // Story PB.1 (PlayerStateBuilder restore path). Clamps to a floor of 1 — the
+        // fail-alive posture (review R-01 ruling, mirroring Health.RestoreCurrent /
+        // OQ-PB1-B): a restore must never materialize a zero-or-negative-lives player
+        // from a bad DTO — visible warning, alive player.
         public void RestoreLives(int value)
         {
-            var delta = value - Lives;
+            if (value < 1)
+            {
+                Debug.LogWarning($"[PlayerStatus] RestoreLives clamped {value} → 1 (fail-alive floor)");
+                value = 1;
+            }
             Lives = value;
-            LivesChange?.Invoke(delta);
+            LivesChange?.Invoke(Lives);
         }
     }
 }
