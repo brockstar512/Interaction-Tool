@@ -406,3 +406,75 @@ These 8 ScriptableObject assets predate C-B and are **not migrated in a standalo
 - `Assets/ScriptableObjects/In Game Items/Item Objects/WhipItemObject.asset`
 
 _Source: PRD C-B / FR-7 / Epic 2 Story 2.4._
+
+---
+
+## 13. Player Lifecycle & State Ownership (C-H)
+
+The player is **scene-local**. The only `DontDestroyOnLoad` object is `SystemsRoot`
+(`Boot/SystemsRoot.cs`), which hosts the true-global singletons (`GameConfig`,
+`WorldState`, `PlayerRoster`). The player GameObject is scene-placed (P1) or
+instantiated (P2+) and is **destroyed and rebuilt** when it crosses a boundary.
+
+### 13.1 The constraint (C-H — ratified 2026-06-30)
+
+**C-H — Explicit, data-driven player state.** Player state crosses boundaries (scene transitions and save/load) ONLY as a `[Serializable] PlayerStateDTO`, captured/restored by `PlayerStateBuilder`. No player component is `DontDestroyOnLoad`; the player GameObject is scene-local and rebuilt from prefab + DTO + `LevelConfig` on entry. The wrapper does not know about serialization — the Builder owns it. Per-item runtime state crosses only via each item's `ISerializableItem` state through the item registry. Transient state (i-frames, FSM state, async timers, active status effects [v1], carried throwables, canvas-induced Suspend) is NOT serialized — it resets on rebuild.
+
+### 13.2 How the player crosses a boundary
+
+```
+  Origin                          Boundary                       Destination
+  ┌──────────────┐   Capture()    ┌───────────────┐   Restore()  ┌──────────────┐
+  │ PlayerWrapper │ ─────────────▶ │ PlayerStateDTO │ ───────────▶ │ PlayerWrapper │
+  │ (scene-local) │   Builder      │  (plain data)  │   Builder    │ (rebuilt from │
+  └──────────────┘                └───────────────┘               │ prefab + DTO  │
+        destroyed                   the ONE currency               │ + LevelConfig)│
+                                    (transition + save)            └──────────────┘
+```
+
+- **`PlayerStateBuilder`** owns all translation. It reads `Health`, lives, inventory,
+  and transform on `Capture(wrapper) → PlayerStateDTO`, and rebuilds them on
+  `Restore(in dto, wrapper, RestoreMode)`.
+- **`RestoreMode`** distinguishes the two consumers without changing the schema:
+  `Transition` honors the captured `wrapperState` (a mid-unplug P2 restores
+  `Suspended`); `Load` normalizes to `Active` (a canvas/device-loss Suspend must
+  never persist a fresh load).
+- **One format, two consumers.** The same DTO is the in-session scene-transition
+  currency AND the save format (`SaveGameDTO` wraps the primary player's
+  `PlayerStateDTO` + `WorldState.GetPermanentSnapshot()` + `currentSceneId` +
+  `dtoVersion`).
+- **Item state** crosses via an optional `ISerializableItem`
+  (`object CaptureState()` / `void RestoreState(object)`) resolved through an
+  item-ID registry (type-key → prefab). Stateless items implement nothing and cost
+  nothing; only `CandleItem` (`float lightTime`) and `KeyItem` (`KeyTypes`) carry
+  state in v1.
+- **Transient state resets on rebuild** — i-frames, FSM state, async timers
+  (candle/bomb fuses re-derive), active status effects (v1), carried throwables,
+  canvas-induced Suspend.
+
+### 13.3 Mode vs. controller (closes v2-review action item B)
+
+`IPlayerController` swaps are a **transient, in-session** mechanism (C-D): the
+possession path (`OnRelease` → `OnPossess`) exchanges the active controller when the
+moveset/physics fundamentally change (vehicle, on-fire panic-run). **This is not
+persisted state.** The `PlayerStateDTO` deliberately carries **no controller-mode
+field** precisely because controller mode is transient and rebuilt on entry — a
+restored player is always base `OnFoot`, and vehicle starts come from
+`LevelConfig.startMode`, not from a serialized mode. Keep the distinction sharp: the
+*controller* is how the player is driven right now; *mode* is never a saved fact.
+
+### 13.4 Lives source of truth (closes v2-review action item A)
+
+`PlayerStatus.Lives` is no longer hardcoded to `3`. Lives seed from a read chain:
+`LevelConfig` per-scenario override (boss arena, tutorial) if present, else
+`GameConfig.DefaultLivesCount` (the new global default = 3). The
+`PlayerStateDTO.lives` field round-trips the live value; first launch / corrupt save
+seeds from this chain, not a literal.
+
+---
+
+## 14. Reuse Posture
+
+This foundation is built for personal cross-project reuse. API stability is informal — refactor freely between projects. Documentation is builder-guide grade; there are no plugin-distribution or external-API-compatibility constraints.
+
+_(This is the durable, canonical statement of the framework's reuse stance, referenced from the Epic 4.5 header in `epics.md`. It is deliberately NOT in `POST-V1-ROADMAP.md`, which tracks deferred work rather than a current architectural stance.)_
