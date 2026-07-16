@@ -418,7 +418,7 @@ instantiated (P2+) and is **destroyed and rebuilt** when it crosses a boundary.
 
 ### 13.1 The constraint (C-H — ratified 2026-06-30)
 
-**C-H — Explicit, data-driven player state.** Player state crosses boundaries (scene transitions and save/load) ONLY as a `[Serializable] PlayerStateDTO`, captured/restored by `PlayerStateBuilder`. No player component is `DontDestroyOnLoad`; the player GameObject is scene-local and rebuilt from prefab + DTO + `LevelConfig` on entry. The wrapper does not know about serialization — the Builder owns it. Per-item runtime state crosses only via each item's `ISerializableItem` state through the item registry. Transient state (i-frames, FSM state, async timers, active status effects [v1], carried throwables, canvas-induced Suspend) is NOT serialized — it resets on rebuild.
+**C-H — Explicit, data-driven player state.** Player state crosses boundaries (scene transitions and save/load) ONLY as a `[Serializable] PlayerStateDTO`, captured/restored by `PlayerStateBuilder`. No player component is `DontDestroyOnLoad`; the player GameObject is scene-local and rebuilt from prefab + DTO + `LevelConfig` on entry. The wrapper does not know about serialization — the Builder owns it. Per-item runtime state crosses only via each item's `ISerializableItem` state through the item registry. Active status effects cross as explicit data — `PlayerStateDTO.activeStatuses` via `StatusEffectRegistry` (Directive 2, Story PB.2; amended 2026-07-15, superseding the original "active status effects [v1]" transient clause). Transient state (i-frames, FSM state, async timers, carried throwables, canvas-induced Suspend) is NOT serialized — it resets on rebuild.
 
 ### 13.2 How the player crosses a boundary
 
@@ -448,9 +448,23 @@ instantiated (P2+) and is **destroyed and rebuilt** when it crosses a boundary.
   item-ID registry (type-key → prefab). Stateless items implement nothing and cost
   nothing; only `CandleItem` (`float lightTime`) and `KeyItem` (`KeyTypes`) carry
   state in v1.
+- **Status-effect state persists by default** (Directive 2, Story PB.2 — amended
+  2026-07-15). Each active effect crosses as a `StatusStateDTO`: an *envelope*
+  (durable string key — `"poison"`/`"onfire"`, authored once, must survive renames
+  with save-file compat — plus the base-class clocks `elapsed`/`tickAccumulator`)
+  and a *blob* (the effect's authored params as JSON via `CaptureState(): string`,
+  mirroring `ISerializableItem.instanceState`). `StatusEffectRegistry` (plain
+  static class, explicit ctor-path factories — no reflection) maps both ways.
+  Restore is **replay, not resurrection**: each entry reconstructs through its
+  ctor and re-enters `StatusController.Apply` — the ONE apply path — so `OnApply`
+  re-runs (a restored On-Fire re-swaps the controller) and every Apply invariant
+  holds for restored effects. Cleared ONLY by: any death (`ClearAll`), natural
+  expiry, or a per-status `Cure(stackKey)` (fires `OnExpire` — cure is forced
+  early expiry, never clear-all). An `IsIndefinite` effect never self-expires;
+  it ends only via cure or death. Unregistered effects warn+skip at capture;
+  unknown keys warn+skip at restore (fail-alive).
 - **Transient state resets on rebuild** — i-frames, FSM state, async timers
-  (candle/bomb fuses re-derive), active status effects (v1), carried throwables,
-  canvas-induced Suspend.
+  (candle/bomb fuses re-derive), carried throwables, canvas-induced Suspend.
 
 ### 13.3 Mode vs. controller (closes v2-review action item B)
 
@@ -459,9 +473,12 @@ possession path (`OnRelease` → `OnPossess`) exchanges the active controller wh
 moveset/physics fundamentally change (vehicle, on-fire panic-run). **This is not
 persisted state.** The `PlayerStateDTO` deliberately carries **no controller-mode
 field** precisely because controller mode is transient and rebuilt on entry — a
-restored player is always base `OnFoot`, and vehicle starts come from
-`LevelConfig.startMode`, not from a serialized mode. Keep the distinction sharp: the
-*controller* is how the player is driven right now; *mode* is never a saved fact.
+restored player lands base `OnFoot` unless a persisted status *replays* a swap
+through `StatusController.Apply` (a save mid-burn loads mid-burn because On-Fire
+re-runs `OnApply`, not because a mode was read from a field — PB.2, §13.2), and
+vehicle starts come from `LevelConfig.startMode`, not from a serialized mode. Keep
+the distinction sharp: the *controller* is how the player is driven right now;
+*mode* is never a saved fact.
 
 ### 13.4 Lives source of truth (closes v2-review action item A)
 

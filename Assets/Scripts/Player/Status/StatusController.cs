@@ -116,6 +116,23 @@ namespace IT.Player.Status
                 effect.OnExpire();
         }
 
+        // PB.2 R3 (Directive 2 clear-condition 3): cure = FORCED EARLY EXPIRY of one
+        // status. Targeted by StackKey — the same match rule as Apply's refresh path —
+        // NOT by registry string key (the controller stays registry-blind; "poison" is a
+        // serialization ID, not a runtime handle). Fires OnExpire (OQ-PB2-A: one hook —
+        // water must un-burn, so On-Fire's controller restore runs on cure exactly as on
+        // expiry). Remove-first, then fire, mirroring Tick's discipline. Returns false if
+        // no matching status is active (callers own their own echo). NEVER clear-all —
+        // ClearAll remains death's path only.
+        public bool Cure(object stackKey)
+        {
+            var effect = FindByKey(stackKey);
+            if (effect == null) return false;
+            _active.Remove(effect);
+            effect.OnExpire();
+            return true;
+        }
+
         StatusEffectBase FindByKey(object key)
         {
             for (int i = 0; i < _active.Count; i++)
