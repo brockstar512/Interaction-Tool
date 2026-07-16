@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using IT.Core.Combat;
 using IT.Player.Control;
 using IT.Player.Status;
+using System.Collections.Generic;
 
 namespace IT.Player.Persistence
 {
