@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 namespace IT.Player.Status
 {
     // Poison (Story 4.4, AC1) — ticks damage through Health on a fixed cadence and NEVER
@@ -11,15 +14,43 @@ namespace IT.Player.Status
     {
         readonly int _damagePerTick;
 
-        public PoisonEffect(int damagePerTick, float duration, float tickInterval)
+        public PoisonEffect(int damagePerTick, float duration, float tickInterval, bool indefinite = false)
         {
             _damagePerTick = damagePerTick;
             Duration = duration;          // base setters are protected — reachable from subclass ctor
             TickInterval = tickInterval;
+            IsIndefinite = indefinite;    // PB.2 — reconstruction is the only v1 caller that passes true
         }
 
         // First tick fires one interval after Apply (no immediate hit). Controller.Health is
         // bound by StatusController.Apply before any tick runs.
         protected internal override void OnTick() => Controller.Health.DamageOverTime(_damagePerTick);
+
+        // --- PB.2 serialization (blob side, spec DD3/DD4). Fields stay readonly: restore
+        // reconstructs through the ctor (FromState, registered in StatusEffectRegistry),
+        // never mutates a live instance. Capture and parse live together so the blob
+        // format has exactly one owner. ---
+        [Serializable]
+        struct Params
+        {
+            public int damagePerTick;
+            public float duration;
+            public float tickInterval;
+            public bool indefinite;
+        }
+
+        protected internal override string CaptureState() => JsonUtility.ToJson(new Params
+        {
+            damagePerTick = _damagePerTick,
+            duration = Duration,
+            tickInterval = TickInterval,
+            indefinite = IsIndefinite,
+        });
+
+        internal static PoisonEffect FromState(string instanceState)
+        {
+            var p = JsonUtility.FromJson<Params>(instanceState);
+            return new PoisonEffect(p.damagePerTick, p.duration, p.tickInterval, p.indefinite);
+        }
     }
 }

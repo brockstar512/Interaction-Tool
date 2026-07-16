@@ -24,6 +24,10 @@ namespace IT.Player.Status
         // --- authored timing (set by the subclass constructor) ---
         public float Duration { get; protected set; }      // total lifetime in seconds
         public float TickInterval { get; protected set; }   // seconds between OnTick; <= 0 = no periodic tick
+        // PB.2 (Directive 2, OQ-PB2-D): an indefinite effect never self-expires — ticks
+        // keep firing but Advance never reports completion; it ends ONLY via a cure or
+        // death's ClearAll. No v1 content authors this; the mechanism ships regardless.
+        public bool IsIndefinite { get; protected set; }
         public virtual StackPolicy Stacking => StackPolicy.Refresh;
 
         // Match key for Refresh-on-reapply. Defaults to the runtime type, so a second
@@ -55,8 +59,31 @@ namespace IT.Player.Status
                     OnTick();
                 }
             }
-            return _elapsed >= Duration;
+            return !IsIndefinite && _elapsed >= Duration;
         }
+
+        // --- PB.2 serialization surface (spec DD3). The base owns the runtime clocks, so
+        // it alone reads/writes them — the envelope side of the envelope/blob split; every
+        // status ever shipped gets its timing serialized for free. internal: only
+        // StatusEffectRegistry speaks DTO. ---
+        internal float Elapsed => _elapsed;
+        internal float TickAccumulator => _tickAccumulator;
+
+        // Restore runs AFTER StatusController.Apply (replay-not-resurrection, DD2) so the
+        // instance was constructed with its AUTHORED Duration — a later Refresh-on-reapply
+        // therefore restarts from the full authored window, not a leftover stump (DD3).
+        internal void RestoreTiming(float elapsed, float tickAccumulator)
+        {
+            _elapsed = elapsed;
+            _tickAccumulator = tickAccumulator;
+        }
+
+        // The blob side: subclass returns its authored params as JSON for
+        // StatusStateDTO.instanceState (ISerializableItem-shaped per Directive 2 —
+        // realized as a base virtual because all statuses share this base). Base
+        // returns null: an effect that doesn't override cannot be reconstructed and
+        // must stay unregistered (warn+skip at capture, spec DD6).
+        protected internal virtual string CaptureState() => null;
 
         // Refresh-on-reapply (Refresh policy): restart the duration on the EXISTING
         // instance. OnApply is deliberately NOT re-run (so On-Fire won't re-swap the

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using IT.Player.Control;
 using IT.Player.StateMachine;
@@ -16,11 +17,12 @@ namespace IT.Player.Status
     {
         readonly float _speedMultiplier;
 
-        public OnFireEffect(float duration = 5f, float speedMultiplier = 2.0f)
+        public OnFireEffect(float duration = 5f, float speedMultiplier = 2.0f, bool indefinite = false)
         {
             Duration = duration;
             TickInterval = 0f;          // no periodic tick — the controller swap IS the effect
             _speedMultiplier = speedMultiplier;
+            IsIndefinite = indefinite;  // PB.2 — reconstruction is the only v1 caller that passes true
         }
 
         protected internal override void OnApply()
@@ -50,6 +52,31 @@ namespace IT.Player.Status
             // Restore the controller active before the swap. No-op if nothing was swapped (the
             // vehicle-refusal path above, or a guard-refused swap).
             Controller.Wrapper.RestoreController();
+        }
+
+        // --- PB.2 serialization (blob side, spec DD3/DD4). Restore reconstructs through
+        // the ctor and replays via StatusController.Apply — so a restored On-Fire re-swaps
+        // the controller through OnApply, and C-D holds: no controller-mode field exists,
+        // the panic-run is re-DERIVED from the effect (spec DD2). ---
+        [Serializable]
+        struct Params
+        {
+            public float duration;
+            public float speedMultiplier;
+            public bool indefinite;
+        }
+
+        protected internal override string CaptureState() => JsonUtility.ToJson(new Params
+        {
+            duration = Duration,
+            speedMultiplier = _speedMultiplier,
+            indefinite = IsIndefinite,
+        });
+
+        internal static OnFireEffect FromState(string instanceState)
+        {
+            var p = JsonUtility.FromJson<Params>(instanceState);
+            return new OnFireEffect(p.duration, p.speedMultiplier, p.indefinite);
         }
     }
 }

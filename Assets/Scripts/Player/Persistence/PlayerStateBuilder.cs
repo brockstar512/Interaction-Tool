@@ -30,6 +30,9 @@ namespace IT.Player.Persistence
                 lives = status.CurrentLives,
                 items = new List<ItemStateDTO>(),   // PB.3
                 currentItemIndex = 0,               // PB.3
+                // PB.2 (Directive 2): active statuses cross as explicit data — the one
+                // C-H transient promoted to persistent state. Registry owns the mapping.
+                activeStatuses = StatusEffectRegistry.Capture(player.GetComponent<StatusController>()),
             };
         }
 
@@ -41,6 +44,14 @@ namespace IT.Player.Persistence
         {
             player.GetComponent<Health>().RestoreCurrent(dto.currentHealth);
             player.GetComponent<PlayerStatusManager>().playerStatus.RestoreLives(dto.lives);
+
+            // Statuses replay AFTER health/lives (a first post-restore poison tick must hit
+            // RESTORED health, and one that immediately depletes it must find the death path
+            // wired) and BEFORE the wrapperState policy (a to-be-Suspended wrapper gets its
+            // effects back frozen, accumulators intact — Tick is gated by WrapperState.Active).
+            // Runs under BOTH modes: Directive 2 says ALL boundaries; the RestoreMode split
+            // below stays wrapperState-only (PB.2 spec DD5).
+            StatusEffectRegistry.Restore(player.GetComponent<StatusController>(), dto.activeStatuses);
 
             // wrapperState policy (DD5): Load normalizes to Active; Transition honors the
             // capture. Dead is not a restorable state (death flows through respawn seeding,

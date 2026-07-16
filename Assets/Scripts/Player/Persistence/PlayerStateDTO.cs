@@ -10,8 +10,9 @@ namespace IT.Player.Persistence
     // Deliberately non-spatial — position/facing are OUT (Q1 amendment + OQ-PB1-A:
     // spawn points own spatial state) — and scene-blind: currentSceneId lives on
     // SAVE.1's SaveGameDTO envelope ALONGSIDE this, never on it (DD8). Transients
-    // (i-frames, FSM state, status effects, carried throwables, async timers) never
-    // cross (C-H).
+    // (i-frames, FSM state, carried throwables, async timers) never cross (C-H).
+    // Active status effects DO cross (PB.2, Directive 2 — persist-by-default across
+    // ALL boundaries; cleared only by death, expiry, or a per-status cure).
     [Serializable]
     public struct PlayerStateDTO
     {
@@ -25,6 +26,23 @@ namespace IT.Player.Persistence
 
         public List<ItemStateDTO> items;   // schema only — capture/restore is PB.3 (ISerializableItem + registry)
         public int currentItemIndex;       // schema only — PB.3
+
+        // PB.2 (fills PB.1's R7 seam, additive — JsonUtility ignores-missing keeps older
+        // captures readable). Produced/consumed by StatusEffectRegistry, never by hand.
+        public List<StatusStateDTO> activeStatuses;
+    }
+
+    // Per-status runtime state envelope (PB.2 spec DD3) — mirrors ItemStateDTO's seam
+    // discipline. The ENVELOPE (statusType + base-class clocks) is written/read once by
+    // the machinery for every status ever shipped; the BLOB (instanceState) is each
+    // effect's authored params as JSON, owned by the subclass via CaptureState().
+    [Serializable]
+    public struct StatusStateDTO
+    {
+        public string statusType;       // StatusEffectRegistry key — short stable string, a DURABLE ID (OQ-PB2-B)
+        public float elapsed;           // duration remaining = authored duration − elapsed
+        public float tickAccumulator;   // mid-interval tick timing, so a tick cadence survives the boundary
+        public string instanceState;    // subclass params blob (poison: damagePerTick/duration/tickInterval/indefinite; …)
     }
 
     // Per-item runtime state envelope (planning §4 shape). PB.1 ships the shape;

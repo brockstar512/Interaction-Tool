@@ -16,6 +16,11 @@ namespace IT.Player.Status
     {
         readonly List<StatusEffectBase> _active = new();
 
+        // PB.2: capture-side read surface for StatusEffectRegistry. internal + read-only —
+        // the list itself stays private, and the only mutation paths remain Apply/ClearAll
+        // (the Cure path lands at R3).
+        internal IReadOnlyList<StatusEffectBase> Active => _active;
+
         // Reusable snapshot buffer for Tick (Step 4.5): lets Tick iterate without the live
         // _active list being mutated under it. Member field to avoid a per-frame allocation.
         readonly List<StatusEffectBase> _tickBuffer = new();
