@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using IT.Core.Combat;
+using IT.Items;
 using IT.Player.Control;
+using IT.Player.Inventory;
 using IT.Player.Status;
 
 namespace IT.Player.Persistence
@@ -21,6 +23,7 @@ namespace IT.Player.Persistence
         {
             var health = player.GetComponent<Health>();
             var status = player.GetComponent<PlayerStatusManager>().playerStatus;
+            var inventory = player.GetComponent<PlayerInventory>();
             return new PlayerStateDTO
             {
                 playerId = "",                      // PB.4
@@ -28,8 +31,10 @@ namespace IT.Player.Persistence
                 wrapperState = player.State,
                 currentHealth = health.Current,
                 lives = status.CurrentLives,
-                items = new List<ItemStateDTO>(),   // PB.3
-                currentItemIndex = 0,               // PB.3
+                // PB.3: per-item runtime state crosses as explicit data (C-H). The registry
+                // owns the mapping; the held slot is inventory state, not roster state (DD5).
+                items = ItemStateRegistry.Capture(inventory),
+                currentItemIndex = inventory != null ? inventory.CurrentIndex : 0,
                 // PB.2 (Directive 2): active statuses cross as explicit data — the one
                 // C-H transient promoted to persistent state. Registry owns the mapping.
                 activeStatuses = StatusEffectRegistry.Capture(player.GetComponent<StatusController>()),
@@ -40,7 +45,8 @@ namespace IT.Player.Persistence
         // CONTRACT: call AFTER the target's Start() — Health.Start() sets current = max
         // and would silently clobber an earlier restore (spec DD4; the harness restores a
         // frame after Instantiate, 5.4's transporter restores post-load).
-        public static void Restore(in PlayerStateDTO dto, PlayerWrapper player, RestoreMode mode)
+        public static void Restore(in PlayerStateDTO dto, PlayerWrapper player, RestoreMode mode,
+                                   IItemPrefabProvider itemPrefabs = null)
         {
             player.GetComponent<Health>().RestoreCurrent(dto.currentHealth);
             player.GetComponent<PlayerStatusManager>().playerStatus.RestoreLives(dto.lives);
@@ -52,6 +58,16 @@ namespace IT.Player.Persistence
             // Runs under BOTH modes: Directive 2 says ALL boundaries; the RestoreMode split
             // below stays wrapperState-only (PB.2 spec DD5).
             StatusEffectRegistry.Restore(player.GetComponent<StatusController>(), dto.activeStatuses);
+
+            // Items restore AFTER statuses and BEFORE the wrapperState policy (spec DD6).
+            // Prefabs come from the caller via IItemPrefabProvider (DD8) — the registry is
+            // static and holds no asset references. An item that reactivates an ongoing
+            // effect (DD7/B3) does so item-side here; its own clock is WrapperState-gated,
+            // so restoring into a to-be-Suspended wrapper leaves the effect frozen rather
+            // than ticking, matching how a restored status behaves.
+            var inventory = player.GetComponent<PlayerInventory>();
+            ItemStateRegistry.Restore(inventory, dto.items, itemPrefabs);
+            if (inventory != null) inventory.RestoreCurrentIndex(dto.currentItemIndex);
 
             // wrapperState policy (DD5): Load normalizes to Active; Transition honors the
             // capture. Dead is not a restorable state (death flows through respawn seeding,

@@ -28,6 +28,24 @@ namespace IT.Player.Inventory
             _currentIndex = Mathf.Clamp(_currentIndex, 0, inventory.Count - 1);
             return inventory[_currentIndex];
         }
+
+        // --- Story PB.3 persistence surface. Read-only enumeration in SLOT ORDER for
+        // ItemStateRegistry.Capture; the backing list stays private (mirrors PB.2's
+        // StatusController.Active). Nothing else in the game reads these. ---
+
+        public IReadOnlyList<IItem> Items => inventory;
+
+        // The held slot — captured into PlayerStateDTO.currentItemIndex. This is INVENTORY
+        // state, deliberately independent of PlayerRoster (identity/lifecycle is PB.4).
+        public int CurrentIndex => _currentIndex;
+
+        // Restore the held slot after the items themselves are back. Clamped, because a
+        // save may name a slot this inventory no longer has (fail-alive).
+        public void RestoreCurrentIndex(int index)
+        {
+            _currentIndex = inventory.Count == 0 ? 0 : Mathf.Clamp(index, 0, inventory.Count - 1);
+            ItemSwitch?.Invoke(GetCurrentSprite());
+        }
    
         public void PickUpItem(IItemHolder holder)
         {
