@@ -431,6 +431,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 7925771289264289285, guid: 1b59ef4cca99749c29d23734cf9f685a, type: 3}
   _spawnPoint: {fileID: 1051010070}
+  _itemPrefabs:
+  - key: candle
+    prefab: {fileID: 267425836237359750, guid: 7e350bfac90fa4d94b74bf4a90e23426, type: 3}
+  - key: key
+    prefab: {fileID: 5569388205978000809, guid: 5d2167bafee364e44a44354c49dc60e1, type: 3}
+  - key: masterkey
+    prefab: {fileID: 6338236194049139430, guid: ce49b49a639ba4e00ac5d1ca6afb5dd4, type: 3}
   _restoreSameFrame: 0
 --- !u!4 &1617756248
 Transform:
