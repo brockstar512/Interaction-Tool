@@ -222,7 +222,7 @@ namespace IT.Player.Persistence
                 // statuses/items = LIVE post-replay counts (not the DTO counts — unknown entries
                 // skip), so the line reports what actually landed on the rebuilt player.
                 var statuses = _tracked.GetComponent<StatusController>().Active.Count;
-                var inv = _tracked.GetComponent<PlayerInventory>();
+                var inv = _tracked.GetComponentInChildren<PlayerInventory>();
                 var itemCount = inv?.Items?.Count ?? 0;
                 var slot = inv != null ? inv.CurrentIndex : -1;
                 Debug.Log($"[PB1Harness] RESTORED ({mode}) — health {health.Current}, lives {lives}, " +
@@ -317,7 +317,7 @@ namespace IT.Player.Persistence
             if (prefab == null)
             { Debug.LogWarning($"[PB1Harness] Give item: no prefab wired for key '{key}' — check _itemPrefabs."); return; }
 
-            var inv = _tracked.GetComponent<PlayerInventory>();
+            var inv = _tracked.GetComponentInChildren<PlayerInventory>();
             if (inv == null) { Debug.LogWarning("[PB1Harness] Give item: player has no PlayerInventory"); return; }
 
             var item = Instantiate(prefab).GetComponent<IItem>();

@@ -23,7 +23,7 @@ namespace IT.Player.Persistence
         {
             var health = player.GetComponent<Health>();
             var status = player.GetComponent<PlayerStatusManager>().playerStatus;
-            var inventory = player.GetComponent<PlayerInventory>();
+            var inventory = player.GetComponentInChildren<PlayerInventory>();
             return new PlayerStateDTO
             {
                 playerId = "",                      // PB.4
@@ -65,7 +65,7 @@ namespace IT.Player.Persistence
             // effect (DD7/B3) does so item-side here; its own clock is WrapperState-gated,
             // so restoring into a to-be-Suspended wrapper leaves the effect frozen rather
             // than ticking, matching how a restored status behaves.
-            var inventory = player.GetComponent<PlayerInventory>();
+            var inventory = player.GetComponentInChildren<PlayerInventory>();
             ItemStateRegistry.Restore(inventory, dto.items, itemPrefabs);
             if (inventory != null) inventory.RestoreCurrentIndex(dto.currentItemIndex);
 
