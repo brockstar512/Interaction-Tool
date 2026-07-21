@@ -20,8 +20,9 @@ namespace IT.Items.Candle
         // so the shape mirrors PoisonEffect's elapsed/duration exactly (spec DD4).
         private const float Duration = 10f;
 
-        // Is the candle burning right now? Not serialized directly — it becomes the blob's
-        // wasLit, and on restore it drives whether the candle re-lights itself (DD7 / B3).
+        // Is the candle burning right now? Set by Action(), cleared by ButtonUp. NOT serialized
+        // — lit-ness is held-down state and does not persist (DD7 fallback); kept as internal
+        // burning-state tracking (option a).
         private bool _isLit;
 
         // Cached so the fuel clock can be gated by the owning player's WrapperState, the
@@ -45,8 +46,8 @@ namespace IT.Items.Candle
         }
 
         // The context-free half of ignition (spec DD7). Use() calls it with the candle's own
-        // transform, and so does RestoreState — which is what lets a restored candle re-light
-        // itself with no IInteractionContext and no FSM involvement.
+        // transform. RestoreState does NOT call it — lit-ness is held-down state and does not
+        // persist (DD7 fallback); the player relights on the far side.
         //
         // The light parents to the CANDLE, not to the player: positionally identical (the
         // candle sits at the player's origin via TakeChild), and it means a candle dropped
@@ -98,14 +99,6 @@ namespace IT.Items.Candle
                     if (IsOwnerActive()) _lightTime--;
                     await Awaitable.WaitForSecondsAsync(1f, cancellationToken);
                 }
-
-                // PB.3: fuel exhausted (as opposed to extinguished by ButtonUp) — put the
-                // light out here. Before B3 only ButtonUp ever called Off(), which was masked
-                // because a burn always ended with a button release; a candle that re-lit
-                // itself on restore has no ButtonUp subscriber and would otherwise sit
-                // visibly lit at zero fuel.
-                _candleLight?.Off();
-                _isLit = false;
             }
             catch (OperationCanceledException) { }   // catches both cancel paths
             catch (Exception ex)
@@ -127,16 +120,15 @@ namespace IT.Items.Candle
 
         // --- Story PB.3 (ISerializableItem). The candle is the ONE runtime-stateful item:
         // its fuel is a real player-visible fact ("my candle is half burned"), so it crosses
-        // as data. Lit-ness crosses as a bool and is REAPPLIED item-side on the far end
-        // (DD7 / ruling B3) — the old scene's light object is gone, so restore creates a
-        // fresh one rather than pretending a spawned component survived the boundary. ---
+        // as data. Lit-ness does NOT cross — it's held-down state (lit only while [USE] held),
+        // so RestoreState restores fuel only and the player relights on the far side
+        // (DD7 fallback / interaction-shape taxonomy). ---
 
         [Serializable]
         private struct Params
         {
             public float elapsed;    // Duration - remaining fuel (PoisonEffect mirror, DD4)
             public float duration;   // authored full burn, so an authoring change stays readable
-            public bool wasLit;      // burning at capture -> re-light on restore (DD7)
         }
 
         public bool IsStateful => true;
@@ -145,7 +137,6 @@ namespace IT.Items.Candle
         {
             elapsed = Duration - _lightTime,
             duration = Duration,
-            wasLit = _isLit,
         });
 
         public void RestoreState(string state)
@@ -155,12 +146,8 @@ namespace IT.Items.Candle
             var p = JsonUtility.FromJson<Params>(state);
             var duration = p.duration > 0f ? p.duration : Duration;
             _lightTime = Mathf.Clamp(duration - p.elapsed, 0f, duration);
-
-            // Re-light ourselves — no IInteractionContext, no FSM transition. The wrapper is
-            // never driven into PlayerUseState, so ItemFinishedCallback stays null (PutAway's
-            // null-conditional invoke makes that safe) and the player keeps whatever state the
-            // restore left it in.
-            if (p.wasLit && _lightTime > 0f) Light(transform);
+            // Fuel only — candle lit-ness is HELD-DOWN state and does not persist (DD7 fallback).
+            // The restored candle is UNLIT; the player presses [USE] to relight on the far side.
         }
 
         private void CancelTask()
