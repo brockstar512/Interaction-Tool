@@ -85,6 +85,17 @@ namespace IT.Player.Control
         public bool OwnsDevice(InputDevice device)
             => _user.valid && _user.pairedDevices.ContainsReference(device);
 
+        // Story PB.4 (DD5) — stable slot identity ("P1"/"P2"). Assigned by PlayerRoster.Register at
+        // first registration, or adopted from PlayerRoster.PendingSlot when a respawn threads the
+        // existing id (R3). The per-playerId HUD map (DD4) keys on it. NOT count-derived (OQ-PB4-D).
+        public string PlayerId { get; private set; }
+        internal void AssignId(string id) => PlayerId = id;
+
+        // Story PB.4 — deviceId seam. Deliberately EMPTY until the OQ-PB4-E spike (R5) defines a
+        // STABLE identifier (from InputDevice.description). A provisional runtime value is NOT set
+        // here — it would risk a save persisting garbage that looks real.
+        public string DeviceId => "";
+
         // --- input ownership (architecture D2) ---
         PlayerInputActions _actions;
         InputUser _user;
@@ -105,6 +116,11 @@ namespace IT.Player.Control
             device = device ?? (InputDevice)Keyboard.current ?? Gamepad.current;
             if (device != null)
                 SetUpInput(device);
+
+            // PB.4 (DD5): adopt a reserved slot id threaded by a respawn (PlayerRoster.PendingSlot,
+            // mirrors PendingJoinDevice). Null on a fresh join — Register then allocates a free slot.
+            PlayerId = PlayerRoster.PendingSlot;
+            PlayerRoster.PendingSlot = null;
 
             PlayerRoster.Instance.Register(this);
         }
@@ -341,6 +357,10 @@ namespace IT.Player.Control
 
         void OnDestroy()
         {
+            // PB.4 (DD3): symmetric deregister. Guarded (TryGetInstance) because at scene/app
+            // teardown the roster may already be gone. Fires PlayerLeft (grounding seam 7).
+            PlayerRoster.TryGetInstance()?.Deregister(this);
+
             if (_user.valid)
                 _user.UnpairDevicesAndRemoveUser();
             if (_actions != null)

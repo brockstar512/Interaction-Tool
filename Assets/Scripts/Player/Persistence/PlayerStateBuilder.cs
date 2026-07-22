@@ -26,8 +26,8 @@ namespace IT.Player.Persistence
             var inventory = player.GetComponentInChildren<PlayerInventory>();
             return new PlayerStateDTO
             {
-                playerId = "",                      // PB.4
-                deviceId = "",                      // PB.4
+                playerId = player.PlayerId ?? "",   // PB.4 (DD5) — stable slot string ("P1"/"P2"), assigned at registration
+                deviceId = "",                      // PB.4 — stays empty until the OQ-PB4-E deviceId spike (R5); a provisional runtime value would risk a save persisting garbage that looks real
                 wrapperState = player.State,
                 currentHealth = health.Current,
                 lives = status.CurrentLives,

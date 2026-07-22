@@ -17,6 +17,12 @@ namespace IT.Boot
         public GameConfig Config { get; private set; }
         public WorldState WorldState { get; private set; }
 
+        // Story PB.4 (DD2) — the death-respawn orchestrator, hosted here (true-global, C-C) rather
+        // than scene-placed so it exists in every scene automatically (L9's join-race environment).
+        // A plain component, reached via this accessor — NOT a new Singleton<T>. Null-guard reads
+        // as SystemsRoot.Instance?.Spawn (the Instance?.Config posture).
+        public SpawnManager Spawn { get; private set; }
+
         // Created only by BootInit.EnsureSystems() — not placed in a scene by hand.
         public static SystemsRoot Create(GameConfig config)
         {
@@ -28,6 +34,10 @@ namespace IT.Boot
             root.Config = config;
             root.WorldState = new WorldState();
             go.AddComponent<PlayerRoster>();
+            // Story PB.4 (DD2): the respawn orchestrator. AFTER PlayerRoster (mirrors the SegmentManager
+            // ordering) so it can reach a live roster; hosted here so it exists in every scene without
+            // Inspector wiring — L9's join-race environment is then automatic.
+            root.Spawn = go.AddComponent<SpawnManager>();
             // Story 5.1: true-global segment membership (C-C), the SystemsRoot slot reserved above.
             // AFTER PlayerRoster so SegmentManager.Awake finds a live roster to subscribe PlayerLeft on.
             go.AddComponent<SegmentManager>();

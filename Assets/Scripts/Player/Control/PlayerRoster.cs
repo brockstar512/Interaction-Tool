@@ -35,6 +35,13 @@ namespace IT.Player.Control
         // Null = scene-placed P1 wrapper (auto-pair to keyboard / first gamepad).
         internal static InputDevice PendingJoinDevice;
 
+        // Story PB.4 (DD5 / slot-collision guard): set by SpawnManager before a respawn Instantiate
+        // (R3) so the dying player's slot is RESERVED — excluded from fresh allocation until the
+        // respawn's Awake consumes it. Mirrors PendingJoinDevice (a pending respawn reserves BOTH
+        // the slot and the device). Null = no respawn in flight. At R2 nothing sets it (respawn is
+        // R3), so it is always null here and every registration allocates fresh.
+        internal static string PendingSlot;
+
         protected override void Awake()
         {
             base.Awake();
@@ -55,8 +62,59 @@ namespace IT.Player.Control
         public void Register(PlayerWrapper wrapper)
         {
             if (_wrappers.Contains(wrapper)) return;
+
+            // PB.4 (DD5): assign / reclaim the stable slot id BEFORE adding to the list.
+            if (string.IsNullOrEmpty(wrapper.PlayerId))
+            {
+                wrapper.AssignId(AllocateFreeSlot());   // fresh join
+            }
+            else if (SlotHeld(wrapper.PlayerId))
+            {
+                // Slot-collision guard (the identity twin of the device join race): the slot this
+                // respawn reclaimed was taken by a fresh join while the respawn was in flight. NEVER
+                // silently duplicate an id (the per-playerId HUD map would rebind the wrong panel) —
+                // warn loudly and allocate a free slot instead. The PendingSlot reservation should
+                // normally prevent this; this is the belt-and-suspenders half.
+                Debug.LogWarning($"[PlayerRoster] respawn reclaimed slot '{wrapper.PlayerId}' but it is " +
+                    "already held by a live wrapper — allocating a free slot instead to avoid a duplicate id.");
+                wrapper.AssignId(AllocateFreeSlot());
+            }
+            // else: reclaim honored — the wrapper keeps the id it adopted from PendingSlot.
+
             _wrappers.Add(wrapper);
             PlayerJoined?.Invoke(wrapper);
+        }
+
+        // PB.4 (DD3): symmetric with Register-on-Awake. PlayerWrapper.OnDestroy calls this so ANY
+        // destroy path (respawn at R3, scene teardown, harness 9/0) cleans up. Fires the
+        // previously-dead PlayerLeft — SegmentManager's handler (grounding seam 7) goes live here
+        // for the first time (prune-only, benign). Idempotent: a not-registered wrapper is a no-op.
+        public void Deregister(PlayerWrapper wrapper)
+        {
+            if (!_wrappers.Remove(wrapper)) return;
+            PlayerLeft?.Invoke(wrapper);
+        }
+
+        // First free slot "P1".."Pn", excluding PendingSlot (reserved for an in-flight respawn) and
+        // any slot a live wrapper already holds. NOT count-derived (OQ-PB4-D): with deregister live,
+        // a count-derived id would misidentify a respawning P1 while P2 is alive.
+        string AllocateFreeSlot()
+        {
+            for (int n = 1; n <= _maxPlayers; n++)
+            {
+                var slot = "P" + n;
+                if (slot == PendingSlot) continue;   // reserved for an in-flight respawn
+                if (!SlotHeld(slot)) return slot;
+            }
+            Debug.LogWarning("[PlayerRoster] no free player slot (all held or reserved) — allocating overflow id");
+            return "P" + (_wrappers.Count + 1);
+        }
+
+        bool SlotHeld(string slot)
+        {
+            foreach (var w in _wrappers)
+                if (w != null && w.PlayerId == slot) return true;
+            return false;
         }
 
         void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
