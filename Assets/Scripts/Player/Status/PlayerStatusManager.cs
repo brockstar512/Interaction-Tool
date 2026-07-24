@@ -88,6 +88,16 @@ namespace IT.Player.Status
         // be silent. Spawn read is null-guarded like the Instance?.Config pattern.
         private void RequestRespawn()
         {
+            // PB.4 R3.2: death is TERMINAL until respawn. A wrapper already Dead re-requesting death is
+            // always a no-op. Two windows this closes, both found in the R3.1 three-deaths run:
+            //   • die-during-the-1s-delay: Die() sets Dead BEFORE the respawn coroutine starts, so a
+            //     second death here would otherwise start a SECOND coroutine → double-decrement + two
+            //     respawned players (exactly the sweep's L1 die-during-delay probe).
+            //   • post-game-over corpse: after the exhausted branch deregisters but leaves the corpse in
+            //     the scene, its Update keeps polling K — a second press would log "game over" again.
+            // Placed BEFORE Die() (not in SpawnManager.RequestRespawn) because Die() sets Dead, so a gate
+            // downstream of it would also block the FIRST, legitimate respawn.
+            if (_wrapper != null && _wrapper.State == WrapperState.Dead) return;
             _wrapper?.Die();
             var spawn = IT.Boot.SystemsRoot.Instance?.Spawn;
             if (spawn == null)
@@ -142,8 +152,14 @@ namespace IT.Player.Status
             }
             if (UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
             {
-                _playerStateMachine.EnterDeath();
-                RequestRespawn();   // PB.4 R3: K debug death now also drives the respawn loop
+                // PB.4 R3.2: K on an already-dead corpse (respawn pending, or game-over'd but still in the
+                // scene with Update polling) is a total no-op — no re-EnterDeath, no re-decrement. This
+                // site guards EnterDeath; RequestRespawn guards the respawn/game-over path internally too.
+                if (_wrapper == null || _wrapper.State != WrapperState.Dead)
+                {
+                    _playerStateMachine.EnterDeath();
+                    RequestRespawn();   // PB.4 R3: K debug death now also drives the respawn loop
+                }
             }
             // DEBUG (Story 4.3 Step 4 — AC #5 lifecycle verify; remove before shipping).
             // J applies TWO differently-labeled effects at once: A (10s/1s) + B (6s/1s).
