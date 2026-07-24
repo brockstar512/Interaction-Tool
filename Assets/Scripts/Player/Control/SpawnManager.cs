@@ -68,8 +68,14 @@ namespace IT.Player.Control
             // Decrement BEFORE the check (DD6 B-guard) so a 0 diverts to game-over and never reaches
             // RestoreLives's fail-alive floor of 1 (which would silently resurrect a dead-for-good player).
             var psm = wrapper.GetComponent<PlayerStatusManager>();
-            int newLives = (psm != null ? psm.playerStatus.CurrentLives : 0) - 1;
+            int oldLives = psm != null ? psm.playerStatus.CurrentLives : 0;
+            int newLives = oldLives - 1;
             string slot = wrapper.PlayerId;
+
+            // R3.1 observability (mirrors the R2.5-3 roster joined/left logs): log the decrement BEFORE
+            // the spawn so the sweep's L1 reads the DD6 B-guard ordering (decrement-then-check) off the
+            // console. Captured slot here is correct — the fresh wrapper does not exist yet.
+            Debug.Log($"[SpawnManager] {slot} died — lives {oldLives} → {newLives}");
 
             if (newLives <= 0)
             {
@@ -83,6 +89,7 @@ namespace IT.Player.Control
 
             // Dead wrapper stays REGISTERED + PAIRED through the delay (R3-Q2): shrinks DD9's join-race
             // window to the swap frame instead of the whole 1s.
+            Debug.Log($"[SpawnManager] {slot} respawning in {RespawnDelaySeconds}s");
             StartCoroutine(RespawnAfterDelay(wrapper, slot, newLives, wrapper.PairedDevice, wrapper.transform.position));
         }
 
@@ -124,6 +131,14 @@ namespace IT.Player.Control
             // (lives >= 1 here — the 0 case diverted to game-over above, so RestoreLives's floor never bites.)
             var freshPsm = go.GetComponent<PlayerStatusManager>();
             if (freshPsm != null) freshPsm.playerStatus.RestoreLives(lives);
+
+            // R3.1: log the NEW wrapper's ACTUAL PlayerId (observed state, not the captured intent) — a
+            // reclaim misfire (R2.5-1 slot-collision class) then surfaces as "P1 died... P2 respawned"
+            // instead of being masked by echoing the requested slot. Falls back to the captured slot
+            // only if the prefab somehow lacks a PlayerWrapper (already validated upstream).
+            var freshWrapper = go.GetComponent<PlayerWrapper>();
+            Debug.Log($"[SpawnManager] {(freshWrapper != null ? freshWrapper.PlayerId : slot)} " +
+                $"respawned at {pos} (marker={HasMarker}, lives {lives})");
         }
     }
 }

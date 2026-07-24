@@ -32,10 +32,12 @@ namespace IT.Player.Persistence
     // round-trip can never print ROUNDTRIP OK. FIRST new SerializeField since PB.1 — R-06
     // pre-flight extended to it (R1.1 required scope).
     //
-    // The harness tracks its OWN wrapper reference (the Instantiate return). It never queries
-    // PlayerRoster — each 9/0 cycle leaves one stale (destroyed) entry in the roster because
-    // deregister-on-destroy doesn't exist yet (PlayerLeft is dead code). That is PB.4's named
-    // problem: a documented symptom here, never a fix (PlayerRoster.cs stays zero-diff, V12c).
+    // The harness tracks its live wrapper reference. PB.4 RESOLVES the PB.1-era note that used to
+    // live here: it now SUBSCRIBES to PlayerRoster.PlayerJoined (R3.1) so _tracked follows every
+    // respawn — a SpawnManager death-respawn replaces the player WITHOUT going through the harness's
+    // own 9/0, which would otherwise leave _tracked pointing at a destroyed object. (Through PB.1/2/3
+    // this class was zero-query by design and PlayerRoster stayed zero-diff, V12c; PB.4 is the story
+    // that adds deregister-on-destroy AND this subscription, so both surfaces change here.)
     public class PlayerStateDebugHarness : MonoBehaviour, IItemPrefabProvider
     {
         // Deliberately the harness's OWN prefab slot — PlayerRoster.PlayerPrefab is null on
@@ -159,6 +161,23 @@ namespace IT.Player.Persistence
             _tracked = FindFirstObjectByType<PlayerWrapper>();
             if (_tracked == null)
                 Debug.LogWarning("[PB1Harness] No scene-placed PlayerWrapper found — 8/9/0 inert until one exists");
+
+            // PB.4 R3.1: a SpawnManager death-respawn replaces the player behind the harness's back
+            // (the harness only re-tracks on its own 9/0). Follow every join so _tracked never goes
+            // stale after a death. Throwaway scaffolding, so a roster subscription is fine here.
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster != null) roster.PlayerJoined += OnPlayerJoined;
+        }
+
+        // PB.4 R3.1 re-track hook. REFERENCE ONLY — this fires from the new wrapper's Awake, INSIDE
+        // SpawnManager's Instantiate, BEFORE RestoreLives and before the wrapper's own Start(). The
+        // wrapper is mid-construction here: never read health/lives/state off it in this handler.
+        void OnPlayerJoined(PlayerWrapper wrapper) => _tracked = wrapper;
+
+        void OnDestroy()
+        {
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster != null) roster.PlayerJoined -= OnPlayerJoined;
         }
 
         void Update()
