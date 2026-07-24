@@ -1,7 +1,11 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace IT.Player.Control
 {
+    using IT.Player.Status;
+
     // Story PB.4 (DD2) — the lifecycle orchestrator for death-respawn. Hosted on SystemsRoot
     // (added in SystemsRoot.Create AFTER PlayerRoster; reached via SystemsRoot.Instance.Spawn),
     // so it exists in EVERY scene without Inspector wiring — which is what makes L9's join-race
@@ -40,6 +44,86 @@ namespace IT.Player.Control
         public void Unregister(SpawnMarker marker)
         {
             if (_marker == marker) _marker = null;
+        }
+
+        // --- Story PB.4 R3 — death -> FRESH respawn ---
+
+        // Seconds a dead player waits before respawning (DD8, C-B: hardcoded v1; the LocationConfig
+        // extraction hook is PB.5).
+        const float RespawnDelaySeconds = 1f;
+
+        // The player prefab for a FRESH respawn. INJECTED by whoever wires the boot path (arch D1):
+        // GameBootstrap sets it alongside roster.PlayerPrefab (production); the throwaway harness sets
+        // it from its own _playerPrefab (test). SpawnManager never knows the harness exists — this is
+        // the IItemPrefabProvider-style injection from PB.3, not coupling (OQ-PB4-F / R3-Q4). Null ->
+        // respawn warns and aborts.
+        public GameObject PlayerPrefab { get; set; }
+
+        // Called by PlayerStatusManager on death (both HealthDepleted and the K debug converge there).
+        public void RequestRespawn(PlayerWrapper wrapper)
+        {
+            if (wrapper == null) { Debug.LogWarning("[SpawnManager] RequestRespawn(null) — ignored"); return; }
+
+            // Capture identity + the DECREMENTED life count while the dying wrapper is still valid.
+            // Decrement BEFORE the check (DD6 B-guard) so a 0 diverts to game-over and never reaches
+            // RestoreLives's fail-alive floor of 1 (which would silently resurrect a dead-for-good player).
+            var psm = wrapper.GetComponent<PlayerStatusManager>();
+            int newLives = (psm != null ? psm.playerStatus.CurrentLives : 0) - 1;
+            string slot = wrapper.PlayerId;
+
+            if (newLives <= 0)
+            {
+                // Lives-exhausted terminal (R3-Q3). The wrapper is DONE — deregister it (leaving it
+                // registered forever is the stale-entry bug reborn) but do NOT respawn. Real game-over
+                // presentation is OQ-PB4-B (post-v1). The player stays dead (PlayerDeathState).
+                Debug.Log($"[SpawnManager] {slot} out of lives — game over (presentation = OQ-PB4-B, post-v1)");
+                PlayerRoster.TryGetInstance()?.Deregister(wrapper);
+                return;
+            }
+
+            // Dead wrapper stays REGISTERED + PAIRED through the delay (R3-Q2): shrinks DD9's join-race
+            // window to the swap frame instead of the whole 1s.
+            StartCoroutine(RespawnAfterDelay(wrapper, slot, newLives, wrapper.PairedDevice, wrapper.transform.position));
+        }
+
+        IEnumerator RespawnAfterDelay(PlayerWrapper old, string slot, int lives, InputDevice device, Vector3 deathPos)
+        {
+            yield return new WaitForSeconds(RespawnDelaySeconds);
+
+            // Robust to the captured wrapper dying externally mid-window (scene unload during the 1s):
+            // abort rather than NRE (R3-Q2 req2). SpawnManager lives on SystemsRoot (DontDestroyOnLoad),
+            // so the coroutine host itself is stable across scene loads.
+            if (old == null)
+            {
+                Debug.LogWarning($"[SpawnManager] respawn aborted for {slot} — wrapper destroyed mid-window (scene unload?)");
+                yield break;
+            }
+            if (PlayerPrefab == null)
+            {
+                Debug.LogWarning($"[SpawnManager] respawn aborted for {slot} — no PlayerPrefab wired " +
+                    "(GameBootstrap or the harness must set SpawnManager.PlayerPrefab).");
+                yield break;
+            }
+
+            // Atomic swap (R2.5-1 order): deregister old + release its device BEFORE Instantiate, so the
+            // reclaim of the slot AND the re-pair of the device both see them free (the deferred
+            // OnDestroy would run too late). Then thread identity (PendingSlot) + device continuity
+            // (PendingJoinDevice) per DD10/DD6, destroy old, spawn FRESH, restore the decremented lives.
+            var roster = PlayerRoster.TryGetInstance();
+            roster?.Deregister(old);          // OnDestroy fires Deregister again -> idempotent no-op (R2.5)
+            old.ReleaseDevice();              // free the device now, not at the deferred OnDestroy
+
+            PlayerRoster.PendingSlot = slot;
+            PlayerRoster.PendingJoinDevice = device;
+
+            Vector3 pos = SpawnPoint(deathPos);
+            Destroy(old.gameObject);
+            var go = Instantiate(PlayerPrefab, pos, Quaternion.identity);   // FRESH (DD1) — prefab defaults, not a DTO restore
+
+            // The fresh Awake re-seeded lives to full from config; overwrite with the decremented count.
+            // (lives >= 1 here — the 0 case diverted to game-over above, so RestoreLives's floor never bites.)
+            var freshPsm = go.GetComponent<PlayerStatusManager>();
+            if (freshPsm != null) freshPsm.playerStatus.RestoreLives(lives);
         }
     }
 }

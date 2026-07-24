@@ -95,6 +95,12 @@ namespace IT.Player.Persistence
             // every item vanishes — that would read as a PB.3 failure instead of a wiring gap.
             ValidateItemPrefabTable();
 
+            // PB.4 (R3-Q4): inject THIS harness's player prefab into the SpawnManager so death-respawn
+            // works in direct-play PB1Test (roster.PlayerPrefab is null without Boot.unity). SpawnManager
+            // never learns the harness exists — provider injection, not coupling (mirrors PB.3 DD8).
+            var spawn = IT.Boot.SystemsRoot.Instance?.Spawn;
+            if (spawn != null) spawn.PlayerPrefab = _playerPrefab;
+
             Debug.Log("=== PB1 Harness Keys ===\n" +
                 "8 — Capture (+ JSON round-trip self-check)\n" +
                 "9 — Destroy → Respawn → Restore(Transition)\n" +
@@ -206,7 +212,15 @@ namespace IT.Player.Persistence
             try
             {
                 if (_tracked != null)
+                {
+                    // PB.4 (DD10 / L7): thread the captured identity across the round-trip — deregister
+                    // the old wrapper and reserve its slot BEFORE Instantiate, so the fresh wrapper
+                    // RECLAIMS the same playerId instead of allocating a new one (the R2 oscillation).
+                    // Deregister-first (not the deferred OnDestroy) so the reclaim sees the slot free.
+                    PlayerRoster.TryGetInstance()?.Deregister(_tracked);
+                    PlayerRoster.PendingSlot = _held.playerId;
                     Destroy(_tracked.gameObject);
+                }
 
                 var go = Instantiate(_playerPrefab, _spawnPoint.position, Quaternion.identity);
                 _tracked = go.GetComponent<PlayerWrapper>();

@@ -79,6 +79,23 @@ namespace IT.Player.Status
                 _playerStateMachine.EnterDeath();
             else
                 Debug.LogWarning("[PlayerStatusManager] HealthDepleted before Init() — no state machine to enter death");
+            RequestRespawn();
+        }
+
+        // PB.4 (R3-Q1): both death paths (HealthDepleted above, the K debug in Update) converge here.
+        // Mark the wrapper Dead (visibly non-Active through the 1s window; hands R4/7.3 the StateChanged
+        // hook) and ask the SpawnManager to respawn. A death that can't reach the SpawnManager must NOT
+        // be silent. Spawn read is null-guarded like the Instance?.Config pattern.
+        private void RequestRespawn()
+        {
+            _wrapper?.Die();
+            var spawn = IT.Boot.SystemsRoot.Instance?.Spawn;
+            if (spawn == null)
+            {
+                Debug.LogWarning("[PlayerStatusManager] no SpawnManager (SystemsRoot absent) — death cannot request respawn");
+                return;
+            }
+            spawn.RequestRespawn(_wrapper);
         }
 
         // HealthChanged also fires on heal / ResetToMax / Start, so flash only on a decrease.
@@ -126,6 +143,7 @@ namespace IT.Player.Status
             if (UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
             {
                 _playerStateMachine.EnterDeath();
+                RequestRespawn();   // PB.4 R3: K debug death now also drives the respawn loop
             }
             // DEBUG (Story 4.3 Step 4 — AC #5 lifecycle verify; remove before shipping).
             // J applies TWO differently-labeled effects at once: A (10s/1s) + B (6s/1s).

@@ -96,6 +96,20 @@ namespace IT.Player.Control
         // here — it would risk a save persisting garbage that looks real.
         public string DeviceId => "";
 
+        // Story PB.4 (R3/DD6) — the device to thread across a respawn for input continuity. First
+        // paired device, or null.
+        public InputDevice PairedDevice
+            => _user.valid && _user.pairedDevices.Count > 0 ? _user.pairedDevices[0] : null;
+
+        // Story PB.4 (R3) — explicit device release for the atomic respawn swap. The deferred
+        // OnDestroy unpair runs too late (the fresh wrapper's Awake re-pairs BEFORE the old
+        // wrapper's OnDestroy frees the device), so the SpawnManager releases here before
+        // Instantiate. Keeps the InputUser (like RePair), just unpairs the device.
+        internal void ReleaseDevice()
+        {
+            if (_user.valid) _user.UnpairDevices();
+        }
+
         // --- input ownership (architecture D2) ---
         PlayerInputActions _actions;
         InputUser _user;
@@ -139,6 +153,11 @@ namespace IT.Player.Control
 
         internal void Suspend()
         {
+            // PB.4 (R3-Q2): Dead is terminal through the 1s respawn window. A device unplug here must
+            // NOT overwrite Dead with Suspended — if it did, roster's reconnect-priority scan
+            // (Find(State==Suspended)) would route the next device press to this about-to-be-destroyed
+            // corpse, stealing it from the pending respawn and from legitimate joins.
+            if (State == WrapperState.Dead) return;
             if (State == WrapperState.Suspended) return;  // idempotent — no redundant StateChanged
             State = WrapperState.Suspended;
             if (_actions != null)
@@ -146,8 +165,25 @@ namespace IT.Player.Control
             StateChanged?.Invoke(this);
         }
 
+        // Story PB.4 (R3-Q1) — mark this wrapper Dead: assigns the previously-unused WrapperState.Dead
+        // (visibly non-Active for the 1s respawn window; the Update Active-gate already halts its tick),
+        // and disables the action map like Suspend so no edges accumulate/leak while dead. Fires
+        // StateChanged (hands R4/7.3 the HUD hook for free). Idempotent.
+        internal void Die()
+        {
+            if (State == WrapperState.Dead) return;
+            State = WrapperState.Dead;
+            if (_actions != null)
+                _actions.Player.Disable();
+            StateChanged?.Invoke(this);
+        }
+
         internal void Resume()
         {
+            // PB.4 (R3-Q2): Dead is terminal — a replug (DeviceRegained) during the respawn window must
+            // NOT resurrect the corpse to Active, which would re-enable its disabled action map on a
+            // dead player. The fresh wrapper, not this one, is what comes back.
+            if (State == WrapperState.Dead) return;
             if (State == WrapperState.Active) return;     // idempotent — no redundant StateChanged
             State = WrapperState.Active;
             if (_user.valid && _actions != null)

@@ -33,6 +33,12 @@ namespace IT.Boot
             else if (playerPrefab != null)
                 roster.PlayerPrefab = playerPrefab;
 
+            // PB.4 (R3-Q4): feed the same player prefab to the SpawnManager for death-respawn (arch D1 —
+            // one wiring line here). Null-guarded like the Instance?.Config posture.
+            var spawn = SystemsRoot.Instance?.Spawn;
+            if (spawn != null && playerPrefab != null)
+                spawn.PlayerPrefab = playerPrefab;
+
             // TODO: wrap in an ITransition fade (Story 5.4) instead of a hard cut.
             SceneManager.LoadScene(firstScene);
         }

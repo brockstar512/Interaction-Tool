@@ -82,6 +82,7 @@ namespace IT.Player.Control
             // else: reclaim honored — the wrapper keeps the id it adopted from PendingSlot.
 
             _wrappers.Add(wrapper);
+            Debug.Log($"[PlayerRoster] {wrapper.PlayerId} joined");   // R2.5-3: symmetric lifecycle logs for the sweep
             PlayerJoined?.Invoke(wrapper);
         }
 
@@ -91,7 +92,8 @@ namespace IT.Player.Control
         // for the first time (prune-only, benign). Idempotent: a not-registered wrapper is a no-op.
         public void Deregister(PlayerWrapper wrapper)
         {
-            if (!_wrappers.Remove(wrapper)) return;
+            if (!_wrappers.Remove(wrapper)) return;   // R2.5: idempotent — silent no-op on the OnDestroy double-fire
+            Debug.Log($"[PlayerRoster] {wrapper.PlayerId} left");   // R2.5-3: symmetric with the joined log
             PlayerLeft?.Invoke(wrapper);
         }
 
