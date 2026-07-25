@@ -27,7 +27,7 @@ namespace IT.Player.Persistence
             return new PlayerStateDTO
             {
                 playerId = player.PlayerId ?? "",   // PB.4 (DD5) — stable slot string ("P1"/"P2"), assigned at registration
-                deviceId = "",                      // PB.4 — stays empty until the OQ-PB4-E deviceId spike (R5); a provisional runtime value would risk a save persisting garbage that looks real
+                deviceId = player.DeviceId,         // PB.4 R5 (OQ-PB4-E) — real value derived at pair time (serial/product+mfr/name); populate + round-trip. CONSUMING it (reconnect → slot re-association) is SAVE.1/later
                 wrapperState = player.State,
                 currentHealth = health.Current,
                 lives = status.CurrentLives,

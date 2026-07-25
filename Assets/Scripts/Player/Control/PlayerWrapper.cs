@@ -91,10 +91,28 @@ namespace IT.Player.Control
         public string PlayerId { get; private set; }
         internal void AssignId(string id) => PlayerId = id;
 
-        // Story PB.4 — deviceId seam. Deliberately EMPTY until the OQ-PB4-E spike (R5) defines a
-        // STABLE identifier (from InputDevice.description). A provisional runtime value is NOT set
-        // here — it would risk a save persisting garbage that looks real.
-        public string DeviceId => "";
+        // Story PB.4 R5 (OQ-PB4-E) — a STABLE id for the paired device, derived at pair time via
+        // DeriveDeviceId (serial → product+manufacturer → device.name). Populated + round-tripped
+        // through the DTO; CONSUMING it (reconnect → slot re-association) is SAVE.1/later.
+        public string DeviceId => _deviceId;
+        string _deviceId = "";
+
+        // Story PB.4 R5 — derive a STABLE device id from the description: serial if the device reports
+        // one, else product+manufacturer, else the InputSystem device name (Unity's per-device
+        // non-empty guarantee). A paired device must NEVER yield "" — that empty value is the seam's
+        // ABSENT marker, so colliding a real device with it would be a categorical bug. LIMITATION
+        // (accepted for v1 couch co-op): product+manufacturer and device.name are MODEL ids, not
+        // per-UNIT — two identical serial-less pads collide; per-unit uniqueness is a post-v1 OQ-PB4-E
+        // concern. Reconnect (RePair) re-derives: it may pair a DIFFERENT device than before.
+        static string DeriveDeviceId(InputDevice device)
+        {
+            if (device == null) return "";
+            var d = device.description;
+            if (!string.IsNullOrEmpty(d.serial)) return d.serial.Trim();
+            var pm = $"{d.product} {d.manufacturer}".Trim();
+            if (!string.IsNullOrEmpty(pm)) return pm;
+            return (device.name ?? "").Trim();
+        }
 
         // Story PB.4 (R3/DD6) — the device to thread across a respawn for input continuity. First
         // paired device, or null.
@@ -149,6 +167,7 @@ namespace IT.Player.Control
                 _user.AssociateActionsWithUser(_actions);
             if (_user.valid)            // D-1 fix: only enable when a device is actually paired
                 _actions.Player.Enable();
+            _deviceId = DeriveDeviceId(pairDevice);   // PB.4 R5: populate the OQ-PB4-E seam at pair time
         }
 
         internal void Suspend()
@@ -201,6 +220,7 @@ namespace IT.Player.Control
             _user = InputUser.PerformPairingWithDevice(newDevice, _user);
             if (_user.valid)
                 _user.AssociateActionsWithUser(_actions);
+            _deviceId = DeriveDeviceId(newDevice);   // PB.4 R5: reconnect may pair a DIFFERENT device — re-derive to reflect it
             Resume();
         }
 
