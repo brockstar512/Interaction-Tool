@@ -138,7 +138,10 @@ namespace IT.Player.Status
         public void Init(PlayerStateMachine playerStateMachineManager)
         {
             _playerStateMachine = playerStateMachineManager;
-            playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager);
+            // PB.4 R4 (DD4 / Directive 1): key the HUD on the wrapper's stable playerId so a respawn
+            // REBINDS P1's existing panel instead of stacking a fresh one (the R-11 symptom). This runs
+            // from PlayerStateMachine.Start — after all Awakes — so _wrapper.PlayerId is already assigned.
+            playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager, _wrapper?.PlayerId);
         }
 
         void Update()
