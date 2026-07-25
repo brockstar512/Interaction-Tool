@@ -55,6 +55,9 @@ namespace IT.Player.HUD
             if (_panels.TryGetValue(playerId, out var existing) && existing != null)
             {
                 existing.Rebind(player);   // respawn: reuse this playerId's panel, repoint at the fresh wrapper
+                // R5.1 (L5 sweep observability): transform.childCount = actual HUD panels under the manager,
+                // so a stacking regression shows the count climbing instead of staying pinned at 1.
+                Debug.Log($"[HUDManager] {playerId} HUD rebound → same panel reused ({transform.childCount} total)");
                 return existing;
             }
 
@@ -67,6 +70,9 @@ namespace IT.Player.HUD
             PlayerStatusHUD result = Instantiate(playerHUDPrefab, this.transform);
             result.BuildHUD(player);
             _panels[playerId] = result;
+            // R5.1 (L5 sweep observability): first-spawn build; the count contrasts with the rebind line
+            // above so "built once then rebound, count stays 1" reads straight off the console.
+            Debug.Log($"[HUDManager] {playerId} HUD built (new panel; {transform.childCount} total)");
             return result;
         }
 

@@ -281,6 +281,25 @@ namespace IT.Player.Persistence
         [ContextMenu("Corrupt held DTO: lives = -1")]
         void CorruptLivesNegative() { _held.lives = -1; Debug.Log("[PB1Harness] held DTO corrupted: lives = -1"); }
 
+        // PB.4 R5.1 (L6 sweep observability): DIRECT roster readout — count + ids. The [PlayerRoster]
+        // joined/left logs let the sweep INFER no-stale-entry from symmetry; this catches the case
+        // symmetry can't (a lingering entry with no matching left) with an explicit count. Throwaway
+        // (pre-ship removal with the harness). Manual join — no System.Linq dependency.
+        [ContextMenu("Log roster (L6): count + ids")]
+        void LogRosterCount()
+        {
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster == null) { Debug.LogWarning("[PB1Harness] roster: no PlayerRoster instance"); return; }
+            var w = roster.Wrappers;
+            var ids = new System.Text.StringBuilder();
+            for (int i = 0; i < w.Count; i++)
+            {
+                if (i > 0) ids.Append(", ");
+                ids.Append(w[i] != null ? w[i].PlayerId : "<null>");
+            }
+            Debug.Log($"[PB1Harness] roster: {w.Count} wrapper(s) [{ids}]");
+        }
+
         // --- PB.2 R3: cure keys + status probes ---
 
         // 6/7 handler. Targets by StackKey (typeof — Apply's refresh match rule), NOT the
