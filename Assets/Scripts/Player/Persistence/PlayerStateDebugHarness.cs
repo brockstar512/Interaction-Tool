@@ -274,10 +274,12 @@ namespace IT.Player.Persistence
         [ContextMenu("Corrupt held DTO: health = 0")]
         void CorruptHealthZero() { _held.currentHealth = 0; Debug.Log("[PB1Harness] held DTO corrupted: health = 0"); }
 
-        // R5.2: probes the R5.1 lives fail-alive floor (review R-01) — expect
-        // "[PlayerStatus] RestoreLives clamped 0 → 1 (fail-alive floor)" on the next 9/0.
-        [ContextMenu("Corrupt held DTO: lives = 0")]
-        void CorruptLivesZero() { _held.lives = 0; Debug.Log("[PB1Harness] held DTO corrupted: lives = 0"); }
+        // R5.2: probes the lives fail-alive floor (review R-01). PB.4 R4.1: the floor moved 1 → 0 under
+        // OQ-PB4-B (X0 is now a legal last-life value), so 0 no longer trips it — this probe sets -1, the
+        // smallest value that still exercises the clamp. Expect
+        // "[PlayerStatus] RestoreLives clamped -1 → 0 (fail-alive floor)" on the next 9/0.
+        [ContextMenu("Corrupt held DTO: lives = -1")]
+        void CorruptLivesNegative() { _held.lives = -1; Debug.Log("[PB1Harness] held DTO corrupted: lives = -1"); }
 
         // --- PB.2 R3: cure keys + status probes ---
 

@@ -64,9 +64,11 @@ namespace IT.Player.Control
         {
             if (wrapper == null) { Debug.LogWarning("[SpawnManager] RequestRespawn(null) — ignored"); return; }
 
-            // Capture identity + the DECREMENTED life count while the dying wrapper is still valid.
-            // Decrement BEFORE the check (DD6 B-guard) so a 0 diverts to game-over and never reaches
-            // RestoreLives's fail-alive floor of 1 (which would silently resurrect a dead-for-good player).
+            // Capture identity + the DECREMENTED remaining-respawns count while the dying wrapper is
+            // still valid. Decrement BEFORE the check (DD6 B-guard). Under OQ-PB4-B (ruled 2026-07-24)
+            // "lives" = REMAINING RESPAWNS: newLives >= 0 respawns (0 = last life, a legal live X0 state);
+            // only a death AT 0 (newLives < 0) is game over. Decrement-first also keeps a negative out of
+            // the respawn's RestoreLives — the game-over branch below diverts it before RestoreLives(0..).
             var psm = wrapper.GetComponent<PlayerStatusManager>();
             int oldLives = psm != null ? psm.playerStatus.CurrentLives : 0;
             int newLives = oldLives - 1;
@@ -77,11 +79,12 @@ namespace IT.Player.Control
             // console. Captured slot here is correct — the fresh wrapper does not exist yet.
             Debug.Log($"[SpawnManager] {slot} died — lives {oldLives} → {newLives}");
 
-            if (newLives <= 0)
+            if (newLives < 0)
             {
-                // Lives-exhausted terminal (R3-Q3). The wrapper is DONE — deregister it (leaving it
-                // registered forever is the stale-entry bug reborn) but do NOT respawn. Real game-over
-                // presentation is OQ-PB4-B (post-v1). The player stays dead (PlayerDeathState).
+                // Died at 0 remaining respawns → game over (OQ-PB4-B lives semantics). The wrapper is
+                // DONE — deregister it (leaving it registered forever is the stale-entry bug reborn) but
+                // do NOT respawn. Game-over PRESENTATION stays OQ-PB4-B (deferred, post-v1); the player
+                // stays dead (PlayerDeathState).
                 Debug.Log($"[SpawnManager] {slot} out of lives — game over (presentation = OQ-PB4-B, post-v1)");
                 PlayerRoster.TryGetInstance()?.Deregister(wrapper);
                 return;

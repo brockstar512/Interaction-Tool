@@ -27,16 +27,19 @@ namespace IT.Player.Status
             LivesChange?.Invoke(Lives);
         }
 
-        // Story PB.1 (PlayerStateBuilder restore path). Clamps to a floor of 1 — the
-        // fail-alive posture (review R-01 ruling, mirroring Health.RestoreCurrent /
-        // OQ-PB1-B): a restore must never materialize a zero-or-negative-lives player
-        // from a bad DTO — visible warning, alive player.
+        // Story PB.1 (PlayerStateBuilder restore path) + PB.4 R4.1. Fail-alive posture (review R-01,
+        // mirroring Health.RestoreCurrent / OQ-PB1-B). Floor lowered 1 → 0 under OQ-PB4-B (2026-07-24):
+        // "lives" = REMAINING RESPAWNS, so X0 (last life) is a LEGAL live state, not a dead player — the
+        // respawn path writes 0 legally and must not be clamped up. Only a NEGATIVE (a corrupt DTO) is
+        // clamped now — visible warning, alive player at X0. The respawn path never passes < 0
+        // (SpawnManager's game-over branch diverts it first), so this floor guards only the scene-restore
+        // path against a bad DTO.
         public void RestoreLives(int value)
         {
-            if (value < 1)
+            if (value < 0)
             {
-                Debug.LogWarning($"[PlayerStatus] RestoreLives clamped {value} → 1 (fail-alive floor)");
-                value = 1;
+                Debug.LogWarning($"[PlayerStatus] RestoreLives clamped {value} → 0 (fail-alive floor)");
+                value = 0;
             }
             Lives = value;
             LivesChange?.Invoke(Lives);
