@@ -141,6 +141,20 @@ namespace IT.Player.Status
             // PB.4 R4 (DD4 / Directive 1): key the HUD on the wrapper's stable playerId so a respawn
             // REBINDS P1's existing panel instead of stacking a fresh one (the R-11 symptom). This runs
             // from PlayerStateMachine.Start — after all Awakes — so _wrapper.PlayerId is already assigned.
+            // R7.1 (PB.4 sweep hygiene): HUDManager is a SCENE object, reached through a plain static —
+            // a scene without one NREs here and takes player init down with it. Discovered during the R6
+            // sweep while diagnosing a suspected HUD-less scene; latent, not live (every scene that has a
+            // player also has the HUD prefab as of 2026-07-26). Loud but alive, mirroring SpawnMarker's
+            // SystemsRoot-not-present idiom: warn with the SCENE NAME (so a playtest/build report names
+            // the scene to fix without cross-referencing), skip the wire, let init finish. Safe to skip —
+            // playerHUD has NO readers anywhere in the codebase, so leaving it null cascades nowhere.
+            if (HUDManager.instance == null)
+            {
+                Debug.LogWarning($"[PlayerStatusManager] HUDManager not in scene " +
+                    $"'{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}' — HUD wire skipped " +
+                    $"for player id '{_wrapper?.PlayerId}' (init continues without HUD)");
+                return;
+            }
             playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager, _wrapper?.PlayerId);
         }
 
