@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;   // PB.4.5 R2.1.1: ButtonControl/StickControl for the join filter
 using UnityEngine.InputSystem.Users;
+using UnityEngine.SceneManagement;        // PB.4.5 R3: held-state flush at scene boundaries (§7.4)
+using IT.Player.Persistence;              // PB.4.5 R3: capture/restore for rejoin-reclaim (§5.D)
 using IT.Boot;
 using IT.Core.Utilities;
 using UnityEngine.InputSystem.LowLevel;
@@ -43,6 +45,23 @@ namespace IT.Player.Control
         // R3), so it is always null here and every registration allocates fresh.
         internal static string PendingSlot;
 
+        // PB.4.5 R3 (ruling iii — third of the DD10 threading trio, symmetric with PendingSlot /
+        // PendingJoinDevice): held session DTO for a rejoin-reclaim. Set by RouteUnpairedActivity
+        // before TryJoin's Instantiate; consumed (and cleared) by the new wrapper's Awake.
+        internal static PlayerStateDTO? PendingRestoreDto;
+
+        // PB.4.5 R3 (rulings i/§7.4/§7.5): session-scoped structures as roster INSTANCE fields —
+        // they die with the SystemsRoot GameObject (= session end), no explicit clear hook needed
+        // in v1; the future SystemsRoot.ResetSession() is where an explicit clear lands when
+        // in-game restart exists. R2's Register empty-DeviceId guard is load-bearing for all three.
+        readonly Dictionary<string, string> _deviceToSlot = new();          // survives transitions (§7.4)
+        readonly Dictionary<string, PlayerStateDTO> _heldByDevice = new();  // flushed at transitions (§7.4 row 2)
+        readonly HashSet<string> _gameOverReservedSlots = new();            // §7.3 — permanent for the run
+
+        // PB.4.5 R3: prefab provider for rejoin restores (inventory rebuild, DD8). Null on the
+        // production path today (Restore warn+skips items); the harness assigns itself in PB1Test.
+        public IItemPrefabProvider RestoreProvider { get; set; }
+
         protected override void Awake()
         {
             base.Awake();
@@ -59,6 +78,11 @@ namespace IT.Player.Control
             // callback stays armed + subscribed — harmless, and the native-InputUser path
             // remains the post-v1 refactor target.
             InputSystem.onEvent += OnInputEvent;
+            // PB.4.5 R3 (ruling ii): DEFENSIVE double-hook — either event flushes held DTOs
+            // (Clear on an empty dict is a no-op), so §7.4's state-dies-at-transition holds
+            // regardless of teardown/first-fire ordering. Slots survive; only held state dies.
+            SceneManager.activeSceneChanged += OnSceneBoundary;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         void OnDestroy()
@@ -68,16 +92,22 @@ namespace IT.Player.Control
             InputUser.onChange -= OnInputUserChange;
             --InputUser.listenForUnpairedDeviceActivity;   // symmetric with Awake's arm
             InputSystem.onEvent -= OnInputEvent;
+            SceneManager.activeSceneChanged -= OnSceneBoundary;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
         }
+
+        void OnSceneBoundary(Scene from, Scene to) => _heldByDevice.Clear();   // R3: §7.4 row 2
+        void OnSceneUnloaded(Scene s) => _heldByDevice.Clear();                // R3: ruling-ii safety net
 
         // Called by PlayerWrapper.Awake() — idempotent.
         public void Register(PlayerWrapper wrapper)
         {
             if (_wrappers.Contains(wrapper)) return;
 
-            // PB.4.5 R2 (S3): consume-side empty-guard. DeriveDeviceId guarantees a PAIRED device
-            // never yields '' (PB.4 R5 spike) — so an empty DeviceId here means a device-less
-            // wrapper, which the R3 DeviceId→slot map must never key on. Loud, not fatal.
+            // PB.4.5 R2 (S3), rationale amended at R3 (ruling i): consume-side empty-guard.
+            // DeriveDeviceId guarantees a PAIRED device never yields '' (PB.4 R5 spike) — an empty
+            // DeviceId means a device-less wrapper. Load-bearing for THREE structures now, not one:
+            // _deviceToSlot, _heldByDevice, and _gameOverReservedSlots must never gain an empty key.
             if (string.IsNullOrEmpty(wrapper.DeviceId))
                 Debug.LogWarning("[PlayerRoster] wrapper registering with empty DeviceId (no device paired?) — the slot map will not track it.");
 
@@ -100,6 +130,8 @@ namespace IT.Player.Control
             // else: reclaim honored — the wrapper keeps the id it adopted from PendingSlot.
 
             _wrappers.Add(wrapper);
+            if (!string.IsNullOrEmpty(wrapper.DeviceId))
+                _deviceToSlot[wrapper.DeviceId] = wrapper.PlayerId;   // R3 (§5.B): remembered for rejoin-reclaim
             Debug.Log($"[PlayerRoster] {wrapper.PlayerId} joined");   // R2.5-3: symmetric lifecycle logs for the sweep
             PlayerJoined?.Invoke(wrapper);
         }
@@ -111,6 +143,14 @@ namespace IT.Player.Control
         public void Deregister(PlayerWrapper wrapper)
         {
             if (!_wrappers.Remove(wrapper)) return;   // R2.5: idempotent — silent no-op on the OnDestroy double-fire
+            // PB.4.5 R3 (§5.D): capture session state at deregister, keyed by device — the rejoin
+            // restore source. ACCEPTED WART (ruling v): the respawn path's Deregister also captures
+            // a corpse DTO — harmless TODAY because the device stays owned through the respawn swap,
+            // so nothing can rejoin off it and the next Deregister overwrites. If device-unown-
+            // between-respawn-steps ever becomes possible, the map would carry stale state — a
+            // future refactor must re-verify this assumption before changing the swap.
+            if (!string.IsNullOrEmpty(wrapper.DeviceId))
+                _heldByDevice[wrapper.DeviceId] = PlayerStateBuilder.Capture(wrapper);
             Debug.Log($"[PlayerRoster] {wrapper.PlayerId} left");   // R2.5-3: symmetric with the joined log
             PlayerLeft?.Invoke(wrapper);
         }
@@ -124,6 +164,7 @@ namespace IT.Player.Control
             {
                 var slot = "P" + n;
                 if (slot == PendingSlot) continue;   // reserved for an in-flight respawn
+                if (_gameOverReservedSlots.Contains(slot)) continue;   // R3 (§7.3): reserved ≠ free — second predicate beside SlotHeld, not inside it
                 if (!SlotHeld(slot)) return slot;
             }
             Debug.LogWarning("[PlayerRoster] no free player slot (all held or reserved) — allocating overflow id");
@@ -202,9 +243,53 @@ namespace IT.Player.Control
                 return;
             }
 
+            // PB.4.5 R3 (§5.B/§5.D): rejoin-reclaim. A remembered device reclaims its slot (only
+            // if still free — no reservation against other joiners, §5.B) and its held session
+            // state. A lost race falls through to a fresh join; Register's collision guard stays
+            // the loud backstop.
+            var deviceId = PlayerWrapper.DeriveDeviceId(device);
+            if (_deviceToSlot.TryGetValue(deviceId, out var rememberedSlot))
+            {
+                // OQ-R1-1 (owner-ruled REJECT): a game-over'd device does not rejoin in v1 — that
+                // would be in-game game-over recovery, Epic 4.6's design space. Plain return: the
+                // reject path must not wedge the roster (V3.4b) — other devices route normally.
+                if (_gameOverReservedSlots.Contains(rememberedSlot))
+                {
+                    Debug.LogWarning($"[PlayerRoster] join rejected — slot game-over-reserved; device '{deviceId}' ignored.");
+                    return;
+                }
+                if (!SlotHeld(rememberedSlot))
+                {
+                    PendingSlot = rememberedSlot;                 // DD10 threading — no new pattern
+                    if (_heldByDevice.TryGetValue(deviceId, out var held))
+                        PendingRestoreDto = held;                 // consumed by the wrapper's Awake
+                }
+            }
+
             if (_wrappers.Count < _maxPlayers)
                 TryJoin(device);
+
+            // Belt-and-suspenders (mirrors TryJoin's PendingJoinDevice clear): if nothing consumed
+            // them (session full, prefab missing, inactive prefab), clear so stale identity/state
+            // cannot leak into the next join. The respawn path sets PendingSlot outside this method
+            // and is untouched.
+            PendingSlot = null;
+            PendingRestoreDto = null;
         }
+
+        // PB.4.5 R3 (§7.3 Option A): game-over marks the slot reserved — a joiner must not inherit
+        // the primary role by allocation timing. Permanent for the run (§7.5 corollary — no in-game
+        // recovery in v1); the future SystemsRoot.ResetSession() clears it when restart exists.
+        internal void ReserveSlotGameOver(string slot)
+        {
+            if (string.IsNullOrEmpty(slot)) return;
+            _gameOverReservedSlots.Add(slot);
+            Debug.Log($"[PlayerRoster] slot {slot} game-over-reserved");
+        }
+
+        // PB.4.5 R3: harness entry (PB.1 9/0-pattern ContextMenu drives this) — identical routing
+        // to real input so a synthesized rejoin exercises the same reclaim/reject/join code.
+        internal void SimulateUnpairedPress(InputDevice device) => RouteUnpairedActivity(device);
 
         void TryJoin(InputDevice device)
         {

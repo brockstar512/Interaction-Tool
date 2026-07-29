@@ -86,6 +86,9 @@ namespace IT.Player.Control
                 // do NOT respawn. Game-over PRESENTATION stays OQ-PB4-B (deferred, post-v1); the player
                 // stays dead (PlayerDeathState).
                 Debug.Log($"[SpawnManager] {slot} out of lives — game over (presentation = OQ-PB4-B, post-v1)");
+                // PB.4.5 R3 (§7.3 Option A): reserve BEFORE Deregister so the slot is never
+                // observable as free — a joiner racing this frame must not inherit it.
+                PlayerRoster.TryGetInstance()?.ReserveSlotGameOver(slot);
                 PlayerRoster.TryGetInstance()?.Deregister(wrapper);
                 return;
             }

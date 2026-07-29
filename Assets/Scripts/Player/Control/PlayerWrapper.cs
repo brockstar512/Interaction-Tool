@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using IT.Player.Input;
+using IT.Player.Persistence;   // PB.4.5 R3: rejoin restore (PendingRestoreDto consume)
 using IT.Player.Status;
 using IT.Interactables.Vehicle;
 using UnityEngine.InputSystem.Utilities;
@@ -104,7 +105,7 @@ namespace IT.Player.Control
         // (accepted for v1 couch co-op): product+manufacturer and device.name are MODEL ids, not
         // per-UNIT — two identical serial-less pads collide; per-unit uniqueness is a post-v1 OQ-PB4-E
         // concern. Reconnect (RePair) re-derives: it may pair a DIFFERENT device than before.
-        static string DeriveDeviceId(InputDevice device)
+        internal static string DeriveDeviceId(InputDevice device)   // PB.4.5 R3: roster derives for the reclaim lookup
         {
             if (device == null) return "";
             var d = device.description;
@@ -154,7 +155,17 @@ namespace IT.Player.Control
             PlayerId = PlayerRoster.PendingSlot;
             PlayerRoster.PendingSlot = null;
 
+            // PB.4.5 R3 (ruling iii — DD10 mirror): adopt a held rejoin DTO threaded by the
+            // roster's reclaim path. Cleared on read like its siblings; APPLIED after Register so
+            // the restore sees a fully-registered wrapper (end-of-Awake construction contract).
+            var rejoinDto = PlayerRoster.PendingRestoreDto;
+            PlayerRoster.PendingRestoreDto = null;
+
             PlayerRoster.Instance.Register(this);
+
+            if (rejoinDto.HasValue)
+                PlayerStateBuilder.Restore(rejoinDto.Value, this, RestoreMode.Load,
+                                           PlayerRoster.Instance.RestoreProvider);
         }
 
         // Pairs exactly one device (architecture D2 — per-player routing).

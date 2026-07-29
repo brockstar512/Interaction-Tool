@@ -167,6 +167,55 @@ namespace IT.Player.Persistence
             // stale after a death. Throwaway scaffolding, so a roster subscription is fine here.
             var roster = PlayerRoster.TryGetInstance();
             if (roster != null) roster.PlayerJoined += OnPlayerJoined;
+
+            // PB.4.5 R3 (ruling iv — PB1Test drop-in design question, option b): the harness
+            // donates its OWN prefab slot so drop-in works in harness scenes without GameBootstrap
+            // wiring, and donates itself as the rejoin restore provider (items need the PB.3
+            // table). In Start, after every Awake, so the roster exists on both boot paths.
+            // NAMED CONDITION (owner doc note): PB1Test drop-in is conditional on the harness
+            // being present — harness-less PB1Test fails drop-in BY DESIGN (roster.PlayerPrefab
+            // stays null on the direct-play path). Never overrides production wiring.
+            if (roster != null)
+            {
+                if (roster.PlayerPrefab == null) roster.PlayerPrefab = _playerPrefab;
+                if (roster.RestoreProvider == null) roster.RestoreProvider = this;
+            }
+        }
+
+        // PB.4.5 R3 (V3.2/V3.3a): in-scene leave+rejoin probe, the PB.1 9/0-coroutine pattern.
+        // Simulates the deferred leave (deregister + release + destroy), then synthesizes the
+        // rejoin press through the roster's REAL routing next frame — reclaim, restore, reject
+        // all exercise exactly the code a physical pad press would.
+        [ContextMenu("PB.4.5: Leave + rejoin tracked player (in-scene)")]
+        void LeaveRejoinTracked()
+        {
+            if (_tracked == null) { Debug.LogWarning("[PB1Harness] Leave+rejoin: no tracked player"); return; }
+            if (_roundTripInFlight) { Debug.LogWarning("[PB1Harness] Leave+rejoin: round-trip already in flight"); return; }
+            StartCoroutine(LeaveRejoin());
+        }
+
+        System.Collections.IEnumerator LeaveRejoin()
+        {
+            _roundTripInFlight = true;
+            var roster = PlayerRoster.TryGetInstance();
+            var device = _tracked.PairedDevice;
+            var slot = _tracked.PlayerId;
+            if (roster == null || device == null)
+            {
+                Debug.LogWarning("[PB1Harness] Leave+rejoin: no roster or no paired device — aborting");
+                _roundTripInFlight = false; yield break;
+            }
+
+            Debug.Log($"[PB1Harness] leave+rejoin: {slot} leaving (device '{_tracked.DeviceId}')");
+            roster.Deregister(_tracked);       // captures held DTO (R3) BEFORE the device releases
+            _tracked.ReleaseDevice();          // mirror the SpawnManager order: free device pre-destroy
+            Destroy(_tracked.gameObject);      // OnDestroy's Deregister double-fire is idempotent
+
+            yield return null;                 // let Destroy finalize; next frame = clean rejoin
+
+            Debug.Log($"[PB1Harness] leave+rejoin: synthesizing rejoin press for device '{device.name}'");
+            roster.SimulateUnpairedPress(device);   // expect: slot reclaimed + state restored
+            _roundTripInFlight = false;
         }
 
         // PB.4 R3.1 re-track hook. REFERENCE ONLY — this fires from the new wrapper's Awake, INSIDE
