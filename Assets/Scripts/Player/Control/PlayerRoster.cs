@@ -53,6 +53,11 @@ namespace IT.Player.Control
             // counter does (B0 2026-07-30 / PB.4 R7 §6: with it at 0, onUnpairedDeviceUsed
             // never fires and press-to-join is dead). Decremented symmetrically in OnDestroy.
             ++InputUser.listenForUnpairedDeviceActivity;
+            // PB.4.5 R2.1 (Path B, owner-ruled): the armed callback did not deliver in-editor
+            // (R2 smoke), so drop-in detection listens to the raw event stream instead. The
+            // callback stays armed + subscribed — harmless, and the native-InputUser path
+            // remains the post-v1 refactor target.
+            InputSystem.onEvent += OnInputEvent;
         }
 
         void OnDestroy()
@@ -61,6 +66,7 @@ namespace IT.Player.Control
             InputSystem.onDeviceChange -= OnDeviceChange;
             InputUser.onChange -= OnInputUserChange;
             --InputUser.listenForUnpairedDeviceActivity;   // symmetric with Awake's arm
+            InputSystem.onEvent -= OnInputEvent;
         }
 
         // Called by PlayerWrapper.Awake() — idempotent.
@@ -130,10 +136,32 @@ namespace IT.Player.Control
             return false;
         }
 
-        void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
+        // PB.4.5 R2.1: drop-in detection (Path B). Fires for EVERY input event, so filter order
+        // is cheapest-first. Button-only is load-bearing for the DualSense specifically — it
+        // streams STAT/sensor state events continuously (B0 observation), and without the
+        // button filter the pad would self-join the moment it is plugged in. Consequence,
+        // recorded as a §5.I deviation: stick-past-deadzone does NOT join in v1 — buttons only.
+        // Keyboard is excluded by design: P1 auto-pairs it at boot (PlayerWrapper.cs:148);
+        // a keyboard-only second player is its own future problem, not this rung (owner ruling).
+        void OnInputEvent(InputEventPtr eventPtr, InputDevice device)
         {
-            var device = control.device;
+            if (!eventPtr.IsA<StateEvent>() && !eventPtr.IsA<DeltaStateEvent>()) return;
+            if (!(device is Gamepad)) return;
+            foreach (var w in _wrappers)
+                if (w.OwnsDevice(device)) return;   // paired pads exit before the button scan
+            if (InputControlExtensions.GetFirstButtonPressOrNull(eventPtr) == null) return;
+            RouteUnpairedActivity(device);
+        }
 
+        void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
+            => RouteUnpairedActivity(control.device);   // R2.1: callback path unchanged, shared routing
+
+        // Extracted verbatim from the pre-R2.1 OnUnpairedDeviceUsed body — ONE routing for both
+        // detection sources, so reconnect-priority (§5.F) and the max-players gate hold no
+        // matter which source detects. Double-fire safe: whichever source pairs first, the
+        // other exits on OwnsDevice.
+        void RouteUnpairedActivity(InputDevice device)
+        {
             // Ignore mouse and anything that isn't a playable device.
             if (device is Mouse) return;
             if (!(device is Keyboard || device is Gamepad)) return;
