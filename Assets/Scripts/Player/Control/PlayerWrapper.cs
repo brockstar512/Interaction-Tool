@@ -155,17 +155,40 @@ namespace IT.Player.Control
             PlayerId = PlayerRoster.PendingSlot;
             PlayerRoster.PendingSlot = null;
 
-            // PB.4.5 R3 (ruling iii — DD10 mirror): adopt a held rejoin DTO threaded by the
-            // roster's reclaim path. Cleared on read like its siblings; APPLIED after Register so
-            // the restore sees a fully-registered wrapper (end-of-Awake construction contract).
-            var rejoinDto = PlayerRoster.PendingRestoreDto;
+            // PB.4.5 R3 (ruling iii — DD10 mirror), TIMING FIXED at R3.2: adopt a held rejoin DTO
+            // threaded by the roster's reclaim path — consumed (cleared) here like its siblings,
+            // but APPLIED next frame (see Start), NOT in Awake. The R3 in-Awake restore was a
+            // defect: mid-Instantiate, sibling components haven't Awoken (PlayerStatusManager
+            // creates playerStatus in ITS Awake; Health/inventory likewise un-init) — the exact
+            // DD4 hazard the harness's one-frame-later restore pattern exists to avoid, observed
+            // as the R3 smoke's deaf-rejoined-wrapper (Bug 1).
+            _pendingRejoinRestore = PlayerRoster.PendingRestoreDto;
             PlayerRoster.PendingRestoreDto = null;
 
             PlayerRoster.Instance.Register(this);
+        }
 
-            if (rejoinDto.HasValue)
-                PlayerStateBuilder.Restore(rejoinDto.Value, this, RestoreMode.Load,
-                                           PlayerRoster.Instance.RestoreProvider);
+        PlayerStateDTO? _pendingRejoinRestore;   // R3.2: stashed in Awake, applied next frame
+
+        void Start()
+        {
+            if (_pendingRejoinRestore.HasValue)
+                StartCoroutine(ApplyRejoinRestore());
+        }
+
+        // R3.2: the harness's DD4-safe timing — one frame after Instantiate, every component
+        // Awake/Start done, Health.Start can no longer clobber the restore. Dead-guarded: a
+        // wrapper that died in its first frame does not get resurrected state.
+        System.Collections.IEnumerator ApplyRejoinRestore()
+        {
+            yield return null;
+            if (_pendingRejoinRestore.HasValue && State != WrapperState.Dead)
+            {
+                PlayerStateBuilder.Restore(_pendingRejoinRestore.Value, this, RestoreMode.Load,
+                                           PlayerRoster.Instance?.RestoreProvider);
+                Debug.Log($"[PlayerWrapper] {PlayerId} rejoin state restored (session-held DTO)");
+            }
+            _pendingRejoinRestore = null;
         }
 
         // Pairs exactly one device (architecture D2 — per-player routing).
