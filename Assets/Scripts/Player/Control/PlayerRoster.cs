@@ -49,6 +49,10 @@ namespace IT.Player.Control
             InputUser.onUnpairedDeviceUsed += OnUnpairedDeviceUsed;
             InputSystem.onDeviceChange += OnDeviceChange;
             InputUser.onChange += OnInputUserChange;
+            // PB.4.5 R2 (S1): subscribing alone does NOT arm unpaired-device listening — this
+            // counter does (B0 2026-07-30 / PB.4 R7 §6: with it at 0, onUnpairedDeviceUsed
+            // never fires and press-to-join is dead). Decremented symmetrically in OnDestroy.
+            ++InputUser.listenForUnpairedDeviceActivity;
         }
 
         void OnDestroy()
@@ -56,12 +60,19 @@ namespace IT.Player.Control
             InputUser.onUnpairedDeviceUsed -= OnUnpairedDeviceUsed;
             InputSystem.onDeviceChange -= OnDeviceChange;
             InputUser.onChange -= OnInputUserChange;
+            --InputUser.listenForUnpairedDeviceActivity;   // symmetric with Awake's arm
         }
 
         // Called by PlayerWrapper.Awake() — idempotent.
         public void Register(PlayerWrapper wrapper)
         {
             if (_wrappers.Contains(wrapper)) return;
+
+            // PB.4.5 R2 (S3): consume-side empty-guard. DeriveDeviceId guarantees a PAIRED device
+            // never yields '' (PB.4 R5 spike) — so an empty DeviceId here means a device-less
+            // wrapper, which the R3 DeviceId→slot map must never key on. Loud, not fatal.
+            if (string.IsNullOrEmpty(wrapper.DeviceId))
+                Debug.LogWarning("[PlayerRoster] wrapper registering with empty DeviceId (no device paired?) — the slot map will not track it.");
 
             // PB.4 (DD5): assign / reclaim the stable slot id BEFORE adding to the list.
             if (string.IsNullOrEmpty(wrapper.PlayerId))
