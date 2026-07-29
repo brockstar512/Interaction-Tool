@@ -180,6 +180,15 @@ namespace IT.Player.Control
             return "P" + (_wrappers.Count + 1);
         }
 
+        // PB.4.5 R4: "P1+P2"-style roster summary for the §5.J session-full line.
+        string PresentSlots()
+        {
+            var slots = new List<string>(_wrappers.Count);
+            foreach (var w in _wrappers)
+                if (w != null) slots.Add(w.PlayerId);
+            return string.Join("+", slots);
+        }
+
         bool SlotHeld(string slot)
         {
             foreach (var w in _wrappers)
@@ -285,7 +294,16 @@ namespace IT.Player.Control
             }
 
             if (_wrappers.Count < _maxPlayers)
+            {
                 TryJoin(device);
+            }
+            else
+            {
+                // PB.4.5 R4 (§5.J): session-full is one of the two LOUD reject reasons (the other
+                // is R3.1's policy-locked). Device-already-paired stays deliberately UNLOGGED
+                // (owner-sanctioned §5.J deviation — spam-prohibitive at the event layer).
+                Debug.LogWarning($"[PlayerRoster] join rejected — session full ({PresentSlots()} present); device '{deviceId}' ignored.");
+            }
 
             // Belt-and-suspenders (mirrors TryJoin's PendingJoinDevice clear): if nothing consumed
             // them (session full, prefab missing, inactive prefab), clear so stale identity/state

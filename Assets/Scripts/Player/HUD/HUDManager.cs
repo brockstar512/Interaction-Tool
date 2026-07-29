@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
+using IT.Boot;   // PB.4.5 R4 (OQ-PB45-G): SystemsRoot → GameConfig.MaxPlayers cap read
 
 namespace IT.Player.HUD
 {
@@ -17,7 +18,12 @@ namespace IT.Player.HUD
         // Replaces the old unkeyed List<PlayerStatusHUD>.
         private Dictionary<string, PlayerStatusHUD> _panels;
         [SerializeField] PlayerStatusHUD playerHUDPrefab;
-        const int MaxPlayers = 2;
+        // PB.4.5 R4 (OQ-PB45-G, owner-ruled Option 1): the hardcoded cap (const = 2) was the
+        // defect — it conflated "v1 couch co-op is two people" (actual scope) with maxPlayers
+        // (the hard limit). Read config exactly as PlayerRoster.cs:48 does, so the two caps
+        // share one source and cannot drift. JSON stays 4. The third `?? 4` literal site is a
+        // recorded quality-audit candidate (capture-only, not R4 scope).
+        int _maxPlayers = 4;
     
 
 
@@ -32,6 +38,9 @@ namespace IT.Player.HUD
                 instance = this;
             }
             _panels = new Dictionary<string, PlayerStatusHUD>();
+            // PB.4.5 R4 (G ruling's exact expression — matches PlayerRoster.cs:48): cached once;
+            // the direct-play path (no SystemsRoot) still works via the fail-alive fallback.
+            _maxPlayers = SystemsRoot.Instance?.Config.MaxPlayers ?? 4;
         }
 
         // PB.4 R4 (Directive 1): GET-OR-REBIND. A panel already mapped to this playerId (a respawn
@@ -61,9 +70,9 @@ namespace IT.Player.HUD
                 return existing;
             }
 
-            if (_panels.Count >= MaxPlayers)
+            if (_panels.Count >= _maxPlayers)
             {
-                Debug.LogWarning($"[HUDManager] at MaxPlayers ({MaxPlayers}) — no HUD panel built for '{playerId}'.");
+                Debug.LogWarning($"[HUDManager] at MaxPlayers ({_maxPlayers}, config) — no HUD panel built for '{playerId}'.");
                 return null;
             }
 
