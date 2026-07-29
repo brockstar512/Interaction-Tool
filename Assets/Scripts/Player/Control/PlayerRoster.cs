@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;   // PB.4.5 R2.1.1: ButtonControl/StickControl for the join filter
 using UnityEngine.InputSystem.Users;
 using IT.Boot;
 using IT.Core.Utilities;
@@ -149,12 +150,34 @@ namespace IT.Player.Control
             if (!(device is Gamepad)) return;
             foreach (var w in _wrappers)
                 if (w.OwnsDevice(device)) return;   // paired pads exit before the button scan
-            if (InputControlExtensions.GetFirstButtonPressOrNull(eventPtr) == null) return;
+            var press = InputControlExtensions.GetFirstButtonPressOrNull(eventPtr);
+            if (press == null || !IsJoinButton(press)) return;   // R2.1.1: see IsJoinButton
             RouteUnpairedActivity(device);
         }
 
+        // PB.4.5 R2.1.1 (V2.5 fix): a StickControl is COMPOSED of synthetic child ButtonControls
+        // (leftStick/up, /down, /left, /right — they exist so sticks can bind to button actions),
+        // so a plain ButtonControl check passes a stick nudge. A control is a JOIN button only if
+        // no ancestor is a stick. Dpad directions pass (parent is DpadControl); triggers pass.
+        // Known limit (accepted): if a stick-synthetic and a real button press land in the SAME
+        // event, first-press may be the stick and that event is dropped — the next button event
+        // joins; negligible for v1.
+        static bool IsJoinButton(InputControl control)
+        {
+            if (!(control is ButtonControl)) return false;
+            for (var p = control.parent; p != null; p = p.parent)
+                if (p is StickControl) return false;
+            return true;
+        }
+
+        // R2.1.1: the §5.I button-only rule gates BOTH detection sources. The callback hands us
+        // the actuated control directly — filter it the same way, or a delivering callback would
+        // reopen the stick-join hole the listener just closed.
         void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
-            => RouteUnpairedActivity(control.device);   // R2.1: callback path unchanged, shared routing
+        {
+            if (!IsJoinButton(control)) return;
+            RouteUnpairedActivity(control.device);
+        }
 
         // Extracted verbatim from the pre-R2.1 OnUnpairedDeviceUsed body — ONE routing for both
         // detection sources, so reconnect-priority (§5.F) and the max-players gate hold no
