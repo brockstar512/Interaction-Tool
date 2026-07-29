@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.Controls;   // PB.4.5 R2.1.1: ButtonControl/StickC
 using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;        // PB.4.5 R3: held-state flush at scene boundaries (§7.4)
 using IT.Player.Persistence;              // PB.4.5 R3: capture/restore for rejoin-reclaim (§5.D)
+using IT.Items;                           // PB.4.5 R3 fix: IItemPrefabProvider lives in IT.Items, not Persistence
 using IT.Boot;
 using IT.Core.Utilities;
 using UnityEngine.InputSystem.LowLevel;
@@ -62,6 +63,10 @@ namespace IT.Player.Control
         // production path today (Restore warn+skips items); the harness assigns itself in PB1Test.
         public IItemPrefabProvider RestoreProvider { get; set; }
 
+        // PB.4.5 R3.1: the join gate (owner-ruled shape). Defaults Open; GameBootstrap sets
+        // Locked through the boot load; OnSceneBoundary reopens. Gates JOIN only — never re-pair.
+        public IJoinPolicy JoinPolicy { get; set; } = OpenJoinPolicy.Instance;
+
         protected override void Awake()
         {
             base.Awake();
@@ -96,8 +101,12 @@ namespace IT.Player.Control
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
         }
 
-        void OnSceneBoundary(Scene from, Scene to) => _heldByDevice.Clear();   // R3: §7.4 row 2
-        void OnSceneUnloaded(Scene s) => _heldByDevice.Clear();                // R3: ruling-ii safety net
+        void OnSceneBoundary(Scene from, Scene to)
+        {
+            _heldByDevice.Clear();                    // R3: §7.4 row 2
+            JoinPolicy = OpenJoinPolicy.Instance;     // R3.1: transition over → joins reopen
+        }
+        void OnSceneUnloaded(Scene s) => _heldByDevice.Clear();   // R3: ruling-ii safety net (flush only — mid-transition, policy stays)
 
         // Called by PlayerWrapper.Awake() — idempotent.
         public void Register(PlayerWrapper wrapper)
@@ -240,6 +249,15 @@ namespace IT.Player.Control
             if (suspended != null)
             {
                 suspended.RePair(device);
+                return;
+            }
+
+            // PB.4.5 R3.1: policy gate — placed AFTER the suspended re-pair above (deliberately
+            // exempt, owner ruling: a transition-locked policy must never lock out reconnect)
+            // and BEFORE reclaim/join. §5.J reject shape, loud and grep-able.
+            if (!(JoinPolicy?.AllowJoin(device) ?? true))
+            {
+                Debug.LogWarning($"[PlayerRoster] join rejected — policy locked; device '{PlayerWrapper.DeriveDeviceId(device)}' ignored.");
                 return;
             }
 

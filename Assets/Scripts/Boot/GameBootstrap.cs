@@ -40,6 +40,11 @@ namespace IT.Boot
                 spawn.PlayerPrefab = playerPrefab;
 
             // TODO: wrap in an ITransition fade (Story 5.4) instead of a hard cut.
+            // PB.4.5 R3.1: lock joins through the boot load (the only runtime LoadScene site
+            // today); the roster reopens itself on activeSceneChanged. Epic 5's Transport
+            // loading inherits this same pair of calls when it is built.
+            var joinRoster = PlayerRoster.TryGetInstance();
+            if (joinRoster != null) joinRoster.JoinPolicy = LockedJoinPolicy.Instance;
             SceneManager.LoadScene(firstScene);
         }
     }
