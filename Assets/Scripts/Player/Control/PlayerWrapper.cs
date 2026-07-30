@@ -200,10 +200,10 @@ namespace IT.Player.Control
         {
             yield return null;
             if (State == WrapperState.Dead) yield break;
-            var lc = LevelConfig.Resolve();   // null legal (OQ-D) — nothing to apply
-            if (lc == null) yield break;
+            var lc = LevelConfig.Resolve();   // null legal (OQ-D) — defaults attributed below
 
-            if (lc.StartingInventory.Count > 0)
+            int granted = 0;
+            if (lc != null && lc.StartingInventory.Count > 0)
             {
                 var inv = GetComponentInChildren<PlayerInventory>();
                 if (inv != null && inv.Items.Count == 0)
@@ -212,11 +212,22 @@ namespace IT.Player.Control
                     foreach (var key in lc.StartingInventory)
                         synth.Add(new ItemStateDTO { itemType = key });
                     ItemStateRegistry.Restore(inv, synth, PlayerRoster.Instance?.RestoreProvider);
+                    granted = inv.Items.Count;   // post-grant count = what actually built (registry warn+skips bad keys)
                 }
             }
 
-            if (lc.StartMode == StartMode.InVehicle)
+            if (lc != null && lc.StartMode == StartMode.InVehicle)
                 Debug.LogWarning($"[SpawnState] {PlayerId} startMode=InVehicle not wired in v1 — spawning OnFoot (OQ-C named gap).");
+
+            // PB.5 R5 (V5.1): ONE resolution line per fresh spawn, per-field source
+            // attribution. The lives resolver is pure — re-calling it with the same
+            // inputs for the source tag is a read, not a second chain implementation.
+            IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
+                null, lc, IT.Boot.SystemsRoot.Instance?.Config, out var livesSrc);
+            var status = GetComponent<PlayerStatusManager>();
+            Debug.Log($"[SpawnState] {PlayerId} ← lives:{status?.playerStatus?.CurrentLives.ToString() ?? "?"}({livesSrc}) " +
+                      $"hp:max(fresh) inv:{granted}({(granted > 0 ? "startingInventory" : "none")}) " +
+                      $"mode:OnFoot({(lc != null ? "LevelConfig" : "defaults")})");
         }
 
         // R3.2: the harness's DD4-safe timing — one frame after Instantiate, every component
