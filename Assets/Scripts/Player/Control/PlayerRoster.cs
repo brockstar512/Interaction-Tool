@@ -288,8 +288,12 @@ namespace IT.Player.Control
                 if (!SlotHeld(rememberedSlot))
                 {
                     PendingSlot = rememberedSlot;                 // DD10 threading — no new pattern
-                    if (_heldByDevice.TryGetValue(deviceId, out var held))
+                    var hasHeld = _heldByDevice.TryGetValue(deviceId, out var held);
+                    if (hasHeld)
                         PendingRestoreDto = held;                 // consumed by the wrapper's Awake
+                    // PB.4.5 R5: reclaim observability — completes the lifecycle line set
+                    // (joined/left/rejected-full/rejected-policy/rejected-reserved/reserved/restored).
+                    Debug.Log($"[PlayerRoster] slot {rememberedSlot} reclaimed for device '{deviceId}'{(hasHeld ? " + held session state" : " (no held state — fresh)")}");
                 }
             }
 
