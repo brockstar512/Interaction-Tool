@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
+using IT.Core.Config;      // PB.5 R4: LevelConfig/StartMode (fresh-spawn baseline)
+using IT.Items;            // PB.5 R4: ItemStateRegistry (startingInventory grant)
+using IT.Player.Inventory; // PB.5 R4: PlayerInventory
 using IT.Player.Input;
 using IT.Player.Persistence;   // PB.4.5 R3: rejoin restore (PendingRestoreDto consume)
 using IT.Player.Status;
@@ -165,15 +169,54 @@ namespace IT.Player.Control
             _pendingRejoinRestore = PlayerRoster.PendingRestoreDto;
             PlayerRoster.PendingRestoreDto = null;
 
+            // PB.5 R4: fresh = no reserved slot adopted AND no rejoin DTO — i.e. the
+            // scene-placed P1 or a fresh P2+ join. Respawns (PendingSlot from
+            // SpawnManager) and rejoin-reclaims are NOT fresh: DD5-b keeps death-respawn
+            // FRESH-prefab (startingInventory NOT re-granted on respawn — flagged
+            // interpretation, owner veto at sweep), and reclaims restore held state.
+            _spawnedFresh = PlayerId == null && !_pendingRejoinRestore.HasValue;
+
             PlayerRoster.Instance.Register(this);
         }
 
         PlayerStateDTO? _pendingRejoinRestore;   // R3.2: stashed in Awake, applied next frame
+        bool _spawnedFresh;                      // PB.5 R4: set in Awake (see above)
 
         void Start()
         {
             if (_pendingRejoinRestore.HasValue)
                 StartCoroutine(ApplyRejoinRestore());
+            else if (_spawnedFresh)
+                StartCoroutine(ApplyLevelBaseline());   // PB.5 R4 (DD6/DD7)
+        }
+
+        // PB.5 R4: the first-launch / fresh-join baseline (DD6) — SAVE.1's no-save boot
+        // branch and SAVE.2's corruption path later collapse onto THIS route. One frame
+        // late (DD4-safe harness timing). startingInventory grants through the EXISTING
+        // restore machinery (C-G) with synthesized DTOs; provider from the roster seam
+        // (null on production path → registry warn+skips per PB.3; harness donates in
+        // PB1Test). InVehicle = OQ-C thin-wire: named log, OnFoot spawn.
+        System.Collections.IEnumerator ApplyLevelBaseline()
+        {
+            yield return null;
+            if (State == WrapperState.Dead) yield break;
+            var lc = LevelConfig.Resolve();   // null legal (OQ-D) — nothing to apply
+            if (lc == null) yield break;
+
+            if (lc.StartingInventory.Count > 0)
+            {
+                var inv = GetComponentInChildren<PlayerInventory>();
+                if (inv != null && inv.Items.Count == 0)
+                {
+                    var synth = new List<ItemStateDTO>(lc.StartingInventory.Count);
+                    foreach (var key in lc.StartingInventory)
+                        synth.Add(new ItemStateDTO { itemType = key });
+                    ItemStateRegistry.Restore(inv, synth, PlayerRoster.Instance?.RestoreProvider);
+                }
+            }
+
+            if (lc.StartMode == StartMode.InVehicle)
+                Debug.LogWarning($"[SpawnState] {PlayerId} startMode=InVehicle not wired in v1 — spawning OnFoot (OQ-C named gap).");
         }
 
         // R3.2: the harness's DD4-safe timing — one frame after Instantiate, every component

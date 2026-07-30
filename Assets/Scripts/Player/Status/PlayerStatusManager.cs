@@ -31,7 +31,11 @@ namespace IT.Player.Status
         {
             // Story PB.1: lives seed from the config chain (the ?? covers the BootGuard /
             // direct-play path, mirroring PlayerRoster's MaxPlayers read).
-            playerStatus = new PlayerStatus(SystemsRoot.Instance?.Config.DefaultLivesCount ?? GameConfig.FallbackDefaultLives);
+            // PB.5 R4 (DD7): the seed consults the FULL A-1 chain via the Builder seam —
+            // LevelConfig override now links in (was GameConfig-only). No DTO at seed time
+            // by construction; per-player, so scene-placed P1 and joined P2+ share this.
+            playerStatus = new PlayerStatus(IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
+                null, IT.Core.Config.LevelConfig.Resolve(), SystemsRoot.Instance?.Config));
             _health = GetComponent<Health>();
             _status  = GetComponent<StatusController>();   // DEBUG (Step 4)
             _wrapper = GetComponent<PlayerWrapper>();        // DEBUG (Step 4)
