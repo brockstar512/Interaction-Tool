@@ -19,6 +19,21 @@ namespace IT.Core.Utilities
             return null;
         }
 
+        // PB.4.5 R4.5 (Bug 2 fix, owner-ruled semantics): dominant-axis facing for ANALOG input.
+        // null below the deadzone (zero/noise input HOLDS facing) and when the axes are
+        // near-equal (diagonals HOLD facing — the exact-cardinal path's behavior, preserved).
+        // Exact cardinals pass trivially, so keyboard/d-pad are bit-identical; sticks now
+        // drive facing. FromVector's exact-equality was the defect: deadzone-processed stick
+        // vectors never match a unit cardinal, so LookDirection never followed the stick.
+        public static Facing? FromVectorDominant(Vector2 v, float deadzone = 0.3f, float ratio = 1.25f)
+        {
+            if (v.sqrMagnitude < deadzone * deadzone) return null;
+            float ax = Mathf.Abs(v.x), ay = Mathf.Abs(v.y);
+            if (ax > ay * ratio) return v.x > 0f ? Facing.Right : Facing.Left;
+            if (ay > ax * ratio) return v.y > 0f ? Facing.Up : Facing.Down;
+            return null;   // near-diagonal — hold current facing
+        }
+
         // Dominant-axis snap for consumers that want a Facing for ANY vector (zero / tie → Down).
         public static Facing FromVectorSnapped(Vector2 v)
         {

@@ -8,7 +8,11 @@ namespace IT.Player.StateMachine
 
     public abstract class PlayerStateBase
     {
-        public Vector2 LookDirection { get; set; }
+        // PB.4.5 R4.5 (ruling b): Down = the codebase's canonical neutral (FromVectorSnapped's
+        // tie default). A zero LookDirection matched NOTHING in MoveAnimState.Play (no else —
+        // animator never told to play, the spawn-wonky symptom) and fed a zero probe direction
+        // to GetOverlapObject (PSM:139). Initializing here makes both unreachable by construction.
+        public Vector2 LookDirection { get; set; } = Vector2.down;
         protected virtual float Speed { get { return 5; } }
         public abstract void EnterState(PlayerStateMachine stateManager);
         public abstract void UpdateState(PlayerStateMachine stateManager);
@@ -29,9 +33,10 @@ namespace IT.Player.StateMachine
         }
         protected void UpdateLookDirection(Vector2 movement)
         {
-            // Only EXACT cardinal input changes facing (diagonal/zero → null → unchanged).
-            // No four-way if-chain at the call site — the cardinal mapping lives in Facing (WS5.1 / Story 1.5).
-            Facing? facing = FacingExtensions.FromVector(movement);
+            // PB.4.5 R4.5: dominant-axis mapping (was FromVector, exact-cardinal-only — sticks
+            // never matched, facing never followed analog input). Zero and near-diagonal still
+            // hold facing; keyboard/d-pad bit-identical. Mapping lives in Facing (WS5.1 pattern).
+            Facing? facing = FacingExtensions.FromVectorDominant(movement);
             if (facing.HasValue)
                 LookDirection = facing.Value.ToVector();
         }

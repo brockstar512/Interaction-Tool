@@ -76,7 +76,7 @@ namespace IT.Player.Control
             {
                 _lastNonZeroMove = input.Move;
 
-                Facing? facing = FacingExtensions.FromVector(input.Move);
+                Facing? facing = FacingExtensions.FromVectorDominant(input.Move);   // PB.4.5 R4.5 (ruling c): same stick-blindness defect as PlayerStateBase — panic-run direction now takes from analog too
                 if (facing.HasValue)
                     _lookDirection = facing.Value.ToVector();
             }
