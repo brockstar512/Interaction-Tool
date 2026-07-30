@@ -412,6 +412,13 @@ namespace IT.Player.Control
         void PerformControllerSwap(IPlayerController next)
         {
             var previous = _activeController;
+            // PB.4.5 R4.6 (Finding A, owner-ruled): mirror of the swap-IN seeding — carry the
+            // panic-run's final facing back into the FSM, or restore snaps to the pre-fire
+            // LookDirection (frozen at swap-in; the FSM isn't driven during the burn).
+            // Type-checked, NOT generalized: OnFireController's own NOTE defers a shared
+            // facing-handoff until a third controller needs it.
+            if (previous is OnFireController fire)
+                GetComponent<IT.Player.StateMachine.PlayerStateMachine>()?.SetLookDirection(fire.LookDirection);
             previous.OnRelease();              // release current — trips stale token if it has one (OnFoot does)
             next.OnPossess(this);              // possess next — OnFoot re-links _sm; OnFire grabs rb/animator/health
             _activeController = next;

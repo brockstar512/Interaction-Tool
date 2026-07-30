@@ -34,6 +34,11 @@ namespace IT.Player.StateMachine
         // callers. OnFireEffect uses this to seed OnFireController's panic-run direction.
         public Vector2 LookDirection => currentState.LookDirection;
 
+        // PB.4.5 R4.6 (Finding A): write-side companion to the read accessor above — the
+        // controller swap-back seam seeds the FSM's facing from the outgoing controller
+        // (PlayerWrapper.PerformControllerSwap), the mirror of OnFireEffect's swap-in seeding.
+        public void SetLookDirection(Vector2 dir) => currentState.LookDirection = dir;
+
         // Stale-continuation guard (Story 1.4): bumped on every SwitchState. An async state
         // action captures this token before awaiting and checks IsStale(token) after each await.
         public int TransitionCount { get; private set; }

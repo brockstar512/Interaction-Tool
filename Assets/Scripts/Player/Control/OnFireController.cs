@@ -41,6 +41,10 @@ namespace IT.Player.Control
 
         public IHealthSource HealthSource => _health;
 
+        // PB.4.5 R4.6 (Finding A): the panic-run's live facing, read by PlayerWrapper's swap-back
+        // copy-seam so restore doesn't snap to the FSM's frozen pre-fire LookDirection.
+        public Vector2 LookDirection => _lookDirection;
+
         // initialDirection: the seed for the run + facing. OnFireEffect passes the player's actual
         // facing; the F debug key passes nothing (default Vector2.zero) → fall back to Down so an
         // idle catch-fire still immediately panics downward.
@@ -74,7 +78,13 @@ namespace IT.Player.Control
             // facing on a cardinal); zero input leaves the last direction + facing unchanged.
             if (input.Move != Vector2.zero)
             {
-                _lastNonZeroMove = input.Move;
+                // PB.4.5 R4.6 (Finding B, owner-ruled): NORMALIZED. Raw analog vectors carry
+                // magnitude < 1 (deadzone-processed partial deflection), so the unit-length seed
+                // ran full speed and the first stick steer eroded it — "starts fast, degrades".
+                // Also closes the LATENT keyboard sibling: (±1,±1) diagonals were magnitude √2 —
+                // 41% faster panic-run, never intended, never noticed (LATENT-DEFECT-CLOSED,
+                // static-only — named row in the R6 sweep sheet).
+                _lastNonZeroMove = input.Move.normalized;
 
                 Facing? facing = FacingExtensions.FromVectorDominant(input.Move);   // PB.4.5 R4.5 (ruling c): same stick-blindness defect as PlayerStateBase — panic-run direction now takes from analog too
                 if (facing.HasValue)
