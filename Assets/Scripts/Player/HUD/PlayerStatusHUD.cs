@@ -40,6 +40,7 @@ namespace IT.Player.HUD
         {
             _boundPlayer = player;   // PB.4 R4: retain so Rebind can unsubscribe later
             player.itemManager.ItemSwitch += UpdateItemUI;
+            UpdateItemUI(player.itemManager.GetCurrentSprite());  // PB.4.5 R6.1: seed initial value — the ONE display BuildHUD didn't seed. A fresh (empty) respawn fires no ItemSwitch, so the rebind-persistent panel kept the pre-death sprite (phantom item, R6 sweep finding; inventory itself fresh, DD1 intact)
             player.playerStatusManager.health.HealthChanged += UpdateHealth;
             UpdateHealth(player.playerStatusManager.health.Current, player.playerStatusManager.health.Max);  // seed initial value (Health.Start() may fire before BuildHUD subscribes)
             player.playerStatusManager.playerStatus.LivesChange += UpdateLives;
