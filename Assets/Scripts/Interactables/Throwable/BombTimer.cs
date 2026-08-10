@@ -52,7 +52,7 @@ namespace IT.Interactables.Throwable
             float remaining = _timer;
             while (remaining > 0 && !token.IsCancellationRequested)
             {
-                Debug.Log($"Bomb fuse: {remaining:F1}s remaining");
+                //Debug.Log($"Bomb fuse: {remaining:F1}s remaining");
                 await Awaitable.WaitForSecondsAsync(0.5f, token);
                 remaining -= 0.5f;
             }

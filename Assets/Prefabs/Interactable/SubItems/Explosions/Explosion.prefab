@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _splashRange: 5
-  _splashDamage: 6
+  _splashDamage: 7
 --- !u!58 &4050666923669848599
 CircleCollider2D:
   m_ObjectHideFlags: 0
