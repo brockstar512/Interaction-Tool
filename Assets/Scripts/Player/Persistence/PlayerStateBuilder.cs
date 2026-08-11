@@ -91,10 +91,17 @@ namespace IT.Player.Persistence
         // The META field-valid pattern (SAVE.1 kickoff): present + valid-range,
         // fallthrough-not-floor, structured log on Strict violation. ONE shape, per-field
         // parameters — SAVE.2 inherits this, not three variants.
-        static bool UseDtoField(IT.Core.Config.CarryOverMode mode, bool dtoValid,
+        static bool UseDtoField(IT.Core.Config.CarryOverMode mode, bool dtoPresent, bool dtoValid,
                                 string fieldPath, string actual, string chainDefault)
         {
             if (mode == IT.Core.Config.CarryOverMode.Fresh) return false;   // authored: ignore DTO
+            // PB.5 R6.1 (DD3 carve-out): NO DTO is the legitimate first-launch / fresh-join
+            // route (E-4.i), not a violation — silent fallthrough under ALL modes. Strict
+            // polices a crossing that HAPPENED with bad data; P2+ joins never carry a DTO in
+            // v1 (A-3), so warning here would fire on every pad join by design. Also makes a
+            // genuine Strict violation warn ONCE: the Awake seed always passes null (silent),
+            // only the DTO-holding caller can trip the warn.
+            if (!dtoPresent) return false;
             if (dtoValid) return true;                                       // CarryOver/Strict: take it
             if (mode == IT.Core.Config.CarryOverMode.Strict)
                 // SAVE.0 structured shape: path — expected — actual — default applied.
@@ -113,7 +120,7 @@ namespace IT.Player.Persistence
             var mode = levelConfig != null ? levelConfig.LivesCarry
                                            : IT.Core.Config.CarryOverMode.CarryOver;
             bool dtoValid = dto.HasValue && dto.Value.lives >= 0;   // A-1 field-valid
-            if (UseDtoField(mode, dtoValid, "lives",
+            if (UseDtoField(mode, dto.HasValue, dtoValid, "lives",
                             dto.HasValue ? dto.Value.lives.ToString() : "no DTO",
                             "chain"))
             {
@@ -142,7 +149,7 @@ namespace IT.Player.Persistence
             var mode = levelConfig != null ? levelConfig.InventoryCarry
                                            : IT.Core.Config.CarryOverMode.CarryOver;
             bool dtoValid = dto.HasValue && dto.Value.items != null && dto.Value.items.Count > 0;
-            return UseDtoField(mode, dtoValid, "inventory",
+            return UseDtoField(mode, dto.HasValue, dtoValid, "inventory",
                                dto.HasValue ? $"{(dto.Value.items?.Count ?? 0)} items" : "no DTO",
                                "startingInventory");
         }
