@@ -83,6 +83,17 @@ namespace IT.Core.Config
 
         void ApplyPreset(CarryOverMode mode)
         {
+            // PB.5 R6.2 (sweep findings): the ContextMenu is reachable in Play mode, where
+            // the write dies with the session — refuse loudly rather than silently not
+            // persisting (this bit the R6 sweep: a Play-mode preset read as authored).
+            if (Application.isPlaying)
+            {
+                Debug.LogWarning($"[LevelConfig] preset '{mode}' REFUSED in Play mode — presets are edit-mode authoring; the write would not persist.");
+                return;
+            }
+#if UNITY_EDITOR
+            UnityEditor.Undo.RecordObject(this, $"LevelConfig preset: {mode}");   // R6.2: preset application is undoable
+#endif
             health = lives = inventory = statuses = mode;
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);   // persist the edit-mode change
