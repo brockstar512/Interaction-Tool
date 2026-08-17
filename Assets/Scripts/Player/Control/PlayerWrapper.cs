@@ -196,17 +196,56 @@ namespace IT.Player.Control
         // restore machinery (C-G) with synthesized DTOs; provider from the roster seam
         // (null on production path → registry warn+skips per PB.3; harness donates in
         // PB1Test). InVehicle = OQ-C thin-wire: named log, OnFoot spawn.
+        // SAVE.1 R5 (DD5, THE COLLAPSE): the boot-loaded primary DTO threads through
+        // this SAME route — consumed once (cleared-on-read), P1 only; P2+ fresh joins
+        // stay DTO-less (A-3), which reproduces the PB.5 fresh path byte-for-byte
+        // (dto == null → every seam returns the PB.5 branch). Per-field CarryOverMode
+        // governs the load path exactly as specced: a level authored LivesCarry=Fresh
+        // ignoring saved lives is CORRECT behavior (owner-acknowledged), not a bug.
         System.Collections.IEnumerator ApplyLevelBaseline()
         {
             yield return null;
             if (State == WrapperState.Dead) yield break;
             var lc = LevelConfig.Resolve();   // null legal (OQ-D) — defaults attributed below
 
-            int granted = 0;
-            if (lc != null && lc.StartingInventory.Count > 0)
+            PlayerStateDTO? dto = PlayerId == "P1"
+                ? IT.Boot.SessionInfo.ConsumePendingPrimaryRestore()
+                : (PlayerStateDTO?)null;
+
+            // Lives: the PSM Awake seed already ran the null chain; a DTO that wins
+            // per-field re-applies here. On the fresh path the resolver's output equals
+            // the seed, and we skip the redundant RestoreLives (no extra LivesChange
+            // event — PB.5-identical).
+            int lives = IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
+                dto, lc, IT.Boot.SystemsRoot.Instance?.Config, out var livesSrc);
+            var status = GetComponent<PlayerStatusManager>();
+            if (dto.HasValue) status?.playerStatus?.RestoreLives(lives);
+
+            // Health BEFORE statuses (Builder.Restore's PB.2 ordering rationale: a
+            // first post-restore poison tick must hit RESTORED health).
+            string hpSeg = "max(fresh)";
+            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoHealth(dto, lc))
             {
-                var inv = GetComponentInChildren<PlayerInventory>();
-                if (inv != null && inv.Items.Count == 0)
+                GetComponent<IT.Core.Combat.Health>()?.RestoreCurrent(dto.Value.currentHealth);
+                hpSeg = $"{dto.Value.currentHealth}(DTO)";
+            }
+
+            int granted = 0;
+            string invSeg;
+            var inv = GetComponentInChildren<PlayerInventory>();
+            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoInventory(dto, lc))
+            {
+                ItemStateRegistry.Restore(inv, dto.Value.items, PlayerRoster.Instance?.RestoreProvider);
+                if (inv != null)
+                {
+                    inv.RestoreCurrentIndex(dto.Value.currentItemIndex);
+                    granted = inv.Items.Count;
+                }
+                invSeg = $"{granted}(DTO)";
+            }
+            else
+            {
+                if (lc != null && lc.StartingInventory.Count > 0 && inv != null && inv.Items.Count == 0)
                 {
                     var synth = new List<ItemStateDTO>(lc.StartingInventory.Count);
                     foreach (var key in lc.StartingInventory)
@@ -214,19 +253,19 @@ namespace IT.Player.Control
                     ItemStateRegistry.Restore(inv, synth, PlayerRoster.Instance?.RestoreProvider);
                     granted = inv.Items.Count;   // post-grant count = what actually built (registry warn+skips bad keys)
                 }
+                invSeg = $"{granted}({(granted > 0 ? "startingInventory" : "none")})";
             }
+
+            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoStatuses(dto, lc))
+                StatusEffectRegistry.Restore(GetComponent<StatusController>(), dto.Value.activeStatuses);
 
             if (lc != null && lc.StartMode == StartMode.InVehicle)
                 Debug.LogWarning($"[SpawnState] {PlayerId} startMode=InVehicle not wired in v1 — spawning OnFoot (OQ-C named gap).");
 
-            // PB.5 R5 (V5.1): ONE resolution line per fresh spawn, per-field source
-            // attribution. The lives resolver is pure — re-calling it with the same
-            // inputs for the source tag is a read, not a second chain implementation.
-            IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
-                null, lc, IT.Boot.SystemsRoot.Instance?.Config, out var livesSrc);
-            var status = GetComponent<PlayerStatusManager>();
+            // PB.5 R5 (V5.1) / SAVE.1 R5: ONE resolution line per fresh spawn — format
+            // unchanged; DTO-sourced fields surface as (DTO) via the same segments.
             Debug.Log($"[SpawnState] {PlayerId} ← lives:{status?.playerStatus?.CurrentLives.ToString() ?? "?"}({livesSrc}) " +
-                      $"hp:max(fresh) inv:{granted}({(granted > 0 ? "startingInventory" : "none")}) " +
+                      $"hp:{hpSeg} inv:{invSeg} " +
                       $"mode:OnFoot({(lc != null ? "LevelConfig" : "defaults")})");
         }
 
