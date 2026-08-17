@@ -153,5 +153,106 @@ namespace IT.Player.Persistence
                                dto.HasValue ? $"{(dto.Value.items?.Count ?? 0)} items" : "no DTO",
                                "startingInventory");
         }
+
+        // ─── SAVE.1 R3: the disk boundary (C-H — the Builder is the ONE serialization
+        // owner; SaveFile does IO only). Capture + wire conversion + the remaining two
+        // seam halves. All pure functions. ───
+
+        // SAVE.1 seam halves (the LevelConfig modes existed since PB.5 R2; lives and
+        // inventory got resolvers at PB.5 R3 — these complete the four-field set).
+        // health valid = int >= 1 (matches Health's floor; capturing dead is a caller
+        // error, PB.1). statuses valid = list PRESENT (empty is a legitimate state —
+        // a player with no active effects; unlike inventory, absence-of-list is the
+        // only invalid shape).
+        public static bool UseDtoHealth(PlayerStateDTO? dto, IT.Core.Config.LevelConfig levelConfig)
+        {
+            var mode = levelConfig != null ? levelConfig.HealthCarry
+                                           : IT.Core.Config.CarryOverMode.CarryOver;
+            bool dtoValid = dto.HasValue && dto.Value.currentHealth >= 1;
+            return UseDtoField(mode, dto.HasValue, dtoValid, "currentHealth",
+                               dto.HasValue ? dto.Value.currentHealth.ToString() : "no DTO",
+                               "max (prefab-authored)");
+        }
+
+        public static bool UseDtoStatuses(PlayerStateDTO? dto, IT.Core.Config.LevelConfig levelConfig)
+        {
+            var mode = levelConfig != null ? levelConfig.StatusesCarry
+                                           : IT.Core.Config.CarryOverMode.CarryOver;
+            bool dtoValid = dto.HasValue && dto.Value.activeStatuses != null;
+            return UseDtoField(mode, dto.HasValue, dtoValid, "activeStatuses",
+                               dto.HasValue ? "null list" : "no DTO",
+                               "none (fresh)");
+        }
+
+        // SAVE.1 (DD3): capture the whole envelope. MERGE-ON-SAVE (OQ-A ruling):
+        // THE SAVE FILE IS A SUPERSET OF WHAT THE CURRENT SESSION KNOWS ABOUT —
+        // the live registered snapshot wins per key; saved-but-never-registered keys
+        // (scenes not yet revisited this session) carry through VERBATIM. WorldState
+        // is never written by the save layer (a load must not mutate the registry).
+        public static IT.Core.Save.SaveGameDTO CaptureSaveGame(
+            PlayerWrapper primary,
+            IT.Core.WorldState.WorldState world,
+            string activeSceneName,
+            IReadOnlyList<IT.Core.Save.FlagEntry> heldSavedFlags)
+        {
+            var flags = new List<IT.Core.Save.FlagEntry>();
+            var seen = new HashSet<string>();
+            if (world != null)
+                foreach (var kvp in world.GetPermanentSnapshot())
+                {
+                    flags.Add(new IT.Core.Save.FlagEntry { key = kvp.Key, value = kvp.Value });
+                    seen.Add(kvp.Key);
+                }
+            if (heldSavedFlags != null)
+                foreach (var entry in heldSavedFlags)
+                    if (entry.key != null && !seen.Contains(entry.key))
+                        flags.Add(entry);   // superset carry-through
+
+            return new IT.Core.Save.SaveGameDTO
+            {
+                dtoVersion = IT.Core.Save.SaveGameDTO.CurrentVersion,   // B-4: stamped at write
+                primaryPlayer = Capture(primary),
+                worldFlags = flags,
+                currentSceneId = activeSceneName,                        // E-2: caller passes active scene
+            };
+        }
+
+        // E-1 load-side conversion: duplicate keys -> structured log + FIRST-WINS
+        // (deterministic, natural iteration order). Null keys skipped (per-field
+        // corruption reporting is SAVE.2's ValidateSaveGame).
+        public static Dictionary<string, bool> FlagsToDictionary(IReadOnlyList<IT.Core.Save.FlagEntry> list)
+        {
+            var dict = new Dictionary<string, bool>();
+            if (list == null) return dict;
+            foreach (var entry in list)
+            {
+                if (entry.key == null) continue;
+                if (dict.ContainsKey(entry.key))
+                    Debug.LogWarning($"[SaveLoad] corruption at path 'worldFlags[{entry.key}]' — expected unique key, got duplicate — FIRST-WINS applied");
+                else
+                    dict[entry.key] = entry.value;
+            }
+            return dict;
+        }
+
+        public static string SerializeSaveGame(IT.Core.Save.SaveGameDTO save)
+            => JsonUtility.ToJson(save, true);   // E-3: pretty — v1 debuggability at single-slot scale
+
+        // Envelope parse: false = unparseable JSON (E-4.ii -> new-game path). SAVE.2 R2
+        // upgrades the internals to the sentinel-seeded FromJsonOverwrite mechanism so
+        // missing fields become detectable; the signature is stable across that change.
+        public static bool ParseSaveGame(string json, out IT.Core.Save.SaveGameDTO save)
+        {
+            try
+            {
+                save = JsonUtility.FromJson<IT.Core.Save.SaveGameDTO>(json);
+                return save != null;
+            }
+            catch (System.Exception)
+            {
+                save = null;
+                return false;
+            }
+        }
     }
 }
