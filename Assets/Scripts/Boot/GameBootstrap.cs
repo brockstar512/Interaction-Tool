@@ -45,7 +45,49 @@ namespace IT.Boot
             // loading inherits this same pair of calls when it is built.
             var joinRoster = PlayerRoster.TryGetInstance();
             if (joinRoster != null) joinRoster.JoinPolicy = LockedJoinPolicy.Instance;
-            SceneManager.LoadScene(firstScene);
+
+            // SAVE.1 R4 (DD4): the v1 auto-continue boot branch — the ONLY read of
+            // save.json. Direct-play (BootGuard) never runs this, so it never
+            // auto-continues (same posture as P2-join requiring Boot.unity).
+            // dtoVersion + per-field validation run inside the Builder's validation
+            // pass (SAVE.2 DD6 takeover — this branch never grows an inline version
+            // check; SAVE.2 R3 adds the call, single implementation).
+            string targetScene = firstScene;
+            var readOutcome = IT.Core.Save.SaveFile.ReadText(out var saveJson, out var ioReason);
+            if (readOutcome == IT.Core.Save.SaveFile.ReadOutcome.NotFound)
+            {
+                // E-4.i: file absent -> the PB.5 first-launch route, UNTOUCHED (the
+                // collapse promise: no new spawn code on this branch).
+                SessionInfo.LoadOutcome = LoadOutcome.NoSaveFound;
+            }
+            else
+            {
+                IT.Core.Save.SaveGameDTO save = null;
+                bool parsed = readOutcome == IT.Core.Save.SaveFile.ReadOutcome.Read
+                              && IT.Player.Persistence.PlayerStateBuilder.ParseSaveGame(saveJson, out save);
+                if (!parsed)
+                {
+                    // E-4.ii envelope failure: no fields to fail alive on -> new-game path.
+                    Debug.LogWarning($"[SaveLoad] envelope failure — {(ioReason ?? "unparseable JSON")} — new-game path (E-4.ii)");
+                    IT.Core.Save.SaveFile.PreserveCorpse();
+                    SessionInfo.LoadOutcome = LoadOutcome.LoadFailedFellBackToNew;
+                }
+                else
+                {
+                    SessionInfo.LoadOutcome = LoadOutcome.LoadedSuccessfully;
+                    SessionInfo.StashPrimaryRestore(save.primaryPlayer);
+                    SessionInfo.HeldSavedFlags = save.worldFlags;
+                    SessionInfo.ArmFlagsApplyOnce();
+                    if (!string.IsNullOrEmpty(save.currentSceneId)
+                        && Application.CanStreamedLevelBeLoaded(save.currentSceneId))
+                        targetScene = save.currentSceneId;
+                    else
+                        // C-3 split: unknown scene -> the new-game SPAWN PATH with the DTO
+                        // STILL restored — "where's my castle?", never "who am I?".
+                        Debug.LogWarning($"[SaveLoad] corruption at path 'currentSceneId' — expected loadable scene name, got '{save.currentSceneId}' — default '{firstScene}' applied (C-3: DTO still restored)");
+                }
+            }
+            SceneManager.LoadScene(targetScene);
         }
     }
 }

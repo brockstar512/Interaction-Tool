@@ -65,6 +65,7 @@ namespace IT.Player.Status
                 "G — Restore OnFoot\n" +
                 "J — Apply DebugLog A+B\n" +
                 "P — Suspend toggle\n" +
+                "S — Write save.json (SAVE.1 debug trigger, P1 only)\n" +
                 "==================");
         }
 
@@ -226,6 +227,25 @@ namespace IT.Player.Status
             if (UnityEngine.InputSystem.Keyboard.current.nKey.wasPressedThisFrame)
             {
                 _status?.Apply(new OnFireEffect(duration: 5f, speedMultiplier: 2.0f));
+            }
+            // SAVE.1 R4 (OQ-C ruled: key = S, collision-checked; retires with this table
+            // pre-ship; SAVE.3's real triggers replace it). PRIMARY-ONLY guard is load-
+            // bearing: this Update runs per player instance — without it, one press
+            // would write once per live player. Log prints the ABSOLUTE path (sweep
+            // requirement — no persistentDataPath hunting).
+            if (UnityEngine.InputSystem.Keyboard.current.sKey.wasPressedThisFrame
+                && _wrapper != null && _wrapper.PlayerId == "P1")
+            {
+                var save = IT.Player.Persistence.PlayerStateBuilder.CaptureSaveGame(
+                    _wrapper,
+                    SystemsRoot.Instance?.WorldState,
+                    UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
+                    SessionInfo.HeldSavedFlags);
+                var json = IT.Player.Persistence.PlayerStateBuilder.SerializeSaveGame(save);
+                if (IT.Core.Save.SaveFile.WriteAtomic(json, out var saveFail))
+                    Debug.Log($"[SaveLoad] saved (P1 + {save.worldFlags.Count} flags, scene '{save.currentSceneId}') → {IT.Core.Save.SaveFile.PathToFile}");
+                else
+                    Debug.LogWarning($"[SaveLoad] save FAILED — {saveFail}");
             }
         }
     }
