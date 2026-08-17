@@ -238,15 +238,42 @@ namespace IT.Player.Persistence
         public static string SerializeSaveGame(IT.Core.Save.SaveGameDTO save)
             => JsonUtility.ToJson(save, true);   // E-3: pretty — v1 debuggability at single-slot scale
 
-        // Envelope parse: false = unparseable JSON (E-4.ii -> new-game path). SAVE.2 R2
-        // upgrades the internals to the sentinel-seeded FromJsonOverwrite mechanism so
-        // missing fields become detectable; the signature is stable across that change.
+        // ─── SAVE.2 R2 (DD2, OQ-A ruled): sentinel-seeded detection. JsonUtility gives
+        // no presence signal (missing/mismatched fields silently default), so the parse
+        // overwrites onto a sentinel-seeded instance — any field still sentinel after
+        // FromJsonOverwrite was missing/unparsed. SPIKE (Tools menu, run at sweep-open)
+        // records the three factual unknowns; if (i) nested-struct preservation FAILS,
+        // the rung PAUSES on a ruling request (owner-ruled escalation — never a silent
+        // workaround). ───
+
+        public const int SentinelInt = int.MinValue;   // out-of-band: no legal save field is MinValue
+
+        public static IT.Core.Save.SaveGameDTO CreateSentinelSeeded() => new IT.Core.Save.SaveGameDTO
+        {
+            dtoVersion = SentinelInt,
+            currentSceneId = null,
+            worldFlags = null,
+            primaryPlayer = new PlayerStateDTO
+            {
+                playerId = null,
+                deviceId = null,
+                lives = SentinelInt,
+                currentHealth = SentinelInt,
+                currentItemIndex = SentinelInt,
+                items = null,
+                activeStatuses = null,
+            },
+        };
+
+        // Envelope parse: false = unparseable JSON (E-4.ii -> new-game path).
+        // Sentinel-seeded per DD2 — ValidateSaveGame reads the sentinels as "missing".
         public static bool ParseSaveGame(string json, out IT.Core.Save.SaveGameDTO save)
         {
             try
             {
-                save = JsonUtility.FromJson<IT.Core.Save.SaveGameDTO>(json);
-                return save != null;
+                save = CreateSentinelSeeded();
+                JsonUtility.FromJsonOverwrite(json, save);
+                return true;
             }
             catch (System.Exception)
             {
@@ -254,5 +281,92 @@ namespace IT.Player.Persistence
                 return false;
             }
         }
+
+        // SAVE.2 (DD1/DD5): THE validation pass — normalizes the DTO in place per the
+        // DD5 rule table, emits the ONE structured log per corrupt field (DD4: downstream
+        // guards keep their warns as genuinely last-ditch; post-validation they should
+        // never fire on the load path), returns the corruption count (caller preserves
+        // the corpse when > 0, C-2). currentSceneId is NOT validated here — SAVE.1's
+        // boot branch owns it (C-3 name-lookup). dtoVersion IS owned here (DD6 takeover
+        // — the single version-check implementation, B-1 log-and-proceed).
+        public static int ValidateSaveGame(ref IT.Core.Save.SaveGameDTO save)
+        {
+            int count = 0;
+
+            if (save.dtoVersion == SentinelInt || save.dtoVersion < 1)
+            {
+                LogCorruption("dtoVersion", "int >= 1", FmtInt(save.dtoVersion),
+                              IT.Core.Save.SaveGameDTO.CurrentVersion.ToString());
+                save.dtoVersion = IT.Core.Save.SaveGameDTO.CurrentVersion;
+                count++;
+            }
+            else if (save.dtoVersion != IT.Core.Save.SaveGameDTO.CurrentVersion)
+            {
+                // B-1: mismatch is post-parse by definition — loud, then proceed with the
+                // per-field fail-alive load. No migration machinery in v1 (B-3 transfer).
+                Debug.LogWarning($"[SaveLoad] dtoVersion {save.dtoVersion} != expected {IT.Core.Save.SaveGameDTO.CurrentVersion} — proceeding with per-field fail-alive load (B-1; no migration in v1)");
+            }
+
+            var p = save.primaryPlayer;
+            if (p.lives == SentinelInt || p.lives < 0)
+            {
+                // DD3 (OQ-B ruled): -1 in-band marker — the shipped seam's lives>=0 check
+                // routes it to chain fallthrough (A-1 fallthrough-not-floor) unchanged.
+                LogCorruption("primaryPlayer.lives", "int >= 0", FmtInt(p.lives), "-1 marker (chain fallthrough)");
+                p.lives = -1;
+                count++;
+            }
+            if (p.currentHealth == SentinelInt || p.currentHealth < 1)
+            {
+                LogCorruption("primaryPlayer.currentHealth", "int >= 1", FmtInt(p.currentHealth), "1 (Health floor)");
+                p.currentHealth = 1;
+                count++;
+            }
+            // Upper health bound is NOT validatable here — max is prefab-authored,
+            // unknown pre-restore; Health's silent Min ceilings it (DD5 named limitation).
+            if (p.currentItemIndex == SentinelInt || p.currentItemIndex < 0)
+            {
+                LogCorruption("primaryPlayer.currentItemIndex", "int >= 0", FmtInt(p.currentItemIndex), "0");
+                p.currentItemIndex = 0;
+                count++;
+            }
+            if (p.items == null)
+            {
+                LogCorruption("primaryPlayer.items", "list", "null/missing", "empty list");
+                p.items = new List<ItemStateDTO>();
+                count++;
+            }
+            if (p.activeStatuses == null)
+            {
+                LogCorruption("primaryPlayer.activeStatuses", "list", "null/missing", "empty list");
+                p.activeStatuses = new List<StatusStateDTO>();
+                count++;
+            }
+            else
+            {
+                for (int i = 0; i < p.activeStatuses.Count; i++)
+                {
+                    var s = p.activeStatuses[i];
+                    bool touched = false;
+                    if (s.elapsed < 0f)         { LogCorruption($"primaryPlayer.activeStatuses[{i}].elapsed", "float >= 0", s.elapsed.ToString(), "0"); s.elapsed = 0f; touched = true; }
+                    if (s.tickAccumulator < 0f) { LogCorruption($"primaryPlayer.activeStatuses[{i}].tickAccumulator", "float >= 0", s.tickAccumulator.ToString(), "0"); s.tickAccumulator = 0f; touched = true; }
+                    if (touched) { p.activeStatuses[i] = s; count++; }
+                }
+            }
+            if (save.worldFlags == null)
+            {
+                LogCorruption("worldFlags", "list", "null/missing", "empty list");
+                save.worldFlags = new List<IT.Core.Save.FlagEntry>();
+                count++;
+            }
+            save.primaryPlayer = p;
+            return count;
+        }
+
+        // SAVE.0's exact structured shape — path, expected, actual, default applied.
+        static void LogCorruption(string path, string expected, string actual, string appliedDefault)
+            => Debug.LogWarning($"[SaveLoad] corruption at path '{path}' — expected {expected}, got {actual} — default {appliedDefault} applied");
+
+        static string FmtInt(int value) => value == SentinelInt ? "missing" : value.ToString();
     }
 }
