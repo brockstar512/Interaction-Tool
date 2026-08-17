@@ -74,6 +74,12 @@ namespace IT.Boot
                 }
                 else
                 {
+                    // SAVE.2 R3 (DD1 call site — the ONLY one): the validation pass
+                    // normalizes + emits the structured logs (incl. the dtoVersion check,
+                    // DD6 takeover); any corruption preserves the corpse BEFORE the next
+                    // write (C-2). Load proceeds either way — per-field fail-alive.
+                    int corruptFields = IT.Player.Persistence.PlayerStateBuilder.ValidateSaveGame(ref save);
+                    if (corruptFields > 0) IT.Core.Save.SaveFile.PreserveCorpse();
                     SessionInfo.LoadOutcome = LoadOutcome.LoadedSuccessfully;
                     SessionInfo.StashPrimaryRestore(save.primaryPlayer);
                     SessionInfo.HeldSavedFlags = save.worldFlags;
