@@ -228,24 +228,15 @@ namespace IT.Player.Status
             {
                 _status?.Apply(new OnFireEffect(duration: 5f, speedMultiplier: 2.0f));
             }
-            // SAVE.1 R4 (OQ-C ruled: key = S, collision-checked; retires with this table
-            // pre-ship; SAVE.3's real triggers replace it). PRIMARY-ONLY guard is load-
-            // bearing: this Update runs per player instance — without it, one press
-            // would write once per live player. Log prints the ABSOLUTE path (sweep
-            // requirement — no persistentDataPath hunting).
+            // SAVE.1 R4 / SAVE.3 R2 (DD1): S is now a one-line caller of THE write path
+            // (body moved to SaveService.SaveNow, not duplicated). PRIMARY-ONLY guard
+            // stays load-bearing: this Update runs per player instance — without it,
+            // one press would write (and log) once per live player. Kept as debug
+            // alongside the real triggers until the pre-ship removal (OQ-E ruled).
             if (UnityEngine.InputSystem.Keyboard.current.sKey.wasPressedThisFrame
                 && _wrapper != null && _wrapper.PlayerId == "P1")
             {
-                var save = IT.Player.Persistence.PlayerStateBuilder.CaptureSaveGame(
-                    _wrapper,
-                    SystemsRoot.Instance?.WorldState,
-                    UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
-                    SessionInfo.HeldSavedFlags);
-                var json = IT.Player.Persistence.PlayerStateBuilder.SerializeSaveGame(save);
-                if (IT.Core.Save.SaveFile.WriteAtomic(json, out var saveFail))
-                    Debug.Log($"[SaveLoad] saved (P1 + {save.worldFlags.Count} flags, scene '{save.currentSceneId}') → {IT.Core.Save.SaveFile.PathToFile}");
-                else
-                    Debug.LogWarning($"[SaveLoad] save FAILED — {saveFail}");
+                IT.Player.Persistence.SaveService.SaveNow(IT.Player.Persistence.SaveService.ReasonDebugKey);
             }
         }
     }
