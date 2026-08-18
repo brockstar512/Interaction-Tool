@@ -71,6 +71,12 @@ namespace IT.Player.StateMachine.States
                     // PlayerWrapper.Update (avoids re-entrancy NRE since we are inside Tick here).
                     stateManager.item.Interact(stateManager);
                     break;
+                case InteractionType.Use:
+                    // SAVE.3 R3: simple-use (audit #26 shape) — same direct hand-off as
+                    // Possess, and the effect completes inside Interact (no deferred work,
+                    // no state switch; the player stays in Idle). First consumer: SavePoint.
+                    stateManager.item.Interact(stateManager);
+                    break;
                 default:
                     Debug.Log("is default");
                     break;
