@@ -37,6 +37,31 @@ namespace IT.Boot
         // superset carry-through (saved-but-never-registered keys survive save→load→save).
         public static List<FlagEntry> HeldSavedFlags { get; internal set; }
 
+        // SAVE.4 (DD3): the ONE slot signal both call sites read. Default 1 IS the
+        // pre-picker pin (DD4: a default, not a branch — boot never sets it; 4.6.1's
+        // picker sets it before triggering load/save). Clamped against config on
+        // write as a belt for future caller bugs.
+        static int _activeSlot = 1;
+        public static int ActiveSlot
+        {
+            get => _activeSlot;
+            set
+            {
+                int limit = SystemsRoot.Instance != null
+                    ? SystemsRoot.Instance.Config.SaveSlotLimit
+                    : IT.Core.Config.GameConfig.FallbackSaveSlotLimit;
+                if (value < 1 || value > limit)
+                {
+                    Debug.LogWarning($"[SaveLoad] ActiveSlot {value} outside [1..{limit}] — clamped.");
+                    _activeSlot = Mathf.Clamp(value, 1, limit);
+                }
+                else
+                {
+                    _activeSlot = value;
+                }
+            }
+        }
+
         // DD6: flags apply POST-scene-load — flag consumers register in their scene
         // Awake, and sceneLoaded fires after those; applying at boot would warn-skip
         // everything. STATIC one-shot by necessity: GameBootstrap dies with the Boot

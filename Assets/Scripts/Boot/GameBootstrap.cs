@@ -53,7 +53,12 @@ namespace IT.Boot
             // pass (SAVE.2 DD6 takeover — this branch never grows an inline version
             // check; SAVE.2 R3 adds the call, single implementation).
             string targetScene = firstScene;
-            var readOutcome = IT.Core.Save.SaveFile.ReadText(out var saveJson, out var ioReason);
+            // SAVE.4: legacy adopt runs BEFORE the read (OQ-A(2) one-time rename;
+            // no-op forever after); the boot read addresses the ACTIVE slot — still 1
+            // at boot pre-picker (the DD4 pin-by-default).
+            IT.Core.Save.SaveFile.AdoptLegacySingleSlot();
+            int bootSlot = SessionInfo.ActiveSlot;
+            var readOutcome = IT.Core.Save.SaveFile.ReadText(bootSlot, out var saveJson, out var ioReason);
             if (readOutcome == IT.Core.Save.SaveFile.ReadOutcome.NotFound)
             {
                 // E-4.i: file absent -> the PB.5 first-launch route, UNTOUCHED (the
@@ -69,7 +74,7 @@ namespace IT.Boot
                 {
                     // E-4.ii envelope failure: no fields to fail alive on -> new-game path.
                     Debug.LogWarning($"[SaveLoad] envelope failure — {(ioReason ?? "unparseable JSON")} — new-game path (E-4.ii)");
-                    IT.Core.Save.SaveFile.PreserveCorpse();
+                    IT.Core.Save.SaveFile.PreserveCorpse(bootSlot);
                     SessionInfo.LoadOutcome = LoadOutcome.LoadFailedFellBackToNew;
                 }
                 else
@@ -79,7 +84,7 @@ namespace IT.Boot
                     // DD6 takeover); any corruption preserves the corpse BEFORE the next
                     // write (C-2). Load proceeds either way — per-field fail-alive.
                     int corruptFields = IT.Player.Persistence.PlayerStateBuilder.ValidateSaveGame(ref save);
-                    if (corruptFields > 0) IT.Core.Save.SaveFile.PreserveCorpse();
+                    if (corruptFields > 0) IT.Core.Save.SaveFile.PreserveCorpse(bootSlot);
                     SessionInfo.LoadOutcome = LoadOutcome.LoadedSuccessfully;
                     SessionInfo.StashPrimaryRestore(save.primaryPlayer);
                     SessionInfo.HeldSavedFlags = save.worldFlags;

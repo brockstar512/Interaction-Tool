@@ -517,6 +517,16 @@ namespace IT.Player.Persistence
             return null;
         }
 
+        // SAVE.4 (R1 V3.5): the slot-2 probe vehicle — the picker is 4.6.1's; this
+        // retires with the harness. Toggles between slots 1 and 2 (clamp warns if
+        // saveSlotLimit is 1 — that warn is itself the SA-2 evidence).
+        [ContextMenu("SAVE.4: toggle ActiveSlot 1<->2")]
+        void ToggleActiveSlot()
+        {
+            IT.Boot.SessionInfo.ActiveSlot = IT.Boot.SessionInfo.ActiveSlot == 1 ? 2 : 1;
+            Debug.Log($"[SaveLoad] harness: ActiveSlot now {IT.Boot.SessionInfo.ActiveSlot}");
+        }
+
         // Makes the spawn marker visible in the Scene view without needing a sprite.
         void OnDrawGizmos()
         {

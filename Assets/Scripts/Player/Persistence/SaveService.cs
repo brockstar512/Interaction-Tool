@@ -51,9 +51,10 @@ namespace IT.Player.Persistence
                 SystemsRoot.Instance?.WorldState,
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 SessionInfo.HeldSavedFlags);
-            if (SaveFile.WriteAtomic(PlayerStateBuilder.SerializeSaveGame(save), out var failReason))
+            int slot = SessionInfo.ActiveSlot;   // SAVE.4 (DD3): the one slot signal
+            if (SaveFile.WriteAtomic(slot, PlayerStateBuilder.SerializeSaveGame(save), out var failReason))
             {
-                Debug.Log($"[SaveLoad] saved ({reason}: P1 + {save.worldFlags.Count} flags, scene '{save.currentSceneId}') → {SaveFile.PathToFile}");
+                Debug.Log($"[SaveLoad] saved ({reason}: P1 + {save.worldFlags.Count} flags, scene '{save.currentSceneId}', slot {slot}) → {SaveFile.PathToFile(slot)}");
                 return true;
             }
             Debug.LogWarning($"[SaveLoad] save '{reason}' FAILED — {failReason}");
