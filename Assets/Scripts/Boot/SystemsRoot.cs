@@ -23,6 +23,11 @@ namespace IT.Boot
         // as SystemsRoot.Instance?.Spawn (the Instance?.Config posture).
         public SpawnManager Spawn { get; private set; }
 
+        // 4.6.1 (DD1, DQ-1(c)/DQ-2(c) ruled): the presentation coordinator — same
+        // hosting shape as Spawn. Scene-local canvases live on PresentationRoot
+        // (ensured per scene by code); this holds only the typed handles.
+        public IT.Presentation.Presentation Presentation { get; private set; }
+
         // Created only by BootInit.EnsureSystems() — not placed in a scene by hand.
         public static SystemsRoot Create(GameConfig config)
         {
@@ -38,6 +43,10 @@ namespace IT.Boot
             // ordering) so it can reach a live roster; hosted here so it exists in every scene without
             // Inspector wiring — L9's join-race environment is then automatic.
             root.Spawn = go.AddComponent<SpawnManager>();
+            // 4.6.1 (DD1): the presentation coordinator — AFTER SpawnManager (its
+            // game-over branch will reach Presentation via Instance?, R4); its Awake
+            // arms the per-scene PresentationRoot ensure hook (DD2/OQ-G(3)).
+            root.Presentation = go.AddComponent<IT.Presentation.Presentation>();
             // Story 5.1: true-global segment membership (C-C), the SystemsRoot slot reserved above.
             // AFTER PlayerRoster so SegmentManager.Awake finds a live roster to subscribe PlayerLeft on.
             go.AddComponent<SegmentManager>();
