@@ -16,5 +16,9 @@ namespace IT.Core.Config
         public bool saveEnabled = false;
         public bool craftingEnabled = false;
         public bool dialogueEnabled = false;
+        // SAVE.4 (owner re-ruling 2026-08-19, kickoff REOPENING block): how many save
+        // slots the game supports (1-5). Missing/invalid falls back to 1 (validated
+        // in GameConfig, Story-2.3 pattern).
+        public int saveSlotLimit = GameConfig.FallbackSaveSlotLimit;
     }
 }

@@ -21,6 +21,11 @@ namespace IT.Core.Config
         // bounds audit.)
         public const int FallbackDefaultLives = 3;
 
+        // SAVE.4 (DD1, R-13 one-source shape): save-slot cap. Valid range 1-5 (owner
+        // re-ruling 2026-08-19); invalid/missing falls back HERE, not to a literal.
+        public const int FallbackSaveSlotLimit = 1;
+        public int SaveSlotLimit { get; }
+
         public GameConfig(GameSettings s)
         {
             GameType        = ParseGameType(s.gameType);
@@ -43,6 +48,16 @@ namespace IT.Core.Config
             else
             {
                 DefaultLivesCount = s.defaultLivesCount;
+            }
+
+            if (s.saveSlotLimit < 1 || s.saveSlotLimit > 5)
+            {
+                Debug.LogWarning($"[GameConfig] Field 'saveSlotLimit': value {s.saveSlotLimit} is invalid (must be 1-5) — defaulting to {FallbackSaveSlotLimit}.");
+                SaveSlotLimit = FallbackSaveSlotLimit;
+            }
+            else
+            {
+                SaveSlotLimit = s.saveSlotLimit;
             }
 
             BackpackEnabled = s.backpackEnabled;
