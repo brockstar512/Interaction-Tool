@@ -91,6 +91,7 @@ namespace IT.Items
             {
                 Debug.LogWarning("[ItemStateRegistry] No IItemPrefabProvider supplied — " +
                     $"{items.Count} item(s) skipped; the rest of the restore proceeds.");
+                IT.Boot.SessionInfo.RestoreDegraded = true;   // 4.6.1 R5 (OQ-E/#31): warn text above BYTE-IDENTICAL
                 return;
             }
 
@@ -101,6 +102,7 @@ namespace IT.Items
                 {
                     Debug.LogWarning($"[ItemStateRegistry] Unknown itemType '{dto.itemType}' — " +
                         "entry skipped, remaining state restores normally.");
+                    IT.Boot.SessionInfo.RestoreDegraded = true;   // 4.6.1 R5 (OQ-E/#31): warn text above BYTE-IDENTICAL
                     continue;
                 }
 

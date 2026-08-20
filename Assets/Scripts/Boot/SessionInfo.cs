@@ -75,6 +75,31 @@ namespace IT.Boot
             return value;
         }
 
+        // 4.6.1 R5 (DD7): one-shot boot notice — set by the boot branch on
+        // LoadFailedFellBackToNew, consumed by the Screen module (Update-poll:
+        // module lifetime vs boot timing is unordered).
+        static bool _loadFailedNoticePending;
+        internal static void RequestLoadFailedNotice() => _loadFailedNoticePending = true;
+        public static bool ConsumeLoadFailedNotice()
+        {
+            var value = _loadFailedNoticePending;
+            _loadFailedNoticePending = false;
+            return value;
+        }
+
+        // 4.6.1 R5 (OQ-E(1) ruled — quality-audit #31 CLOSES here): SET by the
+        // registries' existing warn+skip sites (their warn text stays
+        // BYTE-IDENTICAL — the ruled regression row); consumed by the Screen module
+        // into the cascade prompt ("restore was incomplete — saving will keep it
+        // that way").
+        public static bool RestoreDegraded { get; set; }
+        public static bool ConsumeRestoreDegraded()
+        {
+            var value = RestoreDegraded;
+            RestoreDegraded = false;
+            return value;
+        }
+
         // DD6: flags apply POST-scene-load — flag consumers register in their scene
         // Awake, and sceneLoaded fires after those; applying at boot would warn-skip
         // everything. STATIC one-shot by necessity: GameBootstrap dies with the Boot

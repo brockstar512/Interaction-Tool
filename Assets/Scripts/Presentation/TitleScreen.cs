@@ -36,11 +36,36 @@ namespace IT.Presentation
             });
         }
 
-        // 4.6.1 R5 (DD8) fills this — the picker is Title-only in v1 (OQ-D ruled).
+        // 4.6.1 R5 (DD8, OQ-D ruled: Title-only entry in v1): slots 1..limit, label =
+        // file presence + the envelope's scene name (presence is a STAT, not an
+        // outcome — the OQ-B ruling); choosing sets ActiveSlot and returns to the
+        // menu, whose "Play" then routes through Boot for THAT slot.
         void ShowSlotPicker()
         {
-            Debug.Log("[Title] slot picker lands at R5.");
-            ShowMenu();
+            var screen = SystemsRoot.Instance != null && SystemsRoot.Instance.Presentation != null
+                ? SystemsRoot.Instance.Presentation.Screen : null;
+            if (screen == null) return;
+
+            int limit = SystemsRoot.Instance.Config != null
+                ? SystemsRoot.Instance.Config.SaveSlotLimit
+                : IT.Core.Config.GameConfig.FallbackSaveSlotLimit;
+            var options = new (string, System.Action)[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                int slot = i + 1;
+                string label = $"Slot {slot} — empty";
+                if (IT.Core.Save.SaveFile.ReadText(slot, out var json, out _) == IT.Core.Save.SaveFile.ReadOutcome.Read
+                    && IT.Player.Persistence.PlayerStateBuilder.ParseSaveGame(json, out var save)
+                    && !string.IsNullOrEmpty(save.currentSceneId))
+                    label = $"Slot {slot} — {save.currentSceneId}";
+                options[i] = (label, () => { SessionInfo.ActiveSlot = slot; ShowMenu(); });
+            }
+            screen.Enqueue(new PromptRequest
+            {
+                Title = "SELECT SAVE SLOT",
+                Body = "Choose the active slot.",
+                Options = options,
+            });
         }
     }
 }

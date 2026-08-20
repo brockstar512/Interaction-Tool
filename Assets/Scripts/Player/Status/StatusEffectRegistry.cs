@@ -75,6 +75,7 @@ namespace IT.Player.Status
                 {
                     Debug.LogWarning($"[StatusEffectRegistry] Unknown statusType '{dto.statusType}' — " +
                         "entry skipped, remaining state restores normally.");
+                    IT.Boot.SessionInfo.RestoreDegraded = true;   // 4.6.1 R5 (OQ-E/#31): warn text above BYTE-IDENTICAL
                     continue;
                 }
                 var effect = factory(dto.instanceState);

@@ -76,6 +76,7 @@ namespace IT.Boot
                     Debug.LogWarning($"[SaveLoad] envelope failure — {(ioReason ?? "unparseable JSON")} — new-game path (E-4.ii)");
                     IT.Core.Save.SaveFile.PreserveCorpse(bootSlot);
                     SessionInfo.LoadOutcome = LoadOutcome.LoadFailedFellBackToNew;
+                    SessionInfo.RequestLoadFailedNotice();   // 4.6.1 R5 (DD7): the one v1 LoadOutcome prompt
                 }
                 else
                 {

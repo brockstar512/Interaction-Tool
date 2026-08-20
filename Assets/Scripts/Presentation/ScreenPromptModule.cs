@@ -103,6 +103,7 @@ namespace IT.Presentation
 
         void Update()
         {
+            PollBootNotices();
             if (_current == null) return;
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb == null) return;
@@ -111,6 +112,27 @@ namespace IT.Presentation
             else if (kb.digit3Key.wasPressedThisFrame) Choose(2);
             else if (kb.digit4Key.wasPressedThisFrame) Choose(3);
             else if (kb.digit5Key.wasPressedThisFrame) Choose(4);
+        }
+
+        // 4.6.1 R5 (DD7 + OQ-E): boot/restore notices POLL here because module
+        // lifetime vs restore timing is unordered (ApplyLevelBaseline runs a frame
+        // after scene load — a Start-time check could race it). Consume-on-read.
+        void PollBootNotices()
+        {
+            if (IT.Boot.SessionInfo.ConsumeLoadFailedNotice())
+                Enqueue(new PromptRequest
+                {
+                    Title = "Save Data Damaged",
+                    Body = "Your save could not be read — started fresh. A backup of the damaged file was kept.",
+                    Options = new (string, System.Action)[] { ("OK", () => { }) },
+                });
+            if (IT.Boot.SessionInfo.ConsumeRestoreDegraded())
+                Enqueue(new PromptRequest
+                {
+                    Title = "Restore Incomplete",
+                    Body = "Restore was incomplete — saving will keep it that way.",   // the #31 line, verbatim
+                    Options = new (string, System.Action)[] { ("OK", () => { }) },
+                });
         }
 
         // ── code-built window (OQ-G(3); layout per spike facts) ────────────────
