@@ -39,17 +39,25 @@ namespace IT.Presentation
             canvasGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
         }
 
+        ScreenPromptModule _screenModule;
+
         void OnEnable()
         {
-            // R2 scaffold observability — the module registration line replaces this
-            // log's meaning at R3 (the root then registers its Surface-2 module here).
-            Debug.Log($"[Presentation] PresentationRoot ready in '{gameObject.scene.name}' (Surface-2 module registers at R3+).");
+            // R3: build + register the Surface-2 module (constraint 1: the coordinator
+            // gets a handle, never internals).
+            if (_screenModule == null)
+                _screenModule = gameObject.AddComponent<ScreenPromptModule>();
+            var coordinator = IT.Boot.SystemsRoot.Instance != null
+                ? IT.Boot.SystemsRoot.Instance.Presentation : null;
+            coordinator?.Register((IScreenPromptModule)_screenModule);
+            Debug.Log($"[Presentation] PresentationRoot ready in '{gameObject.scene.name}' — Screen module {(coordinator != null ? "registered" : "built (no coordinator — direct-play pre-boot?)")}.");
         }
 
         void OnDisable()
         {
-            // Module deregistration arrives WITH the module (R3) — scaffold has
-            // nothing registered yet.
+            var coordinator = IT.Boot.SystemsRoot.Instance != null
+                ? IT.Boot.SystemsRoot.Instance.Presentation : null;
+            if (_screenModule != null) coordinator?.Deregister((IScreenPromptModule)_screenModule);
         }
     }
 }
