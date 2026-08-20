@@ -221,6 +221,19 @@ namespace IT.Player.Control
             var status = GetComponent<PlayerStatusManager>();
             if (dto.HasValue) status?.playerStatus?.RestoreLives(lives);
 
+            // 4.6.1 R4 (OQ-C(1) ruled): mercy refill — Continue-after-game-over
+            // overrides the restored lives with the NULL-DTO chain default (A-4's
+            // lever; closes the lives-0 gap). Consumed cleared-on-read for P1
+            // regardless (flag never lingers), APPLIED only when a DTO restored.
+            bool mercy = PlayerId == "P1" && IT.Boot.SessionInfo.ConsumeMercyRefill();
+            if (mercy && dto.HasValue)
+            {
+                lives = IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
+                    null, lc, IT.Boot.SystemsRoot.Instance?.Config, out livesSrc);
+                livesSrc += "(mercy)";
+                status?.playerStatus?.RestoreLives(lives);
+            }
+
             // Health BEFORE statuses (Builder.Restore's PB.2 ordering rationale: a
             // first post-restore poison tick must hit RESTORED health).
             string hpSeg = "max(fresh)";

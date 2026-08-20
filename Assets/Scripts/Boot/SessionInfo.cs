@@ -62,6 +62,19 @@ namespace IT.Boot
             }
         }
 
+        // 4.6.1 (OQ-C(1) ruled): one-shot mercy flag — set by the game-over Continue
+        // action, consumed (cleared-on-read, the DD10-trio discipline) in
+        // ApplyLevelBaseline AFTER the DTO restore: lives := the null-DTO chain
+        // default (A-4's lever at its recorded destination; closes the lives-0 gap).
+        static bool _mercyRefill;
+        public static void RequestMercyRefill() => _mercyRefill = true;
+        public static bool ConsumeMercyRefill()
+        {
+            var value = _mercyRefill;
+            _mercyRefill = false;
+            return value;
+        }
+
         // DD6: flags apply POST-scene-load — flag consumers register in their scene
         // Awake, and sceneLoaded fires after those; applying at boot would warn-skip
         // everything. STATIC one-shot by necessity: GameBootstrap dies with the Boot

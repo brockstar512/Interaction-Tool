@@ -85,11 +85,55 @@ namespace IT.Player.Control
                 // DONE — deregister it (leaving it registered forever is the stale-entry bug reborn) but
                 // do NOT respawn. Game-over PRESENTATION stays OQ-PB4-B (deferred, post-v1); the player
                 // stays dead (PlayerDeathState).
-                Debug.Log($"[SpawnManager] {slot} out of lives — game over (presentation = OQ-PB4-B, post-v1)");
+                Debug.Log($"[SpawnManager] {slot} out of lives — game over (presentation: 4.6.1 session screen below; per-player = the reservation)");
                 // PB.4.5 R3 (§7.3 Option A): reserve BEFORE Deregister so the slot is never
                 // observable as free — a joiner racing this frame must not inherit it.
                 PlayerRoster.TryGetInstance()?.ReserveSlotGameOver(slot);
                 PlayerRoster.TryGetInstance()?.Deregister(wrapper);
+
+                // 4.6.1 R4 (DD5, DQ-8 ruled): SESSION game-over = ALL slots out — after
+                // this Deregister, zero registered wrappers means nobody is left (a
+                // Suspended player is still registered, so an unplugged pad does NOT
+                // trigger this). The lifecycle owner sends the screen (the epic's
+                // premise); null-soft: no Screen module -> named log, state stands
+                // (the pre-4.6 behavior).
+                if ((PlayerRoster.TryGetInstance()?.Wrappers.Count ?? 0) == 0)
+                {
+                    var screen = IT.Boot.SystemsRoot.Instance?.Presentation != null
+                        ? IT.Boot.SystemsRoot.Instance.Presentation.Screen : null;
+                    if (screen == null)
+                    {
+                        Debug.Log("[SpawnManager] session game over — no Screen module in this scene; state stands.");
+                    }
+                    else
+                    {
+                        Debug.Log("[SpawnManager] session game over — all slots out; game-over screen requested.");
+                        screen.Enqueue(new IT.Presentation.PromptRequest
+                        {
+                            Title = "GAME OVER",
+                            Body = "All players are out of lives.",
+                            Priority = IT.Presentation.PromptPriority.GameOver,
+                            Options = new (string, System.Action)[]
+                            {
+                                ("Continue", () =>
+                                {
+                                    // OQ-B(1) + OQ-C(1): mercy + reload THROUGH BOOT —
+                                    // the entire verified boot branch re-runs; no
+                                    // in-session load path exists in v1.
+                                    IT.Boot.SessionInfo.RequestMercyRefill();
+                                    UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                                }),
+                                ("Quit to Title", () =>
+                                {
+                                    if (Application.CanStreamedLevelBeLoaded("Title"))
+                                        UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+                                    else
+                                        Debug.LogWarning("[SpawnManager] Title scene missing from Build Settings — run Tools > '4.6.1 R4: Generate Title scene' once, then retry.");
+                                }),
+                            },
+                        });
+                    }
+                }
                 return;
             }
 
