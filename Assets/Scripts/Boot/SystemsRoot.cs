@@ -44,9 +44,13 @@ namespace IT.Boot
             // Inspector wiring — L9's join-race environment is then automatic.
             root.Spawn = go.AddComponent<SpawnManager>();
             // 4.6.1 (DD1): the presentation coordinator — AFTER SpawnManager (its
-            // game-over branch will reach Presentation via Instance?, R4); its Awake
-            // arms the per-scene PresentationRoot ensure hook (DD2/OQ-G(3)).
+            // game-over branch will reach Presentation via Instance?, R4).
             root.Presentation = go.AddComponent<IT.Presentation.Presentation>();
+            // 4.6.1 R6.1 (Session A defect, ordering half): arm the per-scene ensure
+            // hook AFTER the property assignment above — arming from Presentation.Awake
+            // ran mid-AddComponent, when Instance.Presentation was still null, so the
+            // immediately-ensured root's module could never register.
+            IT.Presentation.PresentationRoot.ArmEnsurePerScene();
             // Story 5.1: true-global segment membership (C-C), the SystemsRoot slot reserved above.
             // AFTER PlayerRoster so SegmentManager.Awake finds a live roster to subscribe PlayerLeft on.
             go.AddComponent<SegmentManager>();

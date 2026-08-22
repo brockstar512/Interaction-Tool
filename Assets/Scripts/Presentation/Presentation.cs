@@ -16,12 +16,11 @@ namespace IT.Presentation
         public IHudModule          Hud    { get; private set; }   // registers at 4.6.3
         public IScreenFxModule     Fx     { get; private set; }   // registers at 4.6.4
 
-        void Awake()
-        {
-            // DD2's ensure hook: PresentationRoot exists per scene BY CODE
-            // (OQ-G(3) — zero owner authoring; DQ-2's substance preserved).
-            PresentationRoot.ArmEnsurePerScene();
-        }
+        // 4.6.1 R6.1 (Session A defect): the ensure hook is NO LONGER armed from
+        // Awake — Awake runs DURING SystemsRoot.Create's AddComponent, BEFORE the
+        // Presentation property is assigned, so the immediately-ensured root's
+        // module registered against a null coordinator (the "no coordinator"
+        // orphan). SystemsRoot.Create now arms the hook AFTER the assignment.
 
         public void Register(IScreenPromptModule module)   { Screen = module; }
         public void Deregister(IScreenPromptModule module) { if (ReferenceEquals(Screen, module)) Screen = null; }

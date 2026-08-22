@@ -25,6 +25,14 @@ namespace IT.Presentation
 
         static void Ensure()
         {
+            // 4.6.1 R6.1 (Session A defect, lifetime half): NEVER ensure in the Boot
+            // scene (build index 0 by documented layout — GameBootstrap header; the
+            // Continue path's LoadScene(0) relies on the same fact). A root there
+            // lives only until the boot LoadScene — long enough for its module to
+            // CONSUME a boot notice and die with it (the observed loss). The
+            // sceneLoaded hook creates the gameplay root; direct-play scenes have
+            // buildIndex != 0 (or -1 unbuilt) and keep the immediate ensure.
+            if (SceneManager.GetActiveScene().buildIndex == 0) return;
             if (FindFirstObjectByType<PresentationRoot>() != null) return;
             new GameObject("PresentationRoot").AddComponent<PresentationRoot>();
         }

@@ -119,6 +119,15 @@ namespace IT.Presentation
         // after scene load — a Start-time check could race it). Consume-on-read.
         void PollBootNotices()
         {
+            // 4.6.1 R6.1 (Session A defect, consumption half — belt for BOTH fixes
+            // above): only the REGISTERED module may consume boot notices. An
+            // unregistered module (ordering accident, future stray root) must never
+            // eat a notice it cannot reliably present — consume-then-die was the
+            // observed failure.
+            var coordinator = IT.Boot.SystemsRoot.Instance != null
+                ? IT.Boot.SystemsRoot.Instance.Presentation : null;
+            if (coordinator == null || !ReferenceEquals(coordinator.Screen, this)) return;
+
             if (IT.Boot.SessionInfo.ConsumeLoadFailedNotice())
                 Enqueue(new PromptRequest
                 {
