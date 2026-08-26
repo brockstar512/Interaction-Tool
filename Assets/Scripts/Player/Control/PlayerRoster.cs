@@ -52,9 +52,10 @@ namespace IT.Player.Control
         internal static PlayerStateDTO? PendingRestoreDto;
 
         // PB.4.5 R3 (rulings i/§7.4/§7.5): session-scoped structures as roster INSTANCE fields —
-        // they die with the SystemsRoot GameObject (= session end), no explicit clear hook needed
-        // in v1; the future SystemsRoot.ResetSession() is where an explicit clear lands when
-        // in-game restart exists. R2's Register empty-DeviceId guard is load-bearing for all three.
+        // they die with the SystemsRoot GameObject (= session end). The "future ResetSession()"
+        // those rulings reserved LANDED at 4.6.1 R6.2 (in-game restart now exists: Continue /
+        // Title→Play): ResetSession() below clears all three on every pass through Boot.
+        // R2's Register empty-DeviceId guard is load-bearing for all three.
         readonly Dictionary<string, string> _deviceToSlot = new();          // survives transitions (§7.4)
         readonly Dictionary<string, PlayerStateDTO> _heldByDevice = new();  // flushed at transitions (§7.4 row 2)
         readonly HashSet<string> _gameOverReservedSlots = new();            // §7.3 — permanent for the run
@@ -319,12 +320,34 @@ namespace IT.Player.Control
 
         // PB.4.5 R3 (§7.3 Option A): game-over marks the slot reserved — a joiner must not inherit
         // the primary role by allocation timing. Permanent for the run (§7.5 corollary — no in-game
-        // recovery in v1); the future SystemsRoot.ResetSession() clears it when restart exists.
+        // recovery in v1); ResetSession() below is the §7.5-reserved clear, landed at 4.6.1 R6.2.
         internal void ReserveSlotGameOver(string slot)
         {
             if (string.IsNullOrEmpty(slot)) return;
             _gameOverReservedSlots.Add(slot);
             Debug.Log($"[PlayerRoster] slot {slot} game-over-reserved");
+        }
+
+        // 4.6.1 R6.2 (Session A A-3, owner-ruled 2026-08-26): Continue / Play-from-Title = FULL
+        // SESSION RESET — any pass through Boot ends the run. This is the §7.3/§7.5 "future
+        // ResetSession()" landing, called from GameBootstrap.Start (Boot-only; direct-play never
+        // runs it). RULED BOUNDARY, pinned — a reset outside it is a defect: clears the three
+        // roster session structures ONLY. SessionInfo is deliberately untouched (mercy, ActiveSlot,
+        // LoadOutcome, notices, PendingPrimaryRestore are the message INTO the next session — this
+        // method takes no SessionInfo dependency). JoinPolicy is NOT in the reset set: Boot's
+        // existing R3.1 line sets Locked immediately after this call, and OnSceneBoundary reopens
+        // it post-load, unchanged. Accepted loss (ruled): pad-reclaims-old-slot-number across
+        // Continue — P2+ state is session-scoped; fresh join is the design.
+        internal void ResetSession()
+        {
+            int reservations = _gameOverReservedSlots.Count;
+            int devices = _deviceToSlot.Count;
+            int held = _heldByDevice.Count;
+            _gameOverReservedSlots.Clear();
+            _deviceToSlot.Clear();
+            _heldByDevice.Clear();
+            // R5-shape observability (owner-required): A-3/A-4's evidence the reset RAN, not inference.
+            Debug.Log($"[PlayerRoster] session reset — reservations:{reservations} devices:{devices} held:{held} cleared");
         }
 
         // PB.4.5 R3: harness entry (PB.1 9/0-pattern ContextMenu drives this) — identical routing

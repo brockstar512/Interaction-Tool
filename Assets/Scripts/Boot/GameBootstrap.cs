@@ -33,6 +33,16 @@ namespace IT.Boot
             else if (playerPrefab != null)
                 roster.PlayerPrefab = playerPrefab;
 
+            // 4.6.1 R6.2 (A-3 fix, owner-ruled 2026-08-26): ANY pass through Boot = the prior
+            // session ends. Continue and Title→Play both reload through here (the only
+            // LoadScene(0) shape), so the game-over reservation must die HERE — or the returning
+            // primary reseats as P2 and the P1-only DTO/mercy gates starve (the A-3 capture).
+            // Boot-only by construction (this component lives in Boot.unity; the BootGuard/
+            // direct-play path never runs it). ORDERING [S]: nothing in Start pairs or allocates —
+            // the scene-placed wrapper registers after the LoadScene at the bottom, and input
+            // events cannot interleave a synchronous Start. First boot: a no-op (counts 0).
+            roster?.ResetSession();
+
             // PB.4 (R3-Q4): feed the same player prefab to the SpawnManager for death-respawn (arch D1 —
             // one wiring line here). Null-guarded like the Instance?.Config posture.
             var spawn = SystemsRoot.Instance?.Spawn;
