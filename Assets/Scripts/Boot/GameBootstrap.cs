@@ -68,6 +68,10 @@ namespace IT.Boot
             // at boot pre-picker (the DD4 pin-by-default).
             IT.Core.Save.SaveFile.AdoptLegacySingleSlot();
             int bootSlot = SessionInfo.ActiveSlot;
+            // 4.6.1 R6.3 (A-7 observability + the "load path logs no slot on success"
+            // sitting observation): the boot read's slot, logged unconditionally — the
+            // twin of the picker's write line. Divergence between the two IS the A-7 bug.
+            Debug.Log($"[SaveLoad] loading slot {bootSlot}");
             var readOutcome = IT.Core.Save.SaveFile.ReadText(bootSlot, out var saveJson, out var ioReason);
             if (readOutcome == IT.Core.Save.SaveFile.ReadOutcome.NotFound)
             {

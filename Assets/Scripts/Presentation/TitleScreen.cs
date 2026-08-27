@@ -58,7 +58,16 @@ namespace IT.Presentation
                     && IT.Player.Persistence.PlayerStateBuilder.ParseSaveGame(json, out var save)
                     && !string.IsNullOrEmpty(save.currentSceneId))
                     label = $"Slot {slot} — {save.currentSceneId}";
-                options[i] = (label, () => { SessionInfo.ActiveSlot = slot; ShowMenu(); });
+                options[i] = (label, () =>
+                {
+                    SessionInfo.ActiveSlot = slot;
+                    // 4.6.1 R6.3 (A-7 observability): log the PROPERTY after the write, beside
+                    // the chosen value — a clamp divergence (setter vs choice) is then visible
+                    // in one line. The A-7 static trace found no break; this line + the boot
+                    // read's twin make the runtime the evidence.
+                    Debug.Log($"[SaveLoad] ActiveSlot ← {SessionInfo.ActiveSlot} (picker chose {slot})");
+                    ShowMenu();
+                });
             }
             screen.Enqueue(new PromptRequest
             {
