@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;   // 4.6.2 R6.1: _navDevice/SetNavigationDevice use InputDevice unqualified (the Session Z gate's CS0246 pair)
 using UnityEngine.UI;
 
 namespace IT.Presentation
