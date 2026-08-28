@@ -84,6 +84,31 @@ namespace IT.Presentation
             }
         }
 
+        // Debug-menu R2: the current request's identity, so a programmatic
+        // dismisser can verify the open prompt is ITS OWN before killing it
+        // (D-3: the debug menu must never dismiss the pause menu's prompt).
+        internal PromptRequest CurrentRequest => _current;
+
+        // Debug-menu R2: programmatic dismiss — closes the current prompt WITHOUT
+        // invoking any option callback; the queue advances exactly as after a
+        // choice (the F9 page-cycle's advance/close mechanism).
+        internal void DismissCurrent()
+        {
+            if (_current == null) return;
+            _current = null;
+            if (_queue.Count > 0)
+            {
+                var next = _queue[0];
+                _queue.RemoveAt(0);
+                ShowNow(next);
+            }
+            else
+            {
+                StopAllCoroutines();
+                StartCoroutine(CloseRoutine());
+            }
+        }
+
         void Choose(int index)
         {
             var chosen = _current;

@@ -527,6 +527,17 @@ namespace IT.Player.Persistence
             Debug.Log($"[SaveLoad] harness: ActiveSlot now {IT.Boot.SessionInfo.ActiveSlot}");
         }
 
+        // Debug-menu story R2 (DD2 ruled: the harness stays the OWNER) — menu
+        // front-end entry points, mirroring the digit-key handlers VERBATIM (same
+        // calls → same logs, the D-2 parity evidence). Internal: only the
+        // DebugMenu calls these; they retire with the harness.
+        internal void MenuCapture() => Capture();
+        internal void MenuRoundTripTransition() => StartCoroutine(RoundTrip(RestoreMode.Transition));
+        internal void MenuRoundTripLoad() => StartCoroutine(RoundTrip(RestoreMode.Load));
+        internal void MenuCurePoison() => Cure(typeof(PoisonEffect), "poison");
+        internal void MenuCureOnFire() => Cure(typeof(OnFireEffect), "onfire");
+        internal void MenuToggleActiveSlot() => ToggleActiveSlot();
+
         // Makes the spawn marker visible in the Scene view without needing a sprite.
         void OnDrawGizmos()
         {

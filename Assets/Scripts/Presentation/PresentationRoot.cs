@@ -59,6 +59,9 @@ namespace IT.Presentation
             // root — inert wherever no paired players exist (Title, boot).
             if (GetComponent<PauseMenu>() == null)
                 gameObject.AddComponent<PauseMenu>();
+            // Debug-menu R2: window consumer #4 — the opener is dev-gated inside.
+            if (GetComponent<DebugMenu>() == null)
+                gameObject.AddComponent<DebugMenu>();
             var coordinator = IT.Boot.SystemsRoot.Instance != null
                 ? IT.Boot.SystemsRoot.Instance.Presentation : null;
             coordinator?.Register((IScreenPromptModule)_screenModule);
