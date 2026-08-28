@@ -29,6 +29,13 @@ namespace IT.Presentation
     }
 
     public interface IWorldPromptModule { }   // 4.6.4 extends
-    public interface IHudModule { }           // 4.6.3 extends
+    // 4.6.3 (DQ-4(b) ruled): Surface-3 contract — HUDManager implements it and
+    // the static dies; PlayerStatusManager reaches it via Presentation.Hud.
+    public interface IHudModule
+    {
+        IT.Player.HUD.PlayerStatusHUD InitializePlayerHUD(
+            IT.Player.StateMachine.PlayerStateMachine player, string playerId);
+        void DestroyPlayerHUD(string playerId);
+    }
     public interface IScreenFxModule { }      // 4.6.4 extends
 }

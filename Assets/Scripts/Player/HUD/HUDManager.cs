@@ -9,10 +9,16 @@ namespace IT.Player.HUD
 {
     using IT.Player.StateMachine;
 
-    public class HUDManager : MonoBehaviour
+    using IT.Player.Control;   // 4.6.3: PlayerLeftVoluntarily subscription (§5.C destroy-on-leave)
+
+    // 4.6.3 (DQ-4(b) RULED — THE STATIC DIES THIS STORY): HUDManager is now the
+    // Surface-3 MODULE, reached through the coordinator handle
+    // (SystemsRoot.Instance?.Presentation?.Hud) — the sole legacy call site
+    // (PlayerStatusManager.Init, census-confirmed) is rewired there. Still a
+    // SCENE object (the panel prefab is Inspector-wired), registering/
+    // deregistering like PresentationRoot's modules.
+    public class HUDManager : MonoBehaviour, IT.Presentation.IHudModule
     {
-    
-        public static HUDManager instance { get; private set; }
         // PB.4 R4 (DD4 / Directive 1): panels keyed by the wrapper's stable playerId ("P1"/"P2"), so a
         // death→respawn REBINDS P1's existing panel instead of stacking a fresh one (the R-11 symptom).
         // Replaces the old unkeyed List<PlayerStatusHUD>.
@@ -20,27 +26,48 @@ namespace IT.Player.HUD
         [SerializeField] PlayerStatusHUD playerHUDPrefab;
         // PB.4.5 R4 (OQ-PB45-G, owner-ruled Option 1): the hardcoded cap (const = 2) was the
         // defect — it conflated "v1 couch co-op is two people" (actual scope) with maxPlayers
-        // (the hard limit). Read config exactly as PlayerRoster.cs:48 does, so the two caps
-        // share one source and cannot drift. JSON stays 4. The third `?? 4` literal site is a
-        // recorded quality-audit candidate (capture-only, not R4 scope).
-        int _maxPlayers = 4;
-    
-
+        // (the hard limit). Read config exactly as PlayerRoster does, so the two caps share
+        // one source and cannot drift. 4.6.3 (OQ-C ruled): the fallback literal now reads
+        // GameConfig.FallbackMaxPlayers — audit #28's consolidation.
+        int _maxPlayers = IT.Core.Config.GameConfig.FallbackMaxPlayers;
 
         private void Awake()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                instance = this;
-            }
             _panels = new Dictionary<string, PlayerStatusHUD>();
-            // PB.4.5 R4 (G ruling's exact expression — matches PlayerRoster.cs:48): cached once;
-            // the direct-play path (no SystemsRoot) still works via the fail-alive fallback.
-            _maxPlayers = SystemsRoot.Instance?.Config.MaxPlayers ?? 4;
+            // PB.4.5 R4 (G ruling's exact expression): cached once; the direct-play
+            // path (no SystemsRoot) still works via the fail-alive fallback.
+            _maxPlayers = SystemsRoot.Instance?.Config.MaxPlayers
+                ?? IT.Core.Config.GameConfig.FallbackMaxPlayers;
+        }
+
+        // 4.6.3: module registration (the PresentationRoot pattern) + the §5.C
+        // destroy-on-leave wire. Subscribes the DISTINCT PlayerLeftVoluntarily —
+        // NOT plain PlayerLeft, which also fires on death-respawn deregisters
+        // (panel must REBIND) and game-over (retain-at-X0 is the RULED
+        // INTENTIONAL SPLIT, §5.C verbatim) — the deviation named in the R1.
+        void OnEnable()
+        {
+            SystemsRoot.Instance?.Presentation?.Register((IT.Presentation.IHudModule)this);
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster != null) roster.PlayerLeftVoluntarily += OnPlayerLeftVoluntarily;
+        }
+
+        void OnDisable()
+        {
+            SystemsRoot.Instance?.Presentation?.Deregister((IT.Presentation.IHudModule)this);
+            var roster = PlayerRoster.TryGetInstance();
+            if (roster != null) roster.PlayerLeftVoluntarily -= OnPlayerLeftVoluntarily;
+        }
+
+        // §5.C: DESTROY on voluntary leave — rebuilt fresh under the same key on
+        // rejoin (get-or-rebind falls to the build branch; §5.D restores state).
+        // §8.2 watch (carried from the record): an unkeyed orphan panel is not in
+        // _panels and will not be found by this lookup.
+        void OnPlayerLeftVoluntarily(PlayerWrapper wrapper)
+        {
+            if (wrapper == null) return;
+            Debug.Log($"[HUDManager] {wrapper.PlayerId} left voluntarily — panel destroyed (§5.C; rebuilt on rejoin)");
+            DestroyPlayerHUD(wrapper.PlayerId);
         }
 
         // PB.4 R4 (Directive 1): GET-OR-REBIND. A panel already mapped to this playerId (a respawn
@@ -85,11 +112,11 @@ namespace IT.Player.HUD
             return result;
         }
 
-        // PB.4 R4: DEAD CODE by design — game-over HUD disposition is assigned to OQ-PB4-B (post-v1
-        // game-over presentation). A game-over'd panel is deliberately LEFT showing "X0" and reused if
-        // the slot rejoins (owner ruling 2026-07-24), so nothing calls this yet. Kept compiling (now
-        // keyed by playerId) so OQ-B can wire it without a signature hunt.
-        public void DestoryPlayerHUD(string playerId)
+        // PB.4 R4 wrote this as dead-by-design; 4.6.3 wires its FIRST CALLER (§5.C
+        // destroy-on-leave, above) and fixes the spelling at the wiring moment
+        // (OQ-D ruled: rename-with-caller). Game-over panels still deliberately
+        // retain at X0 (the 07-24 ruling — game-over-specific, untouched).
+        public void DestroyPlayerHUD(string playerId)
         {
             if (_panels.TryGetValue(playerId, out var leaving))
             {
@@ -97,22 +124,7 @@ namespace IT.Player.HUD
                 if (leaving != null) Destroy(leaving.gameObject);
             }
         }
-
-
-        void HealthUI(int healthPoints)
-        {
-
-        }
-
-        void ItemUI()
-        {
-
-        }
-
-        void LivesUI()
-        {
-
-        }
-    
+        // 4.6.3 (OQ-B ruled): the HealthUI/ItemUI/LivesUI stubs — empty since
+        // Epic 4 — are DELETED.
     }
 }

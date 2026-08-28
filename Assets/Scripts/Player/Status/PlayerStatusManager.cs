@@ -153,14 +153,19 @@ namespace IT.Player.Status
             // SystemsRoot-not-present idiom: warn with the SCENE NAME (so a playtest/build report names
             // the scene to fix without cross-referencing), skip the wire, let init finish. Safe to skip —
             // playerHUD has NO readers anywhere in the codebase, so leaving it null cascades nowhere.
-            if (HUDManager.instance == null)
+            // 4.6.3 (DQ-4(b) ruled — the ONE legacy call site, census-confirmed):
+            // the static is GONE; the HUD is reached through the Surface-3 module
+            // handle. Same loud-but-alive posture: warn with the scene name, skip
+            // the wire, let init finish (playerHUD readers unchanged — none).
+            var hud = IT.Boot.SystemsRoot.Instance?.Presentation?.Hud;
+            if (hud == null)
             {
-                Debug.LogWarning($"[PlayerStatusManager] HUDManager not in scene " +
+                Debug.LogWarning($"[PlayerStatusManager] no HUD module registered in scene " +
                     $"'{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}' — HUD wire skipped " +
                     $"for player id '{_wrapper?.PlayerId}' (init continues without HUD)");
                 return;
             }
-            playerHUD = HUDManager.instance.InitializePlayerHUD(playerStateMachineManager, _wrapper?.PlayerId);
+            playerHUD = hud.InitializePlayerHUD(playerStateMachineManager, _wrapper?.PlayerId);
         }
 
         void Update()

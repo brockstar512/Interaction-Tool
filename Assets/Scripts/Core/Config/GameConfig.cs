@@ -21,6 +21,12 @@ namespace IT.Core.Config
         // bounds audit.)
         public const int FallbackDefaultLives = 3;
 
+        // 4.6.3 (OQ-C ruled: consolidate — audit #28 closes there): the MaxPlayers
+        // fallback the header note above deferred ("left as-is per the R-13
+        // lives-only scope") — now the ONE fallback site; PlayerRoster's and
+        // HUDManager's `?? 4` literals both read this.
+        public const int FallbackMaxPlayers = 4;
+
         // SAVE.4 (DD1, R-13 one-source shape): save-slot cap. Valid range 1-5 (owner
         // re-ruling 2026-08-19); invalid/missing falls back HERE, not to a literal.
         public const int FallbackSaveSlotLimit = 1;

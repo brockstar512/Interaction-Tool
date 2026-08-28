@@ -35,6 +35,12 @@ namespace IT.Player.Control
         public event System.Action<PlayerWrapper> PlayerJoined;
         public event System.Action<PlayerWrapper> PlayerLeft;
 
+        // 4.6.3 (§5.C wire): fired ONLY by Leave() — distinct from PlayerLeft,
+        // which fires on EVERY Deregister (death-respawn REBINDs its panel;
+        // game-over RETAINS at X0 — §5.C's intentional split). The HUD module's
+        // destroy-on-leave subscribes here.
+        public event System.Action<PlayerWrapper> PlayerLeftVoluntarily;
+
         // Set by TryJoin() before Instantiate; cleared by the new wrapper's Awake on read.
         // Null = scene-placed P1 wrapper (auto-pair to keyboard / first gamepad).
         internal static InputDevice PendingJoinDevice;
@@ -71,7 +77,8 @@ namespace IT.Player.Control
         protected override void Awake()
         {
             base.Awake();
-            _maxPlayers = SystemsRoot.Instance?.Config.MaxPlayers ?? 4;
+            // 4.6.3 (OQ-C ruled): fallback reads GameConfig.FallbackMaxPlayers — audit #28.
+            _maxPlayers = SystemsRoot.Instance?.Config.MaxPlayers ?? IT.Core.Config.GameConfig.FallbackMaxPlayers;
             InputUser.onUnpairedDeviceUsed += OnUnpairedDeviceUsed;
             InputSystem.onDeviceChange += OnDeviceChange;
             InputUser.onChange += OnInputUserChange;
@@ -416,6 +423,7 @@ namespace IT.Player.Control
             }
             Deregister(wrapper);          // §5.D capture happens HERE (keyed by DeviceId)
             wrapper.ReleaseDevice();      // device frees now; OnDestroy's Deregister double-fire is idempotent
+            PlayerLeftVoluntarily?.Invoke(wrapper);   // 4.6.3 §5.C: the destroy-on-leave signal (wrapper still valid)
             Debug.Log($"[PlayerRoster] {wrapper.PlayerId} left voluntarily — slot released; same device rejoins with held state (§5.D)");
             Destroy(wrapper.gameObject);
         }
