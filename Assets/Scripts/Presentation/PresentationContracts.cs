@@ -28,7 +28,17 @@ namespace IT.Presentation
         void Enqueue(PromptRequest request);
     }
 
-    public interface IWorldPromptModule { }   // 4.6.4 extends
+    // 4.6.4 (DD4, constrained by the minigame record's req. 3 — §0 fold):
+    // ANCHOR/OWNER-SCOPED members. The caller owns its anchor; the v1
+    // implementation renders ONE reused label honoring the latest Show
+    // (recorded limitation) — but nothing here presumes the module owns the
+    // only renderable: an entity-supplied renderer can satisfy these same
+    // members later without breaking callers.
+    public interface IWorldPromptModule
+    {
+        void ShowPrompt(string ownerId, string text, UnityEngine.Vector3 worldPosition);
+        void HidePrompt(string ownerId);
+    }
     // 4.6.3 (DQ-4(b) ruled): Surface-3 contract — HUDManager implements it and
     // the static dies; PlayerStatusManager reaches it via Presentation.Hud.
     public interface IHudModule

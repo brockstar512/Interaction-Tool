@@ -167,6 +167,15 @@ namespace IT.Player.StateMachine
             //this is the keys for every interactable item
             item = newItem;
         }
+
+        // 4.6.4 W-R2 (OQ-B census verdict: REUSE the source of truth): the world-
+        // prompt module polls THIS instead of owning a second proximity check —
+        // same IBestOverlap + LookDirection call Interact() uses (:144), only the
+        // poll cadence is new. Null-safe for pre-init frames.
+        public Interactable PeekInteractable()
+            => overlapObjectCheck != null && currentState != null
+                ? overlapObjectCheck.GetOverlapObject(transform.position, currentState.LookDirection)
+                : null;
    
 
         public void SwitchStateFromEquippedItem(Interactable newItem = null)

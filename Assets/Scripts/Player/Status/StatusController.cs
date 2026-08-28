@@ -16,6 +16,17 @@ namespace IT.Player.Status
     {
         readonly List<StatusEffectBase> _active = new();
 
+        // 4.6.4 W-R2 (DQ-3(a) ruled, ADDITIVE-ONLY): lifecycle events mirroring
+        // Health's pattern. Applied fires on the ADD path only — DD2 RULED:
+        // Refresh does NOT re-fire. Expired fires PER-EFFECT on EVERY removal
+        // path (Tick expiry, ClearAll, Cure) — which is how ClearAll clears
+        // consumers per-effect (the R1 answer); Cleared is the ClearAll belt
+        // consumers may ALSO use. First consumer: 4.6.4's ScreenFxModule
+        // (HUD status icons = NAMED DEBT, epic §7 pad item 7).
+        public event System.Action<StatusEffectBase> StatusApplied;
+        public event System.Action<StatusEffectBase> StatusExpired;
+        public event System.Action StatusCleared;
+
         // PB.2: capture-side read surface for StatusEffectRegistry. internal + read-only —
         // the list itself stays private, and the only mutation paths remain Apply/ClearAll
         // (the Cure path lands at R3).
@@ -75,6 +86,7 @@ namespace IT.Player.Status
             effect.Bind(this);
             _active.Add(effect);
             effect.OnApply();
+            StatusApplied?.Invoke(effect);   // 4.6.4: add-path only (DD2: refresh paths above never fire this)
         }
 
         // Per-frame advance, called by PlayerWrapper.Update only while the wrapper is Active
@@ -95,7 +107,10 @@ namespace IT.Player.Status
                 // a version counter instead.
                 if (!_active.Contains(effect)) continue;            // removed mid-tick — skip
                 if (effect.Advance(dt) && _active.Remove(effect))   // remove-first, then OnExpire
+                {
                     effect.OnExpire();
+                    StatusExpired?.Invoke(effect);   // 4.6.4: beside every OnExpire site
+                }
             }
         }
 
@@ -113,7 +128,11 @@ namespace IT.Player.Status
             var snapshot = _active.ToArray();
             _active.Clear();
             foreach (var effect in snapshot)
+            {
                 effect.OnExpire();
+                StatusExpired?.Invoke(effect);   // 4.6.4: per-effect DURING ClearAll (the R1 answer)
+            }
+            StatusCleared?.Invoke();             // 4.6.4: the belt consumers may ALSO use
         }
 
         // PB.2 R3 (Directive 2 clear-condition 3): cure = FORCED EARLY EXPIRY of one
@@ -130,6 +149,7 @@ namespace IT.Player.Status
             if (effect == null) return false;
             _active.Remove(effect);
             effect.OnExpire();
+            StatusExpired?.Invoke(effect);   // 4.6.4: beside every OnExpire site
             return true;
         }
 

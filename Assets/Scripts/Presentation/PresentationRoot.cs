@@ -48,13 +48,19 @@ namespace IT.Presentation
         }
 
         ScreenPromptModule _screenModule;
+        WorldPromptModule _worldModule;    // 4.6.4 W-R2: Surface 1
+        ScreenFxModule _fxModule;          // 4.6.4 W-R2: Surface 4
 
         void OnEnable()
         {
             // R3: build + register the Surface-2 module (constraint 1: the coordinator
-            // gets a handle, never internals).
+            // gets a handle, never internals). 4.6.4 adds Surfaces 1+4 the same way.
             if (_screenModule == null)
                 _screenModule = gameObject.AddComponent<ScreenPromptModule>();
+            if (_worldModule == null)
+                _worldModule = gameObject.AddComponent<WorldPromptModule>();
+            if (_fxModule == null)
+                _fxModule = gameObject.AddComponent<ScreenFxModule>();
             // 4.6.2 R2 (OQ-A ruled IN): the pause menu rides the same scene-local
             // root — inert wherever no paired players exist (Title, boot).
             if (GetComponent<PauseMenu>() == null)
@@ -65,6 +71,8 @@ namespace IT.Presentation
             var coordinator = IT.Boot.SystemsRoot.Instance != null
                 ? IT.Boot.SystemsRoot.Instance.Presentation : null;
             coordinator?.Register((IScreenPromptModule)_screenModule);
+            coordinator?.Register((IWorldPromptModule)_worldModule);
+            coordinator?.Register((IScreenFxModule)_fxModule);
             Debug.Log($"[Presentation] PresentationRoot ready in '{gameObject.scene.name}' — Screen module {(coordinator != null ? "registered" : "built (no coordinator — direct-play pre-boot?)")}.");
         }
 
@@ -73,6 +81,8 @@ namespace IT.Presentation
             var coordinator = IT.Boot.SystemsRoot.Instance != null
                 ? IT.Boot.SystemsRoot.Instance.Presentation : null;
             if (_screenModule != null) coordinator?.Deregister((IScreenPromptModule)_screenModule);
+            if (_worldModule != null) coordinator?.Deregister((IWorldPromptModule)_worldModule);
+            if (_fxModule != null) coordinator?.Deregister((IScreenFxModule)_fxModule);
         }
     }
 }
