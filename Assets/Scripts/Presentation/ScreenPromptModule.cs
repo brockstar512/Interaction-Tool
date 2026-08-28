@@ -20,6 +20,15 @@ namespace IT.Presentation
         readonly List<PromptRequest> _queue = new();
         PromptRequest _current;
 
+        // 4.6.2 R2 (DQ-6 ruled: the OPENER'S device navigates; OQ-E ruled: direct
+        // per-device polling, no .inputactions touch — actions migration is named
+        // M4 debt): while set, THIS device's dpad moves a highlight and south
+        // selects. Digits 1-5 remain the ratified keyboard fallback. Other paired
+        // devices deliberately do NOT navigate (only _navDevice is polled).
+        InputDevice _navDevice;
+        int _highlight;
+        internal void SetNavigationDevice(InputDevice device) => _navDevice = device;
+
         RectTransform _window;
         CanvasGroup _group;
         Text _title;
@@ -50,12 +59,8 @@ namespace IT.Presentation
             Vector2 oldSize = _window.sizeDelta;
             _title.text = request.Title ?? "";
             _body.text = request.Body ?? "";
-            for (int i = 0; i < _optionRows.Count; i++)
-            {
-                bool used = request.Options != null && i < request.Options.Length;
-                _optionRows[i].gameObject.SetActive(used);
-                if (used) _optionRows[i].text = $"{i + 1}) {request.Options[i].label}";
-            }
+            _highlight = 0;              // R2: fresh content, highlight to the top
+            RenderOptions();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_window);   // spike (ii): synchronous
             Vector2 newSize = _window.sizeDelta;
 
@@ -112,6 +117,33 @@ namespace IT.Presentation
             else if (kb.digit3Key.wasPressedThisFrame) Choose(2);
             else if (kb.digit4Key.wasPressedThisFrame) Choose(3);
             else if (kb.digit5Key.wasPressedThisFrame) Choose(4);
+
+            // 4.6.2 R2 (DQ-6): opener-device navigation — dpad moves the
+            // highlight, south selects. Only the routed device is polled.
+            if (_navDevice is UnityEngine.InputSystem.Gamepad pad && _current?.Options != null)
+            {
+                int count = _current.Options.Length;
+                if (count == 0) return;
+                if (pad.dpad.down.wasPressedThisFrame) { _highlight = (_highlight + 1) % count; RenderOptions(); }
+                else if (pad.dpad.up.wasPressedThisFrame) { _highlight = (_highlight - 1 + count) % count; RenderOptions(); }
+                else if (pad.buttonSouth.wasPressedThisFrame) Choose(_highlight);
+            }
+        }
+
+        // 4.6.2 R2: option rows in one place — ShowNow's content fill and the
+        // highlight redraw share it. The "▶ " marker renders only while a
+        // navigation device is routed (keyboard-only prompts look as before).
+        void RenderOptions()
+        {
+            var request = _current;
+            if (request == null) return;
+            for (int i = 0; i < _optionRows.Count; i++)
+            {
+                bool used = request.Options != null && i < request.Options.Length;
+                _optionRows[i].gameObject.SetActive(used);
+                if (used)
+                    _optionRows[i].text = $"{(_navDevice != null && i == _highlight ? "▶ " : "")}{i + 1}) {request.Options[i].label}";
+            }
         }
 
         // 4.6.1 R5 (DD7 + OQ-E): boot/restore notices POLL here because module

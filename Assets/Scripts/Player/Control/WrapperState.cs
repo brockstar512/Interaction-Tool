@@ -8,5 +8,11 @@ namespace IT.Player.Control
         Active,
         Suspended,
         Dead,
+        // 4.6.2 R2 (DD2, owner-accepted mechanism): pause is a DISTINCT state
+        // from device-loss Suspended — the roster's reconnect-priority scan
+        // matches Suspended EXACTLY, so a Paused wrapper is never a re-pair
+        // candidate BY CONSTRUCTION, and a device-less wrapper waiting for its
+        // first input (DD4) keeps Suspended's meaning ("no device").
+        Paused,
     }
 }

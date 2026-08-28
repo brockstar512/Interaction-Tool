@@ -55,6 +55,10 @@ namespace IT.Presentation
             // gets a handle, never internals).
             if (_screenModule == null)
                 _screenModule = gameObject.AddComponent<ScreenPromptModule>();
+            // 4.6.2 R2 (OQ-A ruled IN): the pause menu rides the same scene-local
+            // root — inert wherever no paired players exist (Title, boot).
+            if (GetComponent<PauseMenu>() == null)
+                gameObject.AddComponent<PauseMenu>();
             var coordinator = IT.Boot.SystemsRoot.Instance != null
                 ? IT.Boot.SystemsRoot.Instance.Presentation : null;
             coordinator?.Register((IScreenPromptModule)_screenModule);

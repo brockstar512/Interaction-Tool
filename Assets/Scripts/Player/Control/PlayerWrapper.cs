@@ -337,6 +337,31 @@ namespace IT.Player.Control
             StateChanged?.Invoke(this);
         }
 
+        // 4.6.2 R2 (DD2, owner-accepted): menu-freeze — freeze only from Active.
+        // Dead is terminal; Suspended means the device is GONE, and device loss
+        // outranks menu state (Suspend() below may likewise overwrite Paused —
+        // the B-16 edge; the still-open menu re-asserts freeze after a re-pair).
+        // Action-map discipline matches Suspend/Die: no edges accumulate.
+        internal void PauseFreeze()
+        {
+            if (State != WrapperState.Active) return;
+            State = WrapperState.Paused;
+            if (_actions != null)
+                _actions.Player.Disable();
+            StateChanged?.Invoke(this);
+        }
+
+        // 4.6.2 R2 (DD2): thaw ONLY what pause froze (the §7.2/PB.4 discipline —
+        // a Dead or Suspended wrapper is not pause's to wake).
+        internal void PauseThaw()
+        {
+            if (State != WrapperState.Paused) return;
+            State = WrapperState.Active;
+            if (_user.valid && _actions != null)
+                _actions.Player.Enable();
+            StateChanged?.Invoke(this);
+        }
+
         internal void Resume()
         {
             // PB.4 (R3-Q2): Dead is terminal — a replug (DeviceRegained) during the respawn window must

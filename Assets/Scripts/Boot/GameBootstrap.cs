@@ -23,6 +23,14 @@ namespace IT.Boot
         {
             BootInit.EnsureSystems();
 
+            // 4.6.2 R2 (DD5 ratified home): timeScale is ENGINE-GLOBAL and survives
+            // scene loads — a pause (0) that reaches a reload (game-over Continue
+            // PREEMPTS an open pause without closing it, DQ-5(iii)) would freeze the
+            // next scene. The boot branch is the belt: every pass through Boot lands
+            // at scale 1. Deliberately NOT ResetSession (engine state, not roster —
+            // the R6.2 pinned boundary stays byte-clean).
+            Time.timeScale = 1f;
+
             // TryGetInstance (not Instance) so we never silently auto-create a throwaway,
             // non-persistent PlayerRoster if EnsureSystems() failed to add the real one —
             // that would swallow the prefab and break P2+ join with no obvious cause.
