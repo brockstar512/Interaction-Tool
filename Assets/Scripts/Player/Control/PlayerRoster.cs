@@ -105,7 +105,20 @@ namespace IT.Player.Control
         void OnSceneBoundary(Scene from, Scene to)
         {
             _heldByDevice.Clear();                    // R3: §7.4 row 2
-            JoinPolicy = OpenJoinPolicy.Instance;     // R3.1: transition over → joins reopen
+            // R3.1: transition over → joins reopen. 4.6.2 R3 (DD6-ii, owner-ruled
+            // minimal): reopen ONLY from boot's transition lock — a menu-set policy
+            // (MenuGatePolicy, reference-distinct by design) must survive the
+            // boundary; the menu owns its own restore (GATE DEFAULT).
+            if (ReferenceEquals(JoinPolicy, LockedJoinPolicy.Instance))
+                JoinPolicy = OpenJoinPolicy.Instance;
+        }
+
+        // 4.6.2 R3: the seam-fix's one write site (also used by R4's re-pair toggle) —
+        // never maps an empty DeviceId (the R2 empty-guard discipline).
+        internal void BackfillDeviceMap(PlayerWrapper wrapper)
+        {
+            if (wrapper != null && !string.IsNullOrEmpty(wrapper.DeviceId))
+                _deviceToSlot[wrapper.DeviceId] = wrapper.PlayerId;
         }
         void OnSceneUnloaded(Scene s) => _heldByDevice.Clear();   // R3: ruling-ii safety net (flush only — mid-transition, policy stays)
 
@@ -259,6 +272,12 @@ namespace IT.Player.Control
             if (suspended != null)
             {
                 suspended.RePair(device);
+                // 4.6.2 R3 (owner-accepted seam fix): Register maps device→slot only at
+                // registration, and a device-less-spawned P1 (DD4) registered UNMAPPED —
+                // back-fill at seat/re-pair time so the seated device owns rejoin-reclaim
+                // memory (B-17's row). Existing structure, already in ResetSession.
+                BackfillDeviceMap(suspended);
+                Debug.Log($"[PlayerRoster] {suspended.PlayerId} seated to device '{suspended.DeviceId}' (first-input / re-pair)");
                 return;
             }
 

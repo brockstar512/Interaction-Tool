@@ -147,12 +147,20 @@ namespace IT.Player.Control
 
             // PendingJoinDevice is set by PlayerRoster.TryJoin() before Instantiate and
             // cleared here immediately on read. Null means this is the scene-placed P1
-            // wrapper: auto-pair to keyboard, fall back to the first available gamepad.
+            // wrapper — 4.6.2 R3 (DD4/OQ-B(ii) ruled): the auto-pair fallback is now
+            // POLICY-CONSULTED. Under FirstInputAssignsP1Policy (v1 default) the consult
+            // returns null and the wrapper waits DEVICE-LESS in Suspended posture — the
+            // state's literal meaning ("no device") — so the first meaningful input from
+            // ANY device seats it via the roster's policy-exempt reconnect-priority path.
+            // No phantom keyboard-P1 (Gap 1). DTO restore is unaffected: ApplyLevelBaseline
+            // gates on PlayerId, assigned at Register below, device-independent.
             var device = PlayerRoster.PendingJoinDevice;
             PlayerRoster.PendingJoinDevice = null;
-            device = device ?? (InputDevice)Keyboard.current ?? Gamepad.current;
+            device = device ?? FirstInputAssignsP1Policy.ConsultAutoPair();
             if (device != null)
                 SetUpInput(device);
+            else
+                Suspend();   // waiting-for-first-input posture (actions never built; Suspend null-guards)
 
             // PB.4 (DD5): adopt a reserved slot id threaded by a respawn (PlayerRoster.PendingSlot,
             // mirrors PendingJoinDevice). Null on a fresh join — Register then allocates a free slot.
@@ -377,6 +385,14 @@ namespace IT.Player.Control
 
         internal void RePair(InputDevice newDevice)
         {
+            // 4.6.2 R3 (DD4): a device-less-spawned P1 (FirstInputAssignsP1Policy) has no
+            // actions/user yet — seating it IS first-time SetUpInput, not a re-pair.
+            if (_actions == null)
+            {
+                SetUpInput(newDevice);
+                Resume();
+                return;
+            }
             // Drop the stale/lost device(s) before pairing the new one, so the user doesn't
             // accumulate dead pairings across repeated unplug → rejoin-with-a-different-device
             // cycles. UnpairDevices() keeps the InputUser (unlike UnpairDevicesAndRemoveUser).

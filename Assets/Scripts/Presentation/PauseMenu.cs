@@ -82,7 +82,11 @@ namespace IT.Presentation
             Time.timeScale = 0f;                       // DQ-7 world half
             var roster = PlayerRoster.TryGetInstance();
             if (roster != null)
+            {
                 foreach (var w in roster.Wrappers) w?.PauseFreeze();   // DQ-7 player half (DD2)
+                // 4.6.2 R3 (DD3/DQ-6 cession): the menu owns the gate while open.
+                roster.JoinPolicy = MenuGatePolicy.Instance;
+            }
             // Opener-device navigation (DQ-6): sibling access is presentation-
             // internal wiring, not a coordinator bypass — Enqueue still routes
             // through the registered handle above.
@@ -111,7 +115,11 @@ namespace IT.Presentation
             _open = false;
             var roster = PlayerRoster.TryGetInstance();
             if (roster != null)
+            {
                 foreach (var w in roster.Wrappers) w?.PauseThaw();     // thaws ONLY Paused
+                // 4.6.2 R3 (GATE DEFAULT, owner-stated): the menu restores Open on close.
+                roster.JoinPolicy = OpenJoinPolicy.Instance;
+            }
             Time.timeScale = _savedTimeScale;          // restore VERBATIM (B-1 evidence)
             GetComponent<ScreenPromptModule>()?.SetNavigationDevice(null);
             Debug.Log($"[Pause] closed — timeScale restored to {_savedTimeScale}");
