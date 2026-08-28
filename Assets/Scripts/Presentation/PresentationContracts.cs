@@ -14,6 +14,10 @@ namespace IT.Presentation
         public string Body;
         public PromptPriority Priority = PromptPriority.Normal;
         public (string label, Action onChosen)[] Options;
+        // 4.6.2 R5 (OQ-F(i) ruled): > 0 = a self-dismissing TOAST — auto-selects
+        // option 0 after this many UNSCALED seconds (must run while paused).
+        // 0 (default) = a normal prompt; no behavior change for existing callers.
+        public float AutoDismissSeconds;
     }
 
     // DQ-1(c): typed per-surface contracts. Surface 2 ships in this story; the

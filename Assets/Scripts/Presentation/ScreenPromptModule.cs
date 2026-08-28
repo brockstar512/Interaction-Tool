@@ -50,10 +50,14 @@ namespace IT.Presentation
             else _queue.Add(request);
         }
 
+        // 4.6.2 R5 (OQ-F(i)): unscaled show-timestamp for the toast auto-dismiss.
+        float _shownAtUnscaled;
+
         void ShowNow(PromptRequest request)
         {
             bool wasOpen = _current != null;
             _current = request;
+            _shownAtUnscaled = Time.unscaledTime;
             if (_window == null) BuildWindow();
 
             Vector2 oldSize = _window.sizeDelta;
@@ -110,6 +114,17 @@ namespace IT.Presentation
         {
             PollBootNotices();
             if (_current == null) return;
+
+            // 4.6.2 R5 (OQ-F(i)): toast auto-dismiss — UNSCALED (runs while paused,
+            // the B-13 evidence), auto-selects option 0 through the normal Choose
+            // flow so the queue advances exactly as a real press would.
+            if (_current.AutoDismissSeconds > 0f
+                && Time.unscaledTime - _shownAtUnscaled >= _current.AutoDismissSeconds)
+            {
+                Choose(0);
+                if (_current == null) return;
+            }
+
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb == null) return;
             if (kb.digit1Key.wasPressedThisFrame) Choose(0);

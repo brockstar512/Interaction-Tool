@@ -120,6 +120,24 @@ namespace IT.Player.Control
             if (wrapper != null && !string.IsNullOrEmpty(wrapper.DeviceId))
                 _deviceToSlot[wrapper.DeviceId] = wrapper.PlayerId;
         }
+
+        // 4.6.2 R5 (OQ-F(i) ruled): reject presentation — a self-dismissing toast
+        // through the ONE window (Normal priority: queues behind an open prompt,
+        // which is B-4's FIFO fixture; UNSCALED auto-dismiss so it runs while
+        // paused). Null-soft, the SpawnManager game-over posture: no Screen
+        // module → the warn above stands alone.
+        void ShowRejectToast(string text)
+        {
+            var screen = SystemsRoot.Instance != null && SystemsRoot.Instance.Presentation != null
+                ? SystemsRoot.Instance.Presentation.Screen : null;
+            screen?.Enqueue(new IT.Presentation.PromptRequest
+            {
+                Title = "",
+                Body = text,
+                AutoDismissSeconds = 2.5f,
+                Options = new (string, System.Action)[] { ("OK", () => { }) },
+            });
+        }
         void OnSceneUnloaded(Scene s) => _heldByDevice.Clear();   // R3: ruling-ii safety net (flush only — mid-transition, policy stays)
 
         // Called by PlayerWrapper.Awake() — idempotent.
@@ -287,6 +305,7 @@ namespace IT.Player.Control
             if (!(JoinPolicy?.AllowJoin(device) ?? true))
             {
                 Debug.LogWarning($"[PlayerRoster] join rejected — policy locked; device '{PlayerWrapper.DeriveDeviceId(device)}' ignored.");
+                ShowRejectToast("Can't join right now.");   // 4.6.2 R5 (OQ-F(i))
                 return;
             }
 
@@ -303,6 +322,7 @@ namespace IT.Player.Control
                 if (_gameOverReservedSlots.Contains(rememberedSlot))
                 {
                     Debug.LogWarning($"[PlayerRoster] join rejected — slot game-over-reserved; device '{deviceId}' ignored.");
+                    ShowRejectToast("That player is out of lives — no rejoining this run.");   // 4.6.2 R5 (OQ-F(i))
                     return;
                 }
                 if (!SlotHeld(rememberedSlot))
@@ -327,6 +347,7 @@ namespace IT.Player.Control
                 // is R3.1's policy-locked). Device-already-paired stays deliberately UNLOGGED
                 // (owner-sanctioned §5.J deviation — spam-prohibitive at the event layer).
                 Debug.LogWarning($"[PlayerRoster] join rejected — session full ({PresentSlots()} present); device '{deviceId}' ignored.");
+                ShowRejectToast("Game is full.");   // 4.6.2 R5 (OQ-F(i))
             }
 
             // Belt-and-suspenders (mirrors TryJoin's PendingJoinDevice clear): if nothing consumed
