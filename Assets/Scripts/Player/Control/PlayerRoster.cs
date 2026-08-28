@@ -373,6 +373,32 @@ namespace IT.Player.Control
         // to real input so a synthesized rejoin exercises the same reclaim/reject/join code.
         internal void SimulateUnpairedPress(InputDevice device) => RouteUnpairedActivity(device);
 
+        // 4.6.2 R4 (PB.4.5 §9.2 cascade LANDING; OQ-C re-ruled: §5.D RESTORE stands):
+        // voluntary drop-out. Refusals per the record: §5.E (P1 is the primary — quit is
+        // not drop-out) and §7.2 (Dead is terminal, accepts no further wrapper actions).
+        // The §5.D mechanism is the SHIPPED Deregister capture: DTO held keyed by
+        // DeviceId, restored on rejoin (session-bounded — flushed at transitions and
+        // cleared by ResetSession, so restore never crosses a Continue). Slot releases
+        // with the wrapper; the retained _deviceToSlot entry is the reclaim memory.
+        internal void Leave(PlayerWrapper wrapper)
+        {
+            if (wrapper == null) return;
+            if (wrapper.PlayerId == "P1")
+            {
+                Debug.LogWarning("[PlayerRoster] leave refused — P1 cannot voluntarily leave (§5.E: quit ≠ drop-out).");
+                return;
+            }
+            if (wrapper.State == WrapperState.Dead)
+            {
+                Debug.LogWarning($"[PlayerRoster] leave refused — {wrapper.PlayerId} is Dead (§7.2).");
+                return;
+            }
+            Deregister(wrapper);          // §5.D capture happens HERE (keyed by DeviceId)
+            wrapper.ReleaseDevice();      // device frees now; OnDestroy's Deregister double-fire is idempotent
+            Debug.Log($"[PlayerRoster] {wrapper.PlayerId} left voluntarily — slot released; same device rejoins with held state (§5.D)");
+            Destroy(wrapper.gameObject);
+        }
+
         void TryJoin(InputDevice device)
         {
             if (PlayerPrefab == null)

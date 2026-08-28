@@ -62,6 +62,14 @@ namespace IT.Boot
             }
         }
 
+        // 4.6.2 R4 (OQ-D(i) + DD5 JUSTIFIED SURVIVOR, owner-ratified): the explicit
+        // "P1 Input Device" choice from the pause menu — "keyboard" / "gamepad" /
+        // null (unset → FirstInputAssignsP1Policy governs). ActiveSlot class: a
+        // message INTO the next session — reverting P1 to keyboard on every
+        // Continue would undo a deliberate player choice. Deliberately NOT
+        // cleared by ResetSession (roster-only, the R6.2 pinned boundary).
+        public static string PreferredPrimaryDevice { get; set; }
+
         // 4.6.1 (OQ-C(1) ruled): one-shot mercy flag — set by the game-over Continue
         // action, consumed (cleared-on-read, the DD10-trio discipline) in
         // ApplyLevelBaseline AFTER the DTO restore: lives := the null-DTO chain

@@ -20,7 +20,15 @@ namespace IT.Player.Control
         // Consulted by PlayerWrapper.Awake's spawn fallback (the DD4 cited line).
         // null = wait for first input. With Active false this returns the exact
         // pre-4.6.2 fallback (keyboard, else first pad) — the rollback lever.
+        // R4 (OQ-D(i)): the surviving "P1 Input Device" preference OVERRIDES —
+        // an explicit choice auto-pairs that device class on later boots (B-12's
+        // survives-a-Continue evidence). Falls through if the device is absent.
         public static InputDevice ConsultAutoPair()
-            => Active ? null : ((InputDevice)Keyboard.current ?? Gamepad.current);
+        {
+            var pref = IT.Boot.SessionInfo.PreferredPrimaryDevice;
+            if (pref == "keyboard" && Keyboard.current != null) return Keyboard.current;
+            if (pref == "gamepad" && Gamepad.current != null) return Gamepad.current;
+            return Active ? null : ((InputDevice)Keyboard.current ?? Gamepad.current);
+        }
     }
 }

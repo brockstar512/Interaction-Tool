@@ -97,17 +97,78 @@ namespace IT.Presentation
 
         void ShowMenu(IScreenPromptModule screen)
         {
+            var roster = PlayerRoster.TryGetInstance();
             var options = new System.Collections.Generic.List<(string, System.Action)>
             {
                 ("Resume", Close),
             };
-            // R4 appends: "P1 Input Device" cycle (OQ-D(i)) · joiner Leave (§9.2).
+
+            // 4.6.2 R4 (OQ-D(i) ruled): "P1 Input Device" cycles keyboard↔pad. The
+            // choice persists as SessionInfo.PreferredPrimaryDevice (DD5 justified
+            // survivor). Shown only when P1 exists AND an alternative device does.
+            var p1 = FindWrapper(roster, "P1");
+            if (p1 != null && CycleTarget(roster, p1) != null)
+                options.Add(($"P1 Input Device: {(p1.PairedDevice is Gamepad ? "Gamepad" : "Keyboard")}", () =>
+                {
+                    var target = CycleTarget(roster, p1);
+                    if (target == null) return;   // vanished between render and press
+                    p1.RePair(target);            // Resume()s — the open menu's Update re-freezes (B-16 shape)
+                    roster.BackfillDeviceMap(p1); // R3 seam fix's second caller
+                    SessionInfo.PreferredPrimaryDevice = target is Gamepad ? "gamepad" : "keyboard";
+                    Debug.Log($"[Pause] P1 re-paired to '{PlayerWrapper.DeriveDeviceId(target)}' — preference saved ('{SessionInfo.PreferredPrimaryDevice}')");
+                    var s = SystemsRoot.Instance?.Presentation?.Screen;
+                    if (s != null) ShowMenu(s);   // reshow with the updated label (TitleScreen pattern)
+                }));
+
+            // 4.6.2 R4 (§9.2 landing; §5.E): Leave is JOINER-ONLY and offered to the
+            // OPENER only (DQ-6: the opener's device navigates — leave applies to the
+            // player driving the menu; another joiner opens their own pause to leave).
+            // Dead-refusal (§7.2) is enforced at the roster entry; the item also
+            // hides then, matching the game-over screen's fixed Continue+Quit set.
+            var opener = OwnerOf(roster, _opener);
+            if (opener != null && opener.PlayerId != "P1" && opener.State != WrapperState.Dead)
+                options.Add(($"Leave Game ({opener.PlayerId})", () =>
+                {
+                    Close();                       // unpause everyone first…
+                    roster?.Leave(opener);         // …then the §5.D-preserving exit
+                }));
+
             screen.Enqueue(new PromptRequest
             {
                 Title = "PAUSED",
                 Body = "",
                 Options = options.ToArray(),
             });
+        }
+
+        static PlayerWrapper FindWrapper(PlayerRoster roster, string id)
+        {
+            if (roster == null) return null;
+            foreach (var w in roster.Wrappers)
+                if (w != null && w.PlayerId == id) return w;
+            return null;
+        }
+
+        static PlayerWrapper OwnerOf(PlayerRoster roster, InputDevice device)
+        {
+            if (roster == null || device == null) return null;
+            foreach (var w in roster.Wrappers)
+                if (w != null && w.OwnsDevice(device)) return w;
+            return null;
+        }
+
+        // The cycle's destination: P1 on keyboard → first pad NOT owned by anyone;
+        // P1 on pad → the keyboard, if unowned. Null = no legal target (item hidden).
+        static InputDevice CycleTarget(PlayerRoster roster, PlayerWrapper p1)
+        {
+            if (p1.PairedDevice is Gamepad)
+            {
+                var kb = Keyboard.current;
+                return kb != null && OwnerOf(roster, kb) == null ? kb : null;
+            }
+            foreach (var pad in Gamepad.all)
+                if (OwnerOf(roster, pad) == null) return pad;
+            return null;
         }
 
         void Close()
