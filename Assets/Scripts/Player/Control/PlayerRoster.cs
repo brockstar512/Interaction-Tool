@@ -250,8 +250,24 @@ namespace IT.Player.Control
                 if (w.OwnsDevice(device)) return;   // paired pads exit before the button scan
             var press = InputControlExtensions.GetFirstButtonPressOrNull(eventPtr);
             if (press == null || !IsJoinButton(press)) return;   // R2.1.1: see IsJoinButton
+            if (!IsNewPress(press)) return;                       // 4.6.2 R6.2: see IsNewPress
             RouteUnpairedActivity(device);
         }
+
+        // 4.6.2 R6.2 (Session Z Block 2 fix, owner-ruled (a′)): GetFirstButtonPressOrNull is
+        // STATE-based, not edge-based — it enumerates with IgnoreControlsInDefaultState, so a
+        // HELD button qualifies on every event, and the DualSense streams events continuously.
+        // That falsified PB.4.5 §5.K's "edge-triggered" premise: South-confirm held through
+        // Leave re-seated the slot instantly. Edge = the event shows the button pressed (the
+        // caller's filter) while the PRE-EVENT state shows it not pressed. onEvent listeners
+        // (ours and InputUser's) run before the event is written to device state
+        // (InputManager: listeners :3453, UpdateState :3529), so ReadValue() here IS the
+        // pre-event value. Device state updates regardless of pairing, so this holds for an
+        // unpaired pad. Known limit (named, v1): if a held button and a new press land in the
+        // SAME event, first-press may be the held one and that event is dropped — the next
+        // press joins (same class as IsJoinButton's stick-synthetic limit).
+        static bool IsNewPress(InputControl control)
+            => control is ButtonControl button && !button.IsValueConsideredPressed(button.ReadValue());
 
         // PB.4.5 R2.1.1 (V2.5 fix): a StickControl is COMPOSED of synthetic child ButtonControls
         // (leftStick/up, /down, /left, /right — they exist so sticks can bind to button actions),
@@ -268,12 +284,14 @@ namespace IT.Player.Control
             return true;
         }
 
-        // R2.1.1: the §5.I button-only rule gates BOTH detection sources. The callback hands us
+        // R2.1.1: the §5.I button-only rule gates BOTH detection sources (and, since 4.6.2 R6.2,
+        // the new-press edge rule too). The callback hands us
         // the actuated control directly — filter it the same way, or a delivering callback would
         // reopen the stick-join hole the listener just closed.
         void OnUnpairedDeviceUsed(InputControl control, InputEventPtr eventPtr)
         {
             if (!IsJoinButton(control)) return;
+            if (!IsNewPress(control)) return;   // 4.6.2 R6.2: same edge gate as the listener (R2.1.1 symmetry)
             RouteUnpairedActivity(control.device);
         }
 
