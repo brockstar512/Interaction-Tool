@@ -558,6 +558,11 @@ namespace IT.Player.Persistence
                       $"health {dto.currentHealth}, lives {dto.lives}, state {dto.wrapperState}, items {DescribeItems(dto.items)} " +
                       $"slot {dto.currentItemIndex}, statuses {DescribeStatuses(dto.activeStatuses)} → loading '{_roundTripTargetScene}'");
             LocationEntryCarry.Stash("P1", dto, _roundTripTargetScene);
+            // 5.4 R3 parity with LocationTransporter's LOAD step: free the P1 slot + device
+            // BEFORE the load, so the arriving scene-placed P1 allocates "P1" (its carry key)
+            // regardless of whether Unity runs the new scene's Awake before the old OnDestroy.
+            PlayerRoster.TryGetInstance()?.Deregister(_tracked);
+            _tracked.ReleaseDevice();
             UnityEngine.SceneManagement.SceneManager.LoadScene(_roundTripTargetScene);
         }
 
