@@ -47,13 +47,16 @@ namespace IT.Presentation
             var roster = PlayerRoster.TryGetInstance();
             if (roster == null || roster.Wrappers.Count == 0) return;
             var kb = Keyboard.current;
-            if (kb != null && kb.escapeKey.wasPressedThisFrame && Owned(roster, kb))
+            // 4.6.2 R6.3 (ruling 3): skip a device seated THIS frame — its Start/Escape press
+            // was the join/seat press and is consumed (one-frame; see PlayerRoster.MarkSeated).
+            if (kb != null && kb.escapeKey.wasPressedThisFrame && Owned(roster, kb) && !roster.SeatedThisFrame(kb))
             {
                 Open(kb);
                 return;
             }
             foreach (var w in roster.Wrappers)
-                if (w != null && w.PairedDevice is Gamepad pad && pad.startButton.wasPressedThisFrame)
+                if (w != null && w.PairedDevice is Gamepad pad && pad.startButton.wasPressedThisFrame
+                    && !roster.SeatedThisFrame(pad))
                 {
                     Open(pad);
                     return;

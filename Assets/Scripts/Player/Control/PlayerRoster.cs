@@ -251,8 +251,16 @@ namespace IT.Player.Control
             var press = InputControlExtensions.GetFirstButtonPressOrNull(eventPtr);
             if (press == null || !IsJoinButton(press)) return;   // R2.1.1: see IsJoinButton
             if (!IsNewPress(press)) return;                       // 4.6.2 R6.2: see IsNewPress
-            RouteUnpairedActivity(device);
+            RouteUnpairedActivity(device, IsStartPress(press));
         }
+
+        // 4.6.2 R6.3 (owner-ruled 2026-10-19, JOIN ON START ONLY): the pause button joins —
+        // pad Start, keyboard Escape (ruling 2, option A: one rule across devices). Consumed
+        // ONLY by RouteUnpairedActivity's FRESH-JOIN half; the filter above still admits any
+        // new non-stick press because re-pair and reclaim stay any-new-press (ruling 1).
+        static bool IsStartPress(InputControl control)
+            => (control.device is Gamepad pad && control == pad.startButton)
+            || (control.device is Keyboard kb && control == kb.escapeKey);
 
         // 4.6.2 R6.2 (Session Z Block 2 fix, owner-ruled (a′)): GetFirstButtonPressOrNull is
         // STATE-based, not edge-based — it enumerates with IgnoreControlsInDefaultState, so a
@@ -292,14 +300,14 @@ namespace IT.Player.Control
         {
             if (!IsJoinButton(control)) return;
             if (!IsNewPress(control)) return;   // 4.6.2 R6.2: same edge gate as the listener (R2.1.1 symmetry)
-            RouteUnpairedActivity(control.device);
+            RouteUnpairedActivity(control.device, IsStartPress(control));
         }
 
         // Extracted verbatim from the pre-R2.1 OnUnpairedDeviceUsed body — ONE routing for both
         // detection sources, so reconnect-priority (§5.F) and the max-players gate hold no
         // matter which source detects. Double-fire safe: whichever source pairs first, the
         // other exits on OwnsDevice.
-        void RouteUnpairedActivity(InputDevice device)
+        void RouteUnpairedActivity(InputDevice device, bool isStartPress)
         {
             // Ignore mouse and anything that isn't a playable device.
             if (device is Mouse) return;
@@ -315,6 +323,7 @@ namespace IT.Player.Control
             if (suspended != null)
             {
                 suspended.RePair(device);
+                MarkSeated(device);   // 4.6.2 R6.3: the seating press is consumed (PauseMenu skips it)
                 // 4.6.2 R3 (owner-accepted seam fix): Register maps device→slot only at
                 // registration, and a device-less-spawned P1 (DD4) registered UNMAPPED —
                 // back-fill at seat/re-pair time so the seated device owns rejoin-reclaim
@@ -324,11 +333,24 @@ namespace IT.Player.Control
                 return;
             }
 
+            // 4.6.2 R6.3 (ruling 1): FRESH joins need Start; everything above this line (the
+            // Suspended re-pair, which is also P1's first-input seating) is any-new-press and
+            // never reaches this check. A RECLAIMABLE device (remembered, not game-over-
+            // reserved, slot free) is RETURNING, not joining — any new press. Carve-outs:
+            // (i) a remembered device whose slot is taken is a fresh join → Start required;
+            // (ii) a non-Start press from a non-reclaimable device is IGNORED SILENTLY.
+            var deviceId = PlayerWrapper.DeriveDeviceId(device);
+            var reclaimable = _deviceToSlot.TryGetValue(deviceId, out var rememberedSlot)
+                && !_gameOverReservedSlots.Contains(rememberedSlot)
+                && !SlotHeld(rememberedSlot);
+            if (!isStartPress && !reclaimable) return;
+
             // PB.4.5 R3.1: policy gate — placed AFTER the suspended re-pair above (deliberately
             // exempt, owner ruling: a transition-locked policy must never lock out reconnect)
             // and BEFORE reclaim/join. §5.J reject shape, loud and grep-able.
             if (!(JoinPolicy?.AllowJoin(device) ?? true))
             {
+                if (!isStartPress) return;   // 4.6.2 R6.3: rejects are LOUD only on Start (a returning device's other buttons stay silent)
                 Debug.LogWarning($"[PlayerRoster] join rejected — policy locked; device '{PlayerWrapper.DeriveDeviceId(device)}' ignored.");
                 ShowRejectToast("Can't join right now.");   // 4.6.2 R5 (OQ-F(i))
                 return;
@@ -337,13 +359,13 @@ namespace IT.Player.Control
             // PB.4.5 R3 (§5.B/§5.D): rejoin-reclaim. A remembered device reclaims its slot (only
             // if still free — no reservation against other joiners, §5.B) and its held session
             // state. A lost race falls through to a fresh join; Register's collision guard stays
-            // the loud backstop.
-            var deviceId = PlayerWrapper.DeriveDeviceId(device);
-            if (_deviceToSlot.TryGetValue(deviceId, out var rememberedSlot))
+            // the loud backstop. (4.6.2 R6.3: deviceId / rememberedSlot are now computed above.)
+            if (rememberedSlot != null)
             {
                 // OQ-R1-1 (owner-ruled REJECT): a game-over'd device does not rejoin in v1 — that
                 // would be in-game game-over recovery, Epic 4.6's design space. Plain return: the
                 // reject path must not wedge the roster (V3.4b) — other devices route normally.
+                // (4.6.2 R6.3: reserved ⇒ not reclaimable ⇒ only a Start press reaches here.)
                 if (_gameOverReservedSlots.Contains(rememberedSlot))
                 {
                     Debug.LogWarning($"[PlayerRoster] join rejected — slot game-over-reserved; device '{deviceId}' ignored.");
@@ -366,7 +388,7 @@ namespace IT.Player.Control
             {
                 TryJoin(device);
             }
-            else
+            else if (isStartPress)   // 4.6.2 R6.3: session-full reject is LOUD only on Start
             {
                 // PB.4.5 R4 (§5.J): session-full is one of the two LOUD reject reasons (the other
                 // is R3.1's policy-locked). Device-already-paired stays deliberately UNLOGGED
@@ -417,7 +439,31 @@ namespace IT.Player.Control
 
         // PB.4.5 R3: harness entry (PB.1 9/0-pattern ContextMenu drives this) — identical routing
         // to real input so a synthesized rejoin exercises the same reclaim/reject/join code.
-        internal void SimulateUnpairedPress(InputDevice device) => RouteUnpairedActivity(device);
+        // 4.6.2 R6.3: simulates a JOIN press (Start), so the harness keeps exercising the full
+        // reclaim/reject/join routing exactly as before the Start-only ruling.
+        internal void SimulateUnpairedPress(InputDevice device) => RouteUnpairedActivity(device, isStartPress: true);
+
+        // 4.6.2 R6.3 (ruling 3, SEAT-PRESS CONSUMPTION): the press that seats a device
+        // (Suspended re-pair, reclaim, or fresh join) must not ALSO open pause — Start/Escape
+        // is both the join and the pause button, and seating pairs synchronously inside input
+        // processing, before PauseMenu.Update polls wasPressedThisFrame in the SAME frame.
+        // ONE-FRAME by construction, never sticky: the record is keyed to Time.frameCount, so
+        // on any later frame SeatedThisFrame is false and the owner's Start/Escape opens pause.
+        readonly List<InputDevice> _seatedDevices = new();
+        int _seatedFrame = -1;
+
+        void MarkSeated(InputDevice device)
+        {
+            if (_seatedFrame != Time.frameCount)
+            {
+                _seatedDevices.Clear();
+                _seatedFrame = Time.frameCount;
+            }
+            _seatedDevices.Add(device);
+        }
+
+        internal bool SeatedThisFrame(InputDevice device)
+            => device != null && _seatedFrame == Time.frameCount && _seatedDevices.Contains(device);
 
         // 4.6.2 R4 (PB.4.5 §9.2 cascade LANDING; OQ-C re-ruled: §5.D RESTORE stands):
         // voluntary drop-out. Refusals per the record: §5.E (P1 is the primary — quit is
@@ -463,6 +509,7 @@ namespace IT.Player.Control
             // Awake fires synchronously during Instantiate and clears PendingJoinDevice on read.
             PendingJoinDevice = device;
             Instantiate(PlayerPrefab, spawnPos, Quaternion.identity);
+            MarkSeated(device);   // 4.6.2 R6.3: fresh join + reclaim both seat here — consume the press
             // Belt-and-suspenders: in the normal path the wrapper's Awake already cleared this on
             // read. But if the prefab lacks a PlayerWrapper (or was instantiated inactive), nothing
             // consumed the static — clear it here so a stale device can't leak into the next join.
