@@ -76,6 +76,9 @@ namespace IT.Boot
         // default (A-4's lever at its recorded destination; closes the lives-0 gap).
         static bool _mercyRefill;
         public static void RequestMercyRefill() => _mercyRefill = true;
+        // 5.4 R2 (S-1 ruled): READ-ONLY peek for the Transition arm — never clears. Only
+        // ConsumeMercyRefill (BootLoad route) may clear the flag.
+        public static bool MercyRefillPending => _mercyRefill;
         public static bool ConsumeMercyRefill()
         {
             var value = _mercyRefill;

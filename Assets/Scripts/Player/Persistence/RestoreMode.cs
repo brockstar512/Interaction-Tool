@@ -9,3 +9,16 @@ namespace IT.Player.Persistence
         Load,
     }
 }
+
+namespace IT.Player.Persistence
+{
+    // Story 5.4 R2 (OQ-2(c) + S-1 ruled): which route reached the ONE Location-entry call
+    // site (PlayerStateBuilder.RestoreForLocationEntry). BootLoad = first launch / fresh
+    // join / SAVE.1 boot-load (the only kind whose caller may consume the mercy flag).
+    // Transition = 5.4's carry (never consumes mercy; honors a captured Suspended state).
+    public enum LocationEntryKind
+    {
+        BootLoad,
+        Transition,
+    }
+}

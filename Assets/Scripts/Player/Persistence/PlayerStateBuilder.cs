@@ -82,6 +82,100 @@ namespace IT.Player.Persistence
             else                                  player.Resume();   // idempotent — a fresh wrapper is already Active
         }
 
+        // ─── Story 5.4 R2 (OQ-2(c) ruled): THE Location-entry call site — PB.5 R4's
+        // designed-not-dropped deviation closes here. Per-field CarryOverMode against the
+        // DESTINATION LevelConfig, called by BOTH routes: BootLoad (ApplyLevelBaseline —
+        // first launch / fresh join / SAVE.1 boot-load collapse; body moved here VERBATIM,
+        // output byte-identical) and Transition (5.4's carry — PlayerWrapper's carry arm).
+        // Restore() above stays POLICY-FREE (reclaim is not a boundary, PB.5 R7 §3.2).
+        // Mercy is the CALLER's decision (S-1 ruled): this method never touches SessionInfo;
+        // the caller passes `mercy`, and only the BootLoad caller may consume the flag.
+        // Contract as Restore(): call one frame after the target's Start() (DD4).
+        public static void RestoreForLocationEntry(PlayerStateDTO? dto, PlayerWrapper player,
+                                                   IT.Core.Config.LevelConfig lc,
+                                                   IT.Core.Config.GameConfig gameConfig,
+                                                   LocationEntryKind kind, bool mercy,
+                                                   IItemPrefabProvider itemPrefabs,
+                                                   out string resolutionLine)
+        {
+            // Lives: the PSM Awake seed already ran the null chain; a DTO that wins
+            // per-field re-applies here. On the fresh path the resolver's output equals
+            // the seed, and we skip the redundant RestoreLives (no extra LivesChange
+            // event — PB.5-identical).
+            int lives = ResolveInitialLives(dto, lc, gameConfig, out var livesSrc);
+            var status = player.GetComponent<PlayerStatusManager>();
+            if (dto.HasValue) status?.playerStatus?.RestoreLives(lives);
+
+            // 4.6.1 R4 (OQ-C(1) ruled): mercy refill — Continue-after-game-over
+            // overrides the restored lives with the NULL-DTO chain default (A-4's
+            // lever; closes the lives-0 gap). APPLIED only when a DTO restored; the
+            // caller consumed the flag (BootLoad P1 only — S-1).
+            if (mercy && dto.HasValue)
+            {
+                lives = ResolveInitialLives(null, lc, gameConfig, out livesSrc);
+                livesSrc += "(mercy)";
+                status?.playerStatus?.RestoreLives(lives);
+            }
+
+            // Health BEFORE statuses (Restore()'s PB.2 ordering rationale: a
+            // first post-restore poison tick must hit RESTORED health).
+            string hpSeg = "max(fresh)";
+            if (UseDtoHealth(dto, lc))
+            {
+                player.GetComponent<Health>()?.RestoreCurrent(dto.Value.currentHealth);
+                hpSeg = $"{dto.Value.currentHealth}(DTO)";
+            }
+
+            int granted = 0;
+            string invSeg;
+            var inv = player.GetComponentInChildren<PlayerInventory>();
+            if (UseDtoInventory(dto, lc))
+            {
+                ItemStateRegistry.Restore(inv, dto.Value.items, itemPrefabs);
+                if (inv != null)
+                {
+                    inv.RestoreCurrentIndex(dto.Value.currentItemIndex);
+                    granted = inv.Items.Count;
+                }
+                invSeg = $"{granted}(DTO)";
+            }
+            else
+            {
+                if (lc != null && lc.StartingInventory.Count > 0 && inv != null && inv.Items.Count == 0)
+                {
+                    var synth = new List<ItemStateDTO>(lc.StartingInventory.Count);
+                    foreach (var key in lc.StartingInventory)
+                        synth.Add(new ItemStateDTO { itemType = key });
+                    ItemStateRegistry.Restore(inv, synth, itemPrefabs);
+                    granted = inv.Items.Count;   // post-grant count = what actually built (registry warn+skips bad keys)
+                }
+                invSeg = $"{granted}({(granted > 0 ? "startingInventory" : "none")})";
+            }
+
+            if (UseDtoStatuses(dto, lc))
+                StatusEffectRegistry.Restore(player.GetComponent<StatusController>(), dto.Value.activeStatuses);
+
+            // 5.4 S-2 (ruled): Transition honors a captured SUSPENDED state only. It NEVER
+            // calls Resume() — on a device-less wrapper Resume() sets Active but skips the
+            // action-map enable (the deaf-Active-P1 trap). Device threading (the transporter,
+            // R3) decides Active-on-own-device; this line only keeps a Suspended capture
+            // Suspended. BootLoad touches no wrapper state (byte-identical to PB.5/SAVE.1).
+            if (kind == LocationEntryKind.Transition && dto.HasValue
+                && dto.Value.wrapperState == WrapperState.Suspended)
+                player.Suspend();
+
+            if (lc != null && lc.StartMode == IT.Core.Config.StartMode.InVehicle)
+                Debug.LogWarning($"[SpawnState] {player.PlayerId} startMode=InVehicle not wired in v1 — spawning OnFoot (OQ-C named gap).");
+
+            // PB.5 R5 (V5.1) / SAVE.1 R5: ONE resolution line per fresh spawn — format
+            // unchanged; DTO-sourced fields surface as (DTO) via the same segments.
+            // 5.4: Transition entries append their kind + resulting state (BootLoad unchanged).
+            resolutionLine = $"[SpawnState] {player.PlayerId} ← lives:{status?.playerStatus?.CurrentLives.ToString() ?? "?"}({livesSrc}) " +
+                             $"hp:{hpSeg} inv:{invSeg} " +
+                             $"mode:OnFoot({(lc != null ? "LevelConfig" : "defaults")})" +
+                             (kind == LocationEntryKind.Transition ? $" entry:transition state:{player.State}" : "");
+        }
+
         // ─── PB.5 R3 (DD3/DD4): the ONE resolution seam. Precedence lives in these
         // signatures (SAVE.A A-2, extended) — PB.5/SAVE.1/SAVE.2 consume, never invent
         // private chains. Pure functions: same inputs, same outputs (loggable twice).

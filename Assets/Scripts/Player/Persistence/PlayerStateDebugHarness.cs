@@ -63,6 +63,11 @@ namespace IT.Player.Persistence
         // (normal) restores one frame later. Flip ON only for the V-ord probe.
         [SerializeField] bool _restoreSameFrame = false;
 
+        // Story 5.4 R2 (OQ-10 ruled: Step 1 as its own rung — the folded-in PB.6 two-scene
+        // round-trip). Scene NAME (Build Settings) the round-trip loads into; that scene must
+        // hold a scene-placed P1 prefab (the fixture list in the R2 commit message).
+        [SerializeField] string _roundTripTargetScene = "";
+
         PlayerWrapper _tracked;
         PlayerStateDTO _held;
         bool _hasCapture;
@@ -515,6 +520,45 @@ namespace IT.Player.Persistence
                 if (ac[i].instanceState != bc[i].instanceState) return $"activeStatuses[{i}].instanceState";
             }
             return null;
+        }
+
+        // Story 5.4 R2 (Step 1 / PB.6): snapshot → SAVE to disk → READ BACK from disk (parse +
+        // the SAVE.2 validation pass) → carry → LOAD the target scene → the destination's
+        // scene-placed P1 restores through the ONE Location-entry call site (Transition kind,
+        // its carry arm). The DTO that crosses is the DISK copy, not the in-memory capture —
+        // that is what makes it the save→load round-trip, not a memory shuttle. Throwaway;
+        // retires with the harness. NOTE: writes the ACTIVE save slot (same as the S key).
+        // R2 posture: the arriving P1 waits device-less (press to seat) — R3's device thread
+        // removes that.
+        [ContextMenu("5.4 Step 1: two-scene save → load → restore round-trip")]
+        void TwoSceneRoundTrip()
+        {
+            if (_roundTripInFlight) { Debug.LogWarning("[PB1Harness] 5.4 Step 1: round-trip already in flight"); return; }
+            if (_tracked == null || _tracked.PlayerId != "P1") { Debug.LogWarning("[PB1Harness] 5.4 Step 1: needs a tracked P1"); return; }
+            if (string.IsNullOrEmpty(_roundTripTargetScene) || !Application.CanStreamedLevelBeLoaded(_roundTripTargetScene))
+            {
+                Debug.LogWarning($"[PB1Harness] 5.4 Step 1: target scene '{_roundTripTargetScene}' is not set or not in Build Settings — aborting (nothing saved).");
+                return;
+            }
+            if (!SaveService.SaveNow("harness-5.4-step1"))
+            {
+                Debug.LogWarning("[PB1Harness] 5.4 Step 1: save failed — aborting before load.");
+                return;
+            }
+            int slot = IT.Boot.SessionInfo.ActiveSlot;
+            if (IT.Core.Save.SaveFile.ReadText(slot, out var json, out var reason) != IT.Core.Save.SaveFile.ReadOutcome.Read
+                || !PlayerStateBuilder.ParseSaveGame(json, out var save))
+            {
+                Debug.LogWarning($"[PB1Harness] 5.4 Step 1: read-back of slot {slot} failed ({reason ?? "unparseable"}) — aborting before load.");
+                return;
+            }
+            int corrupt = PlayerStateBuilder.ValidateSaveGame(ref save);
+            var dto = save.primaryPlayer;
+            Debug.Log($"[PB1Harness] 5.4 Step 1: saved + re-read slot {slot} from disk (corrupt fields {corrupt}) — " +
+                      $"health {dto.currentHealth}, lives {dto.lives}, state {dto.wrapperState}, items {DescribeItems(dto.items)} " +
+                      $"slot {dto.currentItemIndex}, statuses {DescribeStatuses(dto.activeStatuses)} → loading '{_roundTripTargetScene}'");
+            LocationEntryCarry.Stash("P1", dto, _roundTripTargetScene);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(_roundTripTargetScene);
         }
 
         // SAVE.4 (R1 V3.5): the slot-2 probe vehicle — the picker is 4.6.1's; this

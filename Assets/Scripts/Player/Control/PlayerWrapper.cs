@@ -194,6 +194,14 @@ namespace IT.Player.Control
         {
             if (_pendingRejoinRestore.HasValue)
                 StartCoroutine(ApplyRejoinRestore());
+            // 5.4 R2 (S-3 addition 1, owner-ruled): the slot-keyed CARRY arm — ADDITIVE,
+            // inserted between the two shipped arms, whose lines are byte-identical. A
+            // carried PRESENT player (DD3) takes the Location-entry route (Transition kind)
+            // instead of the fresh baseline. Rejoin still wins (checked first); a stale or
+            // absent carry falls through to the fresh arm exactly as before.
+            else if (LocationEntryCarry.TryConsume(PlayerId,
+                         UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, out var carried))
+                StartCoroutine(ApplyLocationEntry(carried));
             else if (_spawnedFresh)
                 StartCoroutine(ApplyLevelBaseline());   // PB.5 R4 (DD6/DD7)
         }
@@ -220,74 +228,35 @@ namespace IT.Player.Control
                 ? IT.Boot.SessionInfo.ConsumePendingPrimaryRestore()
                 : (PlayerStateDTO?)null;
 
-            // Lives: the PSM Awake seed already ran the null chain; a DTO that wins
-            // per-field re-applies here. On the fresh path the resolver's output equals
-            // the seed, and we skip the redundant RestoreLives (no extra LivesChange
-            // event — PB.5-identical).
-            int lives = IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
-                dto, lc, IT.Boot.SystemsRoot.Instance?.Config, out var livesSrc);
-            var status = GetComponent<PlayerStatusManager>();
-            if (dto.HasValue) status?.playerStatus?.RestoreLives(lives);
-
-            // 4.6.1 R4 (OQ-C(1) ruled): mercy refill — Continue-after-game-over
-            // overrides the restored lives with the NULL-DTO chain default (A-4's
-            // lever; closes the lives-0 gap). Consumed cleared-on-read for P1
-            // regardless (flag never lingers), APPLIED only when a DTO restored.
+            // 4.6.1 R4 (OQ-C(1) ruled): mercy refill — consumed cleared-on-read for P1
+            // regardless (flag never lingers), APPLIED by the Builder only when a DTO
+            // restored. 5.4 S-1 (ruled): THIS is the only consume site — the BootLoad
+            // route; the Transition arm (ApplyLocationEntry) never calls it.
             bool mercy = PlayerId == "P1" && IT.Boot.SessionInfo.ConsumeMercyRefill();
-            if (mercy && dto.HasValue)
-            {
-                lives = IT.Player.Persistence.PlayerStateBuilder.ResolveInitialLives(
-                    null, lc, IT.Boot.SystemsRoot.Instance?.Config, out livesSrc);
-                livesSrc += "(mercy)";
-                status?.playerStatus?.RestoreLives(lives);
-            }
 
-            // Health BEFORE statuses (Builder.Restore's PB.2 ordering rationale: a
-            // first post-restore poison tick must hit RESTORED health).
-            string hpSeg = "max(fresh)";
-            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoHealth(dto, lc))
-            {
-                GetComponent<IT.Core.Combat.Health>()?.RestoreCurrent(dto.Value.currentHealth);
-                hpSeg = $"{dto.Value.currentHealth}(DTO)";
-            }
+            // 5.4 R2 (OQ-2(c)): the per-field body moved VERBATIM into the ONE
+            // Location-entry call site; BootLoad output is byte-identical (same restores,
+            // same order, same [SpawnState] line).
+            PlayerStateBuilder.RestoreForLocationEntry(dto, this, lc, IT.Boot.SystemsRoot.Instance?.Config,
+                LocationEntryKind.BootLoad, mercy, PlayerRoster.Instance?.RestoreProvider, out var line);
+            Debug.Log(line);
+        }
 
-            int granted = 0;
-            string invSeg;
-            var inv = GetComponentInChildren<PlayerInventory>();
-            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoInventory(dto, lc))
-            {
-                ItemStateRegistry.Restore(inv, dto.Value.items, PlayerRoster.Instance?.RestoreProvider);
-                if (inv != null)
-                {
-                    inv.RestoreCurrentIndex(dto.Value.currentItemIndex);
-                    granted = inv.Items.Count;
-                }
-                invSeg = $"{granted}(DTO)";
-            }
-            else
-            {
-                if (lc != null && lc.StartingInventory.Count > 0 && inv != null && inv.Items.Count == 0)
-                {
-                    var synth = new List<ItemStateDTO>(lc.StartingInventory.Count);
-                    foreach (var key in lc.StartingInventory)
-                        synth.Add(new ItemStateDTO { itemType = key });
-                    ItemStateRegistry.Restore(inv, synth, PlayerRoster.Instance?.RestoreProvider);
-                    granted = inv.Items.Count;   // post-grant count = what actually built (registry warn+skips bad keys)
-                }
-                invSeg = $"{granted}({(granted > 0 ? "startingInventory" : "none")})";
-            }
-
-            if (IT.Player.Persistence.PlayerStateBuilder.UseDtoStatuses(dto, lc))
-                StatusEffectRegistry.Restore(GetComponent<StatusController>(), dto.Value.activeStatuses);
-
-            if (lc != null && lc.StartMode == StartMode.InVehicle)
-                Debug.LogWarning($"[SpawnState] {PlayerId} startMode=InVehicle not wired in v1 — spawning OnFoot (OQ-C named gap).");
-
-            // PB.5 R5 (V5.1) / SAVE.1 R5: ONE resolution line per fresh spawn — format
-            // unchanged; DTO-sourced fields surface as (DTO) via the same segments.
-            Debug.Log($"[SpawnState] {PlayerId} ← lives:{status?.playerStatus?.CurrentLives.ToString() ?? "?"}({livesSrc}) " +
-                      $"hp:{hpSeg} inv:{invSeg} " +
-                      $"mode:OnFoot({(lc != null ? "LevelConfig" : "defaults")})");
+        // 5.4 R2 (DD3 / OQ-3 symmetric / S-1 / S-2): a carried PRESENT player's arrival —
+        // the SAME Location-entry call site, Transition kind: per-field CarryOverMode against
+        // the destination LevelConfig, captured Suspended honored, mercy NEVER consumed
+        // (S-1: skip, not consume-and-ignore — a set flag is warned about and LEFT SET for
+        // the next BootLoad entry). Same DD4 one-frame timing and Dead guard as the baseline.
+        System.Collections.IEnumerator ApplyLocationEntry(PlayerStateDTO carried)
+        {
+            yield return null;
+            if (State == WrapperState.Dead) yield break;
+            if (PlayerId == "P1" && IT.Boot.SessionInfo.MercyRefillPending)
+                Debug.LogWarning("[SpawnState] P1 transition entry found the mercy flag SET — left untouched for the next boot entry (5.4 S-1).");
+            var lc = LevelConfig.Resolve();
+            PlayerStateBuilder.RestoreForLocationEntry(carried, this, lc, IT.Boot.SystemsRoot.Instance?.Config,
+                LocationEntryKind.Transition, false, PlayerRoster.Instance?.RestoreProvider, out var line);
+            Debug.Log(line);
         }
 
         // R3.2: the harness's DD4-safe timing — one frame after Instantiate, every component
