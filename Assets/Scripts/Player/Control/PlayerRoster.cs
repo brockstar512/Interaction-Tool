@@ -57,6 +57,14 @@ namespace IT.Player.Control
         // before TryJoin's Instantiate; consumed (and cleared) by the new wrapper's Awake.
         internal static PlayerStateDTO? PendingRestoreDto;
 
+        // Story 5.4 R3 (S-2a ruled): the transition ARRIVAL marker. While set, a wrapper whose
+        // Awake finds no threaded PendingJoinDevice does NOT fall back to
+        // FirstInputAssignsP1Policy.ConsultAutoPair — it waits device-less Suspended. Without
+        // it, a set PreferredPrimaryDevice would auto-pair a captured-Suspended P1 onto the
+        // current pad (possibly another player's). SET ONLY by LocationTransporter; cleared at
+        // arrival AND in its finally (S2-c: clears even if the transition fails).
+        internal static bool SuppressAutoPairForArrival;
+
         // PB.4.5 R3 (rulings i/§7.4/§7.5): session-scoped structures as roster INSTANCE fields —
         // they die with the SystemsRoot GameObject (= session end). The "future ResetSession()"
         // those rulings reserved LANDED at 4.6.1 R6.2 (in-game restart now exists: Continue /

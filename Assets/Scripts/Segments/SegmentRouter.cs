@@ -34,7 +34,7 @@ namespace IT.Segments
     /// (not the editor-only SceneAsset). Story 5.4 loads the scene + spawns; carry-over is governed by
     /// Epic 4.5 CarryOverMode, not here.
     /// </summary>
-    public readonly struct ScenerRequest
+    public readonly struct SceneRequest
     {
         public readonly SegmentBounds FromSegment;
         public readonly string        TargetScenePath;
@@ -42,7 +42,7 @@ namespace IT.Segments
         public readonly PlayerWrapper Player;
         public readonly SegmentEdge   Edge;
 
-        public ScenerRequest(SegmentBounds from, string targetScenePath, string spawnPointId,
+        public SceneRequest(SegmentBounds from, string targetScenePath, string spawnPointId,
                              PlayerWrapper player, SegmentEdge edge)
         {
             FromSegment     = from;
@@ -88,7 +88,7 @@ namespace IT.Segments
         public event Action<TransportRequest> OnTransportRequested;
 
         /// <summary>Crossed a Scene edge — Story 5.4 loads the scene + spawns.</summary>
-        public event Action<ScenerRequest> OnScenerRequested;
+        public event Action<SceneRequest> OnSceneRequested;
 
         /// <summary>
         /// A closed <see cref="SegmentLock"/> refused a gated edge crossing (Story 5.3, Ruling E):
@@ -184,7 +184,7 @@ namespace IT.Segments
                             $"scene path — rejected. No request dispatched.");
                         return;
                     }
-                    OnScenerRequested?.Invoke(new ScenerRequest(
+                    OnSceneRequested?.Invoke(new SceneRequest(
                         c.Segment, edge.targetScenePath, edge.spawnPointId, c.Player, c.Edge));
                     return;
             }

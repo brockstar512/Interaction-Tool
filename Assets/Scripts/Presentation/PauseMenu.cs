@@ -44,6 +44,7 @@ namespace IT.Presentation
         // this is inert — no paired devices exist to open it.
         void TryOpenFromInput()
         {
+            if (IT.Segments.LocationTransporter.InFlight) return;   // 5.4 R3 (DD5): no pause mid-transition (ignored, not queued)
             var roster = PlayerRoster.TryGetInstance();
             if (roster == null || roster.Wrappers.Count == 0) return;
             var kb = Keyboard.current;

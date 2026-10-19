@@ -28,6 +28,9 @@ namespace IT.Boot
         // (ensured per scene by code); this holds only the typed handles.
         public IT.Presentation.Presentation Presentation { get; private set; }
 
+        // Story 5.4 R3 (DD1): the transition executor — same hosting shape as Spawn.
+        public LocationTransporter Transporter { get; private set; }
+
         // Created only by BootInit.EnsureSystems() — not placed in a scene by hand.
         public static SystemsRoot Create(GameConfig config)
         {
@@ -57,6 +60,9 @@ namespace IT.Boot
             // Story 5.2: routes SegmentManager crossings into behaviour-typed request events (C-G, not a
             // parallel bus). AFTER SegmentManager so SegmentRouter.Awake finds a live manager to subscribe to.
             go.AddComponent<SegmentRouter>();
+            // Story 5.4 R3: executes Scene transitions (DD1). AFTER SegmentRouter so its Start
+            // finds a live router to subscribe OnSceneRequested on.
+            root.Transporter = go.AddComponent<LocationTransporter>();
             return root;
         }
 

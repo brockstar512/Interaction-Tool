@@ -32,7 +32,7 @@ namespace IT.Segments
             r.OnCameraModeChangeRequested += OnCamera;
             r.SlideRequested              += OnSlide;
             r.OnTransportRequested        += OnTransport;
-            r.OnScenerRequested           += OnScener;
+            r.OnSceneRequested           += OnScene;
             r.OnLockRefused               += OnRefused;
             _subscribed = true;
         }
@@ -46,7 +46,7 @@ namespace IT.Segments
                 r.OnCameraModeChangeRequested -= OnCamera;
                 r.SlideRequested              -= OnSlide;
                 r.OnTransportRequested        -= OnTransport;
-                r.OnScenerRequested           -= OnScener;
+                r.OnSceneRequested           -= OnScene;
                 r.OnLockRefused               -= OnRefused;
             }
             _subscribed = false;
@@ -62,7 +62,7 @@ namespace IT.Segments
             => Debug.Log($"{Tag} TRANSPORT — {Id(r.FromSegment)} → {Id(r.TargetSegment)} ({r.Edge}), " +
                          $"spawn '{r.SpawnPointId}', player {PlayerId(r.Player)}");
 
-        void OnScener(ScenerRequest r)
+        void OnScene(SceneRequest r)
             => Debug.Log($"{Tag} SCENE — {Id(r.FromSegment)} → \"{r.TargetScenePath}\" ({r.Edge}), " +
                          $"spawn '{r.SpawnPointId}', player {PlayerId(r.Player)}");
 

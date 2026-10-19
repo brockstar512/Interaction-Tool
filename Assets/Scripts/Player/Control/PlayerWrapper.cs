@@ -156,7 +156,9 @@ namespace IT.Player.Control
             // gates on PlayerId, assigned at Register below, device-independent.
             var device = PlayerRoster.PendingJoinDevice;
             PlayerRoster.PendingJoinDevice = null;
-            device = device ?? FirstInputAssignsP1Policy.ConsultAutoPair();
+            // 5.4 R3 (S-2a ruled): during a transition arrival the transporter's thread is
+            // authoritative — no thread means device-less Suspended, never the auto-pair.
+            device = device ?? (PlayerRoster.SuppressAutoPairForArrival ? null : FirstInputAssignsP1Policy.ConsultAutoPair());
             if (device != null)
                 SetUpInput(device);
             else
