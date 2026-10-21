@@ -18,8 +18,18 @@ namespace IT.Player.Control
     // v1 limitation (acceptable — one static marker per scene): a marker disabled and re-enabled at
     // runtime does NOT re-register (Start runs once). Runtime re-registration lands with the
     // Location-owned registry if it's ever needed.
+    //
+    // Story 5.4 R4 (OQ-4 ruled: ONE CLASS, keyed set, "" default — the growth the header above
+    // promised): an OPTIONAL id. Empty = THE scene's default marker = the respawn point AND the
+    // transition fallback (OQ-5(a)). Named = an arrival target that Transport/Scene edges and
+    // doors reference by spawnPointId. A named marker can never become the respawn point.
+    // NAMED RESIDUAL (owner-accepted v1 posture): a scene authored with ONLY named markers has
+    // no default → respawn falls back to the death position (pre-5.4, its lone marker was it).
     public class SpawnMarker : MonoBehaviour
     {
+        [SerializeField] string _id = "";
+        public string Id => _id ?? "";
+
         void Start()
         {
             var root = SystemsRoot.Instance;
@@ -40,7 +50,7 @@ namespace IT.Player.Control
         // Visible spawn point in the Scene view without needing a sprite.
         void OnDrawGizmos()
         {
-            Gizmos.color = Color.green;
+            Gizmos.color = string.IsNullOrEmpty(_id) ? Color.green : Color.cyan;   // 5.4: named = cyan
             Gizmos.DrawWireSphere(transform.position, 0.35f);
         }
     }

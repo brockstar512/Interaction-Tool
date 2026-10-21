@@ -124,6 +124,21 @@ namespace IT.Player.Control
         public InputDevice PairedDevice
             => _user.valid && _user.pairedDevices.Count > 0 ? _user.pairedDevices[0] : null;
 
+        // Story 5.4 R4: transition arrival / Transport reposition — an instant teleport of the
+        // on-foot body (body + transform agree; momentum dropped). Called only by
+        // LocationTransporter, under its cover (players frozen, timeScale 0). Possession is
+        // refused before any transition (OQ-8 deferred), so the vehicle body is never moved here.
+        // SegmentManager sees the jump as an Edge==None crossing, which the router filters (D2).
+        internal void Relocate(Vector2 position)
+        {
+            if (_rb != null)
+            {
+                _rb.position = position;
+                _rb.linearVelocity = Vector2.zero;
+            }
+            transform.position = position;
+        }
+
         // Story PB.4 (R3) — explicit device release for the atomic respawn swap. The deferred
         // OnDestroy unpair runs too late (the fresh wrapper's Awake re-pairs BEFORE the old
         // wrapper's OnDestroy frees the device), so the SpawnManager releases here before

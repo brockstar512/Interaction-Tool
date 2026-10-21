@@ -53,10 +53,12 @@ namespace IT.Segments
         public string targetScenePath;
 
         /// <summary>
-        /// Spawn point ID as an opaque string. Resolved to target-side <c>SpawnPoint</c> data at
-        /// SegmentRouter dispatch time (Rung 4); Story 5.4 (LocationTransporter) executes the actual
-        /// player positioning. Kept a plain string here (sufficient for authoring); a stronger
-        /// dispatch-time type contract is deferred to Rung 4+ per the Gap 3 forward-compat note.
+        /// Spawn point ID — the <c>SpawnMarker</c> id the arrival lands on. The router does NOT resolve
+        /// it (it passes the string through on the request); Story 5.4's LocationTransporter resolves
+        /// it against the DESTINATION's SpawnManager registry AFTER arrival (cross-scene markers only
+        /// exist post-load). Empty or unknown → the destination's default (unnamed) marker, loud
+        /// (OQ-5(a)). Plain string (5.4 R4 corrected this comment: it previously claimed router
+        /// dispatch-time resolution, which never shipped).
         /// </summary>
         public string spawnPointId;
     }

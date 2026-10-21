@@ -22,28 +22,47 @@ namespace IT.Player.Control
     {
         // One marker per scene in v1 (OQ-PB4-C). If a scene mis-authors two, the latest wins
         // (warned). A scene with none -> HasMarker false -> R3's respawn uses the death position.
-        SpawnMarker _marker;
+        // Story 5.4 R4 (OQ-4 ruled): the single slot became a KEYED SET with "" as the
+        // distinguished default. Every pre-5.4 marker has an empty id, so it lands on key ""
+        // and reproduces the single-slot semantics exactly (same latest-wins warn, same
+        // fallback) — HasMarker / SpawnPoint read ONLY the default (the respawn path is
+        // unchanged). Named markers are arrival targets for LocationTransporter.
+        readonly System.Collections.Generic.Dictionary<string, SpawnMarker> _markers = new();
 
-        public bool HasMarker => _marker != null;
+        public bool HasMarker => _markers.ContainsKey("");
 
-        // The respawn point: the registered marker's position, or the caller's fallback (the death
-        // position) when no marker is registered (fail-alive, OQ-PB4-C).
+        // The respawn point: the registered DEFAULT marker's position, or the caller's fallback
+        // (the death position) when none is registered (fail-alive, OQ-PB4-C).
         public Vector3 SpawnPoint(Vector3 fallback)
-            => _marker != null ? _marker.transform.position : fallback;
+            => _markers.TryGetValue("", out var m) && m != null ? m.transform.position : fallback;
+
+        // 5.4 R4: arrival resolution. A named id that is registered → its position. Otherwise
+        // NOT found (the caller applies OQ-5(a): loud warn + the default marker).
+        public bool TryGetNamed(string id, out Vector3 position)
+        {
+            position = default;
+            if (string.IsNullOrEmpty(id) || !_markers.TryGetValue(id, out var m) || m == null) return false;
+            position = m.transform.position;
+            return true;
+        }
 
         // Self-registration surface (push, mirrors SegmentManager.Register / SegmentBounds).
         public void Register(SpawnMarker marker)
         {
             if (marker == null) return;
-            if (_marker != null && _marker != marker)
-                Debug.LogWarning($"[SpawnManager] a second SpawnMarker registered ('{marker.name}') — " +
-                    "v1 expects one per scene; the latest wins.", marker);
-            _marker = marker;
+            var key = marker.Id;
+            if (_markers.TryGetValue(key, out var existing) && existing != null && existing != marker)
+                Debug.LogWarning(key.Length == 0
+                    ? $"[SpawnManager] a second SpawnMarker registered ('{marker.name}') — v1 expects one per scene; the latest wins."
+                    : $"[SpawnManager] a second SpawnMarker with id '{key}' registered ('{marker.name}') — ids are unique per scene; the latest wins.",
+                    marker);
+            _markers[key] = marker;
         }
 
         public void Unregister(SpawnMarker marker)
         {
-            if (_marker == marker) _marker = null;
+            if (marker == null) return;
+            if (_markers.TryGetValue(marker.Id, out var m) && m == marker) _markers.Remove(marker.Id);
         }
 
         // --- Story PB.4 R3 — death -> FRESH respawn ---
